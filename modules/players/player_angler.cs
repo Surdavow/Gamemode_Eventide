@@ -27,7 +27,15 @@ function PlayerAngler::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhook",%headColor);
 	%obj.setNodeColor("lhook",%headColor);
 	%obj.setNodeColor("anglerhead",%headColor);
+	%obj.HideNode("rpeg");
+	%obj.HideNode("lpeg");
+	%obj.unHideNode("rshoe");
+	%obj.unHideNode("lshoe");
 	%obj.hideNode($hat[%client.hat]);
+	%obj.HideNode($accent[%client.accent]);
+	%obj.HideNode($secondPack[%client.secondPack]);
+	%obj.hideNode($pack[%client.pack]);
+	%obj.HideNode("visor");
 	%obj.hideNode("femchest");
 	%obj.unhideNode("chest");
 	%obj.unhideNode("anglerhead");

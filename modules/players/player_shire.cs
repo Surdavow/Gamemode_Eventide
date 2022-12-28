@@ -77,7 +77,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 function PlayerShire::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);	
-	%obj.setScale("1 1 1");
+	%obj.setScale("1.1 1.1 1.1");
 }
 
 function PlayerShire::EventideAppearance(%this,%obj,%client)
@@ -88,6 +88,7 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%obj.hideNode($secondPack[%client.secondPack]);
 	%obj.hideNode($accent[%client.accent]);
 	%obj.hideNode($hat[%client.hat]);
+	%obj.HideNode("visor");
 	%obj.unhideNode("newhoodie");
 	
 	if(!%obj.chest)

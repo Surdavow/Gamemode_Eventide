@@ -95,6 +95,11 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	%obj.setDecalName("classicshirt");
 	%shirtColor = "0.28 0.21 0.12 1";
 	%pantsColor = "0.075 0.075 0.075 1";
+	%obj.HideNode($hat[%client.hat]);
+	%obj.HideNode($accent[%client.accent]);
+	%obj.HideNode($secondPack[%client.secondPack]);
+	%obj.hideNode($pack[%client.pack]);
+	%obj.HideNode("visor");
 	%obj.unHideNode("jasonmask");
 	%obj.setNodeColor("jasonmask","0.75 0.75 0.75 1");	
 	%obj.setNodeColor($hat[%client.hat],%shirtColor);

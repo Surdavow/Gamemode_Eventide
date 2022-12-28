@@ -101,7 +101,10 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	showEnergyBar = true;
 	canJet = false;
 	rechargeRate = 0.375;	
-	jumpDelay = 32;
+	jumpDelay = 31;
+	jumpForce = 10 * 85;
+	cameramaxdist = 2.1;
+	maxfreelookangle = 2.25;
 };
 
 datablock PlayerData(EventidePlayerDowned : EventidePlayer)
@@ -131,25 +134,29 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	DeathSound		= "";	
 	firstpersononly = true;
 	isKiller = true;
-	killerChaseLvl1Music = "musicData_OUT_ChaseNearKiller4";
-	killerChaseLvl2Music = "musicData_OUT_ChaseKiller4";	
+	killerChaseLvl1Music = "musicData_OUT_RenownedNear";
+	killerChaseLvl2Music = "musicData_OUT_RenownedChase";	
 };
 
 datablock PlayerData(PlayerSkullWolf : PlayerRenowned) 
 {
 	uiName = "Skullwolf Player";	
-	killerChaseLvl1Music = "musicData_OUT_ChaseNearKiller1";
-	killerChaseLvl2Music = "musicData_OUT_ChaseKiller1";	
+	killerChaseLvl1Music = "musicData_OUT_SkullWolfNear";
+	killerChaseLvl2Music = "musicData_OUT_SkullWolfChase";	
 	rechargeRate = 0.25;
 	maxTools = 0;
 	maxWeapons = 0;
+	maxForwardSpeed = 6.16;
+	maxBackwardSpeed = 3.52;
+	maxSideSpeed = 5.28;
+	boundingBox = "5 5 10.2";
 };
 
 datablock PlayerData(PlayerShire : PlayerRenowned) 
 {
 	uiName = "Shire Player";
-	killerChaseLvl1Music = "musicData_OUT_ChaseNearKiller9";
-	killerChaseLvl2Music = "musicData_OUT_ChaseKiller9";	
+	killerChaseLvl1Music = "musicData_OUT_ShireNear";
+	killerChaseLvl2Music = "musicData_OUT_ShireChase";	
 	rechargeRate = 0.3;
 	maxTools = 1;
 	maxWeapons = 1;
@@ -158,25 +165,34 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 datablock PlayerData(PlayerAngler : PlayerRenowned) 
 {
 	uiName = "Angler Player";
-	killerChaseLvl1Music = "musicData_OUT_ChaseNearKiller2";
-	killerChaseLvl2Music = "musicData_OUT_ChaseKiller2";	
+	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
+	killerChaseLvl2Music = "musicData_OUT_AnglerChase";	
 	rechargeRate = 0.15;
 	maxTools = 0;
 	maxWeapons = 0;
+	jumpForce = 10 * 75;
+	jumpDelay = 32;
+	maxForwardSpeed = 6.3;
+	maxBackwardSpeed = 3.6;
+	maxSideSpeed = 5.4;
 };
 
 datablock PlayerData(PlayerGrabber : PlayerRenowned) 
 {
 	uiName = "Grabber Player";
 
-	killerChaseLvl1Music = "musicData_OUT_ChaseNearKiller9";
-	killerChaseLvl2Music = "musicData_OUT_ChaseKiller9";
+	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
+	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
 
 	firstpersononly = false;
-	thirdpersononly = true;	
 	rechargeRate = 0.65;
 	maxTools = 1;
 	maxWeapons = 1;
+	maxForwardSpeed = 6.3;
+	maxBackwardSpeed = 3.6;
+	maxSideSpeed = 5.4;
+	cameramaxdist = 3;
+	maxfreelookangle = 2.5;
 };
 
 datablock PlayerData(PlayerGrabberNoJump : PlayerGrabber) 
@@ -204,9 +220,10 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	
 	rechargeRate = 0.375;	
 	maxDamage = 1000;
-    maxForwardSpeed = 10;
-	maxBackwardSpeed = 7;
-	maxSideSpeed = 6;
+	maxForwardSpeed = 6.16;
+	maxBackwardSpeed = 3.52;
+	maxSideSpeed = 5.28;
+	boundingBox = "5 5 10.2";
 	maxItems   = 0;
 	maxWeapons = 0;
 	maxTools = 0;	

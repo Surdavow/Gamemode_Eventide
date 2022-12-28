@@ -27,6 +27,14 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("Rhook",%skinColor);
 	%obj.setNodeColor("Lhook",%skinColor);
 	%obj.hideNode($hat[%client.hat]);
+	%obj.HideNode($accent[%client.accent]);
+	%obj.HideNode($secondPack[%client.secondPack]);
+	%obj.hideNode($pack[%client.pack]);
+	%obj.HideNode("visor");
+	%obj.HideNode("rpeg");
+	%obj.HideNode("lpeg");
+	%obj.unHideNode("rshoe");
+	%obj.unHideNode("lshoe");
 	%obj.unhideNode("renownedeyes");
 	%obj.setHeadUp(0);
 }

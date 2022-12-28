@@ -19,7 +19,7 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	{
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);
-		%obj.setmaxforwardspeed(12);
+		%obj.setmaxforwardspeed(9);
 		%obj.isInvisible = true;
 		%obj.reappearsched = %this.schedule(12500, reappear, %obj, 0);
 		return;
@@ -42,7 +42,7 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 		%this.EventideAppearance(%obj,%obj.client);
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"skullwolf_uncloak_sound");
-		%obj.setmaxforwardspeed(7);
+		%obj.setmaxforwardspeed(6.16);
 	}
 
 	%alpha = mClampF(%alpha+0.025,0,1);		
@@ -134,6 +134,10 @@ function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 	%obj.HideNode((%client.rhand ? "rhook" : "rhand"));
 	%obj.HideNode((%client.lhand ? "lhook" : "lhand"));
 	%obj.HideNode($hat[%client.hat]);
+	%obj.HideNode($accent[%client.accent]);
+	%obj.HideNode($secondPack[%client.secondPack]);
+	%obj.hideNode($pack[%client.pack]);
+	%obj.HideNode("visor");
 	%obj.HideNode("rpeg");
 	%obj.HideNode("lpeg");
 	%obj.unHideNode("rshoe");

@@ -110,7 +110,7 @@ datablock ParticleEmitterData(RenownedAmbientEmitter)
 };
 
 datablock ParticleData(GlowFaceParticle) {
-	textureName				= "./glowFace";
+	textureName				= "./models/glowFace";
 	lifetimeMS				= 500;
 	lifetimeVarianceMS		= 0;
 	dragCoefficient			= 0.0;
