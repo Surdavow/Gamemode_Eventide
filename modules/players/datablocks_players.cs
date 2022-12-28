@@ -167,7 +167,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	uiName = "Angler Player";
 	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
 	killerChaseLvl2Music = "musicData_OUT_AnglerChase";	
-	rechargeRate = 0.15;
+	rechargeRate = 0.215;
 	maxTools = 0;
 	maxWeapons = 0;
 	jumpForce = 10 * 75;
@@ -220,6 +220,8 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	
 	rechargeRate = 0.375;	
 	maxDamage = 1000;
+	jumpDelay = 31;
+	jumpForce = 10 * 80;
 	maxForwardSpeed = 6.16;
 	maxBackwardSpeed = 3.52;
 	maxSideSpeed = 5.28;
