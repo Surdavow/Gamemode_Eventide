@@ -24,9 +24,9 @@ function PlayerGrabber::onImpact(%this, %obj, %col, %vec, %force)
 
 function PlayerGrabber::onNewDatablock(%this,%obj)
 {
-	Parent::onNewDatablock(%this,%obj);
-	
-	%obj.schedule(1, setEnergyLevel, 0);
+	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
+	else applyCharacterPrefs(%obj.client);
+	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1.2 1.2 1.2");
 }
 
@@ -40,18 +40,19 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 {	
 	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
 	
-	if(%bool && %obj.getEnergyLevel() > %this.maxEnergy/2 && getWord(%obj.getVelocity(),2) == 0)
+	if(%bool && %obj.getState() !$= "Dead")
 	switch(%triggerNum)
 	{
-		case 4: if(%obj.isCrouched()) return;
-				if(!isObject(%obj.victim))
+		case 4: if(!isObject(%obj.victim))
 				{
-					%obj.setEnergyLevel(%obj.getEnergyLevel()-50);
-					%obj.setdatablock("PlayerGrabberNoJump");					
-					%obj.setVelocity(vectorscale(%obj.getForwardVector(),35));
-					%obj.playaudio(1,"grabber_lunge_sound");
-					%obj.playthread(3,"armReadyLeft");
-					%this.schedule(500,checkVictim,%obj);
+					if(!%obj.isCrouched() && %obj.getEnergyLevel() >= %this.maxEnergy && getWord(%obj.getVelocity(),2) == 0)
+					{
+						%obj.setdatablock("PlayerGrabberNoJump");					
+						%obj.setVelocity(vectorscale(%obj.getForwardVector(),35));
+						%obj.playaudio(1,"grabber_lunge_sound");
+						%obj.playthread(3,"armReadyLeft");
+						%this.schedule(500,checkVictim,%obj);
+					}
 				}
 				else if(%obj.lastChokeTime < getSimTime() && isObject(%obj.victim))
 				{					
@@ -71,7 +72,6 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 						%obj.playthread(3,"leftrecoil");
 						%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),24));				
 						%obj.victim.position = %obj.getEyePoint();
-						%obj.setEnergyLevel(0);
 
 						switch$(%obj.victim.getClassName())
 						{
@@ -93,13 +93,10 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 {
 	Parent::EventideAppearance(%this,%obj,%client);
 	%obj.setDecalName("classicshirt");
-
 	%shirtColor = "0.28 0.21 0.12 1";
 	%pantsColor = "0.075 0.075 0.075 1";
-
 	%obj.unHideNode("jasonmask");
-	%obj.setNodeColor("jasonmask","0.75 0.75 0.75 1");
-	
+	%obj.setNodeColor("jasonmask","0.75 0.75 0.75 1");	
 	%obj.setNodeColor($hat[%client.hat],%shirtColor);
 	%obj.setNodeColor((%client.rarm ? "rarmSlim" : "rarm"),%shirtColor);
 	%obj.setNodeColor((%client.larm ? "larmSlim" : "larm"),%shirtColor);

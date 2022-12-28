@@ -104,6 +104,20 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	jumpDelay = 32;
 };
 
+datablock PlayerData(EventidePlayerDowned : EventidePlayer)
+{	
+	maxForwardSpeed = 0;
+   	maxBackwardSpeed = 0;
+   	maxSideSpeed = 0;
+   	maxForwardCrouchSpeed = 0;
+   	maxBackwardCrouchSpeed = 0;
+   	maxSideCrouchSpeed = 0;
+   	jumpForce = 0;
+	rechargerate = 0;
+	isDowned = true;
+	uiName = "";
+};
+
 datablock PlayerData(PlayerRenowned : EventidePlayer) 
 {
 	uiName = "Renowned Player";	
@@ -160,7 +174,7 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 
 	firstpersononly = false;
 	thirdpersononly = true;	
-	rechargeRate = 0.5;
+	rechargeRate = 0.65;
 	maxTools = 1;
 	maxWeapons = 1;
 };
