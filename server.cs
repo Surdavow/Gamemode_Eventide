@@ -237,6 +237,12 @@ package Eventide_MainPackage
 		%obj.schedule(10,KillerScanCheck);
 	}
 
+	function Armor::onAdd(%this,%obj)
+	{		
+		Parent::onAdd(%this,%obj);
+		%obj.schedule(10,KillerScanCheck);
+	}	
+
 	function ServerCmdTeamMessageSent(%client, %message)
 	{
 		if(!$Pref::Server::ChatMod::lchatEnabled)
