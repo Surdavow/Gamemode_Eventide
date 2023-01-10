@@ -50,7 +50,6 @@ function Eventide_Melee(%this,%obj,%radius)
 
 			if(Eventide_MinigameConditionalCheck(%obj,%hit,true))
 			{
-				talk(%hit.getstate());
 				if(%hit.getstate() $= "Dead")
 				{
 					if(%obj.getdataBlock().getName() $= "PlayerSkullwolf" && %obj.isCrouched()) 

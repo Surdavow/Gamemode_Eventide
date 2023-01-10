@@ -232,27 +232,10 @@ package Eventide_MainPackage
     }
 
 	function Armor::onNewDatablock(%this,%obj)
-	{
+	{		
 		Parent::onNewDatablock(%this,%obj);
-
-		if(%obj.getdataBlock().isKiller)
-		{
-			%obj.KillerScanCheck();
-			if(%obj.getclassname() $= "Player") commandToClient (%obj.client, 'ShowEnergyBar', true);
-		} 
+		%obj.schedule(10,KillerScanCheck);
 	}
-
-	function Armor::onAdd(%this,%obj)
-	{
-		Parent::onAdd(%this,%obj);
-
-		if(%obj.getdataBlock().isKiller)
-		{
-			%obj.KillerScanCheck();
-			if(%obj.getclassname() $= "Player") commandToClient (%obj.client, 'ShowEnergyBar', true);
-		} 
-	}
-
 
 	function ServerCmdTeamMessageSent(%client, %message)
 	{

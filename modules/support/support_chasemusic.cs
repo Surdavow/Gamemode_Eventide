@@ -1,6 +1,6 @@
 function Player::KillerScanCheck(%obj)
-{
-    if(!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getdataBlock().isKiller || !getMinigamefromObject(%obj)) return;
+{    
+    if(!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getdataBlock().isKiller || !isObject(getMinigamefromObject(%obj))) return;
 
     InitContainerRadiusSearch(%obj.getPosition(), 40, $TypeMasks::PlayerObjectType);
     while(%scan = containerSearchNext())
@@ -11,7 +11,7 @@ function Player::KillerScanCheck(%obj)
         %killerclient = %obj.client;
         %victimclient = %scan.client;
 
-
+        //Not very efficient and messy code right now, will redo this sometime
         if(ContainerSearchCurrRadiusDist() <= 25 && %dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(),%scan.getmuzzlePoint(2),$TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType,%obj)))
         {
             %killercansee[%cansee++] = %scan;
