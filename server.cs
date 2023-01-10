@@ -210,7 +210,7 @@ package Eventide_MainPackage
     }
 
     function MiniGameSO::Reset(%minigame,%client)
-	{        
+	{
         Parent::Reset(%minigame,%client);
 
         for(%i=0;%i<%minigame.numMembers;%i++)
@@ -241,6 +241,18 @@ package Eventide_MainPackage
 			if(%obj.getclassname() $= "Player") commandToClient (%obj.client, 'ShowEnergyBar', true);
 		} 
 	}
+
+	function Armor::onAdd(%this,%obj)
+	{
+		Parent::onAdd(%this,%obj);
+
+		if(%obj.getdataBlock().isKiller)
+		{
+			%obj.KillerScanCheck();
+			if(%obj.getclassname() $= "Player") commandToClient (%obj.client, 'ShowEnergyBar', true);
+		} 
+	}
+
 
 	function ServerCmdTeamMessageSent(%client, %message)
 	{

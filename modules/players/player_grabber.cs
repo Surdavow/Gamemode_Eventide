@@ -1,27 +1,3 @@
-function PlayerGrabber::onImpact(%this, %obj, %col, %vec, %force)
-{
-	Parent::onImpact(%this, %obj, %col, %vec, %force);
-
-	if(%force >= 15 && !isObject(%obj.victim) && Eventide_MinigameConditionalCheck(%obj,%col,false))
-	{
-		if(minigameCanDamage(%obj,%col))
-		{
-			ServerCmdUnUseTool (%obj.client);
-			%obj.victim = %col;
-			%col.killer = %obj;
-			%obj.mountObject(%col,8);
-			%col.playaudio(0,"grabber_scream_sound");
-
-			switch$(%col.getClassName())
-			{
-				case "AIPlayer": %col.stopholeloop();
-				case "Player": 	%col.client.camera.setOrbitMode(%col, %col.getTransform(), 0, 5, 0, 1);
-								%col.client.setControlObject(%col.client.camera);
-			}
-		}							
-	}	
-}
-
 function PlayerGrabber::onNewDatablock(%this,%obj)
 {
 	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
@@ -113,10 +89,28 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	%obj.setHeadUp(0);
 }
 
-
-function PlayerGrabberNoJump::onImpact(%this, %obj, %col, %vec, %force)
+function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 {
-	PlayerGrabber::onImpact(%this, %obj, %col, %vec, %force);	
+	Parent::onCollision(%this,%obj,%col,%vec,%speed);
+
+	if(!isObject(%obj.victim) && Eventide_MinigameConditionalCheck(%obj,%col,false))
+	{
+		if(minigameCanDamage(%obj,%col))
+		{
+			ServerCmdUnUseTool (%obj.client);
+			%obj.victim = %col;
+			%col.killer = %obj;
+			%obj.mountObject(%col,8);
+			%col.playaudio(0,"grabber_scream_sound");
+
+			switch$(%col.getClassName())
+			{
+				case "AIPlayer": %col.stopholeloop();
+				case "Player": 	%col.client.camera.setOrbitMode(%col, %col.getTransform(), 0, 5, 0, 1);
+								%col.client.setControlObject(%col.client.camera);
+			}
+		}							
+	}	
 }
 
 function PlayerGrabberNoJump::onNewDatablock(%this,%obj)
