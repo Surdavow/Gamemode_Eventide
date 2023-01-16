@@ -1,6 +1,6 @@
 function PlayerGrabber::onNewDatablock(%this,%obj)
 {
-	Parent::onNewDatablock(%this,%obj);
+	%obj.schedule(10,KillerScanCheck);
 
 	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
 	else applyCharacterPrefs(%obj.client);
