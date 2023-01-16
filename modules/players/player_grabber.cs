@@ -1,5 +1,7 @@
 function PlayerGrabber::onNewDatablock(%this,%obj)
 {
+	Parent::onNewDatablock(%this,%obj);
+
 	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
 	else applyCharacterPrefs(%obj.client);
 	%obj.schedule(1,setEnergyLevel,0);
