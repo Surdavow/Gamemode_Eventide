@@ -5,6 +5,9 @@ exec("./item_book.cs");
 exec("./item_candle.cs");
 exec("./item_gem.cs");
 exec("./item_radio.cs");
+exec("./item_cola.cs");
+exec("./item_dollar.cs");
+exec("./item_rope.cs");
 exec("./weapon_dagger.cs");
 
 function serverCmdClearEventideShapes (%client)
