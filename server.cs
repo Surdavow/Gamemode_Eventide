@@ -1,4 +1,5 @@
-forceRequiredAddOn("Server_VehicleGore");
+ForceRequiredAddOn("Server_VehicleGore");
+
 registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
 
 exec("./modules/support/support_extraresources.cs");
@@ -41,99 +42,99 @@ else
 	$Pref::Server::ChatMod::radioNumChannels = 1;
 }
 
-function Armor::EventideAppearance(%db,%pl,%cl)
+function Armor::EventideAppearance(%this,%obj,%client)
 {
-	%pl.hideNode("ALL");
-	%pl.unHideNode((%cl.chest ? "femChest" : "chest"));	
-	%pl.unHideNode((%cl.rhand ? "rhook" : "rhand"));
-	%pl.unHideNode((%cl.lhand ? "lhook" : "lhand"));
-	%pl.unHideNode((%cl.rarm ? "rarmSlim" : "rarm"));
-	%pl.unHideNode((%cl.larm ? "larmSlim" : "larm"));
-	%pl.unHideNode("headskin");
+	%obj.hideNode("ALL");
+	%obj.unHideNode((%client.chest ? "femChest" : "chest"));	
+	%obj.unHideNode((%client.rhand ? "rhook" : "rhand"));
+	%obj.unHideNode((%client.lhand ? "lhook" : "lhand"));
+	%obj.unHideNode((%client.rarm ? "rarmSlim" : "rarm"));
+	%obj.unHideNode((%client.larm ? "larmSlim" : "larm"));
+	%obj.unHideNode("headskin");
 
-	if($pack[%cl.pack] !$= "none")
+	if($pack[%client.pack] !$= "none")
 	{
-		%pl.unHideNode($pack[%cl.pack]);
-		%pl.setNodeColor($pack[%cl.pack],%cl.packColor);
+		%obj.unHideNode($pack[%client.pack]);
+		%obj.setNodeColor($pack[%client.pack],%client.packColor);
 	}
-	if($secondPack[%cl.secondPack] !$= "none")
+	if($secondPack[%client.secondPack] !$= "none")
 	{
-		%pl.unHideNode($secondPack[%cl.secondPack]);
-		%pl.setNodeColor($secondPack[%cl.secondPack],%cl.secondPackColor);
+		%obj.unHideNode($secondPack[%client.secondPack]);
+		%obj.setNodeColor($secondPack[%client.secondPack],%client.secondPackColor);
 	}
-	if($hat[%cl.hat] !$= "none")
+	if($hat[%client.hat] !$= "none")
 	{
-		%pl.unHideNode($hat[%cl.hat]);
-		%pl.setNodeColor($hat[%cl.hat],%cl.hatColor);
+		%obj.unHideNode($hat[%client.hat]);
+		%obj.setNodeColor($hat[%client.hat],%client.hatColor);
 	}
-	if(%cl.hip)
+	if(%client.hip)
 	{
-		%pl.unHideNode("skirthip");
-		%pl.unHideNode("skirttrimleft");
-		%pl.unHideNode("skirttrimright");
+		%obj.unHideNode("skirthip");
+		%obj.unHideNode("skirttrimleft");
+		%obj.unHideNode("skirttrimright");
 	}
 	else
 	{
-		%pl.unHideNode("pants");
-		%pl.unHideNode((%cl.rleg ? "rpeg" : "rshoe"));
-		%pl.unHideNode((%cl.lleg ? "lpeg" : "lshoe"));
+		%obj.unHideNode("pants");
+		%obj.unHideNode((%client.rleg ? "rpeg" : "rshoe"));
+		%obj.unHideNode((%client.lleg ? "lpeg" : "lshoe"));
 	}
 
-	%pl.setHeadUp(0);
-	if(%cl.pack+%cl.secondPack > 0) %pl.setHeadUp(1);
-	if($hat[%cl.hat] $= "Helmet")
+	%obj.setHeadUp(0);
+	if(%client.pack+%client.secondPack > 0) %obj.setHeadUp(1);
+	if($hat[%client.hat] $= "Helmet")
 	{
-		if(%cl.accent == 1 && $accent[4] !$= "none")
+		if(%client.accent == 1 && $accent[4] !$= "none")
 		{
-			%pl.unHideNode($accent[4]);
-			%pl.setNodeColor($accent[4],%cl.accentColor);
+			%obj.unHideNode($accent[4]);
+			%obj.setNodeColor($accent[4],%client.accentColor);
 		}
 	}
-	else if($accent[%cl.accent] !$= "none" && strpos($accentsAllowed[$hat[%cl.hat]],strlwr($accent[%cl.accent])) != -1)
+	else if($accent[%client.accent] !$= "none" && strpos($accentsAllowed[$hat[%client.hat]],strlwr($accent[%client.accent])) != -1)
 	{
-		%pl.unHideNode($accent[%cl.accent]);
-		%pl.setNodeColor($accent[%cl.accent],%cl.accentColor);
+		%obj.unHideNode($accent[%client.accent]);
+		%obj.setNodeColor($accent[%client.accent],%client.accentColor);
 	}
 
-	if (%pl.bloody["lshoe"]) %pl.unHideNode("lshoe_blood");
-	if (%pl.bloody["rshoe"]) %pl.unHideNode("rshoe_blood");
-	if (%pl.bloody["lhand"]) %pl.unHideNode("lhand_blood");
-	if (%pl.bloody["rhand"]) %pl.unHideNode("rhand_blood");
-	if (%pl.bloody["chest_front"]) %pl.unHideNode((%cl.chest ? "fem" : "") @ "chest_blood_front");
-	if (%pl.bloody["chest_back"]) %pl.unHideNode((%cl.chest ? "fem" : "") @ "chest_blood_back");
+	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
+	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
+	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
+	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
+	if (%obj.bloody["chest_front"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_front");
+	if (%obj.bloody["chest_back"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_back");
 
-	%pl.setFaceName(%cl.faceName);
-	%pl.setDecalName(%cl.decalName);
+	%obj.setFaceName(%client.faceName);
+	%obj.setDecalName(%client.decalName);
 
-	%pl.setNodeColor("headskin",%cl.headColor);	
-	%pl.setNodeColor("chest",%cl.chestColor);
-	%pl.setNodeColor("femChest",%cl.chestColor);
-	%pl.setNodeColor("pants",%cl.hipColor);
-	%pl.setNodeColor("skirthip",%cl.hipColor);	
-	%pl.setNodeColor("rarm",%cl.rarmColor);
-	%pl.setNodeColor("larm",%cl.larmColor);
-	%pl.setNodeColor("rarmSlim",%cl.rarmColor);
-	%pl.setNodeColor("larmSlim",%cl.larmColor);
-	%pl.setNodeColor("rhand",%cl.rhandColor);
-	%pl.setNodeColor("lhand",%cl.lhandColor);
-	%pl.setNodeColor("rhook",%cl.rhandColor);
-	%pl.setNodeColor("lhook",%cl.lhandColor);	
-	%pl.setNodeColor("rshoe",%cl.rlegColor);
-	%pl.setNodeColor("lshoe",%cl.llegColor);
-	%pl.setNodeColor("rpeg",%cl.rlegColor);
-	%pl.setNodeColor("lpeg",%cl.llegColor);
-	%pl.setNodeColor("skirttrimright",%cl.rlegColor);
-	%pl.setNodeColor("skirttrimleft",%cl.llegColor);
+	%obj.setNodeColor("headskin",%client.headColor);	
+	%obj.setNodeColor("chest",%client.chestColor);
+	%obj.setNodeColor("femChest",%client.chestColor);
+	%obj.setNodeColor("pants",%client.hipColor);
+	%obj.setNodeColor("skirthip",%client.hipColor);	
+	%obj.setNodeColor("rarm",%client.rarmColor);
+	%obj.setNodeColor("larm",%client.larmColor);
+	%obj.setNodeColor("rarmSlim",%client.rarmColor);
+	%obj.setNodeColor("larmSlim",%client.larmColor);
+	%obj.setNodeColor("rhand",%client.rhandColor);
+	%obj.setNodeColor("lhand",%client.lhandColor);
+	%obj.setNodeColor("rhook",%client.rhandColor);
+	%obj.setNodeColor("lhook",%client.lhandColor);	
+	%obj.setNodeColor("rshoe",%client.rlegColor);
+	%obj.setNodeColor("lshoe",%client.llegColor);
+	%obj.setNodeColor("rpeg",%client.rlegColor);
+	%obj.setNodeColor("lpeg",%client.llegColor);
+	%obj.setNodeColor("skirttrimright",%client.rlegColor);
+	%obj.setNodeColor("skirttrimleft",%client.llegColor);
 
 	//Set blood colors.
-	%pl.setNodeColor("lshoe_blood", "0.7 0 0 1");
-	%pl.setNodeColor("rshoe_blood", "0.7 0 0 1");
-	%pl.setNodeColor("lhand_blood", "0.7 0 0 1");
-	%pl.setNodeColor("rhand_blood", "0.7 0 0 1");
-	%pl.setNodeColor("chest_blood_front", "0.7 0 0 1");
-	%pl.setNodeColor("chest_blood_back", "0.7 0 0 1");
-	%pl.setNodeColor("femchest_blood_front", "0.7 0 0 1");
-	%pl.setNodeColor("femchest_blood_back", "0.7 0 0 1");
+	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("lhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
 }
 
 package Eventide_MainPackage
@@ -220,6 +221,7 @@ package Eventide_MainPackage
             %client.musicChaseLevel = 0;
         }
 
+		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();
 		if(isObject(EventideShapeGroup)) EventideShapeGroup.delete();		
     }
 
@@ -228,7 +230,8 @@ package Eventide_MainPackage
         Parent::endGame(%minigame,%client);
 
         for(%i=0;%i<%minigame.numMembers;%i++)
-        if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();            
+        if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();
+		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();    
     }
 
 	function Armor::onNewDatablock(%this,%obj)
@@ -318,5 +321,13 @@ package Eventide_MainPackage
 		parent::applyBodyParts(%client);
 		if(isObject(%player = %client.player) && fileName(%player.getDataBlock().shapeFile) $= "Eventideplayer.dts") %player.getDataBlock().EventideAppearance(%player,%client);
 	}
+
+	function getBrickGroupFromObject(%obj)
+	{
+		if(%obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
+		else Parent::getBrickGroupFromObject(%obj);
+	}
 };
+
+if(isPackage(Eventide_MainPackage)) deactivatePackage(Eventide_MainPackage);
 activatePackage(Eventide_MainPackage);

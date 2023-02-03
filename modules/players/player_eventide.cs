@@ -121,3 +121,46 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	}
 	else return;
 }
+
+function EventidePlayer::onDisabled(%this,%obj)
+{
+	EventidePlayerDowned::onDisabled(%this,%obj);
+}
+
+function EventidePlayerDowned::onDisabled(%this,%obj)
+{	
+	Parent::onDisabled(%this,%obj);
+
+	if(isObject(%obj.client)) %obj.ghostclient = %obj.client;
+}
+
+function EventidePlayer::onRemove(%this,%obj)
+{
+	EventidePlayerDowned::onRemove(%this,%obj);
+}
+
+function EventidePlayerDowned::onRemove(%this,%obj)
+{	
+	Parent::onRemove(%this,%obj);
+
+	if(%obj.markedForShireZombify)
+	if(isObject(%obj.ghostclient) && isObject(%obj.ghostClient.minigame))
+	{
+		%bot = new AIPlayer()
+		{
+			dataBlock = "ShireZombieBot";
+			minigame = %obj.ghostClient.minigame;
+			ghostclient = %obj.ghostclient;
+		};
+
+		%bot.setTransform(%obj.getTransform());
+
+		if(!isObject(Shire_BotGroup))
+		{
+    		new SimGroup(Shire_BotGroup);
+    		missionCleanup.add(Shire_BotGroup);
+			Shire_BotGroup.add(%bot);
+		}
+		else if(!Shire_BotGroup.isMember(%bot)) Shire_BotGroup.add(%bot);
+	}
+}

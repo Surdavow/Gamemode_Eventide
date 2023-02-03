@@ -41,7 +41,6 @@ function DaggerCheck(%obj,%this,%slot)
       	%vec = %obj.getMuzzleVector(%slot);
       	%ray = containerRayCast(%pos,%target.getposition(),%searchMasks,%obj);
 
-
      	if(vectorDist(%pos,posFromRaycast(%ray)) > 2) continue;
 
 		%p = new projectile()
@@ -59,15 +58,13 @@ function DaggerCheck(%obj,%this,%slot)
 
 		else if(%ray.getType() & $TypeMasks::PlayerObjectType)
 		{
-			if(%ray.getstate() $= "Dead") continue;
-
 			%damage = %ray.getdatablock().maxDamage/8;
 
 			if(vectorDot(%ray.getforwardvector(),%obj.getforwardvector()) > 0.65) %damageclamp = mClamp(%damagepower*1.5, 40, %ray.getdatablock().maxDamage);
 			else %damageclamp = mClamp(%damagepower, 40, %ray.getdatablock().maxDamage);
-			serverPlay3D("sworddaggerhitPL" @ getRandom(1,2) @ "_sound",posFromRaycast(%ray));
+			serverPlay3D("sworddaggerhitPL" @ getRandom(1,2) @ "_sound",posFromRaycast(%ray));			
 			
-			if(isObject(getMiniGameFromObject(%obj,%ray)) && checkHoleBotTeams(%obj,%ray))
+			if(Eventide_MinigameConditionalCheck(%obj,%ray))
 			{
 				%ray.damage(%obj, posFromRaycast(%ray), %damageclamp, $DamageType::Default);
 				%ray.applyimpulse(posFromRaycast(%ray),vectoradd(vectorscale(%vec,1000),"0 0 750"));				

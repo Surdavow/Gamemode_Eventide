@@ -5,23 +5,22 @@ exec("./player_angler.cs");
 exec("./player_grabber.cs");
 exec("./player_renowned.cs");
 exec("./player_shire.cs");
+exec("./bot_shirezombie.cs");
 exec("./player_skinwalker.cs");
 exec("./player_skullwolf.cs");
 
-function Eventide_MinigameConditionalCheck(%objA,%objB,%exemptDeath)
+function Eventide_MinigameConditionalCheck(%objA,%objB,%exemptDeath)//exemptdeath is to skip checking if the victim is dead
 {
 	if((%objA.getClassName() $= "Player" || %objA.getClassName() $= "AIPlayer") && (%objB.getClassName() $= "Player" || %objB.getClassName() $= "AIPlayer"))
 	{
 		if(%exemptDeath) 
 		{
 			if(%objA.getstate() !$= "Dead" && %objA.getdataBlock().isKiller && !%objB.getdataBlock().isKiller)		
-			if(%objB.getState() !$= "Dead")
-			{
-				if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB) return true;
-			}
-			else return true;
+			if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB) 
+			return true;
 		}
-		else if(%objA.getstate() !$= "Dead" && %objB.getstate() !$= "Dead" && %objA.getdataBlock().isKiller && !%objB.getdataBlock().isKiller)
+		else 
+		if(%objA.getstate() !$= "Dead" && %objB.getstate() !$= "Dead" && %objA.getdataBlock().isKiller && !%objB.getdataBlock().isKiller)
 		{
 			if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB)
 			return true;

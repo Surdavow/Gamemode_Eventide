@@ -230,3 +230,9 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	maxWeapons = 0;
 	maxTools = 0;	
 };
+
+datablock PlayerData(ShireZombieBot : EventidePlayer)
+{
+	uiName = "";
+	isKiller = true;
+};

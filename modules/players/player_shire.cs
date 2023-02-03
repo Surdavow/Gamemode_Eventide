@@ -6,7 +6,11 @@ function GlowFaceImage::onGlow(%this,%obj,%slot)
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
 {
 	Parent::onCollision(%this, %obj, %col, %fade, %pos, %normal);
-    if(Eventide_MinigameConditionalCheck(%obj,%col)) %col.mountImage(DarkBlindPlayerImage, %i);
+    if(Eventide_MinigameConditionalCheck(%obj.sourceObject,%col)) 
+	{
+		%col.mountImage(DarkBlindPlayerImage,%i);
+		%col.markedForShireZombify = true;
+	}
 }
 
 function DarkBlindPlayerImage::onMount(%this, %obj, %slot)
