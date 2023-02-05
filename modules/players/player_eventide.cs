@@ -154,6 +154,7 @@ function EventidePlayerDowned::onRemove(%this,%obj)
 		};
 
 		%bot.setTransform(%obj.getTransform());
+		%obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
 
 		if(!isObject(Shire_BotGroup))
 		{

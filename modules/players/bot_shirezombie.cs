@@ -47,16 +47,23 @@ function ShireZombieBot::onAdd(%this,%obj)
     %this.onBotLoop(%obj);
 }
 
+function ShireZombieBot::onDisabled(%this,%obj)
+{
+	Parent::onDisabled(%this,%obj);
+    %obj.playaudio(0,"zombie_death_" @ getRandom(1,10) @ "_sound");
+}
+
 function ShireZombieBot::onBotLoop(%this,%obj)
 {
     if(isObject(%obj) && %obj.getState() !$= "Dead") %obj.BotLoopSched = %this.schedule(500,onBotLoop,%obj);
     else return;
 
     %target = %obj.target;
+    %currentTime = getSimTime();
 
-    if(!%target && %obj.lastSearchTime < getSimTime())//Let's find a target if we don't have one
+    if(!%target && %obj.lastSearchTime < %currentTime)//Let's find a target if we don't have one
     {
-        %obj.lastSearchTime = getSimTime()+1500;//Scan every 1500 ms
+        %obj.lastSearchTime = %currentTime+1500;//Scan every 1500 ms
 
         initContainerRadiusSearch(%obj.getPosition(), 75, $TypeMasks::PlayerObjectType);
         while((%scan = containerSearchNext()) != 0)
@@ -110,9 +117,10 @@ function ShireZombieBot::onBotLoop(%this,%obj)
             %obj.raisearms = false;
         }
         
-        if(%obj.lastTargetTime < getSimTime())//Tick every 3.5 seconds
+        if(%obj.lastTargetTime < %currentTime)//Tick every 3.5 seconds
         {
-            %obj.lastTargetTime = getSimTime()+3500;
+            %obj.playaudio(0,"zombie_attack_" @ getRandom(1,15) @ "_sound");
+            %obj.lastTargetTime = %currentTime+3500;
             %obj.setMoveY(1);
             if(getRandom(1,3) == 1) %obj.setMoveX(getRandom(-100,100)*0.01);
             else %obj.setMoveX(0);
@@ -121,15 +129,17 @@ function ShireZombieBot::onBotLoop(%this,%obj)
             %obj.setAimObject(%obj.targt);
         }
     }
-    else if(%obj.lastIdleTime < getSimTime())//If there's no target, idle around
+    else if(%obj.lastIdleTime < %currentTime)//If there's no target, idle around
     {
-        %obj.lastIdleTime = getSimTime()+4000;
+        %obj.lastIdleTime = %currentTime+4000;        
 
         if(%obj.raisearms)
         {
             %obj.playthread(1,"root");
             %obj.raisearms = false;
         }
+
+        %obj.playaudio(0,"zombie_amb_" @ getRandom(1,5) @ "_sound");
 
         switch(getRandom(1,4))//We either look around, move, or clear our movement
         {
