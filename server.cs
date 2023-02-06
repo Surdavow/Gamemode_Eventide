@@ -147,6 +147,8 @@ package Eventide_MainPackage
 
     function fxDTSBrick::onActivate (%obj, %player, %client, %pos, %vec)
 	{
+		if(!isObject(%obj)) return;
+		
 		if(!isObject(%obj.interactiveshape) && isObject(%player.getMountedImage(0)) && %player.getMountedImage(0).getName() $= %obj.getDataBlock().staticShapeItemMatch)
 		{
 			%obj.ShowEventideProp();
