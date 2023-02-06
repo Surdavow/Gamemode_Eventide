@@ -325,8 +325,8 @@ package Eventide_MainPackage
 	}
 
 	function getBrickGroupFromObject(%obj)
-	{
-		if(%obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
+	{		
+		if(isObject(%obj) && %obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
 		else Parent::getBrickGroupFromObject(%obj);
 	}
 };
