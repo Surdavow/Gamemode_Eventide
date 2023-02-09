@@ -83,7 +83,12 @@ function ShireZombieBot::onBotLoop(%this,%obj)
     }
 
     //Conditions to check if target is still valid
-    if(!isObject(%target) || %target.getState() $= "Dead") %obj.target = 0;//They either do not exist or are dead so clear the target
+    if(!isObject(%target) || %target.getState() $= "Dead" || %target.getDataBlock().isKiller) 
+    {
+        %obj.target = 0;//They either do not exist or are dead so clear the target
+        %obj.clearMoveX();
+        %obj.clearMoveY();
+    }
     else if(isObject(%target) && %target.getState() !$= "Dead")
     {
         %dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%target.getposition(), %obj.getposition())));
@@ -96,6 +101,8 @@ function ShireZombieBot::onBotLoop(%this,%obj)
         {
             %obj.target = 0;
             %obj.cannotSeeTarget = 0;
+            %obj.clearMoveX();
+            %obj.clearMoveY();            
         }
     }
 
