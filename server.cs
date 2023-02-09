@@ -332,10 +332,9 @@ package Eventide_MainPackage
 	}
 
 	function getBrickGroupFromObject(%obj)
-	{		
-		if(!isObject(%obj)) return -1;
-		if(isObject(%obj) && %obj.getClassName() $= "AIPlayer" && %obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
-		else Parent::getBrickGroupFromObject(%obj);
+	{
+		if(%obj.getClassName() $= "AIPlayer" && %obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
+		Parent::getBrickGroupFromObject(%obj);
 	}
 };
 
