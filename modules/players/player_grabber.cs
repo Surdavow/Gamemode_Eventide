@@ -5,7 +5,7 @@ function PlayerGrabber::onNewDatablock(%this,%obj)
 	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
 	else applyCharacterPrefs(%obj.client);
 	%obj.schedule(1,setEnergyLevel,0);
-	%obj.setScale("1.2 1.2 1.2");
+	%obj.setScale("1.15 1.15 1.15");
 }
 
 function PlayerGrabber::checkVictim(%this,%obj)

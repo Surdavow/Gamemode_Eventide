@@ -4,7 +4,7 @@ function PlayerSkullWolf::onNewDatablock(%this,%obj)
 	
 	%this.idlesounds(%obj);
 	%obj.schedule(1, setEnergyLevel, 0);
-	%obj.setScale("1.25 1.25 1.25");
+	%obj.setScale("1.15 1.15 1.15");
 }
 
 function PlayerSkullWolf::disappear(%this,%obj,%alpha)
