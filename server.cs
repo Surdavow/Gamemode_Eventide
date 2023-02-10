@@ -6,6 +6,7 @@ exec("./modules/support/support_extraresources.cs");
 exec("./modules/support/support_chasemusic.cs");
 exec("./modules/support/support_multipleslots.cs");
 exec("./modules/support/support_chatsystem.cs");
+exec("./modules/support/support_gazeloop.cs");
 exec("./modules/sounds/module_sounds.cs");
 exec("./modules/players/module_players.cs");
 exec("./modules/items/module_items.cs");
@@ -28,6 +29,9 @@ if(isfile("Add-Ons/System_ReturnToBlockland/server.cs"))
 		RTB_registerPref("Local chat maximum size",	"Eventide - Chat Scaling","$Pref::Server::ChatMod::lchatSizeMax",	"int 1 48","Gamemode_Eventide","24","0","0","ChatMod_lchatSize");
 		RTB_registerPref("Local chat minimum size",	"Eventide - Chat Scaling","$Pref::server::ChatMod::lchatSizeMin",	"int 1 48","Gamemode_Eventide","12","0","0","ChatMod_lchatSize");
         RTB_registerPref("Number of channels",	"Eventide - Radio","$Pref::Server::ChatMod::radioNumChannels","int 1 9","Gamemode_Eventide","1","0","0","ChatMod_resetRadioChannels");
+		RTB_registerPref("Sight Range", "Eventide - Gaze", "$Pref::Server::GazeRange", "int 0 100", "Gamemode_Eventide", 20, 0, 0);//, "update function");
+		RTB_registerPref("Allow onGaze", "Eventide - Gaze", "$Pref::Server::onGazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);//, "update function");
+		RTB_registerPref("Gaze Mode", "Eventide - Gaze", "$Pref::Server::GazeMode", "list Bricks/Players/Bots 3 Bricks 2 Players/Bots 1 Sightless 0", "Gamemode_Eventide", 3, 0, 0);//, "update function");		
 }
 else
 {
@@ -40,6 +44,9 @@ else
 	$Pref::Server::ChatMod::lchatSizeMax = 24;
 	$Pref::server::ChatMod::lchatSizeMin = 12;
 	$Pref::Server::ChatMod::radioNumChannels = 1;
+	if($Pref::Server::GazeRange $= "" || $Pref::Server::GazeRange < 0 || $Pref::Server::GazeRange > 100) $Pref::Server::GazeRange = 20;
+	if($Pref::Server::onGazeEnabled $= "") $Pref::Server::onGazeEnabled = 1;
+	if($Pref::Server::GazeMode $= "") $Pref::Server::GazeMode = 3;	
 }
 
 function Armor::EventideAppearance(%this,%obj,%client)
@@ -325,10 +332,9 @@ package Eventide_MainPackage
 	}
 
 	function getBrickGroupFromObject(%obj)
-	{		
-		if(!isObject(%obj)) return -1;
-		if(isObject(%obj) && %obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
-		else Parent::getBrickGroupFromObject(%obj);
+	{
+		if(%obj.getClassName() $= "AIPlayer" && %obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
+		Parent::getBrickGroupFromObject(%obj);
 	}
 };
 

@@ -38,7 +38,7 @@ function Eventide_Melee(%this,%obj,%radius)
 		%obj.playthread(2,"activate2");
 		%oscale = getWord(%obj.getScale(),2);
 		%mask = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::CorpseObjectType;
-		initContainerRadiusSearch(%obj.getEyePoint(),10,%mask);
+		initContainerRadiusSearch(%obj.getPosition(),10,%mask);
 		while(%hit = containerSearchNext())
 		{
 			if(%hit == %obj) continue;
