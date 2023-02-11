@@ -2,7 +2,7 @@ function Player::KillerScanCheck(%obj)
 {    
     if(!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getdataBlock().isKiller || !isObject(getMinigamefromObject(%obj))) return;
 
-    InitContainerRadiusSearch(%obj.getPosition(), 40, $TypeMasks::PlayerObjectType);
+    InitContainerRadiusSearch(%obj.getPosition(), 28, $TypeMasks::PlayerObjectType);
     while(%scan = containerSearchNext())
     {
         if(%scan == %obj || !isObject(getMinigamefromObject(%scan)) || %scan.getdataBlock().isKiller) continue;
@@ -12,7 +12,7 @@ function Player::KillerScanCheck(%obj)
         %victimclient = %scan.client;
 
         //Not very efficient and messy code right now, will redo this sometime
-        if(ContainerSearchCurrRadiusDist() <= 25 && %dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(),%scan.getmuzzlePoint(2),$TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType,%obj)))
+        if(ContainerSearchCurrRadiusDist() <= 14 && %dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(),%scan.getmuzzlePoint(2),$TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType,%obj)))
         {
             %killercansee[%cansee++] = %scan;
             %chasing = true;            
