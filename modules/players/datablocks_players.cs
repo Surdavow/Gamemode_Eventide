@@ -125,7 +125,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 {
 	uiName = "Renowned Player";	
 
-	rechargeRate = 0.375;
+	rechargeRate = 0.26;
 	maxTools = 1;
 	maxWeapons = 1;
 	useCustomPainEffects = true;

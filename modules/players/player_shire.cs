@@ -28,7 +28,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 	
-	if(%trig == 4 && %obj.getEnergyLevel() > %this.maxEnergy/2.5)
+	if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
 	{
 		if(%press)
 		{
@@ -47,7 +47,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 	
 			if(%obj.casttime+500 < getSimTime())
 			{
-				%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/2.5);
+				%obj.setEnergyLevel(0);
 				%obj.playthread(2,"leftrecoil");
 				serverPlay3d("shire_cast_sound", %obj.getEyePoint());
 	
