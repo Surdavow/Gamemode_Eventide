@@ -100,7 +100,9 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	isEventideModel = true;
 	showEnergyBar = true;
 	canJet = false;
-	rechargeRate = 0.375;	
+	rechargeRate = 0.375;
+	maxTools = 3;
+	maxWeapons = 3;
 	jumpDelay = 31;
 	jumpForce = 10 * 85;
 	cameramaxdist = 2.1;
@@ -128,6 +130,9 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	rechargeRate = 0.26;
 	maxTools = 1;
 	maxWeapons = 1;
+	maxForwardSpeed = 6.3;
+	maxBackwardSpeed = 3.6;
+	maxSideSpeed = 5.4;
 	useCustomPainEffects = true;
 	jumpSound = "";
 	PainSound		= "";
