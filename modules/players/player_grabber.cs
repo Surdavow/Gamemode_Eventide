@@ -5,7 +5,7 @@ function PlayerGrabber::onNewDatablock(%this,%obj)
 	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
 	else applyCharacterPrefs(%obj.client);
 	%obj.schedule(1,setEnergyLevel,0);
-	%obj.setScale("1.2 1.2 1.2");
+	%obj.setScale("1.15 1.15 1.15");
 }
 
 function PlayerGrabber::checkVictim(%this,%obj)
@@ -38,13 +38,14 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 					{
 						if(isObject(%obj.victim) && %obj.victim.getState() !$= "Dead") %obj.victim.damage(%obj, %obj.getmuzzlePoint(1), 8, $DamageType::Default);
 
-						%obj.lastChokeTime = getSimTime()+250;										
+						%obj.lastChokeTime = getSimTime()+250;	
 						%obj.playthread(0,"plant");
 						%obj.ChokeAmount++;
 					}
 					else 
 					{
 						%obj.ChokeAmount = 0;
+						%obj.setEnergyLevel(0);
 						%obj.victim.unmount();
 						%obj.victim.playthread(0,"root");
 						%obj.playthread(3,"leftrecoil");

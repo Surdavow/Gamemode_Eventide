@@ -125,7 +125,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 {
 	uiName = "Renowned Player";	
 
-	rechargeRate = 0.375;
+	rechargeRate = 0.26;
 	maxTools = 1;
 	maxWeapons = 1;
 	useCustomPainEffects = true;
@@ -146,10 +146,11 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	rechargeRate = 0.25;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.16;
-	maxBackwardSpeed = 3.52;
-	maxSideSpeed = 5.28;
-	boundingBox = "5 5 10.2";
+	maxForwardSpeed = 6.65;
+	maxBackwardSpeed = 3.8;
+	maxSideSpeed = 5.7;
+	boundingBox = "4.8 4.8 10.1";
+	crouchBoundingBox = "4.8 4.8 3.8";
 };
 
 datablock PlayerData(PlayerShire : PlayerRenowned) 
@@ -175,6 +176,8 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	maxForwardSpeed = 6.3;
 	maxBackwardSpeed = 3.6;
 	maxSideSpeed = 5.4;
+	boundingBox = "4.5 4.5 9.5";
+	crouchBoundingBox = "4.5 4.5 3.6";
 };
 
 datablock PlayerData(PlayerGrabber : PlayerRenowned) 
@@ -188,11 +191,13 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	rechargeRate = 0.65;
 	maxTools = 1;
 	maxWeapons = 1;
-	maxForwardSpeed = 6.3;
-	maxBackwardSpeed = 3.6;
-	maxSideSpeed = 5.4;
+	maxForwardSpeed = 6.65;
+	maxBackwardSpeed = 3.8;
+	maxSideSpeed = 5.7;
 	cameramaxdist = 3;
 	maxfreelookangle = 2.5;
+	boundingBox = "4.8 4.8 10.1";
+	crouchBoundingBox = "4.8 4.8 3.8";
 };
 
 datablock PlayerData(PlayerGrabberNoJump : PlayerGrabber) 
@@ -211,8 +216,8 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	useCustomPainEffects = true;
 
 	shapeFile = SkinwalkerDTS.baseShape;
-	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
-	killerChaseLvl2Music = "musicData_OUT_AnglerChase";    
+	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
+	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";    
 	PainSound = "skinwalker_pain_sound";
 	DeathSound = "skinwalker_death_sound";
 	JumpSound = "JumpSound";
@@ -222,10 +227,11 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	maxDamage = 1000;
 	jumpDelay = 31;
 	jumpForce = 10 * 80;
-	maxForwardSpeed = 6.16;
-	maxBackwardSpeed = 3.52;
-	maxSideSpeed = 5.28;
-	boundingBox = "5 5 10.2";
+	maxForwardSpeed = 6.3;
+	maxBackwardSpeed = 3.6;
+	maxSideSpeed = 5.4;
+	boundingBox = "4.5 4.5 9.5";
+	crouchBoundingBox = "4.5 4.5 3.6";
 	maxItems   = 0;
 	maxWeapons = 0;
 	maxTools = 0;	

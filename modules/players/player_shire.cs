@@ -28,7 +28,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 	
-	if(%trig == 4 && %obj.getEnergyLevel() > %this.maxEnergy/2.5)
+	if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
 	{
 		if(%press)
 		{
@@ -47,7 +47,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 	
 			if(%obj.casttime+500 < getSimTime())
 			{
-				%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/2.5);
+				%obj.setEnergyLevel(0);
 				%obj.playthread(2,"leftrecoil");
 				serverPlay3d("shire_cast_sound", %obj.getEyePoint());
 	
@@ -82,6 +82,7 @@ function PlayerShire::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);	
 	%obj.setScale("1.1 1.1 1.1");
+	%this.idlesounds(%obj);
 }
 
 function PlayerShire::EventideAppearance(%this,%obj,%client)
@@ -116,4 +117,31 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor((%client.lleg ? "lpeg" : "lshoe"),%pantsColor);
 
 	%obj.setHeadUp(0);
+}
+
+function PlayerShire::idlesounds(%this,%obj)
+{
+	if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getdataBlock() !$= %this) return;
+	
+	%pos = %obj.getPosition();
+	%radius = 100;
+	%searchMasks = $TypeMasks::PlayerObjectType;
+	InitContainerRadiusSearch(%pos, %radius, %searchMasks);
+
+	%obj.playaudio(0,"shire_Idle" @ getRandom(0,8) @ "_sound");
+
+	while((%targetid = containerSearchNext()) != 0 )
+	{
+		if(%targetid == %obj) continue;
+		%line = vectorNormalize(vectorSub(%targetid.getWorldBoxCenter(),%obj.getWorldBoxCenter()));
+		%dot = vectorDot(%obj.getEyeVector(), %line);
+		%obscure = containerRayCast(%obj.getEyePoint(),%targetid.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+		if(%dot > 0.55 && !isObject(%obscure) && Eventide_MinigameConditionalCheck(%obj,%targetid,false)) %detectedvictims++;
+	}
+
+	if(%detectedvictims) if(!%obj.isInvisible) %obj.playaudio(0,"shire_Close" @ getRandom(0,3) @ "_sound");
+	else if(!%obj.isInvisible) %obj.playaudio(0,"shire_Amb" @ getRandom(0,7) @ "_sound");
+	%obj.playthread(3,"plant");	
+	cancel(%obj.idlesoundsched);
+	%obj.idlesoundsched = %this.schedule(getRandom(8000,12000),idlesounds,%obj);
 }

@@ -220,7 +220,7 @@ datablock ProjectileData(AnglerHookProjectile)
 	velInheritFactor = 0;
 
 	armingDelay = 0;
-	lifetime = 1000;
+	lifetime = 500;
 	fadeDelay = 1000;
 	bounceElasticity = 0.5;
 	bounceFriction = 0.5;
