@@ -79,3 +79,420 @@ function Eventide_Melee(%this,%obj,%radius)
 		}
 	}
 }
+
+function Armor::EventideAppearance(%this,%obj,%client)
+{
+	%obj.hideNode("ALL");
+	%obj.unHideNode((%client.chest ? "femChest" : "chest"));	
+	%obj.unHideNode((%client.rhand ? "rhook" : "rhand"));
+	%obj.unHideNode((%client.lhand ? "lhook" : "lhand"));
+	%obj.unHideNode((%client.rarm ? "rarmSlim" : "rarm"));
+	%obj.unHideNode((%client.larm ? "larmSlim" : "larm"));
+	%obj.unHideNode("headskin");
+
+	if($pack[%client.pack] !$= "none")
+	{
+		%obj.unHideNode($pack[%client.pack]);
+		%obj.setNodeColor($pack[%client.pack],%client.packColor);
+	}
+	if($secondPack[%client.secondPack] !$= "none")
+	{
+		%obj.unHideNode($secondPack[%client.secondPack]);
+		%obj.setNodeColor($secondPack[%client.secondPack],%client.secondPackColor);
+	}
+	if($hat[%client.hat] !$= "none")
+	{
+		%obj.unHideNode($hat[%client.hat]);
+		%obj.setNodeColor($hat[%client.hat],%client.hatColor);
+	}
+	if(%client.hip)
+	{
+		%obj.unHideNode("skirthip");
+		%obj.unHideNode("skirttrimleft");
+		%obj.unHideNode("skirttrimright");
+	}
+	else
+	{
+		%obj.unHideNode("pants");
+		%obj.unHideNode((%client.rleg ? "rpeg" : "rshoe"));
+		%obj.unHideNode((%client.lleg ? "lpeg" : "lshoe"));
+	}
+
+	%obj.setHeadUp(0);
+	if(%client.pack+%client.secondPack > 0) %obj.setHeadUp(1);
+	if($hat[%client.hat] $= "Helmet")
+	{
+		if(%client.accent == 1 && $accent[4] !$= "none")
+		{
+			%obj.unHideNode($accent[4]);
+			%obj.setNodeColor($accent[4],%client.accentColor);
+		}
+	}
+	else if($accent[%client.accent] !$= "none" && strpos($accentsAllowed[$hat[%client.hat]],strlwr($accent[%client.accent])) != -1)
+	{
+		%obj.unHideNode($accent[%client.accent]);
+		%obj.setNodeColor($accent[%client.accent],%client.accentColor);
+	}
+
+	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
+	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
+	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
+	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
+	if (%obj.bloody["chest_front"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_front");
+	if (%obj.bloody["chest_back"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_back");
+
+	%obj.setFaceName(%client.faceName);
+	%obj.setDecalName(%client.decalName);
+
+	%obj.setNodeColor("headskin",%client.headColor);	
+	%obj.setNodeColor("chest",%client.chestColor);
+	%obj.setNodeColor("femChest",%client.chestColor);
+	%obj.setNodeColor("pants",%client.hipColor);
+	%obj.setNodeColor("skirthip",%client.hipColor);	
+	%obj.setNodeColor("rarm",%client.rarmColor);
+	%obj.setNodeColor("larm",%client.larmColor);
+	%obj.setNodeColor("rarmSlim",%client.rarmColor);
+	%obj.setNodeColor("larmSlim",%client.larmColor);
+	%obj.setNodeColor("rhand",%client.rhandColor);
+	%obj.setNodeColor("lhand",%client.lhandColor);
+	%obj.setNodeColor("rhook",%client.rhandColor);
+	%obj.setNodeColor("lhook",%client.lhandColor);	
+	%obj.setNodeColor("rshoe",%client.rlegColor);
+	%obj.setNodeColor("lshoe",%client.llegColor);
+	%obj.setNodeColor("rpeg",%client.rlegColor);
+	%obj.setNodeColor("lpeg",%client.llegColor);
+	%obj.setNodeColor("skirttrimright",%client.rlegColor);
+	%obj.setNodeColor("skirttrimleft",%client.llegColor);
+
+	//Set blood colors.
+	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("lhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
+}
+
+	function Player::gazeLoop(%obj)
+	{
+		cancel(%obj.gazeLoop);   //Kill off duplicate processes if any are trailing behind us.
+		if(!isObject(%obj) || !isObject(%client = %obj.client)) return;
+		if(%obj.getState() $= "Dead")
+		{
+			if(isObject(%obj.client.lastGazed))
+			{
+				$InputTarget_Player = %obj;
+				$InputTarget_Client = %obj.client;
+				if($Server::LAN || getMinigameFromObject(%last = %obj.client.lastGazed) == getMinigameFromObject(%obj.client))
+					$InputTarget_Minigame = getMinigameFromObject(%obj.client);
+				else
+					$InputTarget_Minigame = 0;
+				if(%last.getClassName() $= "fxDtsBrick")
+				{
+					$InputTarget_Self = %last;
+					%last.processInputEvent("onGazeStop", %client);
+				}
+				else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
+				{
+					$InputTarget_Self = %last.spawnBrick;
+					$InputTarget_Bot = %last;
+					%last.spawnBrick.processInputEvent("onGazeStop_Bot");
+				}
+				%obj.client.lastGazed = "";
+			}
+		}
+		%obj.gazeLoop = %obj.schedule(10, "gazeLoop");
+		%eye = vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange);
+		%pos = %obj.getEyePoint();
+		%mask = $TypeMasks::TerrainObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::FxBrickObjectType;
+		%hit = firstWord(containerRaycast(%pos, vectorAdd(%pos, %eye), %mask, %obj));
+		%client = %obj.client;
+		%last = %client.lastGazed;
+		if(%client.cantGaze && isObject(%last))
+		{
+			//These events are really fucking abusable - admin wand immunity.
+			//Disabled the wand immunity because it breaks events.
+			//if(%obj.hasWandImmunity(%last))
+			//	return;
+			if(%last.getClassName() $= "fxDtsBrick")
+			{
+				$InputTarget_Player = %obj;
+				$InputTarget_Client = %client;
+				if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
+					$InputTarget_Minigame = getMinigameFromObject(%client);
+				else
+					$InputTarget_Minigame = 0;
+				if(%last.getClassName() $= "fxDtsBrick")
+				{
+					$InputTarget_Self = %last;
+					%last.processInputEvent("onGazeStop", %client);
+				}
+				else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
+				{
+					$InputTarget_Self = %last.spawnBrick;
+					$InputTarget_Bot = %last;
+					%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
+				}
+			}
+			%client.lastGazed = "";
+			commandToClient(%client, 'clearBottomPrint');
+		}
+		if(!%client.cantGaze)
+		{
+			if(!isObject(%hit))
+			{
+				if(isObject(%last))
+				{
+					//These events are really fucking abusable - admin wand immunity.
+					//Disabled the wand immunity because it breaks events.
+					//if(%obj.hasWandImmunity(%last))
+					//	return;
+					$InputTarget_Player = %obj;
+					$InputTarget_Client = %client;
+					if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
+						$InputTarget_Minigame = getMinigameFromObject(%client);
+					else
+						$InputTarget_Minigame = 0;
+					if(%last.getClassName() $= "fxDtsBrick")
+					{
+						$InputTarget_Self = %last;
+						%last.processInputEvent("onGazeStop", %client);
+					}
+					else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
+					{
+						$InputTarget_Self = %last.spawnBrick;
+						$InputTarget_Bot = %last;
+						%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
+					}
+					%client.lastGazed = "";
+					commandToClient(%client, 'clearBottomPrint');
+				}
+				return;
+			}
+			if(%hit != %last)
+			{
+				if(%hit.getClassName() $= "fxDtsBrick")
+				{
+					if(isObject(%last))
+					{
+						$InputTarget_Player = %obj;
+						$InputTarget_Client = %client;
+						if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
+							$InputTarget_Minigame = getMinigameFromObject(%client);
+						else
+							$InputTarget_Minigame = 0;
+						if(%last.getClassName() $= "fxDtsBrick")
+						{
+							$InputTarget_Self = %last;
+							%last.processInputEvent("onGazeStop", %client);
+						}
+						else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
+						{
+							$InputTarget_Self = %last.spawnBrick;
+							$InputTarget_Bot = %last;
+							%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
+						}
+					}
+					if($Pref::Server::GazeMode & 2)
+					{
+						//These events are really fucking abusable - admin wand immunity.
+						if(%obj.hasWandImmunity(%hit))
+							return;
+						$InputTarget_Self = %hit;
+						$InputTarget_Player = %obj;
+						$InputTarget_Client = %client;
+						if($Server::LAN || getMinigameFromObject(%hit) == getMinigameFromObject(%client))
+							$InputTarget_Minigame = getMinigameFromObject(%client);
+						else
+							$InputTarget_Minigame = 0;
+						%hit.processInputEvent("onGazeStart", %client);
+					}
+				}
+				else if(%hit.getClassName() $= "AIPlayer" && isObject(%spawn = %hit.spawnBrick))
+				{
+					if(isObject(%last))
+					{
+						$InputTarget_Player = %obj;
+						$InputTarget_Client = %client;
+						if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
+							$InputTarget_Minigame = getMinigameFromObject(%client);
+						else
+							$InputTarget_Minigame = 0;
+						if(%last.getClassName() $= "fxDtsBrick")
+						{
+							$InputTarget_Self = %last;
+							%last.processInputEvent("onGazeStop", %client);
+						}
+						else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
+						{
+							$InputTarget_Self = %last.spawnBrick;
+							$InputTarget_Bot = %last;
+							%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
+						}
+					}
+					if($Pref::Server::GazeMode & 1)
+					{
+						//These events are really fucking abusable - admin wand immunity.
+						if(%obj.hasWandImmunity(%hit))
+							return;
+						$InputTarget_Self = %spawn;
+						$InputTarget_Player = %obj;
+						$InputTarget_Client = %client;
+						$InputTarget_Bot = %hit;
+						if($Server::Lan || getMinigameFromObject(%hit) == getMinigameFromObject(%client))
+							$InputTarget_Minigame = getMinigameFromObject(%client);
+						else
+							$InputTarget_Minigame = 0;
+						%spawn.processInputEvent("onGazeStart_Bot", %client);
+					}
+				}
+				else
+					commandToClient(%client, 'clearBottomPrint');
+				%client.lastGazed = %hit;
+			}
+			%name = %hit.getGazeName(%client);
+			if(%name !$= "")
+				if((%hit.getClassName() $= "Player" && $Pref::Server::GazeMode & 1) || (%hit.getClassName() $= "fxDtsBrick" && $Pref::Server::GazeMode & 2))
+				{
+					%client.gazing = 1;
+					%client.bottomPrint("\c6"@%name, 2);
+					%client.gazing = 0;
+				}
+		}
+	}
+
+function Player::KillerScanCheck(%obj)
+{    
+    if(!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getdataBlock().isKiller || !isObject(getMinigamefromObject(%obj))) return;
+
+    InitContainerRadiusSearch(%obj.getPosition(), 40, $TypeMasks::PlayerObjectType);
+    while(%scan = containerSearchNext())
+    {
+        if(%scan == %obj || !isObject(getMinigamefromObject(%scan)) || %scan.getdataBlock().isKiller) continue;
+        %line = vectorNormalize(vectorSub(%scan.getmuzzlePoint(2),%obj.getEyePoint()));
+        %dot = vectorDot(%obj.getEyeVector(), %line);
+        %killerclient = %obj.client;
+        %victimclient = %scan.client;
+
+        //Not very efficient and messy code right now, will redo this sometime
+        if(ContainerSearchCurrRadiusDist() <= 25 && %dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(),%scan.getmuzzlePoint(2),$TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType,%obj)))
+        {
+            %killercansee[%cansee++] = %scan;
+            %chasing = true;            
+            
+            if(!%obj.isInvisible)
+            {
+                if(isObject(%victimclient))
+                {
+                    if(%victimclient.musicChaseLevel != 2 && %killercansee[%cansee] == %scan)
+                    {
+                        %victimclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl2Music);
+                        %victimclient.musicChaseLevel = 2;
+                    }
+
+                    %victimclient.player.TimeSinceChased = getSimTime();
+                    cancel(%victimclient.StopChaseMusic);
+                    %victimclient.StopChaseMusic = %victimclient.schedule(6000,StopChaseMusic);
+                }
+
+                if(isObject(%killerclient))
+                {
+                    if(%killerclient.musicChaseLevel != 2)
+                    {
+                        %killerclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl2Music);
+                        %killerclient.musicChaseLevel = 2;
+                    }
+
+                    cancel(%killerclient.StopChaseMusic);
+                    %killerclient.StopChaseMusic = %killerclient.schedule(6000,StopChaseMusic);
+                }
+            }
+            else
+            {
+                if(isObject(%victimclient))
+                {
+                    if(%victimclient.musicChaseLevel != 1 && %killercansee[%cansee] == %scan)
+                    {
+                        %victimclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music);
+                        %victimclient.musicChaseLevel = 1;
+                    }
+
+                    %victimclient.player.TimeSinceChased = getSimTime();
+                    cancel(%victimclient.StopChaseMusic);
+                    %victimclient.StopChaseMusic = %victimclient.schedule(6000,StopChaseMusic);
+                }
+
+                if(isObject(%killerclient))
+                {
+                    if(%killerclient.musicChaseLevel != 1)
+                    {
+                        %killerclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music);
+                        %killerclient.musicChaseLevel = 1;
+                    }
+
+                    cancel(%killerclient.StopChaseMusic);
+                    %killerclient.StopChaseMusic = %killerclient.schedule(6000,StopChaseMusic);
+                }            
+            }
+        }
+        else
+        {
+            if(isObject(%victimclient) && %killercansee[%cansee] != %scan && %victimclient.player.TimeSinceChased+6000 < getSimTime())
+            {
+                if(%victimclient.musicChaseLevel != 1)
+                {
+                    %victimclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music);
+                    %victimclient.musicChaseLevel = 1;
+                }
+
+                cancel(%victimclient.StopChaseMusic);
+                %victimclient.StopChaseMusic = %victimclient.schedule(6000,StopChaseMusic);
+            }
+
+            if(isObject(%killerclient) && !%chasing)
+            {
+                if(%killerclient.musicChaseLevel != 1)
+                {
+                    %killerclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music);
+                    %killerclient.musicChaseLevel = 1;
+                }
+
+                cancel(%killerclient.StopChaseMusic);
+                %killerclient.StopChaseMusic = %killerclient.schedule(6000,StopChaseMusic);
+            }
+        }
+    }
+
+    cancel(%obj.KillerScanCheck);
+    %obj.KillerScanCheck = %obj.schedule(1500,KillerScanCheck);
+}
+
+function GameConnection::SetChaseMusic(%client,%songname)
+{
+    if(!isObject(%client) || !isObject(%songname)) return;
+    
+    if(isObject(%client.EventidemusicEmitter))
+    %client.EventidemusicEmitter.delete();
+
+    %client.EventidemusicEmitter = new AudioEmitter()
+    {
+        position = "9e9 9e9 9e9";
+        profile = %songname;
+        volume = 1;
+        type = 10;
+        useProfileDescription = false;
+        is3D = false;
+    };
+    MissionCleanup.add(%client.EventidemusicEmitter);
+    %client.EventidemusicEmitter.scopeToClient(%client);
+}
+
+function GameConnection::StopChaseMusic(%client)
+{
+    if(!isObject(%client)) return;
+    if(isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();
+
+    %client.musicChaseLevel = 0;
+}

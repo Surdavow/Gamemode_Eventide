@@ -1,12 +1,16 @@
 ForceRequiredAddOn("Server_VehicleGore");
 
 registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
+registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
+registerInputEvent("fxDtsBrick", "onGazeStart", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
+registerInputEvent("fxDtsBrick", "onGazeStop", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
+registerInputEvent("fxDtsBrick", "onGaze_Bot", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame\tBot Player");
+registerInputEvent("fxDtsBrick", "onGazeStart_Bot", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame\tBot Player");
+registerInputEvent("fxDtsBrick", "onGazeStop_Bot", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame\tBot Player");
+registerOutputEvent("fxDtsBrick", "setGazeName", "string 200 255", 0);
 
 exec("./modules/support/support_extraresources.cs");
-exec("./modules/support/support_chasemusic.cs");
-exec("./modules/support/support_multipleslots.cs");
 exec("./modules/support/support_chatsystem.cs");
-exec("./modules/support/support_gazeloop.cs");
 exec("./modules/sounds/module_sounds.cs");
 exec("./modules/players/module_players.cs");
 exec("./modules/items/module_items.cs");
@@ -49,107 +53,57 @@ else
 	if($Pref::Server::GazeMode $= "") $Pref::Server::GazeMode = 3;	
 }
 
-function Armor::EventideAppearance(%this,%obj,%client)
-{
-	%obj.hideNode("ALL");
-	%obj.unHideNode((%client.chest ? "femChest" : "chest"));	
-	%obj.unHideNode((%client.rhand ? "rhook" : "rhand"));
-	%obj.unHideNode((%client.lhand ? "lhook" : "lhand"));
-	%obj.unHideNode((%client.rarm ? "rarmSlim" : "rarm"));
-	%obj.unHideNode((%client.larm ? "larmSlim" : "larm"));
-	%obj.unHideNode("headskin");
-
-	if($pack[%client.pack] !$= "none")
-	{
-		%obj.unHideNode($pack[%client.pack]);
-		%obj.setNodeColor($pack[%client.pack],%client.packColor);
-	}
-	if($secondPack[%client.secondPack] !$= "none")
-	{
-		%obj.unHideNode($secondPack[%client.secondPack]);
-		%obj.setNodeColor($secondPack[%client.secondPack],%client.secondPackColor);
-	}
-	if($hat[%client.hat] !$= "none")
-	{
-		%obj.unHideNode($hat[%client.hat]);
-		%obj.setNodeColor($hat[%client.hat],%client.hatColor);
-	}
-	if(%client.hip)
-	{
-		%obj.unHideNode("skirthip");
-		%obj.unHideNode("skirttrimleft");
-		%obj.unHideNode("skirttrimright");
-	}
-	else
-	{
-		%obj.unHideNode("pants");
-		%obj.unHideNode((%client.rleg ? "rpeg" : "rshoe"));
-		%obj.unHideNode((%client.lleg ? "lpeg" : "lshoe"));
-	}
-
-	%obj.setHeadUp(0);
-	if(%client.pack+%client.secondPack > 0) %obj.setHeadUp(1);
-	if($hat[%client.hat] $= "Helmet")
-	{
-		if(%client.accent == 1 && $accent[4] !$= "none")
-		{
-			%obj.unHideNode($accent[4]);
-			%obj.setNodeColor($accent[4],%client.accentColor);
-		}
-	}
-	else if($accent[%client.accent] !$= "none" && strpos($accentsAllowed[$hat[%client.hat]],strlwr($accent[%client.accent])) != -1)
-	{
-		%obj.unHideNode($accent[%client.accent]);
-		%obj.setNodeColor($accent[%client.accent],%client.accentColor);
-	}
-
-	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
-	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
-	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
-	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
-	if (%obj.bloody["chest_front"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_front");
-	if (%obj.bloody["chest_back"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_back");
-
-	%obj.setFaceName(%client.faceName);
-	%obj.setDecalName(%client.decalName);
-
-	%obj.setNodeColor("headskin",%client.headColor);	
-	%obj.setNodeColor("chest",%client.chestColor);
-	%obj.setNodeColor("femChest",%client.chestColor);
-	%obj.setNodeColor("pants",%client.hipColor);
-	%obj.setNodeColor("skirthip",%client.hipColor);	
-	%obj.setNodeColor("rarm",%client.rarmColor);
-	%obj.setNodeColor("larm",%client.larmColor);
-	%obj.setNodeColor("rarmSlim",%client.rarmColor);
-	%obj.setNodeColor("larmSlim",%client.larmColor);
-	%obj.setNodeColor("rhand",%client.rhandColor);
-	%obj.setNodeColor("lhand",%client.lhandColor);
-	%obj.setNodeColor("rhook",%client.rhandColor);
-	%obj.setNodeColor("lhook",%client.lhandColor);	
-	%obj.setNodeColor("rshoe",%client.rlegColor);
-	%obj.setNodeColor("lshoe",%client.llegColor);
-	%obj.setNodeColor("rpeg",%client.rlegColor);
-	%obj.setNodeColor("lpeg",%client.llegColor);
-	%obj.setNodeColor("skirttrimright",%client.rlegColor);
-	%obj.setNodeColor("skirttrimleft",%client.llegColor);
-
-	//Set blood colors.
-	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
-	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");
-	%obj.setNodeColor("lhand_blood", "0.7 0 0 1");
-	%obj.setNodeColor("rhand_blood", "0.7 0 0 1");
-	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
-	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
-	%obj.setNodeColor("femchest_blood_front", "0.7 0 0 1");
-	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
-}
-
 package Eventide_MainPackage
 {
-	function Armor::onRemove(%this,%obj)
+	function Armor::onNewDatablock(%this,%obj)
 	{
-		if(isObject(%obj.emptycandlebot)) %obj.emptycandlebot.delete();
+		Parent::onNewDatablock(%this,%obj);
+
+		if(%this != %obj.getDatablock() && %this.maxTools != %obj.client.lastMaxTools)
+		{
+			%obj.client.lastMaxTools = %this.maxTools;
+			commandToClient(%obj.client,'PlayGui_CreateToolHud',%this.maxTools);
+		}
+		
+		if(isObject(%obj.client) && %this.maxTools != %obj.client.lastMaxTools)
+		{
+			%obj.client.lastMaxTools = %this.maxTools;
+			commandToClient(%obj.client,'PlayGui_CreateToolHud',%this.maxTools);
+			for(%i=0;%i<%this.maxTools;%i++)
+			{
+				if(isObject(%obj.tool[%i])) messageClient(%obj.client,'MsgItemPickup',"",%i,%obj.tool[%i].getID(),1);
+				else messageClient(%obj.client,'MsgItemPickup',"",%i,0,1);
+			}
+		}
+
+		%obj.schedule(10,KillerScanCheck);
+		%obj.gazeLoop();
+	}
+
+	function Armor::onDisabled(%this, %obj, %state)
+	{
+        Parent::onDisabled(%this, %obj, %state);
+
+        if(isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
+		{ 
+			%client.EventidemusicEmitter.delete();        
+        	%client.musicChaseLevel = 0;		
+		}
+		
+		if(isObject(%killer = %obj.killer))
+		{
+			%killer.ChokeAmount = 0;
+			%killer.victim = 0;
+			%killer.playthread(3,"activate2");
+			%obj.dismount();
+			%obj.setVelocity(vectorscale(vectorAdd(%killer.getForwardVector(),"0 0 0.25"),15));		
+		}
+    }
+
+	function Armor::onRemove(%this,%obj)
+	{		
 		Parent::onRemove(%this,%obj);
+		if(isObject(%obj.emptycandlebot)) %obj.emptycandlebot.delete();
 	}
 
     function fxDTSBrick::onActivate (%obj, %player, %client, %pos, %vec)
@@ -199,26 +153,6 @@ package Eventide_MainPackage
 		if(!%client.player.victim) return parent::serverCmdUseTool(%client, %tool);
 	}
 
-	function Armor::onDisabled(%this, %obj, %state)
-	{
-        Parent::onDisabled(%this, %obj, %state);
-
-        if(isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
-		{ 
-			%client.EventidemusicEmitter.delete();        
-        	%client.musicChaseLevel = 0;		
-		}
-		
-		if(isObject(%killer = %obj.killer))
-		{
-			%killer.ChokeAmount = 0;
-			%killer.victim = 0;
-			%killer.playthread(3,"activate2");
-			%obj.dismount();
-			%obj.setVelocity(vectorscale(vectorAdd(%killer.getForwardVector(),"0 0 0.25"),15));		
-		}
-    }
-
     function MiniGameSO::Reset(%minigame,%client)
 	{
         Parent::Reset(%minigame,%client);
@@ -243,16 +177,14 @@ package Eventide_MainPackage
 		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();    
     }
 
-	function Armor::onNewDatablock(%this,%obj)
-	{		
-		Parent::onNewDatablock(%this,%obj);
-		%obj.schedule(10,KillerScanCheck);
-	}
-
-	function Armor::onAdd(%this,%obj)
-	{		
-		Parent::onAdd(%this,%obj);
-		%obj.schedule(10,KillerScanCheck);
+	function GameConnection::setControlObject(%this,%obj)
+	{
+		Parent::setControlObject(%this,%obj);
+		if(%obj == %this.player && %obj.getDatablock().maxTools != %this.lastMaxTools)
+		{
+			%this.lastMaxTools = %obj.getDatablock().maxTools;
+			commandToClient(%this,'PlayGui_CreateToolHud',%obj.getDatablock().maxTools);
+		}
 	}	
 
 	function ServerCmdTeamMessageSent(%client, %message)
@@ -336,6 +268,79 @@ package Eventide_MainPackage
 		if(%obj.getClassName() $= "AIPlayer" && %obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
 		Parent::getBrickGroupFromObject(%obj);
 	}
+
+	function fxDtsBrick::setGazeName(%brick, %name)
+	{
+		%brick.gazeName = %name;
+	}
+
+	function GameConnection::startGazing(%client)
+	{
+		%client.cantGaze = 0;
+	}
+
+	function GameConnection::stopGazing(%client)
+	{
+		cancel(%client.startGazing);
+		%client.cantGaze = 1;
+	}
+
+	function SimObject::getGazeName(%this, %gazer)
+	{
+		switch$(%this.getClassName())
+		{
+			case "Player": 	if(%this.client == %gazer || %gazer.player == %this || !($Pref::Server::GazeMode & 1)) return "";
+							return %this.client.name;
+			case "fxDtsBrick": if(!($Pref::Server::GazeMode & 2)) return "";
+
+								//These events are really fucking abusable - admin wand immunity.
+								if(isObject(%gazer.player) && !%gazer.player.hasWandImmunity(%this))
+								{
+									$InputTarget_Self = %this;
+									$InputTarget_Player = %gazer.player;
+									$InputTarget_Client = %gazer;
+									if($Server::LAN || getMinigameFromObject(%this) == getMinigameFromObject(%gazer)) $InputTarget_Minigame = getMinigameFromObject(%gazer);
+									else $InputTarget_Minigame = 0;
+									%this.processInputEvent("onGaze", %gazer);
+								}
+								return %this.gazeName;
+
+			case "AIPlayer": if(!($Pref::Server::GazeMode & 1)) return "";
+							 //These events are really fucking abusable - admin wand immunity.
+							if(isObject(%spawn = %this.spawnBrick) && isObject(%gazer.player) && !%gazer.player.hasWandImmunity(%spawn))
+							{
+								$InputTarget_Self = %spawn;
+								$InputTarget_Player = %gazer.player;
+								$InputTarget_Client = %gazer;
+								$InputTarget_Bot = %this;
+								if($Server::LAN || getMinigameFromObject(%spawn) == getMinigameFromObject(%gazer)) $InputTarget_Minigame = getMinigameFromObject(%gazer);
+								else $InputTarget_Minigame = 0;
+								%spawn.processInputEvent("onGaze_Bot", %gazer);
+							}
+
+			default: return "";
+		}
+	}
+
+	function Player::hasWandImmunity(%pl, %brick)
+	{
+		if(!isObject(%tool = %pl.getMountedImage(0))) return 0;
+		if(%tool.getName() $= "AdminWandImage") return 1;
+		if(%tool.getName() $= "WandImage" && isObject(%brick) && isObject(%pl.client) && %brick.getGroup().getID() == %pl.client.brickgroup.getID()) return 1;
+		return 0;
+	}
+
+	function GameConnection::bottomPrint(%client, %msg, %time)
+	{
+		if(!%client.gazing)
+		{
+			%client.stopGazing();
+			if(%time <= 0) %client.startGazing = %client.schedule(60000, "startGazing");   //Cap time of one minute. That's long enough for any useful info.
+			else %client.startGazing = %client.schedule(%time * 1000, "startGazing");
+		}
+		Parent::bottomPrint(%client, %msg, %time);
+	}
+	
 };
 
 if(isPackage(Eventide_MainPackage)) deactivatePackage(Eventide_MainPackage);
