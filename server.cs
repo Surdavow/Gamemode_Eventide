@@ -103,7 +103,7 @@ package Eventide_MainPackage
 	function Armor::onRemove(%this,%obj)
 	{		
 		Parent::onRemove(%this,%obj);
-		if(isObject(%obj.emptycandlebot)) %obj.emptycandlebot.delete();
+		if(isObject(%obj.emptycandlebot)) %obj.emptycandlebot.delete();		
 	}
 
     function fxDTSBrick::onActivate (%obj, %player, %client, %pos, %vec)

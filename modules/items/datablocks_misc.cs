@@ -50,15 +50,26 @@ datablock fxLightData(CandleLight)
 	LerpRotation	= false;
 };
 
-datablock PlayerData(EmptyCandleBot)
+datablock PlayerData(EmptyCandleBot : PlayerStandardArmor)
 {
 	shapeFile = "base/data/shapes/empty.dts";
+	uiName = "";
+	className = PlayerData;
 };
 
-datablock PlayerData(CandleItemProp)
+datablock PlayerData(EmptyLightBot : PlayerStandardArmor)
+{
+	shapeFile = "base/data/shapes/empty.dts";
+	uiName = "";
+	className = PlayerData;
+};
+
+datablock PlayerData(CandleItemProp : PlayerStandardArmor)
 {
 	shapeFile = "./models/candle.dts";
+	uiName = "";
     renderFirstPerson = false;
+	className = PlayerData;
 };
 
 datablock ParticleData(daggerFlashParticle)

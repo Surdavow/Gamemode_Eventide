@@ -1,10 +1,46 @@
 function PlayerSkullWolf::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
+
+	if(!isObject(%obj.lightbot))
+	{
+		%obj.lightbot = new Player() 
+		{ 
+			dataBlock = "EmptyLightBot";
+			source = %obj;			
+		};
+		%obj.mountObject(%obj.lightbot,5);
+		MissionCleanup.add(%obj.lightbot);
+
+		%obj.lightbot.light = new fxLight ("")
+		{
+			dataBlock = "NoFlareWLight";
+			source = %obj.lightbot;
+		};
+		MissionCleanup.add(%obj.lightbot.light);
+		%this.schedule(1,GhostCheck,%obj);
+	}
 	
 	%this.idlesounds(%obj);
 	%obj.schedule(1, setEnergyLevel, 0);
 	%obj.setScale("1.15 1.15 1.15");
+}
+
+function PlayerSkullWolf::GhostCheck(%this,%obj)
+{
+	%obj.lightbot.light.setTransform(%obj.lightbot.getTransform());
+	%obj.lightbot.light.attachToObject(%obj.lightbot);	
+	%obj.lightbot.light.setNetFlag(6,true);
+	for(%i = 0; %i < clientgroup.getCount(); %i++)		
+	if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj) 
+	%obj.lightbot.light.schedule(10,clearScopeToClient,%client);	
+}
+
+function PlayerSkullWolf::onRemove(%this,%obj)
+{
+	Parent::onRemove(%this,%obj);
+	if(isObject(%obj.lightbot.light)) %obj.lightbot.light.delete();
+	if(isObject(%obj.lightbot)) %obj.lightbot.delete();	
 }
 
 function PlayerSkullWolf::disappear(%this,%obj,%alpha)

@@ -38,21 +38,22 @@ function Eventide_Melee(%this,%obj,%radius)
 		%obj.playthread(2,"activate2");
 		%oscale = getWord(%obj.getScale(),2);
 		%mask = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::CorpseObjectType;
-		initContainerRadiusSearch(%obj.getPosition(),10,%mask);
+		initContainerRadiusSearch(%obj.getPosition(),15,%mask);
 		while(%hit = containerSearchNext())
 		{
 			if(%hit == %obj) continue;
-			%line = vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition()));
-			%dot = vectorDot( %obj.getEyeVector(), %line );
+			%line = vectorNormalize(vectorSub(%hit.getWorldBoxCenter(),%obj.getWorldBoxCenter()));
+			%dot = vectorDot(%obj.getEyeVector(), %line);
 			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			if(isObject(%obscure) || %dot < 0.65 || vectorDist(%obj.getposition(),%hit.getposition()) > %radius) continue;
 
+			if((!isObject(%obscure) && %dot > 0.65 && vectorDist(%obj.getposition(),%hit.getposition()) < %radius) || vectorDist(%obj.getposition(),%hit.getposition()) < 1)
 			if(Eventide_MinigameConditionalCheck(%obj,%hit,true))
 			{
 				if(%hit.getstate() $= "Dead")
 				{
 					if(%obj.getdataBlock().getName() $= "PlayerSkullwolf" && %obj.isCrouched()) 
-					{					
+					{
+						talk("hio");
 						%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
 						%obj.playthread(3,"plant");
 						%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
