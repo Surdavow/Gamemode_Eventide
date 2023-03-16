@@ -146,6 +146,44 @@ datablock ParticleEmitterData(GlowFaceEmitter) {
 	phiVariance			= 0.0;
 };
 
+datablock ParticleData(GlowFaceZombieParticle) 
+{
+	textureName				= "./models/glowFaceZombie";
+	lifetimeMS				= 500;
+	lifetimeVarianceMS		= 0;
+	dragCoefficient			= 0.0;
+	windCoefficient			= 0.0;
+	gravityCoefficient		= 0.0;
+	inheritedVelFactor		= 0.0;
+	constantAcceleration	= 0.0;
+	spinRandomMin			= 0.0;
+	spinRandomMax			= 0.0;
+	colors[0]				= "1.0 1.0 1.0 1.0";
+	colors[1]				= "0.1 0.1 0.1 0.1";
+	colors[2]				= "0.0 0.0 0.0 0.0";
+	sizes[0]				= 0.7;
+	sizes[1]				= 0.7;
+	sizes[2]				= 0.7;
+	times[0]				= 0;
+	times[1]				= 0.5;
+	times[2]				= 1.0;
+	useInvAlpha				= false;
+};
+
+datablock ParticleEmitterData(GlowFaceZombieEmitter) {
+	uiName				= "";
+	particles			= "GlowFaceZombieParticle";
+	ejectionPeriodMS	= 10;
+	periodVarianceMS	= 0;
+	ejectionVelocity	= 0.0;
+	velocityVariance	= 0.0;
+	ejectionOffset		= 0.4;
+	thetaMin			= 0.0;
+	thetaMax			= 0.0;
+	phiReferenceVel		= 0.0;
+	phiVariance			= 0.0;
+};
+
 datablock ExplosionData(DarkMExplosion)
 {
 	lifeTimeMS = 250;
@@ -301,6 +339,45 @@ datablock ShapeBaseImageData(DarkCastImage)
     stateSound[0]               = "shire_charged_sound";
 };
 
+datablock ParticleEmitterData(DarkAmbientZombieEmitter)
+{
+	ejectionPeriodMS = 5;
+	periodVarianceMS = 0;
+	ejectionVelocity = 2.5;
+	velocityVariance = 1.5;
+	ejectionOffset = 1.25;
+	thetaMin = 0;
+	thetaMax = 180;
+	phiReferenceVel = 180;
+	phiVariance = 360;
+	overrideAdvance = false;
+	particles = DarkAmbientParticle;
+
+	uiName = "Darkness - Ambient";
+};
+
+datablock ShapeBaseImageData(DarkCastZombieImage : DarkCastImage)
+{
+	mountPoint = 2;
+
+	stateName[0]               = "Wait";
+	stateTimeoutValue[0]       = 1;
+	stateEmitter[0]            = DarkAmbientZombieEmitter;
+	stateEmitterTime[0]        = 5000;
+	stateEmitterTime[0]        = 5;
+	stateTransitionOnTimeout[0]= "Wait";
+    stateSound[0]               = "shire_charged_sound";	
+};
+
+datablock ShapeBaseImageData(DarkCastZombieHandRImage : DarkCastImage)
+{
+	mountPoint = 0;
+};
+datablock ShapeBaseImageData(DarkCastZombieHandLImage : DarkCastImage)
+{
+	mountPoint = 0;
+};
+
 datablock ShapeBaseImageData(DarkBlindPlayerImage)
 {
    shapeFile = "base/data/shapes/empty.dts";
@@ -419,8 +496,62 @@ datablock ShapeBaseImageData(GlowFaceImage)
 	stateScript[0]				= "onGlow";
 };
 
+datablock ShapeBaseImageData(GlowFaceZombieImage) 
+{
+	shapeFile			= "base/data/shapes/empty.dts";
+	mountPoint			= 6;
+	correctMuzzleVector	= false;
+	stateName[0]				= "Glow";
+	stateEmitter[0]				= GlowFaceZombieEmitter;
+	stateEmitterTime[0]			= 1000;
+	stateWaitForTimeout[0]		= true;
+	stateTimeoutValue[0]		= 1000;
+	stateTransitionOnTimeout[0]	= "Glow";
+	stateScript[0]				= "onGlow";
+};
+
 datablock StaticShapeData(AnglerHookRope)
 {
 	shapeFile = "./models/hookrope.dts";
 	isHookRope = true;
+};
+
+datablock fxLightData(NoFlareGLight)
+{
+	uiName = "No Flare Green";
+	LightOn = true;
+	radius = 15;
+	brightness = 5;
+	color = "0.1 1 0.1";
+	FlareOn			= false;
+	FlareTP			= false;
+	Flarebitmap		= "";
+	FlareColor		= "1 1 1";
+	ConstantSizeOn	= false;
+	ConstantSize	= 1;
+	NearSize		= 1;
+	FarSize			= 0.5;
+	NearDistance	= 10.0;
+	FarDistance		= 30.0;
+	FadeTime		= 0.1;
+};
+datablock fxLightData(NoFlareRLight : NoFlareGLight)
+{
+	uiName = "No Flare Red";
+	color = "1 0.1 0.1";
+};
+datablock fxLightData(NoFlarePLight : NoFlareGLight)
+{
+	uiName = "No Flare Purple";
+	color = "1 0.05 0.5";
+};
+datablock fxLightData(NoFlareYLight : NoFlareGLight)
+{
+	uiName = "No Flare Yellow";
+	color = "1 1 0.1";
+};
+datablock fxLightData(NoFlareBLight : NoFlareGLight)
+{
+	uiName = "No Flare Red";
+	color = "0.1 0.1 1";
 };

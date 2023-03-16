@@ -84,7 +84,9 @@ function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
         switch(%bool)
         {
             case true: %obj.setdatablock("PlayerSkinwalker");
-            case false: %obj.setdatablock("EventidePlayer");
+            case false: if(isObject(%obj.lightbot.light)) %obj.lightbot.light.delete();
+                        if(isObject(%obj.lightbot)) %obj.lightbot.delete();	
+                        %obj.setdatablock("EventidePlayer");
         }
         %obj.changeaudio = false;
     }
@@ -93,9 +95,4 @@ function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
 function PlayerSkinwalker::onDisabled(%this, %obj, %state) //makes bots have death sound and animation and runs the required bot hole command
 {
 	Parent::onDisabled(%this, %obj, %state);
-}
-
-function PlayerSkinwalker::idlesounds(%this,%obj)
-{
-	if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getdataBlock() !$= %this) return;
 }

@@ -74,9 +74,9 @@ package Eventide_MainPackage
 				if(isObject(%obj.tool[%i])) messageClient(%obj.client,'MsgItemPickup',"",%i,%obj.tool[%i].getID(),1);
 				else messageClient(%obj.client,'MsgItemPickup',"",%i,0,1);
 			}
-		}
+		}		
 
-		%obj.schedule(10,KillerScanCheck);
+		%obj.schedule(10,onKillerLoop);
 		%obj.gazeLoop();
 	}
 
@@ -103,7 +103,9 @@ package Eventide_MainPackage
 	function Armor::onRemove(%this,%obj)
 	{		
 		Parent::onRemove(%this,%obj);
-		if(isObject(%obj.emptycandlebot)) %obj.emptycandlebot.delete();		
+		if(isObject(%obj.emptycandlebot)) %obj.emptycandlebot.delete();
+		if(isObject(%obj.lightbot.light)) %obj.lightbot.light.delete();
+		if(isObject(%obj.lightbot)) %obj.lightbot.delete();
 	}
 
     function fxDTSBrick::onActivate (%obj, %player, %client, %pos, %vec)

@@ -51,9 +51,8 @@ function Eventide_Melee(%this,%obj,%radius)
 			{
 				if(%hit.getstate() $= "Dead")
 				{
-					if(%obj.getdataBlock().getName() $= "PlayerSkullwolf" && %obj.isCrouched()) 
+					if(%obj.getdataBlock().getName() $= "PlayerSkullwolf") 
 					{
-						talk("hio");
 						%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
 						%obj.playthread(3,"plant");
 						%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
@@ -176,8 +175,8 @@ function Armor::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
 }
 
-	function Player::gazeLoop(%obj)
-	{
+function Player::gazeLoop(%obj)
+{
 		cancel(%obj.gazeLoop);   //Kill off duplicate processes if any are trailing behind us.
 		if(!isObject(%obj) || !isObject(%client = %obj.client)) return;
 		if(%obj.getState() $= "Dead")
@@ -186,39 +185,70 @@ function Armor::EventideAppearance(%this,%obj,%client)
 			{
 				$InputTarget_Player = %obj;
 				$InputTarget_Client = %obj.client;
-				if($Server::LAN || getMinigameFromObject(%last = %obj.client.lastGazed) == getMinigameFromObject(%obj.client))
-					$InputTarget_Minigame = getMinigameFromObject(%obj.client);
-				else
-					$InputTarget_Minigame = 0;
-				if(%last.getClassName() $= "fxDtsBrick")
-				{
-					$InputTarget_Self = %last;
-					%last.processInputEvent("onGazeStop", %client);
-				}
-				else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
-				{
-					$InputTarget_Self = %last.spawnBrick;
-					$InputTarget_Bot = %last;
-					%last.spawnBrick.processInputEvent("onGazeStop_Bot");
-				}
-				%obj.client.lastGazed = "";
-			}
-		}
-		%obj.gazeLoop = %obj.schedule(10, "gazeLoop");
-		%eye = vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange);
-		%pos = %obj.getEyePoint();
-		%mask = $TypeMasks::TerrainObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::FxBrickObjectType;
-		%hit = firstWord(containerRaycast(%pos, vectorAdd(%pos, %eye), %mask, %obj));
-		%client = %obj.client;
-		%last = %client.lastGazed;
-		if(%client.cantGaze && isObject(%last))
-		{
-			//These events are really fucking abusable - admin wand immunity.
-			//Disabled the wand immunity because it breaks events.
-			//if(%obj.hasWandImmunity(%last))
-			//	return;
+			if($Server::LAN || getMinigameFromObject(%last = %obj.client.lastGazed) == getMinigameFromObject(%obj.client))
+				$InputTarget_Minigame = getMinigameFromObject(%obj.client);
+			else
+				$InputTarget_Minigame = 0;
 			if(%last.getClassName() $= "fxDtsBrick")
 			{
+				$InputTarget_Self = %last;
+				%last.processInputEvent("onGazeStop", %client);
+			}
+			else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
+			{
+				$InputTarget_Self = %last.spawnBrick;
+				$InputTarget_Bot = %last;
+				%last.spawnBrick.processInputEvent("onGazeStop_Bot");
+			}
+			%obj.client.lastGazed = "";
+		}
+	}
+	%obj.gazeLoop = %obj.schedule(10, "gazeLoop");
+	%eye = vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange);
+	%pos = %obj.getEyePoint();
+	%mask = $TypeMasks::TerrainObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::FxBrickObjectType;
+	%hit = firstWord(containerRaycast(%pos, vectorAdd(%pos, %eye), %mask, %obj));
+	%client = %obj.client;
+	%last = %client.lastGazed;
+	if(%client.cantGaze && isObject(%last))
+	{
+		//These events are really fucking abusable - admin wand immunity.
+		//Disabled the wand immunity because it breaks events.
+		//if(%obj.hasWandImmunity(%last))
+		//	return;
+		if(%last.getClassName() $= "fxDtsBrick")
+		{
+			$InputTarget_Player = %obj;
+			$InputTarget_Client = %client;
+			if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
+				$InputTarget_Minigame = getMinigameFromObject(%client);
+			else
+				$InputTarget_Minigame = 0;
+			if(%last.getClassName() $= "fxDtsBrick")
+			{
+				$InputTarget_Self = %last;
+				%last.processInputEvent("onGazeStop", %client);
+			}
+			else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
+			{
+				$InputTarget_Self = %last.spawnBrick;
+				$InputTarget_Bot = %last;
+				%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
+			}
+		}
+		%client.lastGazed = "";
+		commandToClient(%client, 'clearBottomPrint');
+	}
+	if(!%client.cantGaze)
+	{
+		if(!isObject(%hit))
+		{
+			if(isObject(%last))
+			{
+				//These events are really fucking abusable - admin wand immunity.
+				//Disabled the wand immunity because it breaks events.
+				//if(%obj.hasWandImmunity(%last))
+				//	return;
 				$InputTarget_Player = %obj;
 				$InputTarget_Client = %client;
 				if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
@@ -236,20 +266,17 @@ function Armor::EventideAppearance(%this,%obj,%client)
 					$InputTarget_Bot = %last;
 					%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
 				}
+				%client.lastGazed = "";
+				commandToClient(%client, 'clearBottomPrint');
 			}
-			%client.lastGazed = "";
-			commandToClient(%client, 'clearBottomPrint');
+			return;
 		}
-		if(!%client.cantGaze)
+		if(%hit != %last)
 		{
-			if(!isObject(%hit))
+			if(%hit.getClassName() $= "fxDtsBrick")
 			{
 				if(isObject(%last))
 				{
-					//These events are really fucking abusable - admin wand immunity.
-					//Disabled the wand immunity because it breaks events.
-					//if(%obj.hasWandImmunity(%last))
-					//	return;
 					$InputTarget_Player = %obj;
 					$InputTarget_Client = %client;
 					if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
@@ -267,109 +294,88 @@ function Armor::EventideAppearance(%this,%obj,%client)
 						$InputTarget_Bot = %last;
 						%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
 					}
-					%client.lastGazed = "";
-					commandToClient(%client, 'clearBottomPrint');
 				}
-				return;
+				if($Pref::Server::GazeMode & 2)
+				{
+					//These events are really fucking abusable - admin wand immunity.
+					if(%obj.hasWandImmunity(%hit))
+						return;
+					$InputTarget_Self = %hit;
+					$InputTarget_Player = %obj;
+					$InputTarget_Client = %client;
+					if($Server::LAN || getMinigameFromObject(%hit) == getMinigameFromObject(%client))
+						$InputTarget_Minigame = getMinigameFromObject(%client);
+					else
+						$InputTarget_Minigame = 0;
+					%hit.processInputEvent("onGazeStart", %client);
+				}
 			}
-			if(%hit != %last)
+			else if(%hit.getClassName() $= "AIPlayer" && isObject(%spawn = %hit.spawnBrick))
 			{
-				if(%hit.getClassName() $= "fxDtsBrick")
+				if(isObject(%last))
 				{
-					if(isObject(%last))
+					$InputTarget_Player = %obj;
+					$InputTarget_Client = %client;
+					if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
+						$InputTarget_Minigame = getMinigameFromObject(%client);
+					else
+						$InputTarget_Minigame = 0;
+					if(%last.getClassName() $= "fxDtsBrick")
 					{
-						$InputTarget_Player = %obj;
-						$InputTarget_Client = %client;
-						if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
-							$InputTarget_Minigame = getMinigameFromObject(%client);
-						else
-							$InputTarget_Minigame = 0;
-						if(%last.getClassName() $= "fxDtsBrick")
-						{
-							$InputTarget_Self = %last;
-							%last.processInputEvent("onGazeStop", %client);
-						}
-						else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
-						{
-							$InputTarget_Self = %last.spawnBrick;
-							$InputTarget_Bot = %last;
-							%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
-						}
+						$InputTarget_Self = %last;
+						%last.processInputEvent("onGazeStop", %client);
 					}
-					if($Pref::Server::GazeMode & 2)
+					else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
 					{
-						//These events are really fucking abusable - admin wand immunity.
-						if(%obj.hasWandImmunity(%hit))
-							return;
-						$InputTarget_Self = %hit;
-						$InputTarget_Player = %obj;
-						$InputTarget_Client = %client;
-						if($Server::LAN || getMinigameFromObject(%hit) == getMinigameFromObject(%client))
-							$InputTarget_Minigame = getMinigameFromObject(%client);
-						else
-							$InputTarget_Minigame = 0;
-						%hit.processInputEvent("onGazeStart", %client);
+						$InputTarget_Self = %last.spawnBrick;
+						$InputTarget_Bot = %last;
+						%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
 					}
 				}
-				else if(%hit.getClassName() $= "AIPlayer" && isObject(%spawn = %hit.spawnBrick))
+				if($Pref::Server::GazeMode & 1)
 				{
-					if(isObject(%last))
-					{
-						$InputTarget_Player = %obj;
-						$InputTarget_Client = %client;
-						if($Server::LAN || getMinigameFromObject(%last) == getMinigameFromObject(%client))
-							$InputTarget_Minigame = getMinigameFromObject(%client);
-						else
-							$InputTarget_Minigame = 0;
-						if(%last.getClassName() $= "fxDtsBrick")
-						{
-							$InputTarget_Self = %last;
-							%last.processInputEvent("onGazeStop", %client);
-						}
-						else if(%last.getClassName() $= "AIPlayer" && isObject(%last.spawnBrick))
-						{
-							$InputTarget_Self = %last.spawnBrick;
-							$InputTarget_Bot = %last;
-							%last.spawnBrick.processInputEvent("onGazeStop_Bot", %client);
-						}
-					}
-					if($Pref::Server::GazeMode & 1)
-					{
-						//These events are really fucking abusable - admin wand immunity.
-						if(%obj.hasWandImmunity(%hit))
-							return;
-						$InputTarget_Self = %spawn;
-						$InputTarget_Player = %obj;
-						$InputTarget_Client = %client;
-						$InputTarget_Bot = %hit;
-						if($Server::Lan || getMinigameFromObject(%hit) == getMinigameFromObject(%client))
-							$InputTarget_Minigame = getMinigameFromObject(%client);
-						else
-							$InputTarget_Minigame = 0;
-						%spawn.processInputEvent("onGazeStart_Bot", %client);
-					}
+					//These events are really fucking abusable - admin wand immunity.
+					if(%obj.hasWandImmunity(%hit))
+						return;
+					$InputTarget_Self = %spawn;
+					$InputTarget_Player = %obj;
+					$InputTarget_Client = %client;
+					$InputTarget_Bot = %hit;
+					if($Server::Lan || getMinigameFromObject(%hit) == getMinigameFromObject(%client))
+						$InputTarget_Minigame = getMinigameFromObject(%client);
+					else
+						$InputTarget_Minigame = 0;
+					%spawn.processInputEvent("onGazeStart_Bot", %client);
 				}
-				else
-					commandToClient(%client, 'clearBottomPrint');
-				%client.lastGazed = %hit;
 			}
-			%name = %hit.getGazeName(%client);
-			if(%name !$= "")
-				if((%hit.getClassName() $= "Player" && $Pref::Server::GazeMode & 1) || (%hit.getClassName() $= "fxDtsBrick" && $Pref::Server::GazeMode & 2))
-				{
-					%client.gazing = 1;
-					%client.bottomPrint("\c6"@%name, 2);
-					%client.gazing = 0;
-				}
+			else
+				commandToClient(%client, 'clearBottomPrint');
+			%client.lastGazed = %hit;
 		}
+		%name = %hit.getGazeName(%client);
+		if(%name !$= "")
+			if((%hit.getClassName() $= "Player" && $Pref::Server::GazeMode & 1) || (%hit.getClassName() $= "fxDtsBrick" && $Pref::Server::GazeMode & 2))
+			{
+				%client.gazing = 1;
+				%client.bottomPrint("\c6"@%name, 2);
+				%client.gazing = 0;
+			}
 	}
+}
 
-function Player::KillerScanCheck(%obj)
+function Player::onKillerLoop(%obj)
 {    
     if(!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getdataBlock().isKiller || !isObject(getMinigamefromObject(%obj))) return;
 
+	if(%obj.getClassName() $= "Player") %obj.KillerGhostLightCheck();
+
+	%this = %obj.getdataBlock();
+	%pos = %obj.getPosition();
+	%radius = 100;
+	%searchMasks = $TypeMasks::PlayerObjectType;	
+
     InitContainerRadiusSearch(%obj.getPosition(), 40, $TypeMasks::PlayerObjectType);
-    while(%scan = containerSearchNext())
+    while(%scan = containerSearchNext())//Detect if players exist and if the killer can see them
     {
         if(%scan == %obj || !isObject(getMinigamefromObject(%scan)) || %scan.getdataBlock().isKiller) continue;
         %line = vectorNormalize(vectorSub(%scan.getmuzzlePoint(2),%obj.getEyePoint()));
@@ -466,8 +472,80 @@ function Player::KillerScanCheck(%obj)
         }
     }
 
-    cancel(%obj.KillerScanCheck);
-    %obj.KillerScanCheck = %obj.schedule(1500,KillerScanCheck);
+	if(%obj.lastKillerIdle+getRandom(4500,6000) < getSimTime())//Idle sounds are now in this function instead of a separate function
+	{
+		%obj.lastKillerIdle = getSimTime();
+
+		if(%killercansee[%cansee])//Requires the container loop to run in order for this to work, if this part is true then there are players the killer is after
+		{
+			if(!%obj.isInvisible && %this.killerchasesound !$= "")
+			{
+				%obj.playthread(3,"plant");
+				%obj.playaudio(0,%this.killerchasesound @ getRandom(1,%this.killerchasesoundamount) @ "_sound");
+			}
+
+			if(!%obj.raisearms && %this.killerraisearms)
+			{
+				%obj.playthread(1,"armReadyBoth");
+				%obj.raisearms = true;
+			}
+		}
+		else//Return to idle behaviors
+		{
+			if(!%obj.isInvisible && %this.killeridlesound !$= "")
+			{
+				%obj.playthread(3,"plant");
+				%obj.playaudio(0,%this.killeridlesound @ getRandom(1,%this.killeridlesoundamount) @ "_sound");	
+			}
+
+			if(%obj.raisearms)
+			{
+				%obj.playthread(1,"root");
+				%obj.raisearms = false;
+			}
+		}		
+	}
+
+    cancel(%obj.onKillerLoop);//Prevent duplicate processes
+    %obj.onKillerLoop = %obj.schedule(1500,onKillerLoop);
+}
+
+function Player::KillerGhostLightCheck(%obj)
+{	
+	if(!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getdataBlock().isKiller || !isObject(getMinigamefromObject(%obj))) return;
+	
+	if(!%obj.isInvisible)
+	{
+		if(!isObject(%obj.lightbot))
+		{
+			%obj.lightbot = new Player() 
+			{ 
+				dataBlock = "EmptyLightBot";
+				source = %obj;			
+			};
+			%obj.mountObject(%obj.lightbot,5);
+			MissionCleanup.add(%obj.lightbot);
+
+			%obj.lightbot.light = new fxLight ("")
+			{
+				dataBlock = %obj.getdataBlock().killerlight;
+				source = %obj.lightbot;
+			};
+			MissionCleanup.add(%obj.lightbot.light);
+			%obj.lightbot.light.setTransform(%obj.lightbot.getTransform());
+			%obj.lightbot.light.attachToObject(%obj.lightbot);
+		}
+
+		%obj.lightbot.light.setNetFlag(6,true);
+		for(%i = 0; %i < clientgroup.getCount(); %i++)		
+		if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj) 
+		%obj.lightbot.light.schedule(10,clearScopeToClient,%client);
+	}
+	else
+	{
+		if(isObject(%obj.lightbot.light)) %obj.lightbot.light.delete();
+		if(isObject(%obj.lightbot)) %obj.lightbot.delete();	
+	}
 }
 
 function GameConnection::SetChaseMusic(%client,%songname)

@@ -1,7 +1,8 @@
 function PlayerGrabber::onNewDatablock(%this,%obj)
 {
-	%obj.schedule(10,KillerScanCheck);
-
+	%obj.schedule(10,onKillerLoop);
+	%obj.gazeLoop();
+	
 	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
 	else applyCharacterPrefs(%obj.client);
 	%obj.schedule(1,setEnergyLevel,0);

@@ -4,7 +4,6 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 	
 	%obj.schedule(1, setEnergyLevel, 0);
 	%obj.setScale("1.1 1.1 1.1");
-	%this.idlesounds(%obj);
 }
 
 function PlayerRenowned::EventideAppearance(%this,%obj,%client)
@@ -37,33 +36,6 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.unHideNode("lshoe");
 	%obj.unhideNode("renownedeyes");
 	%obj.setHeadUp(0);
-}
-
-function PlayerRenowned::idlesounds(%this,%obj)
-{
-	if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getdataBlock() !$= %this) return;
-	
-	%pos = %obj.getPosition();
-	%radius = 100;
-	%searchMasks = $TypeMasks::PlayerObjectType;
-	InitContainerRadiusSearch(%pos, %radius, %searchMasks);
-
-	%obj.playaudio(0,"renowned_Idle" @ getRandom(0,7) @ "_sound");
-
-	while((%targetid = containerSearchNext()) != 0 )
-	{
-		if(%targetid == %obj) continue;
-		%line = vectorNormalize(vectorSub(%targetid.getWorldBoxCenter(),%obj.getWorldBoxCenter()));
-		%dot = vectorDot(%obj.getEyeVector(), %line);
-		%obscure = containerRayCast(%obj.getEyePoint(),%targetid.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-		if(%dot > 0.55 && !isObject(%obscure) && Eventide_MinigameConditionalCheck(%obj,%targetid,false)) %detectedvictims++;
-	}
-
-	if(%detectedvictims) if(!%obj.isInvisible) %obj.playaudio(0,"renowned_Close" @ getRandom(0,5) @ "_sound");
-	else if(!%obj.isInvisible) %obj.playaudio(0,"renowned_Amb" @ getRandom(0,7) @ "_sound");
-	%obj.playthread(3,"plant");	
-	cancel(%obj.idlesoundsched);
-	%obj.idlesoundsched = %this.schedule(getRandom(3000,4000),idlesounds,%obj);
 }
 
 function PlayerRenowned::onTrigger(%this, %obj, %trig, %press) 

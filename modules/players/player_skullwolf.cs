@@ -1,46 +1,8 @@
 function PlayerSkullWolf::onNewDatablock(%this,%obj)
 {
-	Parent::onNewDatablock(%this,%obj);
-
-	if(!isObject(%obj.lightbot))
-	{
-		%obj.lightbot = new Player() 
-		{ 
-			dataBlock = "EmptyLightBot";
-			source = %obj;			
-		};
-		%obj.mountObject(%obj.lightbot,5);
-		MissionCleanup.add(%obj.lightbot);
-
-		%obj.lightbot.light = new fxLight ("")
-		{
-			dataBlock = "NoFlareWLight";
-			source = %obj.lightbot;
-		};
-		MissionCleanup.add(%obj.lightbot.light);
-		%this.schedule(1,GhostCheck,%obj);
-	}
-	
-	%this.idlesounds(%obj);
+	Parent::onNewDatablock(%this,%obj);	
 	%obj.schedule(1, setEnergyLevel, 0);
 	%obj.setScale("1.15 1.15 1.15");
-}
-
-function PlayerSkullWolf::GhostCheck(%this,%obj)
-{
-	%obj.lightbot.light.setTransform(%obj.lightbot.getTransform());
-	%obj.lightbot.light.attachToObject(%obj.lightbot);	
-	%obj.lightbot.light.setNetFlag(6,true);
-	for(%i = 0; %i < clientgroup.getCount(); %i++)		
-	if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj) 
-	%obj.lightbot.light.schedule(10,clearScopeToClient,%client);	
-}
-
-function PlayerSkullWolf::onRemove(%this,%obj)
-{
-	Parent::onRemove(%this,%obj);
-	if(isObject(%obj.lightbot.light)) %obj.lightbot.light.delete();
-	if(isObject(%obj.lightbot)) %obj.lightbot.delete();	
 }
 
 function PlayerSkullWolf::disappear(%this,%obj,%alpha)
@@ -56,7 +18,7 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);
 		%obj.setmaxforwardspeed(7);
-		%obj.isInvisible = true;
+		%obj.isInvisible = true;	
 		%obj.reappearsched = %this.schedule(12500, reappear, %obj, 0);
 		return;
 	}
@@ -90,51 +52,6 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 	}
 
 	%obj.reappearsched = %this.schedule(25, reappear, %obj, %alpha);	
-}
-
-function PlayerSkullWolf::idlesounds(%this,%obj)
-{
-	if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getdataBlock() !$= %this) return;
-	
-	%pos = %obj.getPosition();
-	%radius = 100;
-	%searchMasks = $TypeMasks::PlayerObjectType;
-	InitContainerRadiusSearch(%pos, %radius, %searchMasks);
-
-	while((%targetid = containerSearchNext()) != 0 )
-	{
-		if(%targetid == %obj) continue;
-		%line = vectorNormalize(vectorSub(%targetid.getWorldBoxCenter(),%obj.getWorldBoxCenter()));
-		%dot = vectorDot(%obj.getEyeVector(), %line);
-		%obscure = containerRayCast(%obj.getEyePoint(),%targetid.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-		if(%dot > 0.55 && !isObject(%obscure) && Eventide_MinigameConditionalCheck(%obj,%targetid,false)) %detectedvictims++;
-	}
-
-	if(%detectedvictims)
-	{
-		
-		if(!%obj.isInvisible) %obj.playaudio(0,"skullwolf_Close" @ getRandom(0,3) @ "_sound");
-
-		if(!%obj.raisearms)
-		{
-			%obj.playthread(1,"armReadyBoth");
-			%obj.raisearms = true;
-		}
-	}
-	else
-	{
-		if(!%obj.isInvisible) %obj.playaudio(0,"skullwolf_Amb" @ getRandom(0,11) @ "_sound");	
-
-		if(%obj.raisearms)
-		{
-			%obj.playthread(1,"root");
-			%obj.raisearms = false;
-		}
-	}
-	%obj.playthread(3,"plant");
-	
-	cancel(%obj.idlesoundsched);
-	%obj.idlesoundsched = %this.schedule(getRandom(4000,5000),idlesounds,%obj);
 }
 
 function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
@@ -200,8 +117,8 @@ function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 	%obj.setHeadUp(0);
 }
 
-function PlayerSkullWolf::onDisabled(%this, %obj, %state) //makes bots have death sound and animation and runs the required bot hole command
+function PlayerSkullWolf::onDisabled(%this, %obj, %state)
 {
 	Parent::onDisabled(%this, %obj, %state);
-	if(%obj.getState() $= "Dead" && !%obj.isInvisible) %obj.playaudio(0,"skullwolf_Death" @ getRandom(0, 6) @ "_sound");
+	if(%obj.getState() $= "Dead" && !%obj.isInvisible) %obj.playaudio(0,"skullwolf_death" @ getRandom(0, 6) @ "_sound");
 }

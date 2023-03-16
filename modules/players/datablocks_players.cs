@@ -139,15 +139,30 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	DeathSound		= "";	
 	firstpersononly = true;
 	isKiller = true;
+
 	killerChaseLvl1Music = "musicData_OUT_RenownedNear";
-	killerChaseLvl2Music = "musicData_OUT_RenownedChase";	
+	killerChaseLvl2Music = "musicData_OUT_RenownedChase";
+	killeridlesound = "renowned_idle";
+	killeridlesoundamount = 8;
+	killerchasesound = "renowned_chase";
+	killerchasesoundamount = 6;
+	killerraisearms = false;
+	killerlight = "NoFlareYLight";
 };
 
 datablock PlayerData(PlayerSkullWolf : PlayerRenowned) 
 {
-	uiName = "Skullwolf Player";	
-	killerChaseLvl1Music = "musicData_OUT_SkullWolfNear";
-	killerChaseLvl2Music = "musicData_OUT_SkullWolfChase";	
+	uiName = "Skullwolf Player";
+
+	killerchaselvl1music = "musicData_OUT_SkullWolfNear";
+	killerchaselvl2music = "musicData_OUT_SkullWolfChase";
+	killeridlesound = "skullwolf_idle";
+	killeridlesoundamount = 12;
+	killerchasesound = "skullwolf_chase";
+	killerchasesoundamount = 4;
+	killerraisearms = true;
+	killerlight = "NoFlareRLight";
+
 	rechargeRate = 0.25;
 	maxTools = 0;
 	maxWeapons = 0;
@@ -161,8 +176,16 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 datablock PlayerData(PlayerShire : PlayerRenowned) 
 {
 	uiName = "Shire Player";
+
 	killerChaseLvl1Music = "musicData_OUT_ShireNear";
-	killerChaseLvl2Music = "musicData_OUT_ShireChase";	
+	killerChaseLvl2Music = "musicData_OUT_ShireChase";
+	killeridlesound = "shire_idle";
+	killeridlesoundamount = 4;
+	killerchasesound = "shire_chase";
+	killerchasesoundamount = 9;
+	killerraisearms = false;
+	killerlight = "NoFlarePLight";
+
 	rechargeRate = 0.3;
 	maxTools = 1;
 	maxWeapons = 1;
@@ -171,8 +194,6 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 datablock PlayerData(PlayerAngler : PlayerRenowned) 
 {
 	uiName = "Angler Player";
-	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
-	killerChaseLvl2Music = "musicData_OUT_AnglerChase";	
 	rechargeRate = 0.215;
 	maxTools = 0;
 	maxWeapons = 0;
@@ -183,6 +204,15 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	maxSideSpeed = 5.4;
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
+
+	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
+	killerChaseLvl2Music = "musicData_OUT_AnglerChase";
+	killeridlesound = "angler_idle";
+	killeridlesoundamount = 7;
+	killerchasesound = "angler_chase";
+	killerchasesoundamount = 3;
+	killerraisearms = true;
+	killerlight = "NoFlareBLight";
 };
 
 datablock PlayerData(PlayerGrabber : PlayerRenowned) 
@@ -191,6 +221,12 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 
 	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
 	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
+	killeridlesound = "";
+	killeridlesoundamount = 0;
+	killerchasesound = "";
+	killerchasesoundamount = 0;
+	killerraisearms = false;
+	killerlight = "NoFlareRLight";	
 
 	firstpersononly = false;
 	rechargeRate = 0.65;
@@ -221,12 +257,20 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	useCustomPainEffects = true;
 
 	shapeFile = SkinwalkerDTS.baseShape;
+	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
-	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";    
+	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
+	killeridlesound = "";
+	killeridlesoundamount = 0;
+	killerchasesound = "";
+	killerchasesoundamount = 0;
+	killerraisearms = true;
+	killerlight = "NoFlareRLight";	
+
 	PainSound = "skinwalker_pain_sound";
 	DeathSound = "skinwalker_death_sound";
 	JumpSound = "JumpSound";
-	uiName = "Skinwalker Player";
+	uiName = "Skinwalker Player";	
 	
 	rechargeRate = 0.375;	
 	maxDamage = 1000;

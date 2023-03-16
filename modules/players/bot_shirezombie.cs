@@ -4,7 +4,7 @@ function ShireZombieBot::applyAppearance(%this,%obj)
 
     %ghostClient = %obj.ghostclient;
 	%skin = %ghostClient.headColor;
-	%zskin = getWord(%skin,0)/2.75 SPC getWord(%skin,1)/1.5 SPC getWord(%skin,2)/2.75 SPC 1;
+	%zskin = "0.75 0.1 0.5 1";
     %headColor = %zskin;
     %chestColor = %ghostClient.chestColor;
     %rarmcolor = %ghostClient.rarmColor;
@@ -45,12 +45,16 @@ function ShireZombieBot::onAdd(%this,%obj)
     %obj.setMoveSlowdown(0);
 	%this.applyAppearance(%obj,%obj.ghostclient);
     %this.onBotLoop(%obj);
+    %obj.mountImage("DarkCastZombieImage",2);
+    %obj.mountImage("GlowFaceZombieImage",3);
+    %obj.mountImage("DarkCastZombieHandRImage",0);
+    %obj.mountImage("DarkCastZombieHandLImage",1);        
 }
 
 function ShireZombieBot::onDisabled(%this,%obj)
 {
 	Parent::onDisabled(%this,%obj);
-    %obj.playaudio(0,"zombie_death_" @ getRandom(1,10) @ "_sound");
+    %obj.playaudio(0,"zombie_death" @ getRandom(1,10) @ "_sound");
 }
 
 function ShireZombieBot::onBotLoop(%this,%obj)
@@ -126,7 +130,7 @@ function ShireZombieBot::onBotLoop(%this,%obj)
         
         if(%obj.lastTargetTime < %currentTime)//Tick every 3.5 seconds
         {
-            %obj.playaudio(0,"zombie_attack_" @ getRandom(1,15) @ "_sound");
+            %obj.playaudio(0,"zombie_chase" @ getRandom(0,15) @ "_sound");
             %obj.lastTargetTime = %currentTime+3500;
             %obj.setMoveY(1);
             if(getRandom(1,3) == 1) %obj.setMoveX(getRandom(-100,100)*0.01);
@@ -146,7 +150,7 @@ function ShireZombieBot::onBotLoop(%this,%obj)
             %obj.raisearms = false;
         }
 
-        %obj.playaudio(0,"zombie_amb_" @ getRandom(1,5) @ "_sound");
+        %obj.playaudio(0,"zombie_idle" @ getRandom(0,5) @ "_sound");
 
         switch(getRandom(1,4))//We either look around, move, or clear our movement
         {

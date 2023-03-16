@@ -143,7 +143,7 @@ function EventidePlayerDowned::onRemove(%this,%obj)
 {	
 	Parent::onRemove(%this,%obj);
 
-	if(%obj.markedForShireZombify)
+	//if(%obj.markedForShireZombify)
 	if(isObject(%obj.ghostclient) && isObject(%obj.ghostClient.minigame))
 	{
 		%bot = new AIPlayer()
