@@ -128,6 +128,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	uiName = "Renowned Player";	
 
 	rechargeRate = 0.26;
+	maxDamage = 9999;
 	maxTools = 1;
 	maxWeapons = 1;
 	maxForwardSpeed = 6.3;
@@ -273,7 +274,7 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	uiName = "Skinwalker Player";	
 	
 	rechargeRate = 0.375;	
-	maxDamage = 1000;
+	maxDamage = 9999;
 	jumpDelay = 31;
 	jumpForce = 10 * 80;
 	maxForwardSpeed = 6.3;
