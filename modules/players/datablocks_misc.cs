@@ -184,6 +184,44 @@ datablock ParticleEmitterData(GlowFaceZombieEmitter) {
 	phiVariance			= 0.0;
 };
 
+datablock ParticleData(ZombieBodyParticle) 
+{
+	textureName				= "./models/ZombieBody";
+	lifetimeMS				= 500;
+	lifetimeVarianceMS		= 0;
+	dragCoefficient			= 0.0;
+	windCoefficient			= 0.0;
+	gravityCoefficient		= 0.0;
+	inheritedVelFactor		= 0.0;
+	constantAcceleration	= 0.0;
+	spinRandomMin			= 0.0;
+	spinRandomMax			= 0.0;
+	colors[0]				= "0.41 0.1 0.61 0.1";
+	colors[1]				= "0.41 0.1 0.61 0.0";
+	colors[2]				= "0.41 0.1 0.61 0.0";
+	sizes[0]				= 2.6;
+	sizes[1]				= 2.6;
+	sizes[2]				= 2.6;
+	times[0]				= 0;
+	times[1]				= 0.5;
+	times[2]				= 1.0;
+	useInvAlpha				= false;
+};
+
+datablock ParticleEmitterData(ZombieBodyEmitter) {
+	uiName				= "";
+	particles			= "ZombieBodyParticle";
+	ejectionPeriodMS	= 10;
+	periodVarianceMS	= 0;
+	ejectionVelocity	= 0.0;
+	velocityVariance	= 0.0;
+	ejectionOffset		= 0.0;
+	thetaMin			= 0.0;
+	thetaMax			= 0.0;
+	phiReferenceVel		= 0.0;
+	phiVariance			= 0.0;
+};
+
 datablock ExplosionData(DarkMExplosion)
 {
 	lifeTimeMS = 250;
@@ -503,6 +541,21 @@ datablock ShapeBaseImageData(GlowFaceZombieImage)
 	correctMuzzleVector	= false;
 	stateName[0]				= "Glow";
 	stateEmitter[0]				= GlowFaceZombieEmitter;
+	stateEmitterTime[0]			= 1000;
+	stateWaitForTimeout[0]		= true;
+	stateTimeoutValue[0]		= 1000;
+	stateTransitionOnTimeout[0]	= "Glow";
+	stateScript[0]				= "onGlow";
+};
+
+datablock ShapeBaseImageData(ZombieBodyImage) 
+{
+	shapeFile			= "base/data/shapes/empty.dts";
+	mountPoint			= 2;
+	offset = "0 0 -0.55";
+	correctMuzzleVector	= false;
+	stateName[0]				= "Glow";
+	stateEmitter[0]				= ZombieBodyEmitter;
 	stateEmitterTime[0]			= 1000;
 	stateWaitForTimeout[0]		= true;
 	stateTimeoutValue[0]		= 1000;
