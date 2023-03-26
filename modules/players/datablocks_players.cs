@@ -181,9 +181,9 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerChaseLvl1Music = "musicData_OUT_ShireNear";
 	killerChaseLvl2Music = "musicData_OUT_ShireChase";
 	killeridlesound = "shire_idle";
-	killeridlesoundamount = 4;
+	killeridlesoundamount = 9;
 	killerchasesound = "shire_chase";
-	killerchasesoundamount = 9;
+	killerchasesoundamount = 4;
 	killerraisearms = false;
 	killerlight = "NoFlarePLight";
 
