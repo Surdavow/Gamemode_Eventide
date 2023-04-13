@@ -27,7 +27,7 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 					if(!%obj.isCrouched() && %obj.getEnergyLevel() >= %this.maxEnergy && getWord(%obj.getVelocity(),2) == 0)
 					{
 						%obj.setdatablock("PlayerGrabberNoJump");					
-						%obj.setVelocity(vectorscale(%obj.getForwardVector(),35));
+						%obj.setVelocity(vectorscale(%obj.getForwardVector(),27));
 						%obj.playaudio(1,"grabber_lunge_sound");
 						%obj.playthread(3,"armReadyLeft");
 						%this.schedule(500,checkVictim,%obj);

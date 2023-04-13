@@ -17,7 +17,7 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	{
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);
-		%obj.setmaxforwardspeed(7);
+		%obj.setmaxforwardspeed(8);
 		%obj.isInvisible = true;	
 		%obj.reappearsched = %this.schedule(12500, reappear, %obj, 0);
 		return;
@@ -41,6 +41,7 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"skullwolf_uncloak_sound");
 		%obj.setmaxforwardspeed(6.65);
+		%obj.setEnergyLevel(0);
 	}
 
 	%alpha = mClampF(%alpha+0.025,0,1);		
