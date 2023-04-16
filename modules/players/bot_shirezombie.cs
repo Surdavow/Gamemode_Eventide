@@ -3,39 +3,42 @@ function ShireZombieBot::applyAppearance(%this,%obj)
     Armor::EventideAppearance(%this,%obj,%obj.ghostclient);
 
     %ghostClient = %obj.ghostclient;
-	%skin = %ghostClient.headColor;
-	%zskin = "0.75 0.1 0.5 1";
+	// %skin = %ghostClient.headColor;
+	%zskin = "0.28 0.0 0.52 0.15";
     %headColor = %zskin;
-    %chestColor = %ghostClient.chestColor;
-    %rarmcolor = %ghostClient.rarmColor;
-    %larmcolor = %ghostClient.larmColor;
-    %rhandcolor = %ghostClient.rhandColor;
-    %lhandcolor = %ghostClient.lhandColor;
-    %hipcolor = %ghostClient.hipColor;
-    %rlegcolor = %ghostClient.rlegColor;
-    %llegColor = %ghostClient.llegColor;
+    // %chestColor = %ghostClient.chestColor;
+    // %rarmcolor = %ghostClient.rarmColor;
+    // %larmcolor = %ghostClient.larmColor;
+    // %rhandcolor = %ghostClient.rhandColor;
+    // %lhandcolor = %ghostClient.lhandColor;
+    // %hipcolor = %ghostClient.hipColor;
+    // %rlegcolor = %ghostClient.rlegColor;
+    // %llegColor = %ghostClient.llegColor;
 
-    if(%ghostClient.chestColor $= %skin) %chestColor = %zskin;
-    if(%ghostClient.rArmColor $= %skin) %rarmcolor = %zskin;
-    if(%ghostClient.lArmColor $= %skin) %larmcolor = %zskin;
-    if(%ghostClient.rhandColor $= %skin) %rhandcolor = %zskin;
-    if(%ghostClient.lhandColor $= %skin) %lhandcolor = %zskin;
-    if(%ghostClient.hipColor $= %skin) %hipcolor = %zskin;
-    if(%ghostClient.rLegColor $= %skin) %rlegcolor = %zskin;
-    if(%ghostClient.lLegColor $= %skin) %llegColor = %zskin;	
+    // if(%ghostClient.chestColor $= %skin) %chestColor = %zskin;
+    // if(%ghostClient.rArmColor $= %skin) %rarmcolor = %zskin;
+    // if(%ghostClient.lArmColor $= %skin) %larmcolor = %zskin;
+    // if(%ghostClient.rhandColor $= %skin) %rhandcolor = %zskin;
+    // if(%ghostClient.lhandColor $= %skin) %lhandcolor = %zskin;
+    // if(%ghostClient.hipColor $= %skin) %hipcolor = %zskin;
+    // if(%ghostClient.rLegColor $= %skin) %rlegcolor = %zskin;
+    // if(%ghostClient.lLegColor $= %skin) %llegColor = %zskin;	
 
     %obj.setFaceName(%faceName);
-    %obj.setNodeColor("headskin",%headcolor);
-    %obj.setNodeColor((%client.chest ? "femChest" : "chest"),%chestcolor);
-    %obj.setNodeColor("pants",%hipcolor);
-    %obj.setNodeColor("rarm",%rarmcolor);
-    %obj.setNodeColor("larm",%larmcolor);
-    %obj.setNodeColor("rhand",%rhandcolor);
-    %obj.setNodeColor("lhand",%lhandcolor);
-    %obj.setNodeColor("rshoe",%rlegcolor);
-    %obj.setNodeColor("lshoe",%llegcolor);
-    %obj.setNodeColor("pants",%hipcolor);    
-    %obj.setFaceName("asciiterror");        
+    // %obj.setNodeColor("headskin",%headcolor);
+    // %obj.setNodeColor((%client.chest ? "femChest" : "chest"),%chestcolor);
+    // %obj.setNodeColor("pants",%hipcolor);
+    // %obj.setNodeColor("rarm",%rarmcolor);
+    // %obj.setNodeColor("larm",%larmcolor);
+    // %obj.setNodeColor("rhand",%rhandcolor);
+    // %obj.setNodeColor("lhand",%lhandcolor);
+    // %obj.setNodeColor("rshoe",%rlegcolor);
+    // %obj.setNodeColor("lshoe",%llegcolor);
+    // %obj.setNodeColor("pants",%hipcolor);  
+	%obj.HideNode("visor");
+	%obj.setNodeColor("ALL",%headColor);
+    %obj.setFaceName("hexZombie");     
+	%obj.startFade(0, 0, true);
 }
 
 function ShireZombieBot::onAdd(%this,%obj)
@@ -45,10 +48,11 @@ function ShireZombieBot::onAdd(%this,%obj)
     %obj.setMoveSlowdown(0);
 	%this.applyAppearance(%obj,%obj.ghostclient);
     %this.onBotLoop(%obj);
-    %obj.mountImage("DarkCastZombieImage",2);
+    // %obj.mountImage("DarkCastZombieImage",2);
     %obj.mountImage("GlowFaceZombieImage",3);
-    %obj.mountImage("DarkCastZombieHandRImage",0);
-    %obj.mountImage("DarkCastZombieHandLImage",1);        
+	%obj.mountImage("ZombieBodyImage",2);
+    // %obj.mountImage("DarkCastZombieHandRImage",0);
+    // %obj.mountImage("DarkCastZombieHandLImage",1);        
 }
 
 function ShireZombieBot::onDisabled(%this,%obj)
