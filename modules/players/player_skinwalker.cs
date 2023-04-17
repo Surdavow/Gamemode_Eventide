@@ -36,6 +36,8 @@ function PlayerSkinwalker::onCollision(%this,%obj,%col)
 
     if(!isObject(%obj.victim) && Eventide_MinigameConditionalCheck(%obj,%col,false))
     {
+        if(%col.getDamagePercent() < 0.75) return;
+        
         if(isObject(%col.client)) %col.client.setControlObject(%col.client.camera);
         %obj.victim = %col;
         %obj.victimreplicatedclient = %col.client;

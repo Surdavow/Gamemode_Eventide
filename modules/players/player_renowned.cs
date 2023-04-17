@@ -2,6 +2,7 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	
+	%obj.mountImage("meleeTantoImage",0);
 	%obj.schedule(1, setEnergyLevel, 0);
 	%obj.setScale("1.1 1.1 1.1");
 }
@@ -41,6 +42,8 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 function PlayerRenowned::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
+	
+	if(%trig == 0 && %press) Eventide_Melee(%this,%obj,3.5);
 	
 	if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
 	{

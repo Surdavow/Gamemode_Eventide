@@ -30,6 +30,24 @@ function Eventide_MinigameConditionalCheck(%objA,%objB,%exemptDeath)//exemptdeat
 	return false;
 }
 
+function Player::SetTempSpeed(%obj,%slowdowndivider)
+{						
+	if(!isObject(%obj) || %obj.getstate() $= "Dead") return;
+
+	%datablock = %obj.getDataBlock();
+	%obj.setMaxForwardSpeed(%datablock.MaxForwardSpeed*%slowdowndivider);
+	%obj.setMaxSideSpeed(%datablock.MaxSideSpeed*%slowdowndivider);
+	%obj.setMaxBackwardSpeed(%datablock.maxBackwardSpeed*%slowdowndivider);
+
+	%obj.setMaxCrouchForwardSpeed(%datablock.maxForwardCrouchSpeed*%slowdowndivider);
+  	%obj.setMaxCrouchBackwardSpeed(%datablock.maxSideCrouchSpeed*%slowdowndivider);
+  	%obj.setMaxCrouchSideSpeed(%datablock.maxSideCrouchSpeed*%slowdowndivider);
+
+ 	%obj.setMaxUnderwaterBackwardSpeed(%datablock.MaxUnderwaterBackwardSpeed*%slowdowndivider);
+  	%obj.setMaxUnderwaterForwardSpeed(%datablock.MaxUnderwaterForwardSpeed*%slowdowndivider);
+  	%obj.setMaxUnderwaterSideSpeed(%datablock.MaxUnderwaterForwardSpeed*%slowdowndivider);
+}
+
 function Eventide_Melee(%this,%obj,%radius)
 {
 	if(!%obj.isInvisible && %obj.lastclawed+500 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
@@ -48,7 +66,7 @@ function Eventide_Melee(%this,%obj,%radius)
 
 			if((!isObject(%obscure) && %dot > 0.65 && vectorDist(%obj.getposition(),%hit.getposition()) < %radius) || vectorDist(%obj.getposition(),%hit.getposition()) < 1)
 			if(Eventide_MinigameConditionalCheck(%obj,%hit,true))
-			{
+			{						
 				if(%hit.getstate() $= "Dead")
 				{
 					if(%obj.getdataBlock().getName() $= "PlayerSkullwolf") 
@@ -65,16 +83,26 @@ function Eventide_Melee(%this,%obj,%radius)
 				switch$(%obj.getdataBlock().getName())
 				{
 					case "PlayerAngler": 	%obj.playaudio(0,"angler_Atk" @ getRandom(0,2) @ "_sound");
-											if(isObject(%obj.hookrope)) %obj.hookrope.delete();																						
+											%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
+											if(isObject(%obj.hookrope)) %obj.hookrope.delete();																			
 					case "PlayerSkullWolf": %obj.playaudio(0,"skullwolf_Atk" @ getRandom(0,6) @ "_sound");
+											%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
+					case "PlayerShire":		serverPlay3d("melee_axe_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());			
+					case "PlayerGrabber": serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
+										serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
+					case "PlayerRenowned": serverPlay3d("melee_tanto_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
+										serverPlay3d("melee_tanto_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());										
+					case "PlayerSkinwalker": %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
 					default:
 				}
-				
-				%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
+
 				%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
 				%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
 				%hit.damage(%obj, %hit.getWorldBoxCenter(), 25*%oscale, $DamageType::Default);
 				%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
+
+				%obj.setTempSpeed(0.65);				
+				%obj.schedule(500,setTempSpeed,1);
 			}								
 		}
 	}

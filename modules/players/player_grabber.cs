@@ -7,6 +7,8 @@ function PlayerGrabber::onNewDatablock(%this,%obj)
 	else applyCharacterPrefs(%obj.client);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1.15 1.15 1.15");
+
+	%obj.mountImage("meleeMacheteImage",0);
 }
 
 function PlayerGrabber::checkVictim(%this,%obj)
@@ -22,6 +24,7 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 	if(%bool && %obj.getState() !$= "Dead")
 	switch(%triggerNum)
 	{
+		case 0: Eventide_Melee(%this,%obj,3.5);
 		case 4: if(!isObject(%obj.victim))
 				{
 					if(!%obj.isCrouched() && %obj.getEnergyLevel() >= %this.maxEnergy && getWord(%obj.getVelocity(),2) == 0)

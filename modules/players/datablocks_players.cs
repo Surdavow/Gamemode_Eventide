@@ -129,8 +129,8 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 
 	rechargeRate = 0.26;
 	maxDamage = 9999;
-	maxTools = 1;
-	maxWeapons = 1;
+	maxTools = 0;
+	maxWeapons = 0;
 	maxForwardSpeed = 6.3;
 	maxBackwardSpeed = 3.6;
 	maxSideSpeed = 5.4;
@@ -188,8 +188,8 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerlight = "NoFlarePLight";
 
 	rechargeRate = 0.3;
-	maxTools = 1;
-	maxWeapons = 1;
+	maxTools = 0;
+	maxWeapons = 0;
 };
 
 datablock PlayerData(PlayerAngler : PlayerRenowned) 
@@ -231,8 +231,8 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 
 	firstpersononly = false;
 	rechargeRate = 0.65;
-	maxTools = 1;
-	maxWeapons = 1;
+	maxTools = 0;
+	maxWeapons = 0;
 	maxForwardSpeed = 6.65;
 	maxBackwardSpeed = 3.8;
 	maxSideSpeed = 5.7;
