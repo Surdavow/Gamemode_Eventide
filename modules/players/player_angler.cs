@@ -160,7 +160,7 @@ function AnglerHookRope::onHookLoop(%this,%obj)
 
 			if(%end.lastchokecough+getrandom(250,500) < getsimtime())
 			{			
-				%source.playaudio(0,"angler_Atk" @ getRandom(0,2) @ "_sound");
+				%source.playaudio(0,"angler_melee" @ getRandom(0,2) @ "_sound");
 				%source.playthread(2,"leftrecoil");
 				%source.playthread(3,"jump");
 				%end.lastchokecough = getsimtime();

@@ -134,7 +134,7 @@ function ShireZombieBot::onBotLoop(%this,%obj)
         
         if(%obj.lastTargetTime < %currentTime)//Tick every 3.5 seconds
         {
-            %obj.playaudio(0,"zombie_chase" @ getRandom(0,15) @ "_sound");
+            %obj.playaudio(0,"zombie_chase" @ getRandom(0,10) @ "_sound");
             %obj.lastTargetTime = %currentTime+3500;
             %obj.setMoveY(1);
             if(getRandom(1,3) == 1) %obj.setMoveX(getRandom(-100,100)*0.01);
@@ -154,7 +154,7 @@ function ShireZombieBot::onBotLoop(%this,%obj)
             %obj.raisearms = false;
         }
 
-        %obj.playaudio(0,"zombie_idle" @ getRandom(0,5) @ "_sound");
+        %obj.playaudio(0,"zombie_idle" @ getRandom(0,4) @ "_sound");
 
         switch(getRandom(1,4))//We either look around, move, or clear our movement
         {
@@ -211,7 +211,7 @@ function ShireZombieBot::onCollision(%this,%obj,%col,%normal,%speed)
 
     if((%col.getType() & $TypeMasks::PlayerObjectType) && %col.getState() !$= "Dead" && !%col.getdataBlock().isKiller) 
     {
-        %col.damage(%obj,%col.getWorldBoxCenter(), 15, $DamageType::Default);
+        %col.damage(%obj,%col.getWorldBoxCenter(), 25, $DamageType::Default);
         %col.ShiredSlowDown(2.5);
         %obj.delete();
     }
