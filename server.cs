@@ -342,6 +342,17 @@ package Eventide_MainPackage
 		}
 		Parent::bottomPrint(%client, %msg, %time);
 	}
+
+	function Player::ActivateStuff (%player)//Not parenting, I made an overhaul of this function so it might cause compatibility issues...
+	{
+		Parent::ActivateStuff(%player);
+		if(isObject(%player) && %player.getState() !$= "Dead") %player.getDataBlock().onActivate(%player);
+	}
+
+	function Armor::onActivate(%this,%obj)
+	{
+		//Do something!
+	}
 	
 };
 

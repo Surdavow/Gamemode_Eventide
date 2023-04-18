@@ -72,6 +72,9 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 				{
 					%obj.client.setControlObject(%search);
 					%obj.client.schedule(4000,setControlObject,%obj);
+					%search.client.centerprint("<color:FFFFFF><font:Impact:40>You are being controlled, try to break free!",2);
+					%search.Possesser = %obj;
+					%search.isPossessed = true;
 					%obj.setEnergyLevel(0);
 					%obj.playthread(2,"leftrecoil");
 					%search.mountImage("RenownedPossessedImage",3);
@@ -79,7 +82,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 					switch$(%search.getclassname())
 					{
 						case "Player": 	%search.client.schedule(4000,setControlObject,%search);
-										%search.schedule(4000,unMountImage,3);										
+										%search.schedule(4000,unMountImage,3);
 
 						case "AIPlayer": 	%search.schedule(4000,setControlObject,%search);
 											%search.schedule(4000,unMountImage,3);

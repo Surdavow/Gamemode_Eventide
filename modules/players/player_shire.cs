@@ -121,3 +121,9 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 
 	%obj.setHeadUp(0);
 }
+
+function PlayerShire::onDamage(%this, %obj, %delta)
+{
+	Parent::onDamage(%this, %obj, %delta);
+	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"shire_pain" @ getRandom(1, 4) @ "_sound");
+}

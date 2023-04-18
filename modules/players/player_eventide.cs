@@ -5,6 +5,40 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%obj.setScale("1 1 1");
 }
 
+function EventidePlayer_BreakFreePrint(%client,%amount)
+{
+    if(!isobject(%client)) return;
+	
+	%addsymbol = "";
+    %symbol = "|";
+	for(%i = 0; %i < %amount; %i++) %addsymbol = %addsymbol @ %symbol;
+
+    %client.centerprint("<color:FFFFFF><font:impact:40> Control yourself! <br><color:00e100>" @ %addsymbol,1);
+}
+
+function EventidePlayer::onActivate(%this,%obj)
+{
+	Parent::onNewDatablock(%this,%obj);
+
+	if(%obj.isPossessed) 
+	{		
+		%obj.AntiPossession = mClampF(%obj.AntiPossession+0.5, 0, 15);
+		EventidePlayer_BreakFreePrint(%obj.client,%obj.AntiPossession/2);
+
+		if(%obj.AntiPossession > 0) %obj.schedule(50,%obj.AntiPossession-0.75);		
+
+		if(%obj.AntiPossession >= 15)
+		{
+			%obj.client.setControlObject(%obj);
+			%obj.AntiPossession = 0;
+			%obj.isPossessed = false;
+			%obj.unMountImage(3);
+			%obj.client.centerprint("<color:FFFFFF><font:Impact:40>You broke free!",1);
+			%obj.playaudio(3,"renowned_spellBreak_sound");
+		}
+	}
+}
+
 function EventidePlayer::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
