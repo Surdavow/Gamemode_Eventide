@@ -190,6 +190,9 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	rechargeRate = 0.3;
 	maxTools = 0;
 	maxWeapons = 0;
+	maxForwardSpeed = 6.65;
+	maxBackwardSpeed = 3.8;
+	maxSideSpeed = 5.7;
 };
 
 datablock PlayerData(PlayerAngler : PlayerRenowned) 
@@ -291,4 +294,5 @@ datablock PlayerData(ShireZombieBot : EventidePlayer)
 {
 	uiName = "";
 	isKiller = true;
+	maxDamage = 1;
 };
