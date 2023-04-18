@@ -37,7 +37,6 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 
 	if(%alpha == 0) 
 	{
-		%obj.setTempSpeed(0.15);
 		%this.EventideAppearance(%obj,%obj.client);
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"skullwolf_uncloak_sound");
@@ -47,6 +46,7 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 
 	%alpha = mClampF(%alpha+0.025,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
+	%obj.setTempSpeed(0.375);
 	if(%alpha == 1) 
 	{
 		%obj.setTempSpeed(1);
