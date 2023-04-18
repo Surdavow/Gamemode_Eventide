@@ -108,7 +108,7 @@ function Eventide_Melee(%this,%obj,%radius)
 				%hit.damage(%obj, %hit.getWorldBoxCenter(), 25*%oscale, $DamageType::Default);
 				%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
 
-				%obj.setTempSpeed(0.65);				
+				%obj.setTempSpeed(0.65);
 				%obj.schedule(500,setTempSpeed,1);
 			}								
 		}

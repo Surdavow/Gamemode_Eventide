@@ -48,7 +48,9 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 	if(%alpha == 1) 
 	{
-		%this.EventideAppearance(%obj,%obj.client);	
+		%this.EventideAppearance(%obj,%obj.client);
+		%obj.setTempSpeed(0.5);
+		%obj.schedule(750,setTempSpeed,1);
 		return;
 	}
 
