@@ -52,7 +52,14 @@ function Eventide_Melee(%this,%obj,%radius)
 {
 	if(!%obj.isInvisible && %obj.lastclawed+500 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
-		%obj.lastclawed = getSimTime();										
+
+		switch$(%obj.getdataBlock().getName())
+		{
+			case "PlayerRenowned": %obj.playaudio(3,"renowned_melee" @ getRandom(0,2) @ "_sound");
+			default:
+		}
+
+		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
 		%oscale = getWord(%obj.getScale(),2);
 		%mask = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::CorpseObjectType;
