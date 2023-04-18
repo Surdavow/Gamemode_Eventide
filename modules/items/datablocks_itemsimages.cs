@@ -352,7 +352,7 @@ datablock ShapeBaseImageData(meleeTantoImage)
    shapeFile = "./models/tanto.dts";
    emap = true;
 
-   mountPoint = 1;
+   mountPoint = 0;
    offset = "0 0 0";
    eyeOffset = 0;
    rotation = eulerToMatrix( "0 0 0" );
