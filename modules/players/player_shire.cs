@@ -33,7 +33,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 	{
 		case 0: if(%press) Eventide_Melee(%this,%obj,3.5);
 
-		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
+		case 4: //if(%obj.getEnergyLevel() == %this.maxEnergy)
 				if(%press)
 				{
 					%obj.mountImage(GlowFaceImage, 1);					
