@@ -96,8 +96,8 @@ function Eventide_Melee(%this,%obj,%radius)
 					case "PlayerShire":		serverPlay3d("melee_axe_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());			
 					case "PlayerGrabber": serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
 										serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
-					case "PlayerRenowned": serverPlay3d("melee_tanto_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
-										serverPlay3d("melee_tanto_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());										
+					case "PlayerRenowned": serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());
+										serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());										
 					case "PlayerSkinwalker": %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
 					default:
 				}
@@ -418,7 +418,7 @@ function Player::onKillerLoop(%obj)
         %victimclient = %scan.client;
 
         //Not very efficient and messy code right now, will redo this sometime
-        if(ContainerSearchCurrRadiusDist() <= 25 && %dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(),%scan.getmuzzlePoint(2),$TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType,%obj)))
+        if(ContainerSearchCurrRadiusDist() <= 17 && %dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(),%scan.getmuzzlePoint(2),$TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType,%obj)))
         {
             %killercansee[%cansee++] = %scan;
             %chasing = true;            

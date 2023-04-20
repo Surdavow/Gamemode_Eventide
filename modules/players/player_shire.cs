@@ -10,7 +10,7 @@ function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal
 	{
 		%col.mountImage(DarkBlindPlayerImage,%i);
 		%col.markedForShireZombify = true;
-		%col.setDamageFlash(20);
+		%col.setDamageFlash(25);
 	}
 }
 

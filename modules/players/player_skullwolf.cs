@@ -17,7 +17,7 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	{
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);
-		%obj.setmaxforwardspeed(8);
+		%obj.setmaxforwardspeed(9);
 		%obj.isInvisible = true;	
 		%obj.reappearsched = %this.schedule(12500, reappear, %obj, 0);
 		return;

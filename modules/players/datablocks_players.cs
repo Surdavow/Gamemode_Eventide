@@ -131,9 +131,9 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	maxDamage = 9999;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.3;
-	maxBackwardSpeed = 3.6;
-	maxSideSpeed = 5.4;
+	maxForwardSpeed = 6.65;
+	maxBackwardSpeed = 3.8;
+	maxSideSpeed = 5.7;
 	useCustomPainEffects = true;
 	jumpSound = "";
 	PainSound		= "";
