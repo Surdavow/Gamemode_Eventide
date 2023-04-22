@@ -28,8 +28,7 @@ function EventidePlayer::onActivate(%this,%obj)
 		if(%obj.AntiPossession >= 15)
 		{
 			%obj.client.setControlObject(%obj);
-			%obj.isPossessed = false;
-			%obj.AntiPossession = 0;			
+			%obj.clearStun();
 
 			if(isObject(%obj.Possesser))
 			{
@@ -50,7 +49,6 @@ function EventidePlayer::onActivate(%this,%obj)
 				%obj.Possesser = 0;
 			}
 
-			%obj.unMountImage(3);
 			%obj.client.centerprint("<color:FFFFFF><font:Impact:40>You broke free!",1);
 			%obj.playaudio(3,"renowned_spellBreak_sound");
 		}

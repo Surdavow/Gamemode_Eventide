@@ -82,18 +82,21 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 
 					switch$(%search.getclassname())
 					{
-						case "Player": 	%search.client.schedule(4000,setControlObject,%search);
-										%search.schedule(4000,unMountImage,3);
-										%search.schedule(4000,%search.AntiPossession = 0);
-										%search.schedule(4000,%search.isPossessed = 0);
+						case "Player": 	%search.client.schedule(4000,setControlObject,%search);										
+										%search.schedule(4000,clearStun);
 
 						case "AIPlayer": 	%search.schedule(4000,setControlObject,%search);
-											%search.schedule(4000,unMountImage,3);
 					}
 				}
 			}		
 		}
 	}
 	else if(%press && %obj.getEnergyLevel() < 20) %obj.playthread(0,"undo");
+}
 
+function Player::RemoveStun(%obj)
+{
+	%obj.AntiPossession = 0;
+	%obj.isPossessed = 0;
+	%obj.schedule.unMountImage(3);
 }
