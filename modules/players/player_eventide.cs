@@ -25,13 +25,27 @@ function EventidePlayer::onActivate(%this,%obj)
 		%obj.AntiPossession = mClampF(%obj.AntiPossession+0.5, 0, 15);
 		EventidePlayer_BreakFreePrint(%obj.client,%obj.AntiPossession/2);
 
-		if(%obj.AntiPossession > 0) %obj.schedule(50,%obj.AntiPossession-0.75);		
-
 		if(%obj.AntiPossession >= 15)
 		{
 			%obj.client.setControlObject(%obj);
-			%obj.AntiPossession = 0;
 			%obj.isPossessed = false;
+			%obj.AntiPossession = 0;			
+
+			if(isObject(%obj.Possesser))
+			{
+				%obj.Possesser.client.Camera.setMode ("Corpse", %obj.Possesser);
+				%obj.Possesser.client.setControlObject(%obj.Possesser.client.camera);
+				%obj.Possesser(2,"undo");
+				%obj.Possesser(3,"activate2");
+
+				cancel(%obj.Possesser.returnObserveScheduleMode);
+				cancel(%obj.Possesser.returnObserveSchedule);
+
+				%obj.Possesser.returnObserveScheduleMode = %obj.Possesser.client.camera.schedule(2000,setMode,"Observer");
+				%obj.Possesser.returnObserveSchedule = %obj.Possesser.client.schedule(2000,setControlObject,%obj.Possesser);
+				%obj.Possesser = 0;
+			}
+			
 			%obj.unMountImage(3);
 			%obj.client.centerprint("<color:FFFFFF><font:Impact:40>You broke free!",1);
 			%obj.playaudio(3,"renowned_spellBreak_sound");

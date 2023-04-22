@@ -71,7 +71,8 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 				if(isObject(%search) && Eventide_MinigameConditionalCheck(%obj,%search,false)) 
 				{
 					%obj.client.setControlObject(%search);
-					%obj.client.schedule(4000,setControlObject,%obj);
+					%obj.returnObserveSchedule = %obj.client.schedule(4000,setControlObject,%obj);
+
 					%search.client.centerprint("<color:FFFFFF><font:Impact:40>You are being controlled, try to break free!",2);
 					%search.Possesser = %obj;
 					%search.isPossessed = true;
