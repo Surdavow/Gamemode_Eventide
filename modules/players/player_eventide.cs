@@ -28,7 +28,7 @@ function EventidePlayer::onActivate(%this,%obj)
 		if(%obj.AntiPossession >= 15)
 		{
 			%obj.client.setControlObject(%obj);
-			%obj.clearStun();
+			%obj.RemoveStun();
 
 			if(isObject(%obj.Possesser))
 			{

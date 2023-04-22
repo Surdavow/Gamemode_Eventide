@@ -83,7 +83,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 					switch$(%search.getclassname())
 					{
 						case "Player": 	%search.client.schedule(4000,setControlObject,%search);										
-										%search.schedule(4000,clearStun);
+										%search.schedule(4000,RemoveStun);
 
 						case "AIPlayer": 	%search.schedule(4000,setControlObject,%search);
 					}
