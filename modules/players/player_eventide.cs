@@ -38,6 +38,7 @@ function EventidePlayer::onActivate(%this,%obj)
 				%obj.Possesser.playthread(3,"activate2");
 
 				%obj.Possesser.mountImage("RenownedPossessedImage",3);
+				%obj.Possesser.playaudio(3,"renowned_melee" @ getRandom(0,2) @ "_sound");
 
 				cancel(%obj.Possesser.returnObserveScheduleMode);
 				cancel(%obj.Possesser.returnObserveSchedule);
