@@ -98,5 +98,5 @@ function Player::RemoveStun(%obj)
 {
 	%obj.AntiPossession = 0;
 	%obj.isPossessed = 0;
-	%obj.schedule.unMountImage(3);
+	%obj.unMountImage(3);
 }
