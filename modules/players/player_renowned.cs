@@ -84,6 +84,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 					{
 						case "Player": 	%search.client.schedule(4000,setControlObject,%search);
 										%search.schedule(4000,unMountImage,3);
+										%search.schedule(4000,%search.AntiPossession = 0);
 
 						case "AIPlayer": 	%search.schedule(4000,setControlObject,%search);
 											%search.schedule(4000,unMountImage,3);

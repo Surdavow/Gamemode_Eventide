@@ -38,11 +38,15 @@ function EventidePlayer::onActivate(%this,%obj)
 				%obj.Possesser.playthread(2,"undo");
 				%obj.Possesser.playthread(3,"activate2");
 
+				%obj.Possesser.mountImage("RenownedPossessedImage",3);
+
 				cancel(%obj.Possesser.returnObserveScheduleMode);
 				cancel(%obj.Possesser.returnObserveSchedule);
+				cancel(%obj.Possesser.removeStunEffect);
 
 				%obj.Possesser.returnObserveScheduleMode = %obj.Possesser.client.camera.schedule(2000,setMode,"Observer");
 				%obj.Possesser.returnObserveSchedule = %obj.Possesser.client.schedule(2000,setControlObject,%obj.Possesser);
+				%obj.Possesser.removeStunEffect = %obj.Possesser.schedule(2000,unMountImage,3);
 				%obj.Possesser = 0;
 			}
 
