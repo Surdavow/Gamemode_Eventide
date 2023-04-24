@@ -22,36 +22,27 @@ function EventidePlayer::onActivate(%this,%obj)
 
 	if(%obj.isPossessed) 
 	{		
-		%obj.AntiPossession = mClampF(%obj.AntiPossession+0.5, 0, 15);
+		%obj.AntiPossession = mClampF(%obj.AntiPossession+1, 0, 15);
 		EventidePlayer_BreakFreePrint(%obj.client,%obj.AntiPossession/2);
 
 		if(%obj.AntiPossession >= 15)
 		{
-			%obj.client.setControlObject(%obj);
-			%obj.RemoveStun();
-
 			if(isObject(%obj.Possesser))
 			{
-				%obj.Possesser.client.Camera.setMode ("Corpse", %obj.Possesser);
+				%obj.Possesser.client.Camera.setMode("Corpse", %obj.Possesser);
 				%obj.Possesser.client.setControlObject(%obj.Possesser.client.camera);
+				%obj.Possesser.client.centerprint("<color:FFFFFF><font:Impact:40>Your victim broke free!",2);
+				cancel(%obj.Possesser.returnObserveSchedule);
+				%obj.Possesser.returnObserveSchedule = %obj.Possesser.schedule(4000,ClearRenownedEffect);
+				
 				%obj.Possesser.playthread(2,"undo");
 				%obj.Possesser.playthread(3,"activate2");
-
 				%obj.Possesser.mountImage("RenownedPossessedImage",3);
 				%obj.Possesser.playaudio(3,"renowned_melee" @ getRandom(0,2) @ "_sound");
-
-				cancel(%obj.Possesser.returnObserveScheduleMode);
-				cancel(%obj.Possesser.returnObserveSchedule);
-				cancel(%obj.Possesser.removeStunEffect);
-
-				%obj.Possesser.returnObserveScheduleMode = %obj.Possesser.client.camera.schedule(2000,setMode,"Observer");
-				%obj.Possesser.returnObserveSchedule = %obj.Possesser.client.schedule(2000,setControlObject,%obj.Possesser);
-				%obj.Possesser.removeStunEffect = %obj.Possesser.schedule(2000,unMountImage,3);
-				%obj.Possesser = 0;
 			}
 
 			%obj.client.centerprint("<color:FFFFFF><font:Impact:40>You broke free!",1);
-			%obj.playaudio(3,"renowned_spellBreak_sound");
+			%obj.ClearRenownedEffect();			
 		}
 	}
 }
@@ -72,7 +63,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 						%ray.isBeingSaved = true;
 						%this.SaveVictim(%obj,%ray,%press);
 					}
-			case 4: if(%obj.isSkinwalker && %obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule)) 
+			case 4: if(%obj.isSkinwalker && %obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
 					PlayerSkinwalker.monstertransform(%obj,true);
 		}
 	}

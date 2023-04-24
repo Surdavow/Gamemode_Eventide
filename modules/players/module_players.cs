@@ -80,11 +80,11 @@ function Eventide_Melee(%this,%obj,%radius)
 						%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
 						%obj.playthread(3,"plant");
 						%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
-						%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());						
+						%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
 						%hit.schedule(50,delete);
 					}
 					continue;
-				}								
+				}
 
 				switch$(%obj.getdataBlock().getName())
 				{
@@ -571,7 +571,7 @@ function Player::KillerGhostLightCheck(%obj)
 		}
 
 		%obj.lightbot.light.setNetFlag(6,true);
-		for(%i = 0; %i < clientgroup.getCount(); %i++)		
+		for(%i = 0; %i < clientgroup.getCount(); %i++)
 		if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj) 
 		%obj.lightbot.light.schedule(10,clearScopeToClient,%client);
 	}

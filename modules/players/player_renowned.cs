@@ -64,29 +64,22 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 			if(%obj.casttime+500 < getSimTime())
 			{								
 				%start = %obj.getEyePoint();			
-				%end = VectorAdd (%start, VectorScale (%obj.getEyeVector(),getWord(%obj.getScale(),2)*40));
+				%end = VectorAdd(%start,VectorScale(%obj.getEyeVector(),getWord(%obj.getScale(),2)*40));
 				%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::ItemObjectType;
 				%search = containerRayCast (%start, %end, %mask, %obj);
 
-				if(isObject(%search) && Eventide_MinigameConditionalCheck(%obj,%search,false)) 
+				if(isObject(%search) && Eventide_MinigameConditionalCheck(%obj,%search,false))
 				{
 					%obj.client.setControlObject(%search);
-					%obj.returnObserveSchedule = %obj.client.schedule(4000,setControlObject,%obj);
+					%obj.returnObserveSchedule = %obj.schedule(4000,ClearRenownedEffect);
 
-					%search.client.centerprint("<color:FFFFFF><font:Impact:40>You are being controlled, try to break free!",2);
+					%search.client.centerprint("<color:FFFFFF><font:Impact:40>You are being controlled, press E to break free!",2);
 					%search.Possesser = %obj;
 					%search.isPossessed = true;
 					%obj.setEnergyLevel(0);
 					%obj.playthread(2,"leftrecoil");
 					%search.mountImage("RenownedPossessedImage",3);
-
-					switch$(%search.getclassname())
-					{
-						case "Player": 	%search.client.schedule(4000,setControlObject,%search);										
-										%search.schedule(4000,RemoveStun);
-
-						case "AIPlayer": 	%search.schedule(4000,setControlObject,%search);
-					}
+					%search.schedule(4000,ClearRenownedEffect);
 				}
 			}		
 		}
@@ -94,9 +87,20 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 	else if(%press && %obj.getEnergyLevel() < 20) %obj.playthread(0,"undo");
 }
 
-function Player::RemoveStun(%obj)
+function Player::ClearRenownedEffect(%obj)
 {
-	%obj.AntiPossession = 0;
-	%obj.isPossessed = 0;
+	if(!isObject(%obj) || !(%obj.getType() & $TypeMasks::PlayerObjectType)) return;
+	
+	%obj.AntiPossession = "";
+	%obj.Possesser = "";
+	%obj.isPossessed = "";
 	%obj.unMountImage(3);
+	serverPlay3d("renowned_spellBreak_sound", %obj.getPosition());
+
+	switch$(%obj.getclassname())
+	{
+		case "Player": 	%obj.client.setControlObject(%obj);
+						%obj.client.camera.setMode("Observer");
+		case "AIPlayer": %obj.setControlObject(%obj);
+	}
 }
