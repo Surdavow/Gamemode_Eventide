@@ -1,3 +1,39 @@
+datablock TSShapeConstructor(EventideplayerDts) {
+	baseShape = "./models/Eventideplayer.dts";
+	sequence0 = "./models/default.dsq";
+};
+
+datablock PlayerData(EventidePlayer : PlayerStandardArmor)
+{
+	shapeFile = EventideplayerDts.baseShape;
+	uiName = "Eventide Player";
+	uniformCompatible = true;//For slayer uniform compatibility
+	isEventideModel = true;
+	showEnergyBar = true;
+	canJet = false;
+	rechargeRate = 0.375;
+	maxTools = 3;
+	maxWeapons = 3;
+	jumpDelay = 31;
+	jumpForce = 10 * 85;
+	cameramaxdist = 2.1;
+	maxfreelookangle = 2.25;
+};
+
+datablock PlayerData(EventidePlayerDowned : EventidePlayer)
+{	
+	maxForwardSpeed = 0;
+   	maxBackwardSpeed = 0;
+   	maxSideSpeed = 0;
+   	maxForwardCrouchSpeed = 0;
+   	maxBackwardCrouchSpeed = 0;
+   	maxSideCrouchSpeed = 0;
+   	jumpForce = 0;
+	rechargerate = 0;
+	isDowned = true;
+	uiName = "";
+};
+
 function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);

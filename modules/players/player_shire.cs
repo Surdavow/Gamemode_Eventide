@@ -1,7 +1,30 @@
-function GlowFaceImage::onGlow(%this,%obj,%slot)
+datablock PlayerData(PlayerShire : PlayerRenowned) 
 {
+	uiName = "Shire Player";
 
-}
+	killerChaseLvl1Music = "musicData_OUT_ShireNear";
+	killerChaseLvl2Music = "musicData_OUT_ShireChase";
+	killeridlesound = "shire_idle";
+	killeridlesoundamount = 9;
+	killerchasesound = "shire_chase";
+	killerchasesoundamount = 4;
+	killerraisearms = false;
+	killerlight = "NoFlarePLight";
+
+	rechargeRate = 0.3;
+	maxTools = 0;
+	maxWeapons = 0;
+	maxForwardSpeed = 6.65;
+	maxBackwardSpeed = 3.8;
+	maxSideSpeed = 5.7;
+};
+
+datablock PlayerData(ShireZombieBot : EventidePlayer)
+{
+	uiName = "";
+	isKiller = true;
+	maxDamage = 1;
+};
 
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
 {

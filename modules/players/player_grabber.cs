@@ -1,3 +1,35 @@
+datablock PlayerData(PlayerGrabber : PlayerRenowned) 
+{
+	uiName = "Grabber Player";
+
+	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
+	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
+	killeridlesound = "";
+	killeridlesoundamount = 0;
+	killerchasesound = "";
+	killerchasesoundamount = 0;
+	killerraisearms = false;
+	killerlight = "NoFlareRLight";	
+
+	firstpersononly = false;
+	rechargeRate = 0.65;
+	maxTools = 0;
+	maxWeapons = 0;
+	maxForwardSpeed = 6.65;
+	maxBackwardSpeed = 3.8;
+	maxSideSpeed = 5.7;
+	cameramaxdist = 3;
+	maxfreelookangle = 2.5;
+	boundingBox = "4.8 4.8 10.1";
+	crouchBoundingBox = "4.8 4.8 3.8";
+};
+
+datablock PlayerData(PlayerGrabberNoJump : PlayerGrabber) 
+{
+	uiName = "";
+	jumpForce = 0;
+};
+
 function PlayerGrabber::onNewDatablock(%this,%obj)
 {
 	%obj.schedule(10,onKillerLoop);

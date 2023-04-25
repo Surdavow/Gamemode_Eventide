@@ -1,3 +1,48 @@
+datablock TSShapeConstructor(SkinwalkerDTS)
+{
+    baseShape  = "./models/skinwalker.dts";
+    sequence0  = "./models/skinwalker.dsq";
+};
+
+datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
+{
+	isEventideModel = true;
+	isKiller = true;
+    firstPersonOnly = true;
+	showEnergyBar = true;
+	canJet = false;	
+	useCustomPainEffects = true;
+
+	shapeFile = SkinwalkerDTS.baseShape;
+	
+	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
+	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
+	killeridlesound = "";
+	killeridlesoundamount = 0;
+	killerchasesound = "";
+	killerchasesoundamount = 0;
+	killerraisearms = true;
+	killerlight = "NoFlareRLight";	
+
+	PainSound = "skinwalker_pain_sound";
+	DeathSound = "skinwalker_death_sound";
+	JumpSound = "JumpSound";
+	uiName = "Skinwalker Player";	
+	
+	rechargeRate = 0.375;	
+	maxDamage = 9999;
+	jumpDelay = 31;
+	jumpForce = 10 * 80;
+	maxForwardSpeed = 6.3;
+	maxBackwardSpeed = 3.6;
+	maxSideSpeed = 5.4;
+	boundingBox = "4.5 4.5 9.5";
+	crouchBoundingBox = "4.5 4.5 3.6";
+	maxItems   = 0;
+	maxWeapons = 0;
+	maxTools = 0;	
+};
+
 function PlayerSkinwalker::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);    	

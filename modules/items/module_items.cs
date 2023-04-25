@@ -1,14 +1,36 @@
-exec("./datablocks_itemsimages.cs");
-exec("./datablocks_brickshapes.cs");
-exec("./datablocks_misc.cs");
-exec("./item_book.cs");
 exec("./item_candle.cs");
+exec("./item_flaregun.cs");
+exec("./item_book.cs");
 exec("./item_gem.cs");
 exec("./item_radio.cs");
-exec("./item_cola.cs");
-exec("./item_dollar.cs");
+exec("./item_soda.cs");
 exec("./item_rope.cs");
 exec("./weapon_dagger.cs");
+exec("./weapon_killers.cs");
+
+datablock fxDTSBrickData (brickEventideEventCaller : brick2x2Data)
+{
+	uiName = "Eventide Console";
+	Category = "Special";
+	Subcategory = "Eventide";
+};
+
+function brickEventideEventCaller::onPlant(%this, %obj)
+{	
+	$EventideEventCaller = %obj;
+	Parent::onPlant(%this,%obj);
+}
+
+function brickEventideEventCaller::onloadPlant(%this, %obj) 
+{ 
+	brickEventideEventCaller::onPlant(%this, %obj); 
+}
+
+function brickEventideEventCaller::onRemove(%this, %obj)
+{	
+	$EventideEventCaller = "";
+	Parent::onRemove(%this,%obj);
+}
 
 function serverCmdClearEventideShapes(%client)
 {
@@ -18,14 +40,14 @@ function serverCmdClearEventideShapes(%client)
 	EventideShapeGroup.delete();	
 }
 
-if(!isObject(EventideRitualSet))
-{
-    new SimSet(EventideRitualSet);
-    missionCleanup.add(EventideRitualSet);
-}
-
 function AddBrickToRitualSet(%obj)
 {
+	if(!isObject(EventideRitualSet))
+	{
+	    new SimSet(EventideRitualSet);
+	    missionCleanup.add(EventideRitualSet);
+	}
+
 	if(isObject(EventideRitualSet) && !%obj.isMember(EventideRitualSet)) EventideRitualSet.add(%obj);
 }
 

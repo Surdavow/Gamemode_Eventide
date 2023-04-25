@@ -1,3 +1,28 @@
+datablock PlayerData(PlayerAngler : PlayerRenowned) 
+{
+	uiName = "Angler Player";
+	rechargeRate = 0.215;
+	maxTools = 0;
+	maxWeapons = 0;
+	jumpForce = 10 * 75;
+	jumpDelay = 32;
+	maxForwardSpeed = 6.3;
+	maxBackwardSpeed = 3.6;
+	maxSideSpeed = 5.4;
+	boundingBox = "4.5 4.5 9.5";
+	crouchBoundingBox = "4.5 4.5 3.6";
+
+	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
+	killerChaseLvl2Music = "musicData_OUT_AnglerChase";
+	killeridlesound = "angler_idle";
+	killeridlesoundamount = 7;
+	killerchasesound = "angler_chase";
+	killerchasesoundamount = 3;
+	killerraisearms = true;
+	killerlight = "NoFlareBLight";
+};
+
+
 function PlayerAngler::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
@@ -124,24 +149,24 @@ function AnglerHookRope::onAdd(%this,%obj)
 	MissionCleanup.add(%obj);
 }
 
-function AnglerHookRope::onHookLoop(%this,%obj)
+function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victims closer
 {		
-	if(!isObject(%obj) || (!isObject(%source = %obj.source) || %source.getState() $= "Dead") || !isObject(%end = %obj.end))
+	if(!isObject(%obj) || (!isObject(%source = %obj.source) || %source.getState() $= "Dead") || !isObject(%end = %obj.end))//Check if the source (killer) and hook are still existing objects and that the killer is not dead
 	{
 		if(isObject(%obj)) %obj.delete();
 		return;
 	}
 
-	if((%end.getClassName() $= "Player" || %end.getClassName() $= "AIPlayer") && %end.getState() $= "Dead")
+	if((%end.getClassName() $= "Player" || %end.getClassName() $= "AIPlayer") && %end.getState() $= "Dead")//Check if the end attachment is a player and that it isn't dead, return and delete the object if this doesnt pass
 	{
 		if(isObject(%obj)) %obj.delete();
 		return;
 	}
 
-	if(%end.getType() & $TypeMasks::ProjectileObjectType) %endpos = %end.getPosition();
+	if(%end.getType() & $TypeMasks::ProjectileObjectType) %endpos = %end.getPosition();//Should only be a projectile when the rope is currently launched
 	else if(%end.getType() & $TypeMasks::PlayerObjectType)
 	{
-		if(vectorDist(%end.getposition(),%source.getposition()) > 2.5)
+		if(vectorDist(%end.getposition(),%source.getposition()) > 2.5)//Adjust the end's velocity to move to the source
 		{ 
 			if(getWord(%end.getVelocity(), 2) <= 0.75 && !%obj.hitMusic) %end.playthread(1,"activate2");
 
@@ -158,14 +183,14 @@ function AnglerHookRope::onHookLoop(%this,%obj)
 
 			%end.setVelocity(getWords(%newvelocity, 0, 1) SPC %zinfluence);
 
-			if(%end.lastchokecough+getrandom(250,500) < getsimtime())
+			if(%end.lastchokecough+getrandom(250,500) < getsimtime())//Originally part of the L4B Smoker, just some sounds
 			{			
 				%source.playaudio(0,"angler_melee" @ getRandom(0,2) @ "_sound");
 				%source.playthread(2,"leftrecoil");
 				%source.playthread(3,"jump");
 				%end.lastchokecough = getsimtime();
 
-				if(getWord(%end.getVelocity(), 2) >= 0.75)
+				if(getWord(%end.getVelocity(), 2) >= 0.75)//If victim is being lifted up for too long, this function will eventually ebgin to damage the victim
 				{					
 					if(%source.lastdamage+getRandom(500,100) < getsimtime())
 					{
@@ -187,6 +212,7 @@ function AnglerHookRope::onHookLoop(%this,%obj)
 		%endpos = vectorSub(%end.getmuzzlePoint(2),"0 0 0.2");
 	} 
 
+	//Adjust the rope stringe
 	%head = %source.getmuzzlePoint(1);
 	%vector = vectorNormalize(vectorSub(%endpos,%head));
 	%relative = "0 1 0";
@@ -194,6 +220,7 @@ function AnglerHookRope::onHookLoop(%this,%obj)
 	%u = mACos(vectorDot(%relative,%vector)) * -1;
 	%obj.setTransform(vectorScale(vectorAdd(vectorAdd(%head,"0 0 0.5"),%endpos),0.5) SPC %xyz SPC %u);
 	%obj.setScale(0.5 SPC vectorDist(%head,%endpos) * 2 SPC 0.5);
+
 	%obj.HookLoop = %this.schedule(33,onHookLoop,%obj);
 }
 

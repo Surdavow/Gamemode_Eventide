@@ -1,3 +1,31 @@
+datablock PlayerData(PlayerRenowned : EventidePlayer) 
+{
+	uiName = "Renowned Player";	
+
+	rechargeRate = 0.26;
+	maxDamage = 9999;
+	maxTools = 0;
+	maxWeapons = 0;
+	maxForwardSpeed = 6.65;
+	maxBackwardSpeed = 3.8;
+	maxSideSpeed = 5.7;
+	useCustomPainEffects = true;
+	jumpSound = "";
+	PainSound		= "";
+	DeathSound		= "";	
+	firstpersononly = true;
+	isKiller = true;
+
+	killerChaseLvl1Music = "musicData_OUT_RenownedNear";
+	killerChaseLvl2Music = "musicData_OUT_RenownedChase";
+	killeridlesound = "renowned_idle";
+	killeridlesoundamount = 8;
+	killerchasesound = "renowned_chase";
+	killerchasesoundamount = 6;
+	killerraisearms = false;
+	killerlight = "NoFlareYLight";
+};
+
 function PlayerRenowned::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
