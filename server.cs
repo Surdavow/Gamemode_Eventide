@@ -15,7 +15,7 @@ datablock fxDTSBrickData (brickEventideEventCaller : brick2x2Data)
 {
 	uiName = "Eventide Console";
 	Category = "Special";
-	Subcategory = "Misc";
+	Subcategory = "Eventide";
 };
 
 function brickEventideEventCaller::onPlant(%this, %obj)
@@ -132,22 +132,45 @@ package Eventide_MainPackage
 	{
 		if(!isObject(%obj)) return;
 		
-		if(!isObject(%obj.interactiveshape) && isObject(%player.getMountedImage(0)) && %player.getMountedImage(0).getName() $= %obj.getDataBlock().staticShapeItemMatch)
+		if(!isObject(%obj.interactiveshape) && isObject(%player.getMountedImage(0)))
 		{
-			%obj.ShowEventideProp(%player);
+			
 
-			if(isObject($EventideEventCaller))
+			if(%player.getMountedImage(0).getName() $= %obj.getDataBlock().staticShapeItemMatch)
 			{
-				$InputTarget_["Self"] = $EventideEventCaller;
-				$InputTarget_["Player"] = %player;
-				$InputTarget_["Client"] = %player.client;			
-				$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
-				$EventideEventCaller.processInputEvent("onRitualPlaced",%client);
+				%obj.ShowEventideProp(%player);
+
+				if(isObject($EventideEventCaller))
+				{
+					$InputTarget_["Self"] = $EventideEventCaller;
+					$InputTarget_["Player"] = %player;
+					$InputTarget_["Client"] = %player.client;			
+					$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
+					$EventideEventCaller.processInputEvent("onRitualPlaced",%client);
+				}
+
+				%player.Tool[%player.currTool] = 0;
+				messageClient(%player.client,'MsgItemPickup','',%player.currTool,0);						
+				serverCmdUnUseTool(%player.client);
 			}
 
-			%player.Tool[%player.currTool] = 0;
-			messageClient(%player.client,'MsgItemPickup','',%player.currTool,0);						
-			serverCmdUnUseTool(%player.client);
+			if(strstr(strlwr(%player.getMountedImage(0).getName()),"gem") != -1)
+			{
+				%obj.ShowEventidePropGem(%player,%player.getMountedImage(0));
+				
+				if(isObject($EventideEventCaller))
+				{
+					$InputTarget_["Self"] = $EventideEventCaller;
+					$InputTarget_["Player"] = %player;
+					$InputTarget_["Client"] = %player.client;			
+					$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
+					$EventideEventCaller.processInputEvent("onRitualPlaced",%client);
+				}
+
+				%player.Tool[%player.currTool] = 0;
+				messageClient(%player.client,'MsgItemPickup','',%player.currTool,0);						
+				serverCmdUnUseTool(%player.client);
+			}			
 		}
 		
 		if(isObject(%obj.interactiveshape))

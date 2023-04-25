@@ -1,7 +1,7 @@
 datablock fxDTSBrickData(brickBookData : brick2x2FData)
 {
 	category = "Special";
-	subCategory = "Misc";
+	subCategory = "Eventide";
 	uiName = "Book";
 	iconName = bookItem.iconName;
 	
@@ -29,7 +29,7 @@ datablock StaticShapeData(brickdaggerStaticShape)
 datablock fxDTSBrickData(brickdaggerData : brick1x1FData)
 {
 	category = "Special";
-	subCategory = "Misc";
+	subCategory = "Eventide";
 	uiName = "dagger";
 	iconName = daggerItem.iconName;
 	
@@ -49,7 +49,7 @@ datablock StaticShapeData(brickCandleStaticShape)
 datablock fxDTSBrickData(brickCandleData)
 {
 	category = "Special";
-	subCategory = "Misc";
+	subCategory = "Eventide";
 	uiName = "Candle";
 	iconName = candleItem.iconName;
 	brickFile = "./models/1x1x3.blb";
@@ -60,6 +60,17 @@ datablock fxDTSBrickData(brickCandleData)
 	colorShiftColor = "1 1 1 1";	
 };
 
+datablock fxDTSBrickData(brickGemData : brick1x1FData)
+{
+	category = "Special";
+	subCategory = "Eventide";
+	uiName = "Gem";	
+	iconName = gem1Item.iconName;
+
+	staticShapeItemMatch = "gem";
+	staticShape = "gem";
+};
+
 datablock StaticShapeData(brickGem1StaticShape)
 {
 	isInvincible = true;
@@ -67,30 +78,9 @@ datablock StaticShapeData(brickGem1StaticShape)
 	placementSound = "gem_place_sound";
 };
 
-datablock fxDTSBrickData(brickGem1Data : brick1x1FData)
-{
-	category = "Special";
-	subCategory = "Misc";
-	uiName = "Gem Variant 1";	
-	iconName = gem1Item.iconName;
-
-	staticShapeItemMatch = "gem1Image";
-	staticShape = "brickGem1StaticShape";
-	shapeBrickPos = "0 0 0";
-	colorShiftColor = gem1Item.colorShiftColor;
-};
-
 datablock StaticShapeData(brickGem2StaticShape : brickGem1StaticShape)
 {
 	shapeFile = "./models/gem2.dts";
-};
-
-datablock fxDTSBrickData(brickGem2Data : brickGem1Data)
-{
-	uiName = "Gem Variant 2";
-	staticShapeItemMatch = "gem2Image";
-	staticShape = "brickGem2StaticShape";
-	colorShiftColor = gem2Item.colorShiftColor;
 };
 
 datablock StaticShapeData(brickGem3StaticShape : brickGem1StaticShape)
@@ -98,36 +88,12 @@ datablock StaticShapeData(brickGem3StaticShape : brickGem1StaticShape)
 	shapeFile = "./models/Gem3.dts";
 };
 
-datablock fxDTSBrickData(brickGem3Data : brickGem1Data)
-{
-	uiName = "Gem Variant 3";
-	staticShapeItemMatch = "gem3Image";
-	staticShape = "brickGem3StaticShape";
-	colorShiftColor = Gem3Item.colorShiftColor;
-};
-
 datablock StaticShapeData(brickGem4StaticShape : brickGem1StaticShape)
 {
 	shapeFile = "./models/Gem4.dts";
 };
 
-datablock fxDTSBrickData(brickGem4Data : brickGem1Data)
-{
-	uiName = "Gem Variant 4";
-	staticShapeItemMatch = "gem4Image";
-	staticShape = "brickGem4StaticShape";
-	colorShiftColor = Gem4Item.colorShiftColor;
-};
-
 datablock StaticShapeData(brickGem5StaticShape : brickGem1StaticShape)
 {
 	shapeFile = "./models/Gem5.dts";
-};
-
-datablock fxDTSBrickData(brickGem5Data : brickGem1Data)
-{
-	uiName = "Gem Variant 5";
-	staticShapeItemMatch = "gem5Image";
-	staticShape = "brickGem5StaticShape";
-	colorShiftColor = Gem5Item.colorShiftColor;
 };

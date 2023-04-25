@@ -53,24 +53,59 @@ function fxDTSBrick::ShowEventideProp(%obj,%player)
 		missionCleanup.add(EventideShapeGroup);
 	}
 
-	if(!%obj.isMember(EventideShapeGroup)) 
+	EventideShapeGroup.add(%interactiveshape);
+	if(EventideShapeGroup.getCount() >= EventideRitualSet.getCount()) 
 	{
-		EventideShapeGroup.add(%interactiveshape);
-		if(EventideShapeGroup.getCount() >= EventideRitualSet.getCount()) 
+		MessageAll ('', "\c2All" SPC EventideRitualSet.getCount() SPC "rituals have been placed!");
+
+		if(isObject(ClientGroup) && ClientGroup.GetCount())
+		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("OUT_roundStart_sound");
+
+		if(isObject($EventideEventCaller))
 		{
-			MessageAll ('', "\c2All" SPC EventideRitualSet.getCount() SPC "rituals have been placed!");
+			$InputTarget_["Self"] = $EventideEventCaller;
+			$InputTarget_["Player"] = %player;
+			$InputTarget_["Client"] = %player.client;			
+			$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
+			$EventideEventCaller.processInputEvent("onAllRitualsPlaced",%client);
+		}
+	}
+}
 
-			if(isObject(ClientGroup) && ClientGroup.GetCount())
-			for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("OUT_roundStart_sound");
+function fxDTSBrick::ShowEventidePropGem(%obj,%player,%image)
+{
+	%interactiveshape = new StaticShape()
+	{
+		datablock = %image.staticShape;
+		spawnbrick = %obj;
+	};
+	
+	%obj.interactiveshape = %interactiveshape;
+	%interactiveshape.settransform(getwords(%obj.gettransform(),0,6));
+	%interactiveshape.schedule(5,playAudio,3,%interactiveshape.getDataBlock().placementSound);
+	%interactiveshape.setNodeColor("ALL",%image.colorShiftColor);
 
-			if(isObject($EventideEventCaller))
-			{
-				$InputTarget_["Self"] = $EventideEventCaller;
-				$InputTarget_["Player"] = %player;
-				$InputTarget_["Client"] = %player.client;			
-				$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
-				$EventideEventCaller.processInputEvent("onAllRitualsPlaced",%client);
-			}
+	if(!isObject(EventideShapeGroup))
+	{
+		new ScriptGroup(EventideShapeGroup);
+		missionCleanup.add(EventideShapeGroup);
+	}
+
+	EventideShapeGroup.add(%interactiveshape);
+	if(EventideShapeGroup.getCount() >= EventideRitualSet.getCount()) 
+	{
+		MessageAll ('', "\c2All" SPC EventideRitualSet.getCount() SPC "rituals have been placed!");
+
+		if(isObject(ClientGroup) && ClientGroup.GetCount())
+		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("OUT_roundStart_sound");
+
+		if(isObject($EventideEventCaller))
+		{
+			$InputTarget_["Self"] = $EventideEventCaller;
+			$InputTarget_["Player"] = %player;
+			$InputTarget_["Client"] = %player.client;			
+			$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
+			$EventideEventCaller.processInputEvent("onAllRitualsPlaced",%client);
 		}
 	}
 }

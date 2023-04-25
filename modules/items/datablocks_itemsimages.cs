@@ -59,7 +59,7 @@ datablock ItemData(gem1Item)
 	uiName = "Gem Variant 1";
 	iconName = "./icons/icon_gem";
 	doColorShift = true;
-	colorShiftColor = "1 0.5 0.5 1";
+	colorShiftColor = "1 0.5 0.5 1";	
 
 	image = gem1Image;
 	canDrop = true;
@@ -76,6 +76,8 @@ datablock ShapeBaseImageData(gem1Image)
     correctMuzzleVector = false;
     eyeOffset = "0 0 0";
     className = "WeaponImage";
+
+	staticShape = brickGem1StaticShape;
 
     item = gem1Item;
     ammo = " ";
@@ -104,6 +106,7 @@ datablock ShapeBaseImageData(gem2Image : gem1Image)
 {
     shapeFile = "./models/gem2.dts";
     item = gem2Item;
+	staticShape = brickGem2StaticShape;
     doColorShift = gem2Item.doColorShift;
     colorShiftColor = gem2Item.colorShiftColor;	
 };
@@ -121,6 +124,7 @@ datablock ShapeBaseImageData(gem3Image : gem1Image)
 {
     shapeFile = "./models/gem3.dts";
     item = gem3Item;
+	staticShape = brickGem3StaticShape;
     doColorShift = gem3Item.doColorShift;
     colorShiftColor = gem3Item.colorShiftColor;		
 };
@@ -138,6 +142,7 @@ datablock ShapeBaseImageData(gem4Image : gem1Image)
 {
     shapeFile = "./models/gem4.dts";
     item = gem4Item;
+	staticShape = brickGem4StaticShape;
     doColorShift = gem4Item.doColorShift;
     colorShiftColor = gem4Item.colorShiftColor;	
 };
@@ -155,6 +160,7 @@ datablock ShapeBaseImageData(gem5Image : gem1Image)
 {
     shapeFile = "./models/gem5.dts";
     item = gem5Item;
+	staticShape = brickGem5StaticShape;
     doColorShift = gem5Item.doColorShift;
     colorShiftColor = gem5Item.colorShiftColor;		
 };
