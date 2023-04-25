@@ -1,12 +1,11 @@
 function brickdaggerData::onPlant(%this, %obj)
 {	
-	Parent::onAdd(%this,%obj);
-	%obj.setrendering(0);
+	brickCandleData::onPlant(%this,%obj);
 }
 
 function brickdaggerData::onloadPlant(%this, %obj) 
 { 
-	brickCandleData::onPlant(%this, %obj); 
+	brickdaggerData::onPlant(%this, %obj); 
 }
 
 function daggerImage::onReady(%this, %obj, %slot)

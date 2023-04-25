@@ -609,3 +609,26 @@ function GameConnection::StopChaseMusic(%client)
 
     %client.musicChaseLevel = 0;
 }
+
+function GameConnection::Escape(%client)
+{
+	if(!isObject(%minigame = getMinigameFromObject(%client))) return %client.centerprint("This only works in minigames!",1);
+	if(strlwr(%client.slyrTeam.name) !$= "survivors") return %client.centerprint("Only survivors can escape the map!",1);
+
+	%client.escaped = true;
+	%client.camera.setMode("Spectator",%client.player);
+	%client.setcontrolobject(%client.camera);
+	%client.player.delete();
+	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
+	%client.lives = 0;
+
+	for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%members = %client.slyrTeam.member[%i]) && %members.escaped) %escaped++;
+
+	if(%escaped >= %client.slyrTeam.numMembers) 
+	{
+		%minigame.endRound(%client.slyrTeam);
+		%minigame.chatmsgall("<font:Impact:30>\c3All survivors have escaped!");
+		for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%members = %client.slyrTeam.member[%i])) %members.play2D("OUT_fallenSurvivor01_sound");
+		return;
+	}	
+}

@@ -1,6 +1,5 @@
 ForceRequiredAddOn("Server_VehicleGore");
 
-registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
 registerInputEvent("fxDtsBrick", "onGazeStart", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
 registerInputEvent("fxDtsBrick", "onGazeStop", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
@@ -8,6 +7,27 @@ registerInputEvent("fxDtsBrick", "onGaze_Bot", "Self fxDtsBrick\tPlayer Player\t
 registerInputEvent("fxDtsBrick", "onGazeStart_Bot", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame\tBot Player");
 registerInputEvent("fxDtsBrick", "onGazeStop_Bot", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame\tBot Player");
 registerOutputEvent("fxDtsBrick", "setGazeName", "string 200 255", 0);
+registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
+registerInputEvent("fxDTSBrick","onAllRitualsPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
+registerOutputEvent("GameConnection", "Escape", "", false);
+
+datablock fxDTSBrickData (brickEventideEventCaller : brick2x2Data)
+{
+	uiName = "Eventide Console";
+	Category = "Special";
+	Subcategory = "Misc";
+};
+
+function brickEventideEventCaller::onPlant(%this, %obj)
+{	
+	$EventideEventCaller = %obj;
+	Parent::onPlant(%this,%obj);
+}
+
+function brickEventideEventCaller::onloadPlant(%this, %obj) 
+{ 
+	brickEventideEventCaller::onPlant(%this, %obj); 
+}
 
 exec("./modules/support/support_extraresources.cs");
 exec("./modules/support/support_chatsystem.cs");
@@ -114,13 +134,17 @@ package Eventide_MainPackage
 		
 		if(!isObject(%obj.interactiveshape) && isObject(%player.getMountedImage(0)) && %player.getMountedImage(0).getName() $= %obj.getDataBlock().staticShapeItemMatch)
 		{
-			%obj.ShowEventideProp();
+			%obj.ShowEventideProp(%player);
 
-			$InputTarget_["Self"] = %obj;
-			$InputTarget_["Player"] = %player;
-			$InputTarget_["Client"] = %player.client;			
-			$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
-			%obj.processInputEvent("onRitualPlaced",%client);			
+			if(isObject($EventideEventCaller))
+			{
+				$InputTarget_["Self"] = $EventideEventCaller;
+				$InputTarget_["Player"] = %player;
+				$InputTarget_["Client"] = %player.client;			
+				$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
+				$EventideEventCaller.processInputEvent("onRitualPlaced",%client);
+			}
+
 			%player.Tool[%player.currTool] = 0;
 			messageClient(%player.client,'MsgItemPickup','',%player.currTool,0);						
 			serverCmdUnUseTool(%player.client);
@@ -159,6 +183,17 @@ package Eventide_MainPackage
 	{
         Parent::Reset(%minigame,%client);
 
+		if(strlwr(%minigame.title) $= "eventide")
+		{
+			for(%i=0;%i<%minigame.numMembers;%i++)
+			if(isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
+			{
+				%client.play2d("OUT_roundStart_sound");		 			
+				%client.escaped = false;
+			}
+			%minigame.chatmsgall("<font:impact:30>\c3Eventide: The Hunt begins");
+		}
+
         for(%i=0;%i<%minigame.numMembers;%i++)
         if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter))
         {
@@ -175,7 +210,11 @@ package Eventide_MainPackage
         Parent::endGame(%minigame,%client);
 
         for(%i=0;%i<%minigame.numMembers;%i++)
-        if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();
+        if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter)) 
+		{
+			%client.EventidemusicEmitter.delete();
+			%client.escaped = false;
+		}
 		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();    
     }
 

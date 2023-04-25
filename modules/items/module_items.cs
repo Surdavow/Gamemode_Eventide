@@ -10,7 +10,7 @@ exec("./item_dollar.cs");
 exec("./item_rope.cs");
 exec("./weapon_dagger.cs");
 
-function serverCmdClearEventideShapes (%client)
+function serverCmdClearEventideShapes(%client)
 {
 	if(!%client.isAdmin || !isObject(EventideShapeGroup) || !EventideShapeGroup.getCount()) return;
 	
@@ -18,7 +18,24 @@ function serverCmdClearEventideShapes (%client)
 	EventideShapeGroup.delete();	
 }
 
-function fxDTSBrick::ShowEventideProp(%obj)
+if(!isObject(EventideRitualSet))
+{
+    new SimSet(EventideRitualSet);
+    missionCleanup.add(EventideRitualSet);
+}
+
+function AddBrickToRitualSet(%obj)
+{
+	if(isObject(EventideRitualSet) && !%obj.isMember(EventideRitualSet)) EventideRitualSet.add(%obj);
+}
+
+function serverCmdGetRitualCount(%client)
+{
+	if(!%client.isAdmin || !isObject(EventideShapeGroup) || !EventideRitualSet.getCount()) return;
+	%client.chatmessage("\c2" @ EventideRitualSet.getCount() SPC "\c2ritual placements exist");
+}
+
+function fxDTSBrick::ShowEventideProp(%obj,%player)
 {
 	%interactiveshape = new StaticShape()
 	{
@@ -28,7 +45,32 @@ function fxDTSBrick::ShowEventideProp(%obj)
 	
 	%obj.interactiveshape = %interactiveshape;
 	%interactiveshape.settransform(vectoradd(%obj.gettransform(),%obj.getdatablock().shapeBrickPos) SPC getwords(%obj.gettransform(),3,6));
+	%interactiveshape.schedule(5,playAudio,3,%interactiveshape.getDataBlock().placementSound);
 
-	if(!isObject(EventideShapeGroup)) new ScriptGroup(EventideShapeGroup);
-	EventideShapeGroup.add(%interactiveshape);
+	if(!isObject(EventideShapeGroup))
+	{
+		new ScriptGroup(EventideShapeGroup);
+		missionCleanup.add(EventideShapeGroup);
+	}
+
+	if(!%obj.isMember(EventideShapeGroup)) 
+	{
+		EventideShapeGroup.add(%interactiveshape);
+		if(EventideShapeGroup.getCount() >= EventideRitualSet.getCount()) 
+		{
+			MessageAll ('', "\c2All" SPC EventideRitualSet.getCount() SPC "rituals have been placed!");
+
+			if(isObject(ClientGroup) && ClientGroup.GetCount())
+			for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("OUT_roundStart_sound");
+
+			if(isObject($EventideEventCaller))
+			{
+				$InputTarget_["Self"] = $EventideEventCaller;
+				$InputTarget_["Player"] = %player;
+				$InputTarget_["Client"] = %player.client;			
+				$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
+				$EventideEventCaller.processInputEvent("onAllRitualsPlaced",%client);
+			}
+		}
+	}
 }

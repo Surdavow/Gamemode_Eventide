@@ -24,6 +24,7 @@ function EventidePlayer::onActivate(%this,%obj)
 	{		
 		%obj.AntiPossession = mClampF(%obj.AntiPossession+1, 0, 15);
 		EventidePlayer_BreakFreePrint(%obj.client,%obj.AntiPossession/2);
+		%obj.playthread(3,"activate2");
 
 		if(%obj.AntiPossession >= 15)
 		{
@@ -173,7 +174,14 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
 	Parent::onDisabled(%this,%obj);
 
-	if(isObject(%obj.client)) %obj.ghostclient = %obj.client;
+	if(isObject(%client = %obj.client)) %obj.ghostclient = %obj.client;
+
+	if(isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%minigame.teams))
+	{
+		if(strlwr(%client.slyrTeam.name) $= "survivors")
+		for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%member = %client.slyrTeam.member[%i])) %member.play2D("OUT_fallenSurvivor01_sound");			
+		%minigame.chatmsgall(%obj.client.name SPC "has fallen");
+	}
 }
 
 function EventidePlayer::onRemove(%this,%obj)

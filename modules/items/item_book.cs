@@ -15,11 +15,10 @@ function bookImage::onMount(%this,%obj,%slot)
 
 function brickBookData::onPlant(%this, %obj)
 {	
-	Parent::onPlant(%this,%obj);
-	%obj.setrendering(0);
+	brickCandleData::onPlant(%this,%obj);	
 }
 
 function brickBookData::onloadPlant(%this, %obj) 
 { 
-	brickCandleData::onPlant(%this, %obj); 
+	brickBookData::onPlant(%this, %obj); 
 }

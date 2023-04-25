@@ -7,6 +7,7 @@ function brickCandleData::onPlant(%this, %obj)
 {	
 	Parent::onPlant(%this,%obj);
 	%obj.setrendering(0);
+    AddBrickToRitualSet(%obj);
 }
 
 function brickCandleData::onloadPlant(%this, %obj) 

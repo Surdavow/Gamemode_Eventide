@@ -1,7 +1,6 @@
 function brickGem1Data::onPlant(%this, %obj)
 {	
-	Parent::onPlant(%this,%obj);
-	%obj.setrendering(0);
+	brickCandleData::onPlant(%this,%obj);
 }
 
 function brickGem1Data::onloadPlant(%this, %obj) 

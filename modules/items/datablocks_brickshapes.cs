@@ -16,12 +16,14 @@ datablock StaticShapeData(brickBookStaticShape)
 {
 	isInvincible = true;
 	shapeFile = "./models/book.dts";
+	placementSound = "book_place_sound";
 };
 
 datablock StaticShapeData(brickdaggerStaticShape)
 {
 	isInvincible = true;
 	shapeFile = "./models/daggerstatic.dts";
+	placementSound = "sworddagger_place_sound";
 };
 
 datablock fxDTSBrickData(brickdaggerData : brick1x1FData)
@@ -41,6 +43,7 @@ datablock StaticShapeData(brickCandleStaticShape)
 {
 	isInvincible = true;
 	shapeFile = "./models/candlestatic.dts";
+	placementSound = "candle_place_sound";
 };
 
 datablock fxDTSBrickData(brickCandleData)
@@ -61,6 +64,7 @@ datablock StaticShapeData(brickGem1StaticShape)
 {
 	isInvincible = true;
 	shapeFile = "./models/gem1.dts";
+	placementSound = "gem_place_sound";
 };
 
 datablock fxDTSBrickData(brickGem1Data : brick1x1FData)
