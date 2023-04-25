@@ -663,7 +663,7 @@ function GameConnection::Escape(%client)
 	{
 		%minigame.endRound(%client.slyrTeam);
 		%minigame.chatmsgall("<font:Impact:30>\c3All survivors have escaped!");
-		for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%members = %client.slyrTeam.member[%i])) %members.play2D("OUT_fallenSurvivor01_sound");
+		for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%members = %client.slyrTeam.member[%i])) %members.play2D("fallen_survivor_sound");
 		return;
 	}	
 }

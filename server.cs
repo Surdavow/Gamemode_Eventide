@@ -51,7 +51,7 @@ else
 	$Pref::Server::ChatMod::lchatSizeMax = 24;
 	$Pref::server::ChatMod::lchatSizeMin = 12;
 	$Pref::Server::ChatMod::radioNumChannels = 1;
-	if($Pref::Server::GazeRange $= "" || $Pref::Server::GazeRange < 0 || $Pref::Server::GazeRange > 100) $Pref::Server::GazeRange = 20;
-	if($Pref::Server::onGazeEnabled $= "") $Pref::Server::onGazeEnabled = 1;
-	if($Pref::Server::GazeMode $= "") $Pref::Server::GazeMode = 3;	
+	$Pref::Server::GazeRange = 20;
+	$Pref::Server::onGazeEnabled = 1;
+	$Pref::Server::GazeMode = 3;	
 }

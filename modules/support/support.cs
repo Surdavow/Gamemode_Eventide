@@ -143,7 +143,7 @@ package Eventide_MainPackage
 			for(%i=0;%i<%minigame.numMembers;%i++)
 			if(isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
 			{
-				%client.play2d("OUT_roundStart_sound");		 			
+				%client.play2d("round_start_sound");		 			
 				%client.escaped = false;
 			}
 			%minigame.chatmsgall("<font:impact:30>\c3Eventide: The Hunt begins");
