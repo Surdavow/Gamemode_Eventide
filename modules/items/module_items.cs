@@ -60,55 +60,21 @@ function serverCmdGetRitualCount(%client)
 	%client.chatmessage("\c2" @ EventideRitualSet.getCount() SPC "\c2ritual placements exist");
 }
 
-function fxDTSBrick::ShowEventideProp(%obj,%player)
+function fxDTSBrick::ShowEventideProp(%obj,%player,%isGem,%image)
 {
+	if(!%isGem) %datablock = %obj.getdataBlock().staticShape;
+	else %datablock = %image.staticShape;
+	
 	%interactiveshape = new StaticShape()
 	{
-		datablock = %obj.getdataBlock().staticShape;
+		datablock = %datablock;
 		spawnbrick = %obj;
 	};
-	
+		
 	%obj.interactiveshape = %interactiveshape;
+	if(%isGem) %interactiveshape.setNodeColor("ALL",%image.colorShiftColor);
+	%interactiveshape.schedule(10,playAudio,3,%interactiveshape.getDataBlock().placementSound);
 	%interactiveshape.settransform(vectoradd(%obj.gettransform(),%obj.getdatablock().shapeBrickPos) SPC getwords(%obj.gettransform(),3,6));
-	%interactiveshape.schedule(5,playAudio,3,%interactiveshape.getDataBlock().placementSound);
-
-	if(!isObject(EventideShapeGroup))
-	{
-		new ScriptGroup(EventideShapeGroup);
-		missionCleanup.add(EventideShapeGroup);
-	}
-
-	EventideShapeGroup.add(%interactiveshape);
-	if(EventideShapeGroup.getCount() >= EventideRitualSet.getCount()) 
-	{
-		MessageAll ('', "\c2All" SPC EventideRitualSet.getCount() SPC "rituals have been placed!");
-
-		if(isObject(ClientGroup) && ClientGroup.GetCount())
-		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("round_start_sound");
-
-		if(isObject($EventideEventCaller))
-		{
-			$InputTarget_["Self"] = $EventideEventCaller;
-			$InputTarget_["Player"] = %player;
-			$InputTarget_["Client"] = %player.client;			
-			$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
-			$EventideEventCaller.processInputEvent("onAllRitualsPlaced",%client);
-		}
-	}
-}
-
-function fxDTSBrick::ShowEventidePropGem(%obj,%player,%image)
-{
-	%interactiveshape = new StaticShape()
-	{
-		datablock = %image.staticShape;
-		spawnbrick = %obj;
-	};
-	
-	%obj.interactiveshape = %interactiveshape;
-	%interactiveshape.settransform(getwords(%obj.gettransform(),0,6));
-	%interactiveshape.schedule(5,playAudio,3,%interactiveshape.getDataBlock().placementSound);
-	%interactiveshape.setNodeColor("ALL",%image.colorShiftColor);
 
 	if(!isObject(EventideShapeGroup))
 	{

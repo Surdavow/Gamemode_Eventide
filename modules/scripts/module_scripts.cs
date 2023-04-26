@@ -70,7 +70,7 @@ function fxDTSBrick::onActivate(%obj, %player, %client, %pos, %vec)
         //Check if player has proper item equipped for interacting with object
         if(isObject(%item = %player.getMountedImage(0)) && (%item.getName() $= %obj.getDataBlock().staticShapeItemMatch || (%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem")))
         {            
-            if(%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem") %obj.ShowEventidePropGem(%player, %item);
+            if(%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem") %obj.ShowEventideProp(%player,true,%item);
 			if(!%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch !$= "gem") %obj.ShowEventideProp(%player);
 
             %player.Tool[%player.currTool] = 0;
