@@ -1,9 +1,8 @@
 function addExtraResource(%fileName)
 {
-	// Don't add the same file multiple times
-	if (!ServerGroup.addedExtraResource[%fileName])
+	if(!ServerGroup.addedExtraResource[%fileName])
 	{
-		if (ServerGroup.extraResourceCount $= "") ServerGroup.extraResourceCount = 0;
+		if(ServerGroup.extraResourceCount $= "")ServerGroup.extraResourceCount = 0;
 
 		ServerGroup.extraResource[ServerGroup.extraResourceCount] = %fileName;
 		ServerGroup.extraResourceCount++;
@@ -11,18 +10,17 @@ function addExtraResource(%fileName)
 	}
 }
 
-package ExtraResources
+package Eventide_ExtraResources
 {
 	function EnvGuiServer::PopulateEnvResourceList()
 	{
 		Parent::PopulateEnvResourceList();
 
-		for (%i = 0; %i < ServerGroup.extraResourceCount; %i++)
+		for(%i = 0; %i < ServerGroup.extraResourceCount; %i++)
 		{
 			$EnvGuiServer::Resource[$EnvGuiServer::ResourceCount] = ServerGroup.extraResource[%i];
 			$EnvGuiServer::ResourceCount++;
 		}
 	}
 };
-
-activatePackage(ExtraResources);
+activatePackage(Eventide_ExtraResources);

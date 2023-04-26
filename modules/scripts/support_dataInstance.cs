@@ -1,4 +1,5 @@
 $DataInstance::FilePath = "Config/Server/DataInstance";
+$ItemInstance::Save = "";
 
 function DataInstance_ListDelete(%list)
 {

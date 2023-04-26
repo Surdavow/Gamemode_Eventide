@@ -8,6 +8,9 @@ exec("./item_rope.cs");
 exec("./weapon_dagger.cs");
 exec("./weapon_killers.cs");
 
+registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
+registerInputEvent("fxDTSBrick","onAllRitualsPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
+
 datablock fxDTSBrickData (brickEventideEventCaller : brick2x2Data)
 {
 	uiName = "Eventide Console";
@@ -81,7 +84,7 @@ function fxDTSBrick::ShowEventideProp(%obj,%player)
 		MessageAll ('', "\c2All" SPC EventideRitualSet.getCount() SPC "rituals have been placed!");
 
 		if(isObject(ClientGroup) && ClientGroup.GetCount())
-		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("OUT_roundStart_sound");
+		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("round_start_sound");
 
 		if(isObject($EventideEventCaller))
 		{
@@ -119,7 +122,7 @@ function fxDTSBrick::ShowEventidePropGem(%obj,%player,%image)
 		MessageAll ('', "\c2All" SPC EventideRitualSet.getCount() SPC "rituals have been placed!");
 
 		if(isObject(ClientGroup) && ClientGroup.GetCount())
-		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("OUT_roundStart_sound");
+		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("round_start_sound");
 
 		if(isObject($EventideEventCaller))
 		{

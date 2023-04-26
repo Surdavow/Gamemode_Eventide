@@ -1,5 +1,7 @@
 exec("./support_extraresources.cs");
-exec("./support_chatsystem.cs");
+exec("./script_chatsystem.cs");
+exec("./script_gazeloop.cs");
+exec("./script_killers.cs");
 exec("./support_dataInstance.cs");
 exec("./support_itemammo.cs");
 exec("./support_statuseffect.cs");
@@ -29,7 +31,6 @@ package Eventide_MainPackage
 		}		
 
 		%obj.schedule(10,onKillerLoop);
-		%obj.gazeLoop();
 	}
 
 	function Armor::onDisabled(%this, %obj, %state)
@@ -37,7 +38,7 @@ package Eventide_MainPackage
         Parent::onDisabled(%this, %obj, %state);
 
         if(isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
-		{ 
+		{
 			%client.EventidemusicEmitter.delete();        
         	%client.musicChaseLevel = 0;		
 		}
@@ -53,69 +54,50 @@ package Eventide_MainPackage
     }
 
 	function Armor::onRemove(%this,%obj)
-	{		
-		Parent::onRemove(%this,%obj);
-		if(isObject(%obj.emptycandlebot)) %obj.emptycandlebot.delete();
-		if(isObject(%obj.lightbot.light)) %obj.lightbot.light.delete();
-		if(isObject(%obj.lightbot)) %obj.lightbot.delete();
-	}
-
-    function fxDTSBrick::onActivate (%obj, %player, %client, %pos, %vec)
 	{
-		if(!isObject(%obj)) return;
-		
-		if(!isObject(%obj.interactiveshape) && isObject(%player.getMountedImage(0)))
-		{
-			
+		Parent::onRemove(%this,%obj);
 
-			if(%player.getMountedImage(0).getName() $= %obj.getDataBlock().staticShapeItemMatch)
-			{
-				%obj.ShowEventideProp(%player);
-
-				if(isObject($EventideEventCaller))
-				{
-					$InputTarget_["Self"] = $EventideEventCaller;
-					$InputTarget_["Player"] = %player;
-					$InputTarget_["Client"] = %player.client;			
-					$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
-					$EventideEventCaller.processInputEvent("onRitualPlaced",%client);
-				}
-
-				%player.Tool[%player.currTool] = 0;
-				messageClient(%player.client,'MsgItemPickup','',%player.currTool,0);						
-				serverCmdUnUseTool(%player.client);
-			}
-
-			if(strstr(strlwr(%player.getMountedImage(0).getName()),"gem") != -1)
-			{
-				%obj.ShowEventidePropGem(%player,%player.getMountedImage(0));
-				
-				if(isObject($EventideEventCaller))
-				{
-					$InputTarget_["Self"] = $EventideEventCaller;
-					$InputTarget_["Player"] = %player;
-					$InputTarget_["Client"] = %player.client;			
-					$InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
-					$EventideEventCaller.processInputEvent("onRitualPlaced",%client);
-				}
-
-				%player.Tool[%player.currTool] = 0;
-				messageClient(%player.client,'MsgItemPickup','',%player.currTool,0);						
-				serverCmdUnUseTool(%player.client);
-			}			
-		}
-		
-		if(isObject(%obj.interactiveshape))
-		{
-			if(%obj.getdataBlock().getName() $= "brickCandleData")
-			{
-	            if(!%obj.isLightOn) %obj.getdatablock().ToggleLight(%obj,true);
-            	else %obj.getdatablock().ToggleLight(%obj,false);
-			}
-		}
-
-		Parent::onActivate (%obj, %player, %client, %pos, %vec);
+		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++) 
+		if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) %obj.getMountedObject(%i).delete();
 	}
+
+function fxDTSBrick::onActivate(%obj, %player, %client, %pos, %vec)
+{
+    if(%obj.getdataBlock().staticShape $= "") return Parent::onActivate(%obj, %player, %client, %pos, %vec);
+    
+    if(!isObject(%obj.interactiveshape))
+    {
+        //Check if player has proper item equipped for interacting with object
+        if(isObject(%item = %player.getMountedImage(0)) && (%item.getName() $= %obj.getDataBlock().staticShapeItemMatch || (%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem")))
+        {            
+            if(%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem") %obj.ShowEventidePropGem(%player, %item);
+			if(!%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch !$= "gem") %obj.ShowEventideProp(%player);
+
+            %player.Tool[%player.currTool] = 0;
+            messageClient(%player.client, 'MsgItemPickup', '', %player.currTool, 0);
+            serverCmdUnUseTool(%player.client);
+
+            //Trigger an event if the eventide console exists
+            if(isObject($EventideEventCaller))
+            {
+                $InputTarget_["Self"] = $EventideEventCaller;
+                $InputTarget_["Player"] = %player;
+                $InputTarget_["Client"] = %player.client;
+                $InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
+                $EventideEventCaller.processInputEvent("onRitualPlaced", %client);
+            }
+        }
+    }        
+	//If the interactive shape already exists then just check if its the candle to toggle the light
+    else if(%obj.getdataBlock().getName() $= "brickCandleData")
+    {        
+        switch(%obj.isLightOn)
+        {
+            case true: %obj.getdatablock().ToggleLight(%obj,false);
+            case false: %obj.getdatablock().ToggleLight(%obj,true);
+        }            
+    }
+}
 
 	function fxDTSBrick::onRemove(%data, %brick)
 	{
@@ -133,6 +115,18 @@ package Eventide_MainPackage
 	{		
 		if(!%client.player.victim) return parent::serverCmdUseTool(%client, %tool);
 	}
+
+	function Slayer_MiniGameSO::endRound(%this, %winner, %resetTime)
+	{
+		Parent::endRound(%this, %winner, %resetTime);
+		
+		if(strlwr(%this.title) $= "eventide")
+		{
+			for(%i=0;%i<%this.numMembers;%i++)
+			if(isObject(%client = %this.member[%i]) && %client.getClassName() $= "GameConnection") %client.play2d("round_end_sound");		 						
+		}
+	}
+
 
     function MiniGameSO::Reset(%minigame,%client)
 	{
@@ -263,78 +257,6 @@ package Eventide_MainPackage
 	{
 		if(%obj.getClassName() $= "AIPlayer" && %obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
 		Parent::getBrickGroupFromObject(%obj);
-	}
-
-	function fxDtsBrick::setGazeName(%brick, %name)
-	{
-		%brick.gazeName = %name;
-	}
-
-	function GameConnection::startGazing(%client)
-	{
-		%client.cantGaze = 0;
-	}
-
-	function GameConnection::stopGazing(%client)
-	{
-		cancel(%client.startGazing);
-		%client.cantGaze = 1;
-	}
-
-	function SimObject::getGazeName(%this, %gazer)
-	{
-		switch$(%this.getClassName())
-		{
-			case "Player": 	if(%this.client == %gazer || %gazer.player == %this || !($Pref::Server::GazeMode & 1)) return "";
-							return %this.client.name;
-			case "fxDtsBrick": if(!($Pref::Server::GazeMode & 2)) return "";
-
-								//These events are really fucking abusable - admin wand immunity.
-								if(isObject(%gazer.player) && !%gazer.player.hasWandImmunity(%this))
-								{
-									$InputTarget_Self = %this;
-									$InputTarget_Player = %gazer.player;
-									$InputTarget_Client = %gazer;
-									if($Server::LAN || getMinigameFromObject(%this) == getMinigameFromObject(%gazer)) $InputTarget_Minigame = getMinigameFromObject(%gazer);
-									else $InputTarget_Minigame = 0;
-									%this.processInputEvent("onGaze", %gazer);
-								}
-								return %this.gazeName;
-
-			case "AIPlayer": if(!($Pref::Server::GazeMode & 1)) return "";
-							 //These events are really fucking abusable - admin wand immunity.
-							if(isObject(%spawn = %this.spawnBrick) && isObject(%gazer.player) && !%gazer.player.hasWandImmunity(%spawn))
-							{
-								$InputTarget_Self = %spawn;
-								$InputTarget_Player = %gazer.player;
-								$InputTarget_Client = %gazer;
-								$InputTarget_Bot = %this;
-								if($Server::LAN || getMinigameFromObject(%spawn) == getMinigameFromObject(%gazer)) $InputTarget_Minigame = getMinigameFromObject(%gazer);
-								else $InputTarget_Minigame = 0;
-								%spawn.processInputEvent("onGaze_Bot", %gazer);
-							}
-
-			default: return "";
-		}
-	}
-
-	function Player::hasWandImmunity(%pl, %brick)
-	{
-		if(!isObject(%tool = %pl.getMountedImage(0))) return 0;
-		if(%tool.getName() $= "AdminWandImage") return 1;
-		if(%tool.getName() $= "WandImage" && isObject(%brick) && isObject(%pl.client) && %brick.getGroup().getID() == %pl.client.brickgroup.getID()) return 1;
-		return 0;
-	}
-
-	function GameConnection::bottomPrint(%client, %msg, %time)
-	{
-		if(!%client.gazing)
-		{
-			%client.stopGazing();
-			if(%time <= 0) %client.startGazing = %client.schedule(60000, "startGazing");   //Cap time of one minute. That's long enough for any useful info.
-			else %client.startGazing = %client.schedule(%time * 1000, "startGazing");
-		}
-		Parent::bottomPrint(%client, %msg, %time);
 	}
 
 	function Player::ActivateStuff (%player)//Not parenting, I made an overhaul of this function so it might cause compatibility issues...

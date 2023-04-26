@@ -32,6 +32,7 @@ datablock ShapeBaseImageData(gem1Image)
     className = "WeaponImage";
 
 	staticShape = brickGem1StaticShape;
+	isGemRitual = true;
 
     item = gem1Item;
     ammo = " ";

@@ -117,7 +117,7 @@ datablock ExplosionData(SodaExplosion)
 	debrisNum = 1;
 	debrisPhiMax = 360;
 	debrisPhiMin = 180;
-	debrisThetaMax = 360;
+	debrisThetaMax = 180;
 	debrisThetaMin = 0;
 	debrisVelocity = 2;
 };

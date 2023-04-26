@@ -262,6 +262,11 @@ function EmptyCandleBot::onRemove(%this,%obj)
     if(isObject(%obj.candlebot)) %obj.candlebot.delete();
 }
 
+function EmptyLightBot::onRemove(%this,%obj)
+{
+    if(isObject(%obj.light)) %obj.light.delete();
+}		
+
 function CandleItemProp::onAdd(%this, %obj) 
 {
 	%obj.setDamageLevel(%this.maxDamage);

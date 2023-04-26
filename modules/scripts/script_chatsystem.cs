@@ -187,3 +187,74 @@ function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
 		}
 	}
 }
+
+package Eventide_ChatSystem
+{
+	function ServerCmdTeamMessageSent(%client, %message)
+	{
+		if(!$Pref::Server::ChatMod::lchatEnabled)
+		{
+			Parent::ServerCmdTeamMessageSent(%client, %message);
+			return;
+		}
+
+		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
+
+		if(%message !$= "0")
+		{
+			if(isObject(%client.player))
+			{
+				%client.player.playThread(3,talk);
+				%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+
+				if(%client.player.RadioOn) ChatMod_RadioMessage(%client, %message, true);
+				if(isObject(%client.minigame)) ChatMod_TeamLocalChat(%client, %message);
+				else if(!%client.player.RadioOn) messageClient(%client,'',"\c5You must be in a minigame to team chat.");
+			}
+			else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
+			%client.lastMessageSent = %client;
+		}			
+	}
+
+	function ServerCmdMessageSent(%client, %message)
+	{		
+		if(!$Pref::Server::ChatMod::lchatEnabled)
+		{
+			Parent::ServerCmdMessageSent(%client, %message);
+			return;
+		}		
+
+		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
+
+		if(%message !$= "0")
+		{
+			if(ChatMod_getGlobalChatPerm(%client) && getSubStr(%message, 0, 1) $= "&") 
+			{
+				messageAll('', "\c6[\c4GLOBAL\c6] \c3" @ %client.name @ "\c6: " @ getSubStr(%message, 1, strlen(%message)));
+				if(isObject(%client.player))
+				{				
+					%client.player.playThread(3,talk);
+					%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+				}
+			}
+			else if(isObject(%client.player))
+			{
+				ChatMod_LocalChat(%client, %message);
+				%client.player.playThread(3,talk);
+				%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+			}
+			else for(%i=0; %i<clientGroup.getCount(); %i++) if(isObject(%targetClient = clientGroup.getObject(%i)) && !isObject(%targetClient.player)) 
+			chatMessageClientRP(%targetClient, "", "\c7[DEAD] "@ %client.name, "", %message);
+		}		
+		%client.lastMessageSent = %message;
+	}
+
+	function ServerCmdStartTalking(%client)
+	{
+		if($Pref::Server::ChatMod::lchatEnabled) return;
+		else parent::ServerCmdStartTalking(%client);
+	}
+};
+
+if(isPackage(Eventide_ChatSystem)) deactivatePackage(Eventide_ChatSystem);
+activatePackage(Eventide_ChatSystem);
