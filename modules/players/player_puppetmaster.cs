@@ -47,6 +47,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 	{
 		case 0: Eventide_Melee(%this,%obj,3.5);
 		case 4: if(!isObject(PuppetGroup)) new SimGroup(PuppetGroup);
+				MissionCleanup.add(PuppetGroup);
 
 				if(PuppetGroup.getCount() < 3)
 				{
