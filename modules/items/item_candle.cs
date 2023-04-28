@@ -142,13 +142,12 @@ datablock StaticShapeData(brickCandleStaticShape)
 	placementSound = "candle_place_sound";
 };
 
-datablock fxDTSBrickData(brickCandleData)
+datablock fxDTSBrickData(brickCandleData : brick1x1FData)
 {
 	category = "Special";
 	subCategory = "Eventide";
 	uiName = "Candle";
 	iconName = candleItem.iconName;
-	brickFile = "./models/candleplacer.blb";
 
 	staticShapeItemMatch = "candleImage";
 	staticShape = brickCandleStaticShape;
