@@ -64,6 +64,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 					
 					%puppet.setVelocity(vectorscale(%obj.getEyeVector(),25));
 					%puppet.position = %obj.getmuzzlePoint(1);
+					%puppet.schedule(2000,setActionThread,sit,1);
 					%obj.client.centerprint("<color:FFFFFF><font:impact:40>New puppet added! Press your plant brick key to control them!" ,3);
 				}
 

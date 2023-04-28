@@ -19,11 +19,13 @@ package Eventide_MainPackage
 
 			if(isObject(PuppetGroup.getObject(%client.puppetnumber))) 
 			{
+				%client.getcontrolObject().setActionThread(sit,1);
 				%client.setcontrolobject(PuppetGroup.getObject(%client.puppetnumber));
 				%client.puppetnumber++;
 			}
 			else
 			{
+				%client.getcontrolObject().setActionThread(sit,1);
 				%client.setcontrolobject(%client.player);
 				%client.puppetnumber = 0;
 			}			
