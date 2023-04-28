@@ -11,10 +11,10 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 
 	killerChaseLvl1Music = "musicData_OUT_PuppetMasterNear";
 	killerChaseLvl2Music = "musicData_OUT_PuppetMasterChase";
-	killeridlesound = "";
-	killeridlesoundamount = 0;
-	killerchasesound = "";
-	killerchasesoundamount = 0;
+	killeridlesound = "puppetmaster_idle";
+	killeridlesoundamount = 3;
+	killerchasesound = "puppetmaster_idle";
+	killerchasesoundamount = 3;
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";	
 
@@ -50,6 +50,12 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 
 		default:
 	}
+}
+
+function PlayerPuppetMaster::onDamage(%this,%obj,%delta)
+{
+	Parent::onDamage(%this,%obj,%delta);
+	if(%delta > 5) %obj.playaudio(0,"puppetmaster_pain" @ getRandom(1,3) @ "_sound");
 }
 
 function PlayerPuppetMaster::EventideAppearance(%this,%obj,%client)

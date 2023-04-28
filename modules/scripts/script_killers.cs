@@ -5,6 +5,7 @@ function Eventide_Melee(%this,%obj,%radius)
 		switch$(%obj.getdataBlock().getName())
 		{
 			case "PlayerRenowned": %obj.playaudio(3,"renowned_melee" @ getRandom(0,2) @ "_sound");
+			case "PlayerPuppetMaster": %obj.playaudio(3,"puppetmaster_melee" @ getRandom(1,3) @ "_sound");
 			default:
 		}
 
