@@ -27,15 +27,15 @@ if(isfile("Add-Ons/System_ReturnToBlockland/server.cs"))
 		RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
 		RTB_registerPref("Sight Range", "Eventide - Gaze", "$Pref::Server::GazeRange", "int 0 100", "Gamemode_Eventide", 20, 0, 0);
 
-		RTB_RegisterPref("Enable Footstep SoundFX", "Eventide", "$Pref::Server::PF::footstepsEnabled", "bool", "Script_PeggFootsteps", 1, 0, 0);
-		RTB_RegisterPref("BrickFX custom SoundFX", "Eventide", "$Pref::Server::PF::brickFXSounds::enabled", "bool", "Script_PeggFootsteps", 1, 0, 0);
-		RTB_RegisterPref("Enable Landing SoundFX", "Eventide", "$Pref::Server::PF::landingFX", "bool", "Script_PeggFootsteps", 1, 0, 0);
-	  	RTB_RegisterPref("Enable Swimming SoundFX", "Eventide", "$Pref::Server::PF::waterSFX", "bool", "Script_PeggFootsteps", 1, 0, 0);
-		RTB_RegisterPref("Landing Threshold", "Eventide", "$Pref::Server::PF::minLandSpeed", "int 0.0 20.0", "Script_PeggFootsteps", 10.0, 0, 0);
-		RTB_RegisterPref("Running Threshold", "Eventide", "$Pref::Server::PF::runningMinSpeed", "int 0.0 20.0", "Script_PeggFootsteps", 2.8, 0, 0);
-		RTB_RegisterPref("Default Step SoundFX", "Eventide", "$Pref::Server::PF::defaultStep", "List	Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Script_PeggFootsteps", 1, 0, 0);
-		RTB_RegisterPref("Steps on Terrain SoundFX", "Eventide", "$Pref::Server::PF::terrainStep", "List	Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Script_PeggFootsteps", 0, 0, 0);
-		RTB_RegisterPref("Steps on Vehicles SoundFX", "Eventide", "$Pref::Server::PF::vehicleStep", "List	Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Script_PeggFootsteps", 0, 0, 0);
+		RTB_RegisterPref("Enable Footstep SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::footstepsEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
+		RTB_RegisterPref("BrickFX custom SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::brickFXSounds::enabled", "bool", "Gamemode_Eventide", 1, 0, 0);
+		RTB_RegisterPref("Enable Landing SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::landingFX", "bool", "Gamemode_Eventide", 1, 0, 0);
+	  	RTB_RegisterPref("Enable Swimming SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::waterSFX", "bool", "Gamemode_Eventide", 1, 0, 0);
+		RTB_RegisterPref("Landing Threshold", "Eventide - Footsteps", "$Pref::Server::PF::minLandSpeed", "int 0.0 20.0", "Gamemode_Eventide", 10.0, 0, 0);
+		RTB_RegisterPref("Running Threshold", "Eventide - Footsteps", "$Pref::Server::PF::runningMinSpeed", "int 0.0 20.0", "Gamemode_Eventide", 2.8, 0, 0);
+		RTB_RegisterPref("Default Step SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::defaultStep", "List	Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Gamemode_Eventide", 1, 0, 0);
+		RTB_RegisterPref("Steps on Terrain SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::terrainStep", "List	Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Gamemode_Eventide", 0, 0, 0);
+		RTB_RegisterPref("Steps on Vehicles SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::vehicleStep", "List	Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Gamemode_Eventide", 0, 0, 0);
 
 		if ( $Pref::Server::PF::brickFXsounds::pearlStep $= "" ) $Pref::Server::PF::pearlStep = 4;
 		if ( $Pref::Server::PF::brickFXsounds::chromeStep $= "" ) $Pref::Server::PF::chromeStep = 4;
