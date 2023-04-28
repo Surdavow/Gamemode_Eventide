@@ -77,19 +77,28 @@ datablock ShapeBaseImageData(meleeTantoImage)
 datablock ShapeBaseImageData(meleeMacheteImage : meleeTantoImage)
 {
    shapeFile = "./models/machete.dts";
-   colorShiftColor = "1 1 1 1";
+   mountPoint = 0;
+};
+
+datablock ShapeBaseImageData(meleePuppetMasterDaggerImage : meleeTantoImage)
+{
+   shapeFile = "./models/puppetmasterdagger.dts";
    mountPoint = 0;
 };
 
 datablock ShapeBaseImageData(meleeAxeImage : meleeTantoImage)
 {
    shapeFile = "./models/axe.dts";
-   colorShiftColor = "1 1 1 1";
 };
 
 function meleeTantoImage::onFire(%this,%obj,%slot)
 {
 	return;
+}
+
+function meleePuppetMasterDaggerImage::onFire(%this,%obj,%slot)
+{
+	meleeTantoImage::onFire(%this,%obj,%slot);
 }
 
 function meleeAxeImage::onFire(%this,%obj,%slot)

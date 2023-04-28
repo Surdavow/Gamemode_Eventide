@@ -46,6 +46,7 @@ function Eventide_Melee(%this,%obj,%radius)
 											%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
 					case "PlayerShire":		serverPlay3d("melee_axe_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());			
 					case "PlayerGrabber": serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
+					case "PlayerPuppetMaster": serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
 										serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
 					case "PlayerRenowned": serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());
 										serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());										
