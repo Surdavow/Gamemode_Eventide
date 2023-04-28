@@ -148,7 +148,7 @@ datablock fxDTSBrickData(brickCandleData)
 	subCategory = "Eventide";
 	uiName = "Candle";
 	iconName = candleItem.iconName;
-	brickFile = "./models/1x1x3.blb";
+	brickFile = "./models/candleplacer.blb";
 
 	staticShapeItemMatch = "candleImage";
 	staticShape = brickCandleStaticShape;
