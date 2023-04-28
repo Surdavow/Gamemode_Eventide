@@ -243,11 +243,6 @@ function servercmdGetPeggPrefs(%client)
 	messageClient(%client,'',"<color:aaaaaa>(PgUp to see all options)");
 }
 
-
-//--------------------------------------------------------------------------------------
-//		 Assigning custom sounds to colors.
-//--------------------------------------------------------------------------------------
-
 //+++ Clear the custom list.
 function serverCmdClearCustomSounds(%client)
 {
@@ -257,10 +252,8 @@ function serverCmdClearCustomSounds(%client)
 		return;
 	}
 	messageClient(%client,'',"\c6You have cleared all the custom foostep SFX for every color of brick.");
-	for ( %i = 0; %i < $Pref::Server::PF::customsounds; %i++ )
-	{
-		$Pref::Server::PF::colorPlaysFX[%i] = "";
-	}
+	for(%i = 0; %i < $Pref::Server::PF::customsounds; %i++) $Pref::Server::PF::colorPlaysFX[%i] = "";
+	
 	$Pref::Server::PF::customsounds = 0;
 }
 
@@ -277,7 +270,7 @@ function serverCmdClearCustomSound(%client)
 	%g = getWord(%color, 1) * 255;
 	%b = getWord(%color, 2) * 255;
 	%hex = rgbToHex(%color);
-	for ( %i = 0; %i < $Pref::Server::PF::customsounds; %i++ )
+	for(%i = 0; %i < $Pref::Server::PF::customsounds; %i++)
 	{
 		%hit = $Pref::Server::PF::colorPlaysFX[%i];
 		%hitcolor = getWords(%hit, 0, 3);
@@ -435,7 +428,7 @@ function PeggFootsteps_getSound(%surface, %speed)
 		switch$(%surface)
 		{
 			// swimmingfx only has one speed. There is no walking speed for swimmingfx.
-			case "under water": return $StepSwimming[getRandom(1,6)];
+			case "under water": return "swim" @ getRandom(1,6) @ "_sound";
 
 			case "metal": 	if(%speed $= "walking") return "fs_walk_metal" @ getRandom(1,4) @ "_sound";
 							else return "fs_run_metal" @ getRandom(1,5) @ "_sound";
@@ -449,8 +442,8 @@ function PeggFootsteps_getSound(%surface, %speed)
 			case "stone": 	if(%speed $= "walking") return "fs_walk_stone" @ getRandom(1,5) @ "_sound";
 							else return "fs_run_stone" @ getRandom(1,5) @ "_sound";
 
-			case "water":	if(%speed $= "walking") return "fs_walk_stone" @ getRandom(1,5) @ "_sound";
-							else return "fs_run_stone" @ getRandom(1,5) @ "_sound";
+			case "water":	if(%speed $= "walking") return "fs_water_walk" @ getRandom(1,5) @ "_sound";
+							else return "fs_water_run" @ getRandom(1,5) @ "_sound";
 
 			case "wood": 	if(%speed $= "walking") return "fs_walk_wood" @ getRandom(1,5) @ "_sound";
 							else return "fs_run_wood" @ getRandom(1,5) @ "_sound";
