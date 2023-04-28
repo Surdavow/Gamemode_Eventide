@@ -7,6 +7,7 @@ exec("./player_shire.cs");
 exec("./bot_shirezombie.cs");
 exec("./player_skinwalker.cs");
 exec("./player_skullwolf.cs");
+exec("./player_puppetmaster.cs");
 
 registerOutputEvent("GameConnection", "Escape", "", false);
 
