@@ -26,6 +26,24 @@ if(isfile("Add-Ons/System_ReturnToBlockland/server.cs"))
 
 		RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
 		RTB_registerPref("Sight Range", "Eventide - Gaze", "$Pref::Server::GazeRange", "int 0 100", "Gamemode_Eventide", 20, 0, 0);
+
+		RTB_RegisterPref("Enable Footstep SoundFX", "Eventide", "$Pref::Server::PF::footstepsEnabled", "bool", "Script_PeggFootsteps", 1, 0, 0);
+		RTB_RegisterPref("BrickFX custom SoundFX", "Eventide", "$Pref::Server::PF::brickFXSounds::enabled", "bool", "Script_PeggFootsteps", 1, 0, 0);
+		RTB_RegisterPref("Enable Landing SoundFX", "Eventide", "$Pref::Server::PF::landingFX", "bool", "Script_PeggFootsteps", 1, 0, 0);
+	  	RTB_RegisterPref("Enable Swimming SoundFX", "Eventide", "$Pref::Server::PF::waterSFX", "bool", "Script_PeggFootsteps", 1, 0, 0);
+		RTB_RegisterPref("Landing Threshold", "Eventide", "$Pref::Server::PF::minLandSpeed", "int 0.0 20.0", "Script_PeggFootsteps", 10.0, 0, 0);
+		RTB_RegisterPref("Running Threshold", "Eventide", "$Pref::Server::PF::runningMinSpeed", "int 0.0 20.0", "Script_PeggFootsteps", 2.8, 0, 0);
+		RTB_RegisterPref("Default Step SoundFX", "Eventide", "$Pref::Server::PF::defaultStep", "List	Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Script_PeggFootsteps", 1, 0, 0);
+		RTB_RegisterPref("Steps on Terrain SoundFX", "Eventide", "$Pref::Server::PF::terrainStep", "List	Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Script_PeggFootsteps", 0, 0, 0);
+		RTB_RegisterPref("Steps on Vehicles SoundFX", "Eventide", "$Pref::Server::PF::vehicleStep", "List	Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Script_PeggFootsteps", 0, 0, 0);
+
+		if ( $Pref::Server::PF::brickFXsounds::pearlStep $= "" ) $Pref::Server::PF::pearlStep = 4;
+		if ( $Pref::Server::PF::brickFXsounds::chromeStep $= "" ) $Pref::Server::PF::chromeStep = 4;
+		if ( $Pref::Server::PF::brickFXsounds::glowStep $= "" ) $Pref::Server::PF::brickFXsounds::glowStep = 0;
+		if ( $Pref::Server::PF::brickFXsounds::blinkStep $= "" ) $Pref::Server::PF::brickFXsounds::blinkStep = 0;
+		if ( $Pref::Server::PF::brickFXsounds::swirlStep $= "" ) $Pref::Server::PF::brickFXsounds::swirlStep = 0;
+		if ( $Pref::Server::PF::brickFXsounds::rainbowStep $= "" ) $Pref::Server::PF::brickFXsounds::rainbowStep = 0;
+		if ( $Pref::Server::PF::brickFXsounds::unduloStep $= "" ) $Pref::Server::PF::unduloStep = 8;				
 }
 else
 {
@@ -40,4 +58,22 @@ else
 	$Pref::Server::ChatMod::radioNumChannels = 1;
 	$Pref::Server::GazeRange = 20;
 	$Pref::Server::GazeEnabled = 1;
+
+	if ( $Pref::Server::PF::footstepsEnabled $= "" ) $Pref::Server::PF::footstepsEnabled = 1;
+	if ( $Pref::Server::PF::brickFXSounds::enabled $= "" ) $Pref::Server::PF::brickFXSounds::enabled = 1;
+	if ( $Pref::Server::PF::brickFXSounds::enabled $= "" ) $Pref::Server::PF::landingFX = 1;
+	if ( $Pref::Server::PF::minLandSpeed $= "" ) $Pref::Server::PF::minLandSpeed = 8.0;
+	if ( $Pref::Server::PF::runningMinSpeed $= "" ) $Pref::Server::PF::runningMinSpeed = 2.8;
+	if ( $Pref::Server::PF::waterSFX $= "" ) $Pref::Server::PF::waterSFX = 1;
+	if ( $Pref::Server::PF::defaultStep $= "" ) $Pref::Server::PF::defaultStep = 1;
+	if ( $Pref::Server::PF::terrainStep $= "" ) $Pref::Server::PF::terrainStep = 0;
+	if ( $Pref::Server::PF::vehicleStep $= "" ) $Pref::Server::PF::vehicleStep = 0;
+
+	if ( $Pref::Server::PF::brickFXsounds::pearlStep $= "" ) $Pref::Server::PF::pearlStep = 4;
+	if ( $Pref::Server::PF::brickFXsounds::chromeStep $= "" ) $Pref::Server::PF::chromeStep = 4;
+	if ( $Pref::Server::PF::brickFXsounds::glowStep $= "" ) $Pref::Server::PF::brickFXsounds::glowStep = 0;
+	if ( $Pref::Server::PF::brickFXsounds::blinkStep $= "" ) $Pref::Server::PF::brickFXsounds::blinkStep = 0;
+	if ( $Pref::Server::PF::brickFXsounds::swirlStep $= "" ) $Pref::Server::PF::brickFXsounds::swirlStep = 0;
+	if ( $Pref::Server::PF::brickFXsounds::rainbowStep $= "" ) $Pref::Server::PF::brickFXsounds::rainbowStep = 0;
+	if ( $Pref::Server::PF::brickFXsounds::unduloStep $= "" ) $Pref::Server::PF::unduloStep = 8;	
 }

@@ -6,6 +6,7 @@ exec("./support_dataInstance.cs");
 exec("./support_itemammo.cs");
 exec("./support_statuseffect.cs");
 exec("./support_stringutilities.cs");
+exec("./script_peggyfootsteps.cs");
 
 package Eventide_MainPackage
 {
