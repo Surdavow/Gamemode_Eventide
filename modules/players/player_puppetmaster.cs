@@ -16,7 +16,8 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	killerchasesound = "puppetmaster_idle";
 	killerchasesoundamount = 3;
 	killerraisearms = false;
-	killerlight = "NoFlareRLight";	
+	killerlight = "NoFlareRLight";
+	showEnergyBar = false;
 
 	firstpersononly = true;
 	rechargeRate = 0.65;
