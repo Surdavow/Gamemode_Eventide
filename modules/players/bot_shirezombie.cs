@@ -177,11 +177,20 @@ function ShireZombieBot::onCollision(%this,%obj,%col,%normal,%speed)
 {
 	Parent::onCollision(%this,%obj,%col,%normal,%speed);
 
+    if(%obj.getState() !$= "Dead")
     if((%col.getType() & $TypeMasks::PlayerObjectType) && %col.getState() !$= "Dead" && !%col.getdataBlock().isKiller) 
     {
-        %col.damage(%obj,%col.getWorldBoxCenter(), 25, $DamageType::Default);
-        %col.ShiredSlowDown(2.5);
-        %obj.delete();
+        %col.damage(%obj,%col.getWorldBoxCenter(), 10, $DamageType::Default);        
+        %col.SetTempSpeed(0.5);
+        %col.schedule(1000,SetTempSpeed,1);
+        %col.playthread(3,"plant");
+
+        %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
+        cancel(%obj.BotLoopSched);
+        %obj.playthread(3,"activate2");
+        %obj.setMoveX(0);
+        %obj.setMoveY(-0.25);
+        %obj.BotLoopSched = %this.schedule(2000,onBotLoop,%obj);                 
     }
 }
 
@@ -189,25 +198,4 @@ function ShireZombieBot::onRemove(%this,%obj)
 {    
     Parent::onRemove(%this,%obj);
     %obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
-}
-
-function Player::ShiredSlowDown(%obj,%slowdowndivider)
-{						
-	if(!isObject(%obj) || %obj.getstate() $= "Dead") return;
-
-	%datablock = %obj.getDataBlock();
-	%obj.setMaxForwardSpeed(%datablock.MaxForwardSpeed/%slowdowndivider);
-	%obj.setMaxSideSpeed(%datablock.MaxSideSpeed/%slowdowndivider);
-	%obj.setMaxBackwardSpeed(%datablock.maxBackwardSpeed/%slowdowndivider);
-
-	%obj.setMaxCrouchForwardSpeed(%datablock.maxForwardCrouchSpeed/%slowdowndivider);
-  	%obj.setMaxCrouchBackwardSpeed(%datablock.maxSideCrouchSpeed/%slowdowndivider);
-  	%obj.setMaxCrouchSideSpeed(%datablock.maxSideCrouchSpeed/%slowdowndivider);
-
- 	%obj.setMaxUnderwaterBackwardSpeed(%datablock.MaxUnderwaterBackwardSpeed/%slowdowndivider);
-  	%obj.setMaxUnderwaterForwardSpeed(%datablock.MaxUnderwaterForwardSpeed/%slowdowndivider);
-  	%obj.setMaxUnderwaterSideSpeed(%datablock.MaxUnderwaterForwardSpeed/%slowdowndivider);
-
-	cancel(%obj.resetSpeedSched);
-	%obj.resetSpeedSched = %obj.schedule(2000,ShiredSlowDown,1);
 }

@@ -1,5 +1,6 @@
-datablock TSShapeConstructor(EventideplayerDts) {
-	baseShape = "./models/Eventideplayer.dts";
+datablock TSShapeConstructor(EventideplayerDts) 
+{
+	baseShape = "./models/eventideplayer.dts";
 	sequence0 = "./models/default.dsq";
 };
 

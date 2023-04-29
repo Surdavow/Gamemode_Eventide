@@ -17,10 +17,10 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	killerchasesoundamount = 3;
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";
-	showEnergyBar = false;
+	showEnergyBar = true;
 
 	firstpersononly = true;
-	rechargeRate = 0.65;
+	rechargeRate = 0.75;
 	maxTools = 0;
 	maxWeapons = 0;
 	maxForwardSpeed = 6.65;
@@ -47,27 +47,33 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 	if(%bool) switch(%triggerNum)
 	{
 		case 0: Eventide_Melee(%this,%obj,3.5);
-		case 4: if(!isObject(PuppetGroup)) new SimGroup(PuppetGroup);
-				MissionCleanup.add(PuppetGroup);
-
-				if(PuppetGroup.getCount() < 3)
+		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{
-					%puppet = new AIPlayer()
-					{
-						dataBlock = "PuppetMasterPuppet";
-						minigame = %obj.minigame;
-					};
-					%obj.mountObject(%puppet,8);
-					PuppetGroup.add(%puppet);
+					if(!isObject(PuppetGroup)) new SimGroup(PuppetGroup);
+					MissionCleanup.add(PuppetGroup);
 
-					%puppet.unmount();
-					%obj.playthread(3,"leftrecoil");
-					
-					%puppet.setVelocity(vectorscale(%obj.getEyeVector(),25));
-					%puppet.position = %obj.getmuzzlePoint(1);
-					%puppet.schedule(2000,setActionThread,sit,1);
-					%obj.client.centerprint("<color:FFFFFF><font:impact:40>New puppet added! Press your plant brick key to control them!" ,3);
+					if(PuppetGroup.getCount() < 3)
+					{
+						%puppet = new AIPlayer()
+						{
+							dataBlock = "PuppetMasterPuppet";
+							minigame = %obj.minigame;
+						};
+						%obj.mountObject(%puppet,8);
+						PuppetGroup.add(%puppet);
+
+						%puppet.unmount();
+						%obj.playthread(3,"leftrecoil");
+
+						%puppet.setVelocity(vectorscale(%obj.getEyeVector(),25));
+						%puppet.position = %obj.getmuzzlePoint(1);
+						%puppet.schedule(2000,setActionThread,sit,1);
+						%obj.client.centerprint("<color:FFFFFF><font:impact:30>Press your plant brick key to control the puppet!" ,3);
+						%obj.setEnergyLevel(0);
+					}
+					else %obj.client.centerprint("<color:FFFFFF><font:impact:30>Only 3 puppets can be placed." ,3);
 				}
+				else %obj.client.centerprint("<color:FFFFFF><font:impact:30>You need more energy to summon a puppet." ,3);
 
 		default:
 	}

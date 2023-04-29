@@ -30,6 +30,8 @@ package Eventide_MainPackage
 				%client.puppetnumber = 0;
 			}			
 		}
+
+		Parent::ServerCmdPlantBrick(%client);
 	}
 
 	function Armor::onNewDatablock(%this,%obj)
