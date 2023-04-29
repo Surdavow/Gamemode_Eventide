@@ -1,5 +1,6 @@
 datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 {
+	uiName = "";
 	maxTools = 0;
 	maxWeapons = 0;
 	thirdpersononly = true;
