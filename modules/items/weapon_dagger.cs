@@ -235,7 +235,7 @@ function DaggerCheck(%obj,%this,%slot)
 			if(Eventide_MinigameConditionalCheckNoKillers(%obj,%ray,false))
 			{
 				%ray.damage(%obj, posFromRaycast(%ray), %damageclamp, $DamageType::Default);
-				%ray.applyimpulse(posFromRaycast(%ray),vectoradd(vectorscale(%vec,1000),"0 0 750"));				
+				%ray.applyimpulse(posFromRaycast(%ray),vectoradd(vectorscale(%vec,250),"0 0 250"));				
 			}
 		}
    } 
