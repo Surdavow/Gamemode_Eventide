@@ -50,13 +50,10 @@ function ShireZombieBot::onBotLoop(%this,%obj)
             %dot = vectorDot(%obj.getEyeVector(), %line );
             %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%scan.getPosition(),"0 0 1.9"),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 
-            if(!isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%scan.getposition()) < 75)//Distance should be less than 75, and they can see them   
-            {
-                if(!%scan.getDataBlock().isKiller)
-                {
-                    %obj.target = %scan;
-                    %target = %obj.target;
-                }
+            if(!%scan.getDataBlock().isKiller && !isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%scan.getposition()) < 75)//Distance should be less than 75, and they can see them   
+            {                
+                %obj.target = %scan;
+                %target = %obj.target;            
             }
         }
     }
@@ -65,8 +62,8 @@ function ShireZombieBot::onBotLoop(%this,%obj)
     if(!isObject(%target) || %target.getState() $= "Dead" || %target.getDataBlock().isKiller) 
     {
         %obj.target = 0;//They either do not exist or are dead so clear the target
-        %obj.clearMoveX();
-        %obj.clearMoveY();
+        %obj.setMoveY(0);
+        %obj.setMoveX(0);
     }
     else if(isObject(%target) && %target.getState() !$= "Dead")
     {
