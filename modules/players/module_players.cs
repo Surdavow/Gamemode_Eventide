@@ -39,27 +39,6 @@ function Player::AddMoveSpeedModifier(%obj,%a)
 	%obj.SetSpeedModifier(%obj.Speed_Modifier + %a);
 }
 
-function Eventide_MinigameConditionalCheck(%objA,%objB,%exemptDeath)//exemptdeath is to skip checking if the victim is dead
-{
-	if((%objA.getClassName() $= "Player" || %objA.getClassName() $= "AIPlayer") && (%objB.getClassName() $= "Player" || %objB.getClassName() $= "AIPlayer"))
-	{
-		if(%exemptDeath) 
-		{
-			if(%objA.getstate() !$= "Dead" && %objA.getdataBlock().isKiller && !%objB.getdataBlock().isKiller)		
-			if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB) 
-			return true;
-		}
-		else 
-		if(%objA.getstate() !$= "Dead" && %objB.getstate() !$= "Dead" && %objA.getdataBlock().isKiller && !%objB.getdataBlock().isKiller)
-		{
-			if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB)
-			return true;
-		}
-	}
-
-	return false;
-}
-
 function Player::SetTempSpeed(%obj,%slowdowndivider)
 {						
 	if(!isObject(%obj) || %obj.getstate() $= "Dead") return;

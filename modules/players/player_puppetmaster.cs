@@ -57,7 +57,8 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 						%puppet = new AIPlayer()
 						{
 							dataBlock = "PuppetMasterPuppet";
-							minigame = %obj.minigame;
+							minigame = getMiniGameFromObject(%obj);
+							client = %obj.client;							
 						};
 						%obj.mountObject(%puppet,8);
 						PuppetGroup.add(%puppet);

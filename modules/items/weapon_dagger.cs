@@ -232,7 +232,7 @@ function DaggerCheck(%obj,%this,%slot)
 			else %damageclamp = mClamp(%damagepower, 40, %ray.getdatablock().maxDamage);
 			serverPlay3D("sworddaggerhitPL" @ getRandom(1,2) @ "_sound",posFromRaycast(%ray));			
 			
-			if(Eventide_MinigameConditionalCheck(%obj,%ray))
+			if(Eventide_MinigameConditionalCheckNoKillers(%obj,%ray,false))
 			{
 				%ray.damage(%obj, posFromRaycast(%ray), %damageclamp, $DamageType::Default);
 				%ray.applyimpulse(posFromRaycast(%ray),vectoradd(vectorscale(%vec,1000),"0 0 750"));				

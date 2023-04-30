@@ -151,7 +151,7 @@ datablock fxDTSBrickData(brickCandleData : brick1x1FData)
 
 	staticShapeItemMatch = "candleImage";
 	staticShape = brickCandleStaticShape;
-	shapeBrickPos = "0 0 -0.6";	
+	shapeBrickPos = "0 0 0.15";	
 	colorShiftColor = "1 1 1 1";	
 };
 
