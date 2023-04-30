@@ -39,6 +39,7 @@ function PuppetMasterPuppet::EventideAppearance(%this,%obj,%client)
 	%obj.HideNode((%client.rhand ? "rhook" : "rhand"));
 	%obj.HideNode((%client.lhand ? "lhook" : "lhand"));
 
+	%obj.unHideNode("buttoneyes");
 	%obj.unHideNode((%client.chest ? "femChestpuppet" : "chestpuppet"));	
 	%obj.unHideNode((%client.rhand ? "rhook" : "rhandpuppet"));
 	%obj.unHideNode((%client.lhand ? "lhook" : "lhandpuppet"));	
@@ -49,6 +50,7 @@ function PuppetMasterPuppet::EventideAppearance(%this,%obj,%client)
 		%obj.unHideNode("pantspuppet");
 	}
 
+	%obj.setNodeColor("buttoneyes","0.1 0.1 0.1 1");	
 	%obj.setNodeColor("headpuppet",%client.headColor);	
 	%obj.setNodeColor("chestpuppet",%client.chestColor);
 	%obj.setNodeColor("femChestpuppet",%client.chestColor);
