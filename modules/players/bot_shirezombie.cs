@@ -198,5 +198,5 @@ function ShireZombieBot::onCollision(%this,%obj,%col,%normal,%speed)
 function ShireZombieBot::onRemove(%this,%obj)
 {    
     Parent::onRemove(%this,%obj);
-    %obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
+    %obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 }
