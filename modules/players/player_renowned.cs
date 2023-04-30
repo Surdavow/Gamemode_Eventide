@@ -6,9 +6,9 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	maxDamage = 9999;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.65;
-	maxBackwardSpeed = 3.8;
-	maxSideSpeed = 5.7;
+	maxForwardSpeed = 7.32;
+	maxBackwardSpeed = 4.18;
+	maxSideSpeed = 6.27;
 	useCustomPainEffects = true;
 	jumpSound = "";
 	PainSound		= "";
@@ -32,7 +32,7 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 	
 	%obj.mountImage("meleeTantoImage",0);
 	%obj.schedule(1, setEnergyLevel, 0);
-	%obj.setScale("1.1 1.1 1.1");
+	%obj.setScale("1.05 1.05 1.05");
 }
 
 function PlayerRenowned::EventideAppearance(%this,%obj,%client)

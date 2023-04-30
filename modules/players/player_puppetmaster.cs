@@ -23,9 +23,9 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	rechargeRate = 0.75;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.65;
-	maxBackwardSpeed = 3.8;
-	maxSideSpeed = 5.7;
+	maxForwardSpeed = 6.74;
+	maxBackwardSpeed = 3.85;
+	maxSideSpeed = 5.78;
 	cameramaxdist = 3;
 	maxfreelookangle = 2.5;
 	boundingBox = "4.8 4.8 10.1";
@@ -36,7 +36,7 @@ function PlayerPuppetMaster::onNewDatablock(%this,%obj)
 {
     Parent::onNewDataBlock(%this,%obj);
 	%obj.schedule(1,setEnergyLevel,0);
-	%obj.setScale("1.05 1.05 1.05");
+	%obj.setScale("1.1 1.1 1.1");
 	%obj.mountImage("meleePuppetMasterDaggerImage",0);
 }
 

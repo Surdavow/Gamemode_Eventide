@@ -42,9 +42,9 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	rechargeRate = 0.25;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.65;
-	maxBackwardSpeed = 3.8;
-	maxSideSpeed = 5.7;
+	maxForwardSpeed = 6.84;
+	maxBackwardSpeed = 3.91;
+	maxSideSpeed = 5.87;
 	boundingBox = "4.8 4.8 10.1";
 	crouchBoundingBox = "4.8 4.8 3.8";
 };
@@ -91,7 +91,7 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 		%this.EventideAppearance(%obj,%obj.client);
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"skullwolf_uncloak_sound");
-		%obj.setmaxforwardspeed(6.65);
+		%obj.setmaxforwardspeed(6.84);
 		%obj.setEnergyLevel(0);
 	}
 

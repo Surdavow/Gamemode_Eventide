@@ -180,7 +180,7 @@ function ShireZombieBot::onCollision(%this,%obj,%col,%normal,%speed)
     if(%obj.getState() !$= "Dead")
     if((%col.getType() & $TypeMasks::PlayerObjectType) && %col.getState() !$= "Dead" && !%col.getdataBlock().isKiller) 
     {
-        %col.damage(%obj,%col.getWorldBoxCenter(), 10, $DamageType::Default);        
+        %col.damage(%obj,%col.getWorldBoxCenter(), 30, $DamageType::Default);        
         %col.SetTempSpeed(0.5);
         %col.schedule(1000,SetTempSpeed,1);
         %col.playthread(3,"plant");

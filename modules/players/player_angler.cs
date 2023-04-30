@@ -6,9 +6,9 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	maxWeapons = 0;
 	jumpForce = 10 * 75;
 	jumpDelay = 32;
-	maxForwardSpeed = 6.3;
-	maxBackwardSpeed = 3.6;
-	maxSideSpeed = 5.4;
+	maxForwardSpeed = 5.95;
+	maxBackwardSpeed = 3.4;
+	maxSideSpeed = 5.1;
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
 

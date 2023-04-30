@@ -33,9 +33,9 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	maxDamage = 9999;
 	jumpDelay = 31;
 	jumpForce = 10 * 80;
-	maxForwardSpeed = 6.3;
-	maxBackwardSpeed = 3.6;
-	maxSideSpeed = 5.4;
+	maxForwardSpeed = 6.27;
+	maxBackwardSpeed = 3.58;
+	maxSideSpeed = 5.38;
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
 	maxItems   = 0;

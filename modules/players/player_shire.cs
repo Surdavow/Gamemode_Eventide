@@ -14,9 +14,9 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	rechargeRate = 0.3;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.65;
-	maxBackwardSpeed = 3.8;
-	maxSideSpeed = 5.7;
+	maxForwardSpeed = 6.93;
+	maxBackwardSpeed = 3.96;
+	maxSideSpeed = 5.94;
 };
 
 datablock PlayerData(ShireZombieBot : EventidePlayer)

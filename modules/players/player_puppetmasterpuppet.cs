@@ -3,13 +3,17 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 	uiName = "";
 	maxTools = 0;
 	maxWeapons = 0;
-	thirdpersononly = true;
+	firstpersononly = true;
 	isKiller = true;
+	maxForwardSpeed = 13.06;
+	maxBackwardSpeed = 7.46;
+	maxSideSpeed = 11.20;
+	maxDamage = 10;
 };
 
 function PuppetMasterPuppet::onNewDatablock(%this,%obj)
 {
-	%obj.setScale("0.5 0.5 0.5");
+	%obj.setScale("0.6 0.6 0.6");
 	%this.EventideAppearance(%obj,ClientGroup.getObject(getRandom(0,ClientGroup.getCount()-1)));
 }
 
