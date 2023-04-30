@@ -45,12 +45,13 @@ function ShireZombieBot::onBotLoop(%this,%obj)
         while((%scan = containerSearchNext()) != 0)
         {
             if(%scan == %obj) continue;
+            if(%scan.getDataBlock().isKiller) continue;
 
             %line = vectorNormalize(vectorSub(%scan.getposition(),%obj.getposition()));
             %dot = vectorDot(%obj.getEyeVector(), %line );
             %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%scan.getPosition(),"0 0 1.9"),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 
-            if(!%scan.getDataBlock().isKiller && !isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%scan.getposition()) < 75)//Distance should be less than 75, and they can see them   
+            if(!isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%scan.getposition()) < 75)//Distance should be less than 75, and they can see them   
             {                
                 %obj.target = %scan;
                 %target = %obj.target;            
