@@ -19,13 +19,6 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	maxSideSpeed = 5.94;
 };
 
-datablock PlayerData(ShireZombieBot : EventidePlayer)
-{
-	uiName = "";
-	isKiller = true;
-	maxDamage = 1;
-};
-
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
 {
 	Parent::onCollision(%this, %obj, %col, %fade, %pos, %normal);

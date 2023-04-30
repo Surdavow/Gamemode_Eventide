@@ -1,3 +1,12 @@
+
+datablock PlayerData(ShireZombieBot : EventidePlayer)
+{
+	uiName = "";
+	isKiller = true;
+	maxDamage = 1;
+    uiName = "";
+};
+
 function ShireZombieBot::applyAppearance(%this,%obj)
 {
     Armor::EventideAppearance(%this,%obj,%obj.ghostclient);
@@ -44,15 +53,14 @@ function ShireZombieBot::onBotLoop(%this,%obj)
         initContainerRadiusSearch(%obj.getPosition(), 75, $TypeMasks::PlayerObjectType);
         while((%scan = containerSearchNext()) != 0)
         {
-            if(%scan == %obj) continue;
-            if(%scan.getDataBlock().isKiller) continue;
+            if(%scan == %obj || %scan.getdataBlock().isKiller || %scan.getDataBlock().className $= "PlayerData") continue;
 
             %line = vectorNormalize(vectorSub(%scan.getposition(),%obj.getposition()));
             %dot = vectorDot(%obj.getEyeVector(), %line );
             %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%scan.getPosition(),"0 0 1.9"),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 
             if(!isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%scan.getposition()) < 75)//Distance should be less than 75, and they can see them   
-            {                
+            {
                 %obj.target = %scan;
                 %target = %obj.target;            
             }
