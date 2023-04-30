@@ -10,6 +10,30 @@ exec("./script_peggyfootsteps.cs");
 
 package Eventide_MainPackage
 {
+
+	function ServerCmdPlantBrick (%client)
+	{
+		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "PlayerPuppetMaster" && isObject(PuppetGroup))
+		{	
+			if(%client.puppetnumber $= "") %client.puppetnumber = 0;
+
+			if(isObject(PuppetGroup.getObject(%client.puppetnumber))) 
+			{
+				%client.getcontrolObject().schedule(1500,setActionThread,sit,1);
+				%client.setcontrolobject(PuppetGroup.getObject(%client.puppetnumber));
+				%client.puppetnumber++;
+			}
+			else
+			{
+				%client.getcontrolObject().schedule(1500,setActionThread,sit,1);
+				%client.setcontrolobject(%client.player);
+				%client.puppetnumber = 0;
+			}			
+		}
+
+		Parent::ServerCmdPlantBrick(%client);
+	}
+
 	function Armor::onNewDatablock(%this,%obj)
 	{
 		Parent::onNewDatablock(%this,%obj);

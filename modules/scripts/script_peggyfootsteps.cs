@@ -424,46 +424,44 @@ function rgbToHex(%rgb) //! Ripped from Greek2Me's SLAYER
 
 function PeggFootsteps_getSound(%surface, %speed)
 {
-		echo(%surface);
-		switch$(%surface)
-		{
-			// swimmingfx only has one speed. There is no walking speed for swimmingfx.
-			case "under water": return "swim" @ getRandom(1,6) @ "_sound";
+	switch$(%surface)
+	{
+		case "under water": return "swim" @ getRandom(1,6) @ "_sound";
 
-			case "metal": 	if(%speed $= "walking") return "fs_walk_metal" @ getRandom(1,4) @ "_sound";
-							else return "fs_run_metal" @ getRandom(1,5) @ "_sound";
+		case "metal": 	if(%speed $= "walking") return "fs_walk_metal" @ getRandom(1,4) @ "_sound";
+						else return "fs_run_metal" @ getRandom(1,5) @ "_sound";
 
-			case "dirt": 	if(%speed $= "walking") return "fs_walk_dirt" @ getRandom(1,5) @ "_sound";
-							else return "fs_run_dirt" @ getRandom(1,5) @ "_sound";
+		case "dirt": 	if(%speed $= "walking") return "fs_walk_dirt" @ getRandom(1,5) @ "_sound";
+						else return "fs_run_dirt" @ getRandom(1,5) @ "_sound";
 
-			case "grass": 	if(%speed $= "walking") return "fs_walk_grass" @ getRandom(1,4) @ "_sound";
-							else return "fs_run_grass" @ getRandom(1,5) @ "_sound";
+		case "grass": 	if(%speed $= "walking") return "fs_walk_grass" @ getRandom(1,4) @ "_sound";
+						else return "fs_run_grass" @ getRandom(1,5) @ "_sound";
 
-			case "stone": 	if(%speed $= "walking") return "fs_walk_stone" @ getRandom(1,5) @ "_sound";
-							else return "fs_run_stone" @ getRandom(1,5) @ "_sound";
+		case "stone": 	if(%speed $= "walking") return "fs_walk_stone" @ getRandom(1,5) @ "_sound";
+						else return "fs_run_stone" @ getRandom(1,5) @ "_sound";
 
-			case "water":	if(%speed $= "walking") return "fs_water_walk" @ getRandom(1,5) @ "_sound";
-							else return "fs_water_run" @ getRandom(1,5) @ "_sound";
+		case "water":	if(%speed $= "walking") return "fs_water_walk" @ getRandom(1,5) @ "_sound";
+						else return "fs_water_run" @ getRandom(1,5) @ "_sound";
 
-			case "wood": 	if(%speed $= "walking") return "fs_walk_wood" @ getRandom(1,5) @ "_sound";
-							else return "fs_run_wood" @ getRandom(1,5) @ "_sound";
+		case "wood": 	if(%speed $= "walking") return "fs_walk_wood" @ getRandom(1,5) @ "_sound";
+						else return "fs_run_wood" @ getRandom(1,5) @ "_sound";
 
-			case "sand": 	if(%speed $= "walking") return "fs_walk_sand" @ getRandom(1,4) @ "_sound";
-							else return "fs_run_sand" @ getRandom(1,6) @ "_sound";
+		case "sand": 	if(%speed $= "walking") return "fs_walk_sand" @ getRandom(1,4) @ "_sound";
+						else return "fs_run_sand" @ getRandom(1,6) @ "_sound";
 
-			case "basic": 	if(%speed $= "walking") return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
-							else return "fs_run_basic" @ getRandom(1,4) @ "_sound";
-
-			case "fabric": 	if(%speed $= "walking") return "fs_walk_fabric" @ getRandom(1,5) @ "_sound";
-							else return "fs_run_fabric" @ getRandom(1,5) @ "_sound";
-
-			case "snow":	return "fs_walk_snow" @ getRandom(1,3) @ "_sound";// snowsteps only have one speed.
-
-			case "default":	return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
-
-			default: 	if(%speed $= "walking") return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
+		case "basic": 	if(%speed $= "walking") return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
 						else return "fs_run_basic" @ getRandom(1,4) @ "_sound";
-		}
+
+		case "fabric": 	if(%speed $= "walking") return "fs_walk_fabric" @ getRandom(1,5) @ "_sound";
+						else return "fs_run_fabric" @ getRandom(1,5) @ "_sound";
+
+		case "snow":	return "fs_walk_snow" @ getRandom(1,3) @ "_sound";// snowsteps only have one speed.
+
+		case "default":	return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
+
+		default: 	if(%speed $= "walking") return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
+					else return "fs_run_basic" @ getRandom(1,4) @ "_sound";
+	}
 }
 
 //+++ 	Calculate the noise based off what the player is stepping on.
@@ -515,7 +513,7 @@ function parseSoundFromNumber(%val, %obj) // brick is an optional parameter
 	//Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9
 	switch (%val)
 	{
-		case 0: 	if ( %obj.touchColor !$= "" ) return "color";
+		case 0: 	if(%obj.touchColor !$= "") return "color";
 					else return "default";
 		case 1: return "basic";
 		case 2: return "dirt";

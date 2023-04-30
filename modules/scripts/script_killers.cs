@@ -5,7 +5,8 @@ function Eventide_Melee(%this,%obj,%radius)
 		switch$(%obj.getdataBlock().getName())
 		{
 			case "PlayerRenowned": %obj.playaudio(3,"renowned_melee" @ getRandom(0,2) @ "_sound");
-			case "PlayerPuppetMaster": %obj.playaudio(3,"puppetmaster_melee" @ getRandom(1,3) @ "_sound");
+			case "PlayerPuppetMaster": 	%obj.stopaudio(3);
+										%obj.playaudio(3,"puppetmaster_melee" @ getRandom(1,3) @ "_sound");
 			default:
 		}
 
@@ -46,10 +47,12 @@ function Eventide_Melee(%this,%obj,%radius)
 											%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
 					case "PlayerShire":		serverPlay3d("melee_axe_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());			
 					case "PlayerGrabber": serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
+					case "PlayerPuppetMaster": serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
 										serverPlay3d("melee_machete_0" @ getRandom(1,2) @ "_sound", %hit.getPosition());
 					case "PlayerRenowned": serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());
 										serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());										
 					case "PlayerSkinwalker": %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
+					case "PlayerPuppetMasterPuppet": %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
 					default:
 				}
 

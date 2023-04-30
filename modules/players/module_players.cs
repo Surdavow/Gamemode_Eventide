@@ -8,20 +8,15 @@ exec("./bot_shirezombie.cs");
 exec("./player_skinwalker.cs");
 exec("./player_skullwolf.cs");
 exec("./player_puppetmaster.cs");
+exec("./player_puppetmasterpuppet.cs");
 
 registerOutputEvent("GameConnection", "Escape", "", false);
 
 function Player::SetSpeedModifier(%obj,%a)
 {
-	if(%obj.Speed_Modifier $= "")
-	{
-		%obj.Speed_Modifier = 1;
-	}
+	if(%obj.Speed_Modifier $= "") %obj.Speed_Modifier = 1;	
 
-	if(%a <= 0)
-	{
-		return;
-	}
+	if(%a <= 0) return;	
 
 	%prev = %obj.Speed_Modifier;
 	%curr = %obj.Speed_Modifier = %a;
@@ -39,10 +34,7 @@ function Player::SetSpeedModifier(%obj,%a)
 
 function Player::AddMoveSpeedModifier(%obj,%a)
 {
-	if(%obj.Speed_Modifier $= "")
-	{
-		%obj.Speed_Modifier = 1;
-	}
+	if(%obj.Speed_Modifier $= "") %obj.Speed_Modifier = 1;	
 
 	%obj.SetSpeedModifier(%obj.Speed_Modifier + %a);
 }
@@ -83,7 +75,7 @@ function Player::SetTempSpeed(%obj,%slowdowndivider)
 
  	%obj.setMaxUnderwaterBackwardSpeed(%datablock.MaxUnderwaterBackwardSpeed*%slowdowndivider);
   	%obj.setMaxUnderwaterForwardSpeed(%datablock.MaxUnderwaterForwardSpeed*%slowdowndivider);
-  	%obj.setMaxUnderwaterSideSpeed(%datablock.MaxUnderwaterForwardSpeed*%slowdowndivider);
+  	%obj.setMaxUnderwaterSideSpeed(%datablock.MaxUnderwaterForwardSpeed*%slowdowndivider);	
 }
 
 function GameConnection::Escape(%client)
