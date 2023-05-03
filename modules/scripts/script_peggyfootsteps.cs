@@ -457,7 +457,8 @@ function PeggFootsteps_getSound(%surface, %speed)
 
 		case "snow":	return "fs_run_snow" @ getRandom(1,3) @ "_sound";// snowsteps only have one speed.
 
-		case "default":	return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
+		case "default":	if(%speed $= "walking") return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
+						else return "fs_run_basic" @ getRandom(1,4) @ "_sound";
 
 		default: 	if(%speed $= "walking") return "fs_walk_basic" @ getRandom(1,4) @ "_sound";
 					else return "fs_run_basic" @ getRandom(1,4) @ "_sound";
