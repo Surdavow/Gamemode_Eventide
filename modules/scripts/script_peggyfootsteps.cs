@@ -558,7 +558,7 @@ activatepackage(peggsteps);
 //+++ Landing from a fall
 function Armor::onLand(%data, %obj, %horiz)
 {
-	if (!$Pref::Server::PF::landingFX) return;
+	if (!$Pref::Server::PF::landingFX || %obj.isInvisible) return;
 
 	if (%horiz > $Pref::Server::PF::minLandSpeed + 16) serverplay3d("land_heavy_sound", %obj.getHackPosition());	
 	else if (%horiz > $Pref::Server::PF::minLandSpeed + 8) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());	
@@ -572,7 +572,7 @@ function PeggFootsteps(%obj, %lastVert)
 	cancel(%obj.peggstep);
 	if($Pref::Server::PF::footstepsEnabled == 1 && isObject(%obj))
 	{
-		if(%obj.isMounted())
+		if(%obj.isMounted() || %obj.isInvisible)
 		{
 			%obj.peggstep = schedule(50,0,PeggFootsteps,%obj);
 			return;
