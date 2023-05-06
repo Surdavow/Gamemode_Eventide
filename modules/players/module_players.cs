@@ -66,14 +66,18 @@ function GameConnection::Escape(%client)
 	%client.camera.setMode("Spectator",%client.player);
 	%client.setcontrolobject(%client.camera);
 	
-	for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) 
-	if(isObject(%members = %client.slyrTeam.member[%i]) && isObject(%members.player) && %members.escaped) %escaped++;
+	for(%i = 0; %i < %client.slyrTeam.numMembers; %i++)
+	{
+		if(isObject(%members = %client.slyrTeam.member[%i]) && isObject(%members.player) && %members.escaped) %escaped++;
+		if(isObject(%members = %client.slyrTeam.member[%i]) && isObject(%members.player)) %living++;
+	}
+	
 
 	%client.player.delete();
 	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
 	%client.lives = 0;
 
-	if(%escaped >= %client.slyrTeam.numMembers) 
+	if(%escaped >= %living)
 	{
 		%minigame.endRound(%client.slyrTeam);
 		%minigame.chatmsgall("<font:Impact:30>\c3All survivors have escaped!");		
