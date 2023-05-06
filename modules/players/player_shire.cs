@@ -22,30 +22,32 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
 {
 	Parent::onCollision(%this, %obj, %col, %fade, %pos, %normal);
-    if(Eventide_MinigameConditionalCheck(%obj.sourceObject,%col)) 
+    if(Eventide_MinigameConditionalCheck(%obj.sourceObject,%col)) %col.mountImage(DarkBlindPlayerImage,3);			
+}
+
+function DarkBlindPlayerImage::onBlind(%this, %obj, %slot)
+{
+	%obj.ShireBlind++;
+	%obj.setDamageFlash(1);	
+
+	if(%obj.ShireBlind >= 5)
 	{
-		%col.mountImage(DarkBlindPlayerImage,%i);
-		%col.markedForShireZombify = true;
-		%col.setDamageFlash(25);
+		%obj.unmountImage(3);
+		return;
 	}
 }
 
 function DarkBlindPlayerImage::onMount(%this, %obj, %slot)
 {
-	%obj.playaudio(3,"shire_blind_sound");
-	%obj.ShireBlind = true;
+	%obj.playaudio(3,"shire_blind_sound");	
+	%col.markedForShireZombify = true;
 	parent::onMount(%this, %obj, %slot);
 }
 
-function DarkBlindPlayerImage::onMount(%this, %obj, %slot)
+function DarkBlindPlayerImage::onunMount(%this, %obj, %slot)
 {	
-	parent::onMount(%this, %obj, %slot);
-	%obj.ShireBlind = false;
-}
-
-function DarkBlindPlayerImage::Dismount(%this, %obj, %slot)
-{
-	%obj.unmountImage(%slot);
+	parent::onunMount(%this, %obj, %slot);
+	%obj.ShireBlind = 0;
 }
 
 function PlayerShire::onTrigger(%this, %obj, %trig, %press) 

@@ -524,15 +524,16 @@ datablock ShapeBaseImageData(DarkBlindPlayerImage)
    doColorShift = false;
    colorShiftColor = "1 1 1 1";
 
-	stateName[0]               = "Wait";
-	stateTimeoutValue[0]       = 5;
-	stateEmitter[0]            = DarkBlindEmitter;
-	stateEmitterTime[0]        = 5000;
-	stateEmitterTime[0]        = 5;
+	stateName[0]               = "Blind";
+	stateTimeoutValue[0]       = 1;
+	stateEmitter[0]            = "DarkBlindEmitter";
+	stateEmitterTime[0]        = 1;
 	stateTransitionOnTimeout[0]= "Dismount";
+	stateScript[0]             = "onBlind";
 
-	stateName[1]               = "Dismount";
-	stateScript[1]             = "Dismount";
+	stateName[1]               = "Wait";
+	stateTransitionOnTimeout[1]= "Blind";
+	stateTimeoutValue[1]       = 0.1;
 };
 
 datablock ShapeBaseImageData(RenownedCastImage)
