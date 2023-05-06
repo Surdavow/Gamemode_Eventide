@@ -79,9 +79,9 @@ function PlayerSkinwalker::onCollision(%this,%obj,%col)
 {
 	Parent::onCollision(%this,%obj,%col);
 
-    if(!isObject(%obj.victim) && Eventide_MinigameConditionalCheck(%obj,%col,false) && %col.getdataBlock().isDowned)
+    if(!isObject(%obj.victim) && (Eventide_MinigameConditionalCheck(%obj,%col,false) || %col.getdataBlock().isDowned))
     {
-        if(%col.getDamagePercent() < 0.75) return;
+        if(%col.getDamagePercent() < 0.5) return;
         
         if(isObject(%col.client)) %col.client.setControlObject(%col.client.camera);
         %obj.victim = %col;
