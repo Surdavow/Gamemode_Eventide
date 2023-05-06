@@ -162,10 +162,15 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 }
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
-{
-    if(%obj.isSkinwalker) return;
+{	
+	if(%obj.isSkinwalker)
+	{
+		%obj.addhealth(%damage);
+		return;
+	}	
 	
-	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33))
+	//For some reason the player can die without a client, will check if the object exists to hopefully prevent it
+	if(isObject(%obj.client) && %obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33))
     {        
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
