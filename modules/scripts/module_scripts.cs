@@ -433,8 +433,13 @@ function fxDTSBrick::onActivate(%obj, %player, %client, %pos, %vec)
 
 	function getBrickGroupFromObject(%obj)
 	{
-		if(%obj.getClassName() $= "AIPlayer" && %obj.getDataBlock().getName() $= "ShireZombieBot") return %obj.ghostclient.brickgroup;
-		if(%obj.getClassName() $= "AIPlayer" && %obj.getDataBlock().getName() $= "PuppetMasterPuppet") return %obj.client.brickgroup;
+		if(isObject(%obj) && %obj.getClassName() $= "AIPlayer")		
+		switch$(%obj.getDataBlock().getName())			
+		{
+			case "ShireZombieBot": return %obj.ghostclient.brickgroup;
+			case "PuppetMasterPuppet": return %obj.client.brickgroup;
+		}		
+
 		Parent::getBrickGroupFromObject(%obj);
 	}
 
