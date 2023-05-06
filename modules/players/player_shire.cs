@@ -33,7 +33,14 @@ function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal
 function DarkBlindPlayerImage::onMount(%this, %obj, %slot)
 {
 	%obj.playaudio(3,"shire_blind_sound");
+	%obj.ShireBlind = true;
 	parent::onMount(%this, %obj, %slot);
+}
+
+function DarkBlindPlayerImage::onMount(%this, %obj, %slot)
+{	
+	parent::onMount(%this, %obj, %slot);
+	%obj.ShireBlind = false;
 }
 
 function DarkBlindPlayerImage::Dismount(%this, %obj, %slot)

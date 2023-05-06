@@ -247,7 +247,8 @@ package Eventide_MainPackage
 	function player::setDamageFlash(%obj,%value)
 	{
 		if(!isObject(%obj.getControllingClient())) return;
-		if(%value > 0.2) %value = 0.2;
+		
+		if(!%obj.ShireBlind && %value > 0.2) %value = 0.2;
 		Parent::setDamageFlash(%obj,%value);
 	}
 
