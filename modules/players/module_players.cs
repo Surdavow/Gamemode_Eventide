@@ -69,7 +69,7 @@ function GameConnection::Escape(%client)
 	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
 	%client.lives = 0;
 
-	for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%members = %client.slyrTeam.member[%i]) && %members.escaped) %escaped++;
+	for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%members = %client.slyrTeam.member[%i]) && isObject(%members.player) && %members.escaped) %escaped++;
 
 	if(%escaped >= %client.slyrTeam.numMembers) 
 	{
