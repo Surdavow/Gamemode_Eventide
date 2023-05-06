@@ -32,6 +32,7 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
    	jumpForce = 0;
 	rechargerate = 0;
 	isDowned = true;
+	showEnergyBar = false;
 	uiName = "";
 };
 
@@ -185,7 +186,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
-			%obj.addhealth(-5);
+			%obj.addhealth(-1.5);
 			%obj.setdamageflash(0.25);
 
 			if(%obj.lastcry+10000 < getsimtime())
