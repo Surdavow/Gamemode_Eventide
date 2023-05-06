@@ -5,6 +5,7 @@ datablock PlayerData(ShireZombieBot : EventidePlayer)
 	isKiller = true;
 	maxDamage = 1;
     uiName = "";
+    maxDamage = 9999;
 };
 
 function ShireZombieBot::applyAppearance(%this,%obj)
@@ -23,7 +24,7 @@ function ShireZombieBot::applyAppearance(%this,%obj)
 
 function ShireZombieBot::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {
-    return;
+    Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 }
 
 function ShireZombieBot::onAdd(%this,%obj)
