@@ -18,7 +18,6 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	maxForwardSpeed = 6.37;
 	maxBackwardSpeed = 3.64;
 	maxSideSpeed = 5.46;
-	jumpDelay = 0;
 	cameramaxdist = 3;
 	maxfreelookangle = 2.5;
 	boundingBox = "4.8 4.8 10.1";
