@@ -82,6 +82,11 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	%obj.disappearsched = %this.schedule(25, disappear, %obj, %alpha);	
 }
 
+function PlayerSkullWolf::onPeggFootstep(%this,%obj)
+{
+	serverplay3d("angler_walking" @ getRandom(1,8) @ "_sound", %obj.getHackPosition());
+}
+
 function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 {
 	if(!isObject(%obj) || isEventPending(%obj.disappearsched)) return;

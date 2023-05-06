@@ -1,19 +1,20 @@
 datablock AudioDescription(AudioFSRun)
 {
 	volume = 0.75;
-	isLooping = 0;
+	isLooping = false;
 	is3D = 1;
-	ReferenceDistance = 3;
-	maxDistance = 60;
+	ReferenceDistance = 5;
+	maxDistance = 25;
 	type = $SimAudioType;
 };
+
 datablock AudioDescription(AudioFSWalk)
 {
-	volume = 0.5
-	isLooping = 0;
+	volume = 0.5;
+	isLooping = false;
 	is3D = 1;
-	ReferenceDistance = 1;
-	maxDistance = 30;
+	ReferenceDistance = 2.5;
+	maxDistance = 25;
 	type = $SimAudioType;
 };
 
@@ -26,8 +27,9 @@ while(%file !$= "")
 	if(strstr(%file,"normal") != -1)
 	{
 		if(strstr(%file,"walk") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
+		else if(strstr(%file,"swim") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
 		else if(strstr(%file,"run") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSRun; filename = \"" @ %file @ "\"; };");
-		else if(strstr(%file,"walk") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClose3d; filename = \"" @ %file @ "\"; };");
+		else eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClose3d; filename = \"" @ %file @ "\"; };");
 	} 
 	if(strstr(%file,"quiet") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClosest3d; filename = \"" @ %file @ "\"; };");	
 	if(strstr(%file,"loud") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioDefault3d; filename = \"" @ %file @ "\"; };");
