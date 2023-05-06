@@ -216,8 +216,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	if(isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%minigame.teams))
 	{
 		if(strlwr(%client.slyrTeam.name) $= "survivors")
-		for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%member = %client.slyrTeam.member[%i])) %member.play2D("fallen_survivor_sound");			
-		%minigame.chatmsgall(%obj.client.name SPC "has fallen");
+		for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%member = %client.slyrTeam.member[%i])) %member.play2D("fallen_survivor_sound");
 	}
 }
 
