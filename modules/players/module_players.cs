@@ -80,7 +80,6 @@ function GameConnection::Escape(%client)
 	if(%escaped >= %living)
 	{
 		%minigame.endRound(%client.slyrTeam);
-		%minigame.chatmsgall("<font:Impact:30>\c3All survivors have escaped!");		
 		return;
 	}	
 }
