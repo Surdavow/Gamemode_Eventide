@@ -22,7 +22,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
 {
 	Parent::onCollision(%this, %obj, %col, %fade, %pos, %normal);
-    if(Eventide_MinigameConditionalCheck(%obj.sourceObject,%col)) %col.mountImage(DarkBlindPlayerImage,3);			
+    if(Eventide_MinigameConditionalCheck(%obj.sourceObject,%col)) %col.mountImage("DarkBlindPlayerImage",3);
 }
 
 function DarkBlindPlayerImage::onBlind(%this, %obj, %slot)
@@ -30,7 +30,7 @@ function DarkBlindPlayerImage::onBlind(%this, %obj, %slot)
 	%obj.ShireBlind++;
 	%obj.setDamageFlash(1);	
 
-	if(%obj.ShireBlind >= 5)
+	if(%obj.ShireBlind >= 6)
 	{
 		%obj.unmountImage(3);
 		return;
