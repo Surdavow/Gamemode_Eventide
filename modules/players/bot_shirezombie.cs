@@ -21,6 +21,11 @@ function ShireZombieBot::applyAppearance(%this,%obj)
 	%obj.startFade(0, 0, true);
 }
 
+function ShireZombieBot::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
+{
+    return;
+}
+
 function ShireZombieBot::onAdd(%this,%obj)
 {
 	Parent::onAdd(%this,%obj);
