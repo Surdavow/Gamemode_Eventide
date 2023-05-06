@@ -34,8 +34,8 @@ function ShireZombieBot::onAdd(%this,%obj)
     %obj.setMoveSlowdown(0);
 	%this.applyAppearance(%obj,%obj.ghostclient);
     %this.onBotLoop(%obj);
-    %obj.mountImage("GlowFaceZombieImage",3);
-	%obj.mountImage("ZombieBodyImage",2);    
+    %obj.mountImage("GlowFaceZombieImage",0);
+	%obj.mountImage("ZombieBodyImage",1);    
 }
 
 function ShireZombieBot::onDisabled(%this,%obj)
@@ -183,9 +183,7 @@ function ShireZombieBot::onBotLoop(%this,%obj)
 function ShireZombieBot::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType,%damageLoc)
 {	
 	Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType,%damageLoc);
-
-    if(isObject(%sourceObject.sourceObject))
-    if(!%sourceObject.sourceObject.isKiller) %obj.target = %sourceObject.sourceObject;
+    %obj.addhealth(%damage);
 }
 
 function ShireZombieBot::onCollision(%this,%obj,%col,%normal,%speed)
