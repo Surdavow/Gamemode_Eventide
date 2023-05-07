@@ -30,7 +30,7 @@ function DarkBlindPlayerImage::onBlind(%this, %obj, %slot)
 	%obj.ShireBlind++;
 	%obj.setDamageFlash(1);	
 
-	if(%obj.ShireBlind >= 7)
+	if(%obj.ShireBlind >= 6)
 	{
 		%obj.unmountImage(3);
 		return;
