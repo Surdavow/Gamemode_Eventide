@@ -222,6 +222,17 @@ function Eventide_MinigameConditionalCheckNoKillers(%objA,%objB,%exemptDeath)//e
 package Eventide_MainPackage
 {
 
+	function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectCollision.dll, please do not modify it unless you know what you are doing
+	{
+		if(isObject(%obj) && isObject(%col))
+		{
+			if(%obj.getType() & $TypeMasks::PlayerObjectType && %col.getType() & $TypeMasks::PlayerObjectType) 			
+			if(%obj.getdataBlock().isEventideModel && %col.getdataBlock().isEventideModel) return false;
+
+			return true;
+		}
+	}	
+
 	function ServerCmdPlantBrick (%client)
 	{
 		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "PlayerPuppetMaster" && isObject(PuppetGroup))
