@@ -2,6 +2,7 @@ exec("./support_extraresources.cs");
 exec("./script_chatsystem.cs");
 exec("./script_gazeloop.cs");
 exec("./script_killers.cs");
+exec("./script_items.cs");
 exec("./support_dataInstance.cs");
 exec("./support_itemammo.cs");
 exec("./support_statuseffect.cs");
@@ -369,7 +370,6 @@ function fxDTSBrick::onActivate(%obj, %player, %client, %pos, %vec)
 			if(isObject(%client = %this.member[%i]) && %client.getClassName() $= "GameConnection") %client.play2d("round_end_sound");		 						
 		}
 	}
-
 
     function MiniGameSO::Reset(%minigame,%client)
 	{
