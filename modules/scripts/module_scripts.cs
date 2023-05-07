@@ -231,7 +231,7 @@ package Eventide_MainPackage
 		//	else return false;			
 		//}
 
-		return true;		
+		//return true;
 	}	
 
 	function ServerCmdPlantBrick (%client)
