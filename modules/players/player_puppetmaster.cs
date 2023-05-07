@@ -37,6 +37,7 @@ function PlayerPuppetMaster::onNewDatablock(%this,%obj)
     Parent::onNewDataBlock(%this,%obj);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1.1 1.1 1.1");
+	%obj.getDataBlock().EventideAppearance(%obj,%obj.client);
 	%obj.mountImage("meleePuppetMasterDaggerImage",0);
 }
 
@@ -54,7 +55,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 
 					if(PuppetGroup.getCount() < 3)
 					{
-						%puppet = new AIPlayer()
+						%puppet = new Player()
 						{
 							dataBlock = "PuppetMasterPuppet";
 							minigame = getMiniGameFromObject(%obj);					
