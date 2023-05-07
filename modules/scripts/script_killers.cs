@@ -1,7 +1,9 @@
 function Eventide_Melee(%this,%obj,%radius)
 {
+	talk("Meleeing");
 	if(!%obj.isInvisible && %obj.lastclawed+500 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
+		talk("first statement pass");
 		switch$(%obj.getdataBlock().getName())
 		{
 			case "PlayerRenowned": %obj.playaudio(3,"renowned_melee" @ getRandom(0,2) @ "_sound");
@@ -17,6 +19,7 @@ function Eventide_Melee(%this,%obj,%radius)
 		initContainerRadiusSearch(%obj.getPosition(),15,%mask);
 		while(%hit = containerSearchNext())
 		{
+			talk(%hit);
 			if(%hit == %obj) continue;
 			%line = vectorNormalize(vectorSub(%hit.getPosition(),%obj.getEyePoint()));
 			%dot = vectorDot(%obj.getEyeVector(), %line);
