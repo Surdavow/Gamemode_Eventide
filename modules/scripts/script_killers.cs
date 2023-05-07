@@ -1,9 +1,8 @@
 function Eventide_Melee(%this,%obj,%radius)
-{
-	talk("Meleeing");
+{	
 	if(!%obj.isInvisible && %obj.lastclawed+500 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
-		talk("first statement pass");
+		talk("Meleeing");
 		switch$(%obj.getdataBlock().getName())
 		{
 			case "PlayerRenowned": %obj.playaudio(3,"renowned_melee" @ getRandom(0,2) @ "_sound");
@@ -18,16 +17,18 @@ function Eventide_Melee(%this,%obj,%radius)
 		%mask = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::CorpseObjectType;
 		initContainerRadiusSearch(%obj.getPosition(),15,%mask);
 		while(%hit = containerSearchNext())
-		{
-			talk(%hit);
-			if(%hit == %obj) continue;
+		{			
+			if(%hit == %obj || %hit.getDataBlock().getClassName() $= "PlayerData") continue;
 			%line = vectorNormalize(vectorSub(%hit.getPosition(),%obj.getEyePoint()));
 			%dot = vectorDot(%obj.getEyeVector(), %line);
 			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 
+			talk(%hit);
+
 			if(Eventide_MinigameConditionalCheck(%obj,%hit,true))
 			if(!isObject(%obscure) && %dot > 0.65)						
-			{																
+			{			
+				talk("can hit");
 				if(%hit.getstate() $= "Dead" && vectorDist(%obj.getposition(),%hit.getposition()) < %radius*2.5)
 				{
 					if(%obj.getdataBlock().getName() $= "PlayerSkullwolf") 
