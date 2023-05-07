@@ -227,7 +227,9 @@ package Eventide_MainPackage
 		if(isObject(%obj) && isObject(%col))
 		{
 			if(%obj.getType() & $TypeMasks::PlayerObjectType && %col.getType() & $TypeMasks::PlayerObjectType) 			
-			if(%obj.getdataBlock().isEventideModel && %col.getdataBlock().isEventideModel) return false;
+			if(%obj.getdataBlock().isEventideModel && %col.getdataBlock().isEventideModel)
+			if(%obj.getdataBlock().getName() $= "PlayerGrabberNoJump") return true;
+			else return false;
 
 			return true;
 		}
