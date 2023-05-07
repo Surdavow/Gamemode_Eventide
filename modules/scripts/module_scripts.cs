@@ -226,12 +226,12 @@ package Eventide_MainPackage
 	{
 		if(isObject(%obj) && isObject(%col))
 		{	
-			if(%obj.getdataBlock().isEventideModel && %col.getdataBlock().isEventideModel)
+			if(%obj.getClassName() $= "Player" && %col.getClassName() $= "Player" && (%obj.getdataBlock().isEventideModel && %col.getdataBlock().isEventideModel))
 			if(%obj.getdataBlock().getName() $= "PlayerGrabberNoJump") return true;
-			else return false;
-
-			return true;
+			else return false;			
 		}
+
+		return true;		
 	}	
 
 	function ServerCmdPlantBrick (%client)
