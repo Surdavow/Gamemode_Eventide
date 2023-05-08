@@ -221,16 +221,15 @@ function Eventide_MinigameConditionalCheckNoKillers(%objA,%objB,%exemptDeath)//e
 
 package Eventide_MainPackage
 {
-
 	function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectCollision.dll, please do not modify it unless you know what you are doing
 	{
 		//if(isObject(%obj) && isObject(%col))
 		//{	
 		//	if(%obj.getClassName() $= "Player" && %col.getClassName() $= "Player" && (%obj.getdataBlock().isEventideModel && %col.getdataBlock().isEventideModel))
 		//	if(%obj.getdataBlock().getName() $= "PlayerGrabberNoJump") return true;
-		//	else return false;			
+		//	else return false;
 		//}
-
+//
 		//return true;
 	}	
 
@@ -317,43 +316,43 @@ package Eventide_MainPackage
 		if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) %obj.getMountedObject(%i).delete();
 	}
 
-function fxDTSBrick::onActivate(%obj, %player, %client, %pos, %vec)
-{
-    if(%obj.getdataBlock().staticShape $= "") return Parent::onActivate(%obj, %player, %client, %pos, %vec);
-    
-    if(!isObject(%obj.interactiveshape))
-    {
-        //Check if player has proper item equipped for interacting with object
-        if(isObject(%item = %player.getMountedImage(0)) && (%item.getName() $= %obj.getDataBlock().staticShapeItemMatch || (%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem")))
-        {            
-            if(%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem") %obj.ShowEventideProp(%player,true,%item);
-			if(!%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch !$= "gem") %obj.ShowEventideProp(%player);
-
-            %player.Tool[%player.currTool] = 0;
-            messageClient(%player.client, 'MsgItemPickup', '', %player.currTool, 0);
-            serverCmdUnUseTool(%player.client);
-
-            //Trigger an event if the eventide console exists
-            if(isObject($EventideEventCaller))
-            {
-                $InputTarget_["Self"] = $EventideEventCaller;
-                $InputTarget_["Player"] = %player;
-                $InputTarget_["Client"] = %player.client;
-                $InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
-                $EventideEventCaller.processInputEvent("onRitualPlaced", %client);
-            }
-        }
-    }        
-	//If the interactive shape already exists then just check if its the candle to toggle the light
-    else if(%obj.getdataBlock().getName() $= "brickCandleData")
-    {        
-        switch(%obj.isLightOn)
-        {
-            case true: %obj.getdatablock().ToggleLight(%obj,false);
-            case false: %obj.getdatablock().ToggleLight(%obj,true);
-        }            
-    }
-}
+	function fxDTSBrick::onActivate(%obj, %player, %client, %pos, %vec)
+	{
+	    if(%obj.getdataBlock().staticShape $= "") return Parent::onActivate(%obj, %player, %client, %pos, %vec);
+	
+	    if(!isObject(%obj.interactiveshape))
+	    {
+	        //Check if player has proper item equipped for interacting with object
+	        if(isObject(%item = %player.getMountedImage(0)) && (%item.getName() $= %obj.getDataBlock().staticShapeItemMatch || (%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem")))
+	        {            
+	            if(%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch $= "gem") %obj.ShowEventideProp(%player,true,%item);
+				if(!%item.isGemRitual && %obj.getdataBlock().staticShapeItemMatch !$= "gem") %obj.ShowEventideProp(%player);
+	
+	            %player.Tool[%player.currTool] = 0;
+	            messageClient(%player.client, 'MsgItemPickup', '', %player.currTool, 0);
+	            serverCmdUnUseTool(%player.client);
+	
+	            //Trigger an event if the eventide console exists
+	            if(isObject($EventideEventCaller))
+	            {
+	                $InputTarget_["Self"] = $EventideEventCaller;
+	                $InputTarget_["Player"] = %player;
+	                $InputTarget_["Client"] = %player.client;
+	                $InputTarget_["MiniGame"] = getMiniGameFromObject(%player);
+	                $EventideEventCaller.processInputEvent("onRitualPlaced", %client);
+	            }
+	        }
+	    }        
+		//If the interactive shape already exists then just check if its the candle to toggle the light
+	    else if(%obj.getdataBlock().getName() $= "brickCandleData")
+	    {        
+	        switch(%obj.isLightOn)
+	        {
+	            case true: %obj.getdatablock().ToggleLight(%obj,false);
+	            case false: %obj.getdatablock().ToggleLight(%obj,true);
+	        }            
+	    }
+	}
 
 	function fxDTSBrick::onRemove(%data, %brick)
 	{
