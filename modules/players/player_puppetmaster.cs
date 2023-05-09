@@ -113,6 +113,7 @@ function PlayerPuppetMaster::onRemove(%this,%obj)
 
 function PlayerPuppetMaster::EventideAppearance(%this,%obj,%client)
 {
+	%obj.unHideNode("ALL");	
 	%bonecolor = "0.9 0.9 0.9 1";
 	%obj.setNodeColor("head",%bonecolor);
 	%obj.setNodeColor("rarmslim",%bonecolor);

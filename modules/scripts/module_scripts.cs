@@ -236,7 +236,7 @@ package Eventide_MainPackage
         serverPlay3D("impact_fall_sound",%obj.getPosition());		
 	}
 
-	function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectCollision.dll, please do not modify it unless you know what you are doing
+	function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectCollision.dll
 	{
 		if(isObject(%obj) && isObject(%col))
 		{
@@ -477,7 +477,7 @@ package Eventide_MainPackage
 
 	function Armor::onActivate(%this,%obj)
 	{
-		//Do something!
+		
 	}
 	
 };

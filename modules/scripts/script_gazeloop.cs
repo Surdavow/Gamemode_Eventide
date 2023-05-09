@@ -5,7 +5,7 @@ function Player::gazeLoop(%obj)
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock().getName() !$= "EventidePlayer") return;
 
 	cancel(%obj.gazeLoop);
-	%obj.gazeLoop = %obj.schedule(10, "gazeLoop");
+	%obj.gazeLoop = %obj.schedule(33, "gazeLoop");
 
 	if(!$Pref::Server::GazeEnabled) return;
 
