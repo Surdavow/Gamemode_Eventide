@@ -12,17 +12,15 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	showEnergyBar = true;
 	canJet = false;	
 	useCustomPainEffects = true;
-
 	shapeFile = SkinwalkerDTS.baseShape;
+	killerraisearms = true;
+	killerlight = "NoFlareRLight";    
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
-	killeridlesound = "";
-	killeridlesoundamount = 0;
-	killerchasesound = "";
-	killerchasesoundamount = 0;
-	killerraisearms = true;
-	killerlight = "NoFlareRLight";	
+
+	killermeleehitsound = "melee_tanto";
+	killermeleehitsoundamount = 3;    
 
 	PainSound = "skinwalker_pain_sound";
 	DeathSound = "skinwalker_death_sound";

@@ -2,19 +2,17 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 {	
 	if(!%obj.isInvisible && %obj.lastclawed+500 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
-
-		if(%datablock.KillerMeleeSound !$= "")
-		{
-			%obj.stopaudio(0);
-			%obj.playaudio(0,%datablock.killermeleesound @ getRandom(0,%datablock.killermeleesoundamount) @ "_sound");		
-		}
-
 		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
 		%oscale = getWord(%obj.getScale(),2);
 		
+		if(%datablock.killermeleesound !$= "")
+		{
+			%obj.stopaudio(0);
+			%obj.playaudio(0,%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound");		
+		}		
 
-		for(%i = 0; %i < clientgroup.getCount(); %i++) 
+		for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(
 		{
 			if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
 			{
@@ -45,23 +43,13 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 				if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
 				{
-					switch$(%obj.getdataBlock().getName())
+					if(%datablock.killermeleehitsound !$= "")
 					{
-						case "PlayerAngler": 	%obj.playaudio(0,"angler_Atk" @ getRandom(0,2) @ "_sound");
-												%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
-												if(isObject(%obj.hookrope)) %obj.hookrope.delete();																			
-						case "PlayerSkullWolf": %obj.playaudio(0,"skullwolf_Atk" @ getRandom(0,6) @ "_sound");
-												%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
-						case "PlayerShire":		serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());			
-						case "PlayerGrabber": serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());
-						case "PlayerPuppetMaster": serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());
-											serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());
-						case "PlayerRenowned": serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());
-											serverPlay3d("melee_tanto_0" @ getRandom(1,3) @ "_sound", %hit.getPosition());										
-						case "PlayerSkinwalker": %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
-						case "PlayerPuppetMasterPuppet": %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
-						default:
+						%obj.stopaudio(3);
+						%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
 					}
+					
+					if(isObject(%obj.hookrope)) %obj.hookrope.delete();
 
 					%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
 					%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								

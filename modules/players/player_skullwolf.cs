@@ -1,41 +1,22 @@
-datablock PlayerData(PlayerRenowned : EventidePlayer) 
-{
-	uiName = "Renowned Player";	
-
-	rechargeRate = 0.26;
-	maxDamage = 9999;
-	maxTools = 0;
-	maxWeapons = 0;
-	maxForwardSpeed = 6.65;
-	maxBackwardSpeed = 3.8;
-	maxSideSpeed = 5.7;
-	useCustomPainEffects = true;
-	jumpSound = "";
-	PainSound		= "";
-	DeathSound		= "";	
-	firstpersononly = true;
-	isKiller = true;
-
-	killerChaseLvl1Music = "musicData_OUT_RenownedNear";
-	killerChaseLvl2Music = "musicData_OUT_RenownedChase";
-	killeridlesound = "renowned_idle";
-	killeridlesoundamount = 8;
-	killerchasesound = "renowned_chase";
-	killerchasesoundamount = 6;
-	killerraisearms = false;
-	killerlight = "NoFlareYLight";
-};
-
 datablock PlayerData(PlayerSkullWolf : PlayerRenowned) 
 {
 	uiName = "Skullwolf Player";
 
 	killerchaselvl1music = "musicData_OUT_SkullWolfNear";
 	killerchaselvl2music = "musicData_OUT_SkullWolfChase";
+
 	killeridlesound = "skullwolf_idle";
 	killeridlesoundamount = 12;
+
 	killerchasesound = "skullwolf_chase";
 	killerchasesoundamount = 4;
+
+	killermeleesound = "skullwolf_melee";
+	killermeleesoundamount = 7;
+
+	killermeleehitsound = "skullwolf_hit";
+	killermeleehitsoundamount = 3;		
+	
 	killerraisearms = true;
 	killerlight = "NoFlareRLight";
 

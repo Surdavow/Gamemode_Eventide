@@ -6,21 +6,27 @@ datablock TSShapeConstructor(PuppetMasterDTS) {
 datablock PlayerData(PlayerPuppetMaster : PlayerRenowned) 
 {
 	uiName = "Puppet Master Player";
-
     shapeFile = PuppetMasterDTS.baseShape;
+
+	killerraisearms = false;
+	killerlight = "NoFlareRLight";	
 
 	killerChaseLvl1Music = "musicData_OUT_PuppetMasterNear";
 	killerChaseLvl2Music = "musicData_OUT_PuppetMasterChase";
+
 	killeridlesound = "puppetmaster_idle";
 	killeridlesoundamount = 3;
+
 	killerchasesound = "puppetmaster_idle";
 	killerchasesoundamount = 3;
-	killermeleesound = "puppetmaster_melee";
-	killermeleesoundamount = 2;	
-	killerraisearms = false;
-	killerlight = "NoFlareRLight";
-	showEnergyBar = true;
 
+	killermeleesound = "puppetmaster_melee";
+	killermeleesoundamount = 3;	
+
+	killermeleehitsound = "melee_tanto";
+	killermeleehitsoundamount = 3;	
+	
+	showEnergyBar = true;
 	firstpersononly = true;
 	rechargeRate = 0.75;
 	maxTools = 0;

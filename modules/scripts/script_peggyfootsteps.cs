@@ -560,8 +560,8 @@ function Armor::onLand(%data, %obj, %horiz)
 {
 	if (!$Pref::Server::PF::landingFX || %obj.isInvisible) return;
 
-	if (%horiz > $Pref::Server::PF::minLandSpeed + 16) serverplay3d("land_heavy_sound", %obj.getHackPosition());	
-	else if (%horiz > $Pref::Server::PF::minLandSpeed + 8) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());	
+	if (%horiz > $Pref::Server::PF::minLandSpeed + 16) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
+	else if (%horiz > $Pref::Server::PF::minLandSpeed + 8) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
 	else if (%horiz >= $Pref::Server::PF::minLandSpeed) serverplay3d("land_lite" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
 	
 }

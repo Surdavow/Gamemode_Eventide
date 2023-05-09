@@ -14,18 +14,25 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	PainSound		= "";
 	DeathSound		= "";	
 	firstpersononly = true;
+
 	isKiller = true;
+	killerraisearms = false;
+	killerlight = "NoFlareYLight";	
 
 	killerChaseLvl1Music = "musicData_OUT_RenownedNear";
 	killerChaseLvl2Music = "musicData_OUT_RenownedChase";
+
 	killeridlesound = "renowned_idle";
 	killeridlesoundamount = 8;
+
 	killerchasesound = "renowned_chase";
 	killerchasesoundamount = 6;
+
 	killermeleesound = "renowned_melee";
-	killermeleesoundamount = 2;
-	killerraisearms = false;
-	killerlight = "NoFlareYLight";
+	killermeleesoundamount = 3;
+
+	killermeleehitsound = "melee_tanto";
+	killermeleehitsoundamount = 3;
 };
 
 function PlayerRenowned::onNewDatablock(%this,%obj)

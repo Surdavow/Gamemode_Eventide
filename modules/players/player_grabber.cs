@@ -4,10 +4,10 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 
 	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
 	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
-	killeridlesound = "";
-	killeridlesoundamount = 0;
-	killerchasesound = "";
-	killerchasesoundamount = 0;
+	
+	killermeleehitsound = "melee_tanto";
+	killermeleehitsoundamount = 3;
+	
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";	
 

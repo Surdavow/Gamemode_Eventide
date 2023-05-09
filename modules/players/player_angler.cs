@@ -12,14 +12,23 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
 
+	killerraisearms = true;
+	killerlight = "NoFlareBLight";	
+
 	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
 	killerChaseLvl2Music = "musicData_OUT_AnglerChase";
+
 	killeridlesound = "angler_idle";
 	killeridlesoundamount = 7;
+
 	killerchasesound = "angler_chase";
 	killerchasesoundamount = 3;	
-	killerraisearms = true;
-	killerlight = "NoFlareBLight";
+
+	killermeleesound = "angler_melee";
+	killermeleesoundamount = 3;
+
+	killermeleehitsound = "skullwolf_hit";
+	killermeleehitsoundamount = 3;	
 };
 
 
