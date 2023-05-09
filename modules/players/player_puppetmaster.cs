@@ -15,6 +15,8 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	killeridlesoundamount = 3;
 	killerchasesound = "puppetmaster_idle";
 	killerchasesoundamount = 3;
+	killermeleesound = "puppetmaster_melee";
+	killermeleesoundamount = 2;	
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";
 	showEnergyBar = true;
@@ -47,7 +49,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 	
 	if(%bool) switch(%triggerNum)
 	{
-		case 0: Eventide_Melee(%this,%obj,3.5);
+		case 0: %obj.KillerMelee(%this,3.5);
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{
 					if(!isObject(PuppetGroup)) new SimGroup(PuppetGroup);

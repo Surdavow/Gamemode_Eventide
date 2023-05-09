@@ -1,27 +1,31 @@
-function Eventide_Melee(%this,%obj,%radius)
+function Player::KillerMelee(%obj,%datablock,%radius)
 {	
 	if(!%obj.isInvisible && %obj.lastclawed+500 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
-		switch$(%obj.getdataBlock().getName())
+
+		if(%datablock.KillerMeleeSound !$= "")
 		{
-			case "PlayerRenowned": %obj.playaudio(3,"renowned_melee" @ getRandom(0,2) @ "_sound");
-			case "PlayerPuppetMaster": 	%obj.stopaudio(3);
-										%obj.playaudio(3,"puppetmaster_melee" @ getRandom(1,3) @ "_sound");
-			default:
+			%obj.stopaudio(0);
+			%obj.playaudio(0,%datablock.killermeleesound @ getRandom(0,%datablock.killermeleesoundamount) @ "_sound");		
 		}
 
 		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
 		%oscale = getWord(%obj.getScale(),2);
-		InitContainerRadiusSearch(%obj.getPosition(), 20, $TypeMasks::PlayerObjectType);
-		while(%hit = containerSearchNext())
-		{			
-			if(%hit == %obj || %hit.getDataBlock().classname $= "PlayerData") continue;
-			
+		
+
+		for(%i = 0; %i < clientgroup.getCount(); %i++) 
+		{
+			if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
+			{
+				if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > %radius) 
+				continue;
+
+				%hit = %nearbyplayer;
+
 			%line = vectorNormalize(vectorSub(%hit.getPosition(),%obj.getEyePoint()));
 			%dot = vectorDot(%obj.getEyeVector(), %line);
-			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			
+			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);			
 
 			if(Eventide_MinigameConditionalCheck(%obj,%hit,true))
 			if(!isObject(%obscure) && %dot > 0.65)						
@@ -67,7 +71,10 @@ function Eventide_Melee(%this,%obj,%radius)
 					%obj.setTempSpeed(0.65);
 					%obj.schedule(500,setTempSpeed,1);
 				}
-			}								
+			}				
+				
+			}
+			
 		}
 	}
 }

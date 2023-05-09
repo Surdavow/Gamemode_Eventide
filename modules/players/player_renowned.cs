@@ -22,6 +22,8 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	killeridlesoundamount = 8;
 	killerchasesound = "renowned_chase";
 	killerchasesoundamount = 6;
+	killermeleesound = "renowned_melee";
+	killermeleesoundamount = 2;
 	killerraisearms = false;
 	killerlight = "NoFlareYLight";
 };
@@ -71,7 +73,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 	
-	if(%trig == 0 && %press) Eventide_Melee(%this,%obj,3.5);
+	if(%trig == 0 && %press) %obj.KillerMelee(%this,3.5);
 	
 	if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
 	{

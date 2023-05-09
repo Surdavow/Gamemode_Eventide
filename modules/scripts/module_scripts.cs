@@ -221,17 +221,32 @@ function Eventide_MinigameConditionalCheckNoKillers(%objA,%objB,%exemptDeath)//e
 
 package Eventide_MainPackage
 {
+	function Armor::onImpact(%this, %obj, %col, %vec, %force)
+	{
+		Parent::onImpact(%this, %obj, %col, %vec, %force);
+
+		if(%force < 40) serverPlay3D("impact_medium" @ getRandom(1,3) @ "_sound",%obj.getPosition());
+		else serverPlay3D("impact_hard" @ getRandom(1,3) @ "_sound",%obj.getPosition());
+
+		%oScale = getWord(%obj.getScale(),2);
+		%forcescale = %force/25 * %oscale;
+		%obj.spawnExplosion(pushBroomProjectile,%forcescale SPC %forcescale SPC %forcescale);
+
+		if(%obj.getState() !$= "Dead" && getWord(%vec,2) > %obj.getdataBlock().minImpactSpeed)
+        serverPlay3D("impact_fall_sound",%obj.getPosition());		
+	}
+
 	function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectCollision.dll, please do not modify it unless you know what you are doing
 	{
-		//if(isObject(%obj) && isObject(%col))
-		//{	
-		//	if(%obj.getClassName() $= "Player" && %col.getClassName() $= "Player" && (%obj.getdataBlock().isEventideModel && %col.getdataBlock().isEventideModel))
-		//	if(%obj.getdataBlock().getName() $= "PlayerGrabberNoJump") return true;
-		//	else return false;
-		//}
-//
-		//return true;
-	}	
+		if(isObject(%obj) && isObject(%col))
+		{
+			if((%obj.getType() & $TypeMasks::PlayerObjectType) && (%col.getType() & $TypeMasks::PlayerObjectType))
+			if(%obj.getdataBlock().getName() $= "PlayerGrabberNoJump") return true;
+			else return false;
+		}		
+		
+		return true;		
+	}
 
 	function ServerCmdPlantBrick (%client)
 	{
