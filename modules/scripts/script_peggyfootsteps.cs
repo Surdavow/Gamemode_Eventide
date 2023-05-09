@@ -622,7 +622,7 @@ function PeggFootsteps(%obj, %lastVert)
 						if (%obj.surface $= "color") %obj.touchColor = getColorIDTable(%col.getColorId());				
 					}
 					// check to see if the brick has an event based custom sound
-					if (%col.customStep !$= "")
+					if(%col.customStep !$= "")
 					{
 						%obj.touchColor = "";
 						%obj.surface = %col.customStep;
@@ -633,7 +633,7 @@ function PeggFootsteps(%obj, %lastVert)
 				%obj.touchColor = "";
 				%obj.surface = parseSoundFromNumber($Pref::Server::PF::terrainStep, %obj);
 			}
-			else if ( %type $= "WheeledVehicle" || %type $= "FlyingVehicle" )
+			else if(%type $= "WheeledVehicle" || %type $= "FlyingVehicle")
 			{
 				%obj.touchColor = "";
 				%obj.surface = parseSoundFromNumber($Pref::Server::PF::vehicleStep, %obj);

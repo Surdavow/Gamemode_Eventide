@@ -17,7 +17,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	maxWeapons = 3;
 	jumpDelay = 0;
 	jumpForce = 10 * 85;
-	cameramaxdist = 2.1;
+	cameramaxdist = 2.25;
 	maxfreelookangle = 2.25;
 };
 
@@ -41,6 +41,7 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");
+	%obj.gazeLoop();
 }
 
 function EventidePlayer_BreakFreePrint(%client,%amount)
@@ -221,10 +222,10 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 
 	if(isObject(%client = %obj.client)) %obj.ghostclient = %obj.client;
 
-	if(isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%minigame.teams))
+	if(isObject(%minigame = getMinigamefromObject(%obj)))
 	{
-		if(strlwr(%client.slyrTeam.name) $= "survivors")
-		for(%i = 0; %i < %client.slyrTeam.numMembers; %i++) if(isObject(%member = %client.slyrTeam.member[%i])) %member.play2D("fallen_survivor_sound");
+		for(%i = 0; %i < %minigame.numMembers; %i++) 
+		if(isObject(%member = %minigame.member[%i])) %member.play2D("fallen_survivor_sound");
 	}
 }
 

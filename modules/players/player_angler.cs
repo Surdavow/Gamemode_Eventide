@@ -56,7 +56,7 @@ function PlayerAngler::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("headskin",%headColor);
 	%obj.HideNode("Rhand");
 	%obj.unHideNode("RhandClaws");
-	%obj.setNodeColor("RhandClaws",%headColor);	
+	%obj.setNodeColor("RhandClaws",%headColor);
 	%obj.setNodeColor("lhand",%headColor);
 	%obj.setNodeColor("rhook",%headColor);
 	%obj.setNodeColor("lhook",%headColor);

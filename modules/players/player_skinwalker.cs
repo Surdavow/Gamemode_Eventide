@@ -48,6 +48,8 @@ function PlayerSkinwalker::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);    	
 	%obj.setScale("1.2 1.2 1.2");
+
+    %obj.stopaudio(0);
     %obj.playthread(0,"roar");
     
     %obj.schedule(1,playaudio,0,"skinwalker_roar_sound");

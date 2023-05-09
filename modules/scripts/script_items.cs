@@ -3,7 +3,7 @@ function serverCmdClearEventideShapes(%client)
 	if(!%client.isAdmin || !isObject(EventideShapeGroup) || !EventideShapeGroup.getCount()) return;
 	
 	MessageAll('MsgClearBricks', "\c3" @ %client.getPlayerName () @ "\c1\c0 cleared all Eventide shapes.");
-	EventideShapeGroup.delete();	
+	EventideShapeGroup.delete();
 }
 
 function AddBrickToRitualSet(%obj)
@@ -33,7 +33,7 @@ function fxDTSBrick::ShowEventideProp(%obj,%player,%isGem,%image)
 		datablock = %datablock;
 		spawnbrick = %obj;
 	};
-		
+	
 	%obj.interactiveshape = %interactiveshape;
 	if(%isGem) %interactiveshape.setNodeColor("ALL",%image.colorShiftColor);
 	%interactiveshape.schedule(10,playAudio,3,%interactiveshape.getDataBlock().placementSound);
@@ -45,15 +45,18 @@ function fxDTSBrick::ShowEventideProp(%obj,%player,%isGem,%image)
 		missionCleanup.add(EventideShapeGroup);
 	}
 
-	EventideShapeGroup.add(%interactiveshape);
+	EventideShapeGroup.add(%interactiveshape);//Important to keep please
 	if(EventideShapeGroup.getCount() >= EventideRitualSet.getCount()) 
-	{
-		MessageAll ('', "\c2All" SPC EventideRitualSet.getCount() SPC "rituals have been placed!");
+	{				
+		if(isObject(%minigame = getMiniGameFromObject(%player)))
+		{
+			%minigame.centerprintall("<font:Impact:40>\c3All" SPC EventideRitualSet.getCount() SPC "\c3rituals have been placed!",3);
 
-		if(isObject(ClientGroup) && ClientGroup.GetCount())
-		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i))) %client.play2D("round_start_sound");
+			for(%i = 0; %i < %minigame.numMembers; %i++) 
+			if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
+		}
 
-		if(isObject($EventideEventCaller))
+		if(isObject($EventideEventCaller))//lets call that console brick
 		{
 			$InputTarget_["Self"] = $EventideEventCaller;
 			$InputTarget_["Player"] = %player;

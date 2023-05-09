@@ -409,7 +409,7 @@ package Eventide_MainPackage
 				%client.play2d("round_start_sound");		 			
 				%client.escaped = false;
 			}
-			%minigame.chatmsgall("<font:impact:30>\c3Eventide: The Hunt begins");
+			%minigame.centerprintall("<font:impact:40>\c3Eventide: The Hunt begins",2);
 		}
 
         for(%i=0;%i<%minigame.numMembers;%i++)

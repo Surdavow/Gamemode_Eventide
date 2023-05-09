@@ -21,45 +21,45 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 				%hit = %nearbyplayer;
 
-			%line = vectorNormalize(vectorSub(%hit.getPosition(),%obj.getEyePoint()));
-			%dot = vectorDot(%obj.getEyeVector(), %line);
-			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);			
+				%line = vectorNormalize(vectorSub(%hit.getPosition(),%obj.getEyePoint()));
+				%dot = vectorDot(%obj.getEyeVector(), %line);
+				%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 
-			if(Eventide_MinigameConditionalCheck(%obj,%hit,true))
-			if(!isObject(%obscure) && %dot > 0.65)						
-			{			
-				if(%hit.getstate() $= "Dead" && vectorDist(%obj.getposition(),%hit.getposition()) < %radius*2.5)
-				{
-					if(%obj.getdataBlock().getName() $= "PlayerSkullwolf") 
+				if(Eventide_MinigameConditionalCheck(%obj,%hit,true))
+				if(!isObject(%obscure) && %dot > 0.65)						
+				{			
+					if(%hit.getstate() $= "Dead" && vectorDist(%obj.getposition(),%hit.getposition()) < %radius*2.5)
 					{
-						%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
-						%obj.playthread(3,"plant");
-						%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
-						%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
-						%hit.schedule(50,delete);
+						if(%obj.getdataBlock().getName() $= "PlayerSkullwolf") 
+						{
+							%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
+							%obj.playthread(3,"plant");
+							%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
+							%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
+							%hit.schedule(50,delete);
+						}
+						continue;
 					}
-					continue;
-				}
 
-				if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
-				{
-					if(%datablock.killermeleehitsound !$= "")
+					if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
 					{
-						%obj.stopaudio(3);
-						%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
+						if(%datablock.killermeleehitsound !$= "")
+						{
+							%obj.stopaudio(3);
+							%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
+						}
+
+						if(isObject(%obj.hookrope)) %obj.hookrope.delete();
+
+						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
+						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
+						%hit.damage(%obj, %hit.getWorldBoxCenter(), 25*%oscale, $DamageType::Default);
+						%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
+
+						%obj.setTempSpeed(0.65);
+						%obj.schedule(500,setTempSpeed,1);
 					}
-					
-					if(isObject(%obj.hookrope)) %obj.hookrope.delete();
-
-					%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
-					%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
-					%hit.damage(%obj, %hit.getWorldBoxCenter(), 25*%oscale, $DamageType::Default);
-					%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
-
-					%obj.setTempSpeed(0.65);
-					%obj.schedule(500,setTempSpeed,1);
-				}
-			}				
+				}				
 				
 			}
 			
@@ -75,7 +75,6 @@ function Player::onKillerLoop(%obj)
 
 	%this = %obj.getdataBlock();
 	%pos = %obj.getPosition();
-	%radius = 100;
 	%searchMasks = $TypeMasks::PlayerObjectType;	
 
     InitContainerRadiusSearch(%obj.getPosition(), 40, $TypeMasks::PlayerObjectType);

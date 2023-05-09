@@ -9,7 +9,7 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	killermeleehitsoundamount = 3;
 
 	killermeleesound = "";
-	killermeleesoundamount = 0;		
+	killermeleesoundamount = 0;	
 
 	killeridlesound = "";
 	killeridlesoundamount = 0;
@@ -72,7 +72,7 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 					{
 						%obj.setdatablock("PlayerGrabberNoJump");					
 						%obj.setVelocity(vectorscale(%obj.getForwardVector(),27));
-						%obj.playaudio(1,"grabber_lunge_sound");
+						%obj.playaudio(3,"grabber_lunge_sound");
 						%obj.playthread(3,"armReadyLeft");
 						%this.schedule(500,checkVictim,%obj);
 					}
@@ -94,7 +94,7 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 						%obj.victim.unmount();
 						%obj.victim.playthread(0,"root");
 						%obj.playthread(3,"leftrecoil");
-						%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),24));				
+						%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),25));				
 						%obj.victim.position = %obj.getEyePoint();
 
 						switch$(%obj.victim.getClassName())

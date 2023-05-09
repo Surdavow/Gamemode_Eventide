@@ -100,7 +100,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 	
 			if(%obj.casttime+500 < getSimTime())
 			{								
-				%start = %obj.getEyePoint();			
+				%start = %obj.getEyePoint();
 				%end = VectorAdd(%start,VectorScale(%obj.getEyeVector(),getWord(%obj.getScale(),2)*40));
 				%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::ItemObjectType;
 				%search = containerRayCast (%start, %end, %mask, %obj);
