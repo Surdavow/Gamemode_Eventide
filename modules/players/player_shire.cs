@@ -11,8 +11,11 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerchasesound = "shire_chase";
 	killerchasesoundamount = 4;
 
+	killermeleesound = "";
+	killermeleesoundamount = 0;	
+
 	killermeleehitsound = "melee_tanto";
-	killermeleehitsoundamount = 3;	
+	killermeleehitsoundamount = 3;
 	
 	killerraisearms = false;
 	killerlight = "NoFlarePLight";
@@ -62,7 +65,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 		
 	switch(%trig)
 	{
-		case 0: if(%press) Eventide_Melee(%this,%obj,3.5);
+		case 0: if(%press) %obj.KillerMelee(%this,3.5);
 
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				if(%press)

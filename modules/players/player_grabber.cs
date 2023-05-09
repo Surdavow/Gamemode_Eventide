@@ -7,6 +7,15 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
+
+	killermeleesound = "";
+	killermeleesoundamount = 0;		
+
+	killeridlesound = "";
+	killeridlesoundamount = 0;
+
+	killerchasesound = "";
+	killerchasesoundamount = 0;	
 	
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";	
@@ -56,7 +65,7 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 	if(%bool && %obj.getState() !$= "Dead")
 	switch(%triggerNum)
 	{
-		case 0: Eventide_Melee(%this,%obj,3.5);
+		case 0: %obj.KillerMelee(%this,3.5);
 		case 4: if(!isObject(%obj.victim))
 				{
 					if(!%obj.isCrouched() && %obj.getEnergyLevel() >= %this.maxEnergy && getWord(%obj.getVelocity(),2) == 0)

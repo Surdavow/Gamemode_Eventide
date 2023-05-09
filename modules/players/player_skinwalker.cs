@@ -19,6 +19,9 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
 
+	killermeleesound = "";
+	killermeleesoundamount = 0;    
+
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;    
 
@@ -104,7 +107,7 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 	
 	if(%press) switch(%trig)
 	{
-		case 0:	Eventide_Melee(%this,%obj,3.5);
+		case 0:	%obj.KillerMelee(%this,3.5);
 		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule)) 
                 %this.monstertransform(%obj,false);
 	}

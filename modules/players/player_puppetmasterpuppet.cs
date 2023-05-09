@@ -23,7 +23,7 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 			
 	if(%press) switch(%trig)
 	{
-		case 0:	Eventide_Melee(%this,%obj,3.5);
+		case 0:	%obj.KillerMelee(%this,3.5);
 		case 4: //right click
 	}
 }
