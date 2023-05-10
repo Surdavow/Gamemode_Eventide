@@ -98,7 +98,7 @@ package Eventide_DropItemsOnDeath
 	{        
 		Parent::Reset(%minigame,%client);
 
-		for(%i = 0; %i < DroppedItemSet.getCount(); %i++) 
+		for(%i = 0; %i <= DroppedItemSet.getCount(); %i++) 
 		if(isObject(%item = DroppedItemSet.getObject(%i))) %item.delete();		
 	}	
 };
