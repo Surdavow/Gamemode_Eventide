@@ -44,20 +44,6 @@ datablock ShapeBaseImageData(bookImage)
     stateName[0]                     = "Activate";
 };
 
-datablock fxDTSBrickData(brickBookData : brick2x2FData)
-{
-	category = "Special";
-	subCategory = "Eventide";
-	uiName = "Book";
-	iconName = bookItem.iconName;
-	
-
-	staticShapeItemMatch = "bookImage";
-	staticShape = "brickBookStaticShape";
-	shapeBrickPos = "0 0 -0.05";
-	colorShiftColor = "1 1 1 1";
-};
-
 datablock StaticShapeData(brickBookStaticShape)
 {
 	isInvincible = true;
@@ -78,14 +64,4 @@ function bookImage::onMount(%this,%obj,%slot)
     %obj.playAudio(1,"bookequip_sound");
     %obj.playthread(1,"armReadyBoth");
     %obj.playthread(2,"plant");
-}
-
-function brickBookData::onPlant(%this, %obj)
-{	
-	brickCandleData::onPlant(%this,%obj);	
-}
-
-function brickBookData::onloadPlant(%this, %obj) 
-{ 
-	brickBookData::onPlant(%this, %obj); 
 }

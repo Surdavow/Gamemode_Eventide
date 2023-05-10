@@ -154,29 +154,6 @@ datablock StaticShapeData(brickdaggerStaticShape)
 	placementSound = "sworddagger_place_sound";
 };
 
-datablock fxDTSBrickData(brickdaggerData : brick1x1FData)
-{
-	category = "Special";
-	subCategory = "Eventide";
-	uiName = "dagger";
-	iconName = daggerItem.iconName;
-	
-	staticShapeItemMatch = "daggerImage";
-	staticShape = "brickdaggerStaticShape";
-	shapeBrickPos = "0 0 0";
-	colorShiftColor = "1 1 1 1";	
-};
-
-function brickdaggerData::onPlant(%this, %obj)
-{	
-	brickCandleData::onPlant(%this,%obj);
-}
-
-function brickdaggerData::onloadPlant(%this, %obj) 
-{ 
-	brickdaggerData::onPlant(%this, %obj); 
-}
-
 function daggerImage::onReady(%this, %obj, %slot)
 {
 	%obj.playthread(1, "root");

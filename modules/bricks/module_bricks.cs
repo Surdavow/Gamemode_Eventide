@@ -1,0 +1,1 @@
+exec("./brick_ritual.cs");

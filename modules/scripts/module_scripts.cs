@@ -472,14 +472,10 @@ package Eventide_MainPackage
 	function Player::ActivateStuff (%player)//Not parenting, I made an overhaul of this function so it might cause compatibility issues...
 	{
 		Parent::ActivateStuff(%player);
-		if(isObject(%player) && %player.getState() !$= "Dead") %player.getDataBlock().onActivate(%player);
-	}
-
-	function Armor::onActivate(%this,%obj)
-	{
 		
-	}
-	
+		if(isObject(%player) && %player.getState() !$= "Dead" && isFunction(%player.getDataBlock().getName(),onActivate)) 
+		%player.getDataBlock().onActivate(%player);
+	}	
 };
 
 if(isPackage(Eventide_MainPackage)) deactivatePackage(Eventide_MainPackage);

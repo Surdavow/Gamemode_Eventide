@@ -142,37 +142,7 @@ datablock StaticShapeData(brickCandleStaticShape)
 	placementSound = "candle_place_sound";
 };
 
-datablock fxDTSBrickData(brickCandleData : brick1x1FData)
-{
-	category = "Special";
-	subCategory = "Eventide";
-	uiName = "Candle";
-	iconName = candleItem.iconName;
-
-	staticShapeItemMatch = "candleImage";
-	staticShape = brickCandleStaticShape;
-	shapeBrickPos = "0 0 0.15";	
-	colorShiftColor = "1 1 1 1";	
-};
-
-function brickCandleStaticShape::onRemove(%this,%obj)
-{
-    if(isObject(%obj.spawnbrick)) %obj.spawnbrick.light.delete();
-}
-
-function brickCandleData::onPlant(%this, %obj)
-{	
-	Parent::onPlant(%this,%obj);
-	%obj.setrendering(0);
-    AddBrickToRitualSet(%obj);
-}
-
-function brickCandleData::onloadPlant(%this, %obj) 
-{ 
-	brickCandleData::onPlant(%this, %obj); 
-}
-
-function brickCandleData::ToggleLight(%this,%obj,%bool)
+function brickCandleStaticShape::ToggleLight(%this,%obj,%bool)
 {
     if(%bool)
     {        

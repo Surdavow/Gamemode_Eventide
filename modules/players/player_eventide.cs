@@ -10,7 +10,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	uiName = "Eventide Player";
 	uniformCompatible = true;//For slayer uniform compatibility
 	isEventideModel = true;
-	showEnergyBar = true;
+	showEnergyBar = false;
 	canJet = false;
 	rechargeRate = 0.375;
 	maxTools = 3;
@@ -19,6 +19,13 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	jumpForce = 10 * 85;
 	cameramaxdist = 2.25;
 	maxfreelookangle = 2.25;
+	minimpactspeed = 15;
+
+	groundImpactMinSpeed = 5;
+	groundImpactShakeFreq = "4.0 4.0 4.0";
+	groundImpactShakeAmp = "1.0 1.0 1.0";
+	groundImpactShakeDuration = 0.8;
+	groundImpactShakeFalloff = 15;	
 };
 
 datablock PlayerData(EventidePlayerDowned : EventidePlayer)
@@ -30,9 +37,7 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
    	maxBackwardCrouchSpeed = 0;
    	maxSideCrouchSpeed = 0;
    	jumpForce = 0;
-	rechargerate = 0;
 	isDowned = true;
-	showEnergyBar = false;
 	uiName = "";
 };
 
@@ -43,6 +48,22 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%obj.setScale("1 1 1");
 	%obj.gazeLoop();
 }
+
+function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
+{
+	if(%obj.getState() !$= "Dead") 
+	{				
+		%zvector = getWord(%vec,2);
+		if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"plant");
+
+		if(%zvector > %this.minImpactSpeed && %zvector < %this.minImpactSpeed+5) %force = %force*0.375;
+		else if(%zvector > %this.minImpactSpeed+5 && %zvector < %this.minImpactSpeed+20) %force = %force*1.5;
+		else %force = %force*2.5;
+	}
+	
+	Parent::onImpact(%this, %obj, %col, %vec, %force);	
+}
+
 
 function EventidePlayer_BreakFreePrint(%client,%amount)
 {
@@ -92,7 +113,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 	Parent::onTrigger(%this, %obj, %trig, %press);
 	
 	if(%press)
-	{ 
+	{
 		switch(%trig)
 		{
 			case 0:	%ray = containerRayCast(%obj.getEyePoint(), vectoradd(%obj.getEyePoint(),vectorscale(%obj.getEyeVector(),5*getWord(%obj.getScale(),2))),$TypeMasks::FxBrickObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType,%obj);
@@ -164,13 +185,8 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {	
-	if(%obj.isSkinwalker)
-	{
-		%obj.addhealth(%damage);
-		return;
-	}	
+	if(%obj.isSkinwalker) %obj.addhealth(%damage*2);	
 	
-	//For some reason the player can die without a client, will check if the object exists to hopefully prevent it
 	if(isObject(%obj.client) && %obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33))
     {        
         %obj.setDatablock("EventidePlayerDowned");
@@ -179,13 +195,19 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
     }
 
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
+
+	if(%damage >= %this.maxDamage*1.25 && %obj.getState() $= "Dead") 
+	{
+		%obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
+		%obj.schedule(50,delete);
+	}
 }
 
 function EventidePlayerDowned::onNewDataBlock(%this,%obj)
-{		
-	%this.DownLoop(%obj);
-    %obj.playthread(0,sit);
+{
 	Parent::onNewDataBlock(%this,%obj);
+	%this.DownLoop(%obj);
+    %obj.playthread(0,sit);	
 }
 
 function EventidePlayerDowned::DownLoop(%this,%obj)
@@ -194,7 +216,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
-			%obj.addhealth(-1.5);
+			%obj.addhealth(-1.25);
 			%obj.setdamageflash(0.25);
 
 			if(%obj.lastcry+10000 < getsimtime())
@@ -202,7 +224,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 				%obj.lastcry = getsimtime();
 				%obj.playaudio(0,"grabber_scream_sound");
 				%obj.playthread(3,"plant");
-			}			
+			}
 		}
 	
 		cancel(%obj.downloop);
@@ -218,15 +240,15 @@ function EventidePlayer::onDisabled(%this,%obj)
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
-	Parent::onDisabled(%this,%obj);
-
-	if(isObject(%client = %obj.client)) %obj.ghostclient = %obj.client;
+	if(isObject(%client = %obj.client)) %obj.ghostclient = %client;
 
 	if(isObject(%minigame = getMinigamefromObject(%obj)))
 	{
 		for(%i = 0; %i < %minigame.numMembers; %i++) 
 		if(isObject(%member = %minigame.member[%i])) %member.play2D("fallen_survivor_sound");
-	}
+	}	
+
+	Parent::onDisabled(%this,%obj);
 }
 
 function EventidePlayer::onRemove(%this,%obj)
@@ -238,8 +260,7 @@ function EventidePlayerDowned::onRemove(%this,%obj)
 {	
 	Parent::onRemove(%this,%obj);
 
-	if(%obj.markedForShireZombify)
-	if(isObject(%obj.ghostclient) && isObject(%obj.ghostClient.minigame))
+	if(%obj.markedForShireZombify && isObject(%obj.ghostclient) && isObject(%obj.ghostClient.minigame))
 	{
 		%bot = new AIPlayer()
 		{
@@ -249,7 +270,7 @@ function EventidePlayerDowned::onRemove(%this,%obj)
 		};
 
 		%bot.setTransform(%obj.getTransform());
-		%obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
+		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 
 		if(!isObject(Shire_BotGroup))
 		{

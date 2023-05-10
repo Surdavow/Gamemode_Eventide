@@ -120,17 +120,6 @@ datablock ShapeBaseImageData(gem5Image : gem1Image)
     colorShiftColor = gem5Item.colorShiftColor;		
 };
 
-datablock fxDTSBrickData(brickGemData : brick1x1FData)
-{
-	category = "Special";
-	subCategory = "Eventide";
-	uiName = "Gem";	
-	iconName = gem1Item.iconName;
-
-	staticShapeItemMatch = "gem";
-	staticShape = "gem";
-};
-
 datablock StaticShapeData(brickGem1StaticShape)
 {
 	isInvincible = true;
@@ -157,16 +146,6 @@ datablock StaticShapeData(brickGem5StaticShape : brickGem1StaticShape)
 {
 	shapeFile = "./models/Gem5.dts";
 };
-
-function brickGemData::onPlant(%this, %obj)
-{	
-	brickCandleData::onPlant(%this,%obj);
-}
-
-function brickGemData::onloadPlant(%this, %obj) 
-{ 
-	brickGemData::onPlant(%this, %obj); 
-}
 
 function brickGem1StaticShape::onAdd(%this,%obj)
 {
