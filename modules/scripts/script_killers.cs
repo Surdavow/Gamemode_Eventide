@@ -77,7 +77,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 						%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
 
 						%obj.setTempSpeed(0.65);
-						%obj.schedule(500,setTempSpeed,1);
+						%obj.schedule(1000,setTempSpeed,1);
 					}
 				}				
 				
