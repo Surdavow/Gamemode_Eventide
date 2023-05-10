@@ -33,12 +33,12 @@ package Eventide_DropItemsOnDeath
 				%thrownItem.miniGame = %client.miniGame;
 				%thrownItem.bl_id = %client.getBLID ();
 				%thrownItem.setCollisionTimeout (%player);
-				if(!isObject(DroppedItemSet))
+				if(!isObject(DroppedItemGroup))
 				{
-					new SimSet(DroppedItemSet);
-					missioCleanUp.add(DroppedItemSet);
+					new SimGroup(DroppedItemGroup);
+					missioCleanUp.add(DroppedItemGroup);
 				}
-				DroppedItemSet.add(%thrownItem);				
+				DroppedItemGroup.add(%thrownItem);				
 				if (%item.className $= "Weapon")
 				{
 					%player.weaponCount -= 1;
@@ -84,12 +84,12 @@ package Eventide_DropItemsOnDeath
 				%item.spawnBrick = -1;
 				%item.setVelocity(%itemVec);						
 
-				if(!isObject(DroppedItemSet))
+				if(!isObject(DroppedItemGroup))
 				{
-					new SimSet(DroppedItemSet);
-					missioCleanUp.add(DroppedItemSet);
+					new SimSet(DroppedItemGroup);
+					missioCleanUp.add(DroppedItemGroup);
 				}
-				DroppedItemSet.add(%item);
+				DroppedItemGroup.add(%item);
 			}
 		}	
 	}
@@ -98,8 +98,7 @@ package Eventide_DropItemsOnDeath
 	{        
 		Parent::Reset(%minigame,%client);
 
-		for(%i = 0; %i <= DroppedItemSet.getCount(); %i++) 
-		if(isObject(%item = DroppedItemSet.getObject(%i))) %item.delete();		
+		if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
 	}	
 };
 activatePackage(Eventide_DropItemsOnDeath);
