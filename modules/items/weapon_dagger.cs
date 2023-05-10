@@ -98,6 +98,9 @@ datablock ShapeBaseImageData(daggerImage)
     projectile = "";
     projectileType = Projectile;
 
+    staticShape = "brickdaggerStaticShape";
+    isRitual = true;	
+
     melee = true;
     doRetraction = false;
     armReady = false;
@@ -153,6 +156,12 @@ datablock StaticShapeData(brickdaggerStaticShape)
 	shapeFile = "./models/daggerstatic.dts";
 	placementSound = "sworddagger_place_sound";
 };
+
+function brickdaggerStaticShape::onAdd(%this,%obj)
+{
+	Parent::onAdd(%this,%obj);
+	%obj.schedule(33,playaudio,3,%this.placementSound);
+}
 
 function daggerImage::onReady(%this, %obj, %slot)
 {

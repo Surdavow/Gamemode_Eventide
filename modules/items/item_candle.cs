@@ -109,6 +109,9 @@ datablock ShapeBaseImageData(candleImage)
     projectile = "";
     projectileType = Projectile;
 
+    staticShape = "brickCandleStaticShape";
+    isRitual = true;
+
     melee = true;
     doRetraction = false;
     armReady = true;
@@ -142,25 +145,28 @@ datablock StaticShapeData(brickCandleStaticShape)
 	placementSound = "candle_place_sound";
 };
 
-function brickCandleStaticShape::ToggleLight(%this,%obj,%bool)
-{
-    if(%bool)
-    {        
-        %obj.light = new fxlight()
-        {
-            dataBlock = "CandleLight";
-            enable = true;
-        };
-        %obj.interactiveshape.playAudio(1,"candleignite_sound");
-        %obj.light.settransform(vectoradd(%obj.gettransform(),"0 0 0.9") SPC getwords(%obj.gettransform(),3,6));
-        %obj.isLightOn = true;
-    }
-    else
+function brickCandleStaticShape::Light(%this,%obj)
+{   
+    if(!isObject(%obj)) return;
+
+    %obj.light = new fxlight()
     {
-        if(isObject(%obj.light)) %obj.light.delete();
-        %obj.interactiveshape.playAudio(1,"candleextinguish_sound");
-        %obj.isLightOn = false;
-    }
+        dataBlock = "CandleLight";
+        enable = true;
+    };
+    %obj.playAudio(1,"candleignite_sound");
+    %obj.light.settransform(vectoradd(%obj.gettransform(),"0 0 1.125") SPC getwords(%obj.gettransform(),3,6));
+}
+
+function brickCandleStaticShape::onRemove(%this,%obj)
+{
+    if(isObject(%obj.light)) %obj.light.delete();
+}
+
+function brickCandleStaticShape::onAdd(%this,%obj)
+{
+    %obj.schedule(33,playaudio,3,%this.placementSound);
+    %this.schedule(500,Light,%obj);
 }
 
 function candleImage::onActivate(%this, %obj, %slot)

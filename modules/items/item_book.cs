@@ -35,6 +35,9 @@ datablock ShapeBaseImageData(bookImage)
     projectile = "";
     projectileType = Projectile;
 
+    staticShape = "brickBookStaticShape";
+    isRitual = true;    
+
     melee = true;
     doRetraction = false;
     armReady = false;
@@ -50,6 +53,12 @@ datablock StaticShapeData(brickBookStaticShape)
 	shapeFile = "./models/book.dts";
 	placementSound = "book_place_sound";
 };
+
+function brickBookStaticShape::onAdd(%this,%obj)
+{
+	Parent::onAdd(%this,%obj);
+	%obj.schedule(33,playaudio,3,%this.placementSound);
+}
 
 function bookImage::onUnmount(%this,%obj,%slot)
 {    
