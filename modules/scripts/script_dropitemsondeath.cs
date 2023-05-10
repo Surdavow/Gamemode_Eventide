@@ -1,12 +1,9 @@
 package Eventide_DropItemsOnDeath
 {
-	function gameConnection::onDeath(%client,%source,%killer,%type,%location)
-	{
-		Parent::onDeath(%client,%source,%killer,%type,%location);					
-	}
-
 	function ServerCmdDropTool (%client, %position)
 	{
+		if(!isObject(getMinigameFromObject(%client))) return Parent::ServerCmdDropTool(%client, %position);
+
 		%player = %client.Player;
 		if (!isObject (%player))
 		{
@@ -60,6 +57,7 @@ package Eventide_DropItemsOnDeath
 	{
 		Parent::onDisabled(%this, %obj, %state);
 
+		if(isObject(getMinigameFromObject(%obj)))
 		for(%i=0;%i<%obj.getDatablock().maxTools;%i++)
 		{
 			if(isObject(%item = %obj.tool[%i]))
