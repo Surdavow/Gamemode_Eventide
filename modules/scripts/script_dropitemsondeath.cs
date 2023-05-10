@@ -2,19 +2,22 @@ package Eventide_DropItemsOnDeath
 {
 	function gameConnection::onDeath(%client,%source,%killer,%type,%location)
 	{
-		Parent::onDeath(%client,%source,%killer,%type,%location);
+		Parent::onDeath(%client,%source,%killer,%type,%location);					
+	}
 
-		if(isObject(%client.minigame) && isObject(%client.player))		
-		for(%i=0;%i<%client.player.getDatablock().maxTools;%i++)
+	function Armor::onDisabled(%this, %obj, %state)
+	{
+		Parent::onDisabled(%this, %obj, %state);
+
+		for(%i=0;%i<%obj.getDatablock().maxTools;%i++)
 		{
-			%item = %client.player.tool[%i];
-			if(isObject(%item))
+			if(isObject(%item = %obj.tool[%i]))
 			{
-				%pos = %client.player.getPosition();
+				%pos = %obj.getPosition();
 				%posX = getWord(%pos,0);
 				%posY = getWord(%pos,1);
 				%posZ = getWord(%pos,2);
-				%vec = %client.player.getVelocity();
+				%vec = %obj.getVelocity();
 				%vecX = getWord(%vec,0);
 				%vecY = getWord(%vec,1);
 				%vecZ = getWord(%vec,2);
@@ -25,8 +28,8 @@ package Eventide_DropItemsOnDeath
 				};
 				%itemVec = %vec;
 				%itemVec = vectorAdd(%itemVec,getRandom(-8,8) SPC getRandom(-8,8) SPC 10);
-				%item.BL_ID = %client.BL_ID;
-				%item.minigame = %client.minigame;
+				%item.BL_ID = %obj.client.BL_ID;
+				%item.minigame = getMiniGameFromObject(%obj);
 				%item.spawnBrick = -1;
 				%item.setVelocity(%itemVec);						
 
@@ -36,10 +39,8 @@ package Eventide_DropItemsOnDeath
 					missioCleanUp.add(DroppedItemSet);
 				}
 				DroppedItemSet.add(%item);
-
 			}
-			%client.player.tool[%i] = "";
-		}							
+		}	
 	}
 
     function MiniGameSO::Reset(%minigame,%client)
