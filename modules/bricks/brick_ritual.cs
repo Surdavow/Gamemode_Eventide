@@ -166,7 +166,7 @@ function brickEventideRitual::onPlant(%this, %obj)
 
 	%obj.ritualshape.position = %obj.getposition();
 
-	$EventideRitualAmount += 10;
+	$EventideRitualAmount += 10	;
 }
 
 function brickEventideRitual::onloadPlant(%this, %obj) 
@@ -190,4 +190,10 @@ function brickEventideRitual::onDeath(%this, %obj)
 function brickEventideRitual::onRemove(%this, %obj)
 {	
 	Parent::onRemove(%this,%obj);
+	if(isObject(%obj.ritualshape)) %obj.ritualshape.delete();
+	if(isObject(%obj.bookshape)) %obj.bookshape.delete();
+	if(isObject(%obj.daggershape)) %obj.daggershape.delete();
+
+	for(%i = 1; %i <= 4; %i++) if(isObject(%obj.candleshape[%i])) %obj.candleshape[%i].delete();
+	for(%j = 1; %j <= 4; %j++) if(isObject(%obj.gemshape[%j])) %obj.gemshape[%j].delete();	
 }

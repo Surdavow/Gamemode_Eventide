@@ -74,13 +74,19 @@ function Player::onKillerLoop(%obj)
 	if(%obj.getClassName() $= "Player") %obj.KillerGhostLightCheck();
 
 	%this = %obj.getdataBlock();
-	%pos = %obj.getPosition();
-	%searchMasks = $TypeMasks::PlayerObjectType;	
 
-    InitContainerRadiusSearch(%obj.getPosition(), 40, $TypeMasks::PlayerObjectType);
-    while(%scan = containerSearchNext())//Detect if players exist and if the killer can see them
-    {
-        if(%scan == %obj || !isObject(getMinigamefromObject(%scan)) || %scan.getdataBlock().isKiller) continue;
+
+	for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(
+	if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
+	{
+			
+		if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 100) 
+		continue;
+	
+		%scan = %nearbyplayer;
+
+    
+        if(!isObject(getMinigamefromObject(%scan)) || %scan.getdataBlock().isKiller) continue;
         %line = vectorNormalize(vectorSub(%scan.getmuzzlePoint(2),%obj.getEyePoint()));
         %dot = vectorDot(%obj.getEyeVector(), %line);
         %killerclient = %obj.client;
