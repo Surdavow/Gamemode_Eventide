@@ -75,16 +75,14 @@ function Player::onKillerLoop(%obj)
 
 	%this = %obj.getdataBlock();
 
-
 	for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(
 	if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
 	{
 			
 		if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 100) 
 		continue;
-	
-		%scan = %nearbyplayer;
 
+		%scan = %nearbyplayer;
     
         if(!isObject(getMinigamefromObject(%scan)) || %scan.getdataBlock().isKiller) continue;
         %line = vectorNormalize(vectorSub(%scan.getmuzzlePoint(2),%obj.getEyePoint()));
@@ -93,7 +91,7 @@ function Player::onKillerLoop(%obj)
         %victimclient = %scan.client;
 
         //Not very efficient and messy code right now, will redo this sometime
-        if(ContainerSearchCurrRadiusDist() <= 17 && %dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(),%scan.getmuzzlePoint(2),$TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType,%obj)))
+        if(%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(),%scan.getmuzzlePoint(2),$TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType,%obj)))
         {
             %killercansee[%cansee++] = %scan;
             %chasing = true;            
