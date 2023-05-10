@@ -56,19 +56,24 @@ function ShireZombieBot::onBotLoop(%this,%obj)
     {
         %obj.lastSearchTime = %currentTime+1500;//Scan every 1500 ms
 
-        initContainerRadiusSearch(%obj.getPosition(), 75, $TypeMasks::PlayerObjectType);
-        while((%scan = containerSearchNext()) != 0)
-        {
-            if(%scan == %obj || %scan.getdataBlock().isKiller || %scan.getDataBlock().className $= "PlayerData") continue;
+		for(%i = 0; %i < clientgroup.getCount(); %i++)
+		{
+			if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
+			{
+				if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 50 || %nearbyplayer.getdataBlock().isKiller) 
+				continue;
 
-            %line = vectorNormalize(vectorSub(%scan.getposition(),%obj.getposition()));
-            %dot = vectorDot(%obj.getEyeVector(), %line );
-            %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%scan.getPosition(),"0 0 1.9"),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+                %scan = %nearbyplayer;
 
-            if(!isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%scan.getposition()) < 75)//Distance should be less than 75, and they can see them   
-            {
-                %obj.target = %scan;
-                %target = %obj.target;            
+                %line = vectorNormalize(vectorSub(%scan.getposition(),%obj.getposition()));
+                %dot = vectorDot(%obj.getEyeVector(), %line );
+                %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%scan.getPosition(),"0 0 1.9"),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+
+                if(!isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%scan.getposition()) < 75)//Distance should be less than 75, and they can see them   
+                {
+                    %obj.target = %scan;
+                    %target = %obj.target;            
+                }
             }
         }
     }
@@ -99,7 +104,9 @@ function ShireZombieBot::onBotLoop(%this,%obj)
 
     if(isObject(%target))
     {
-        if(vectorDist(%obj.getposition(),%target.getposition()) < 10)//Raise arms if we are close enough
+        %distance = vectorDist(%obj.getposition(),%target.getposition());
+
+        if(%distance < 10)//Raise arms if we are close enough
         {
             if(!%obj.raisearms)
             {
@@ -107,7 +114,22 @@ function ShireZombieBot::onBotLoop(%this,%obj)
                 %obj.raisearms = true;
             }
 
-            if(vectorDist(%obj.getposition(),%target.getposition()) < 5) %obj.playthread(2,"activate2");//let's start swinging            
+            if(%distance < 5) %obj.playthread(2,"activate2");//let's start swinging
+
+            if(%distance < 2)
+            {
+                %target.damage(%obj,%target.getWorldBoxCenter(),30,$DamageType::Default);        
+                %target.SetTempSpeed(0.5);
+                %target.schedule(1000,SetTempSpeed,1);
+                %target.playthread(3,"plant");
+
+                %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
+                cancel(%obj.BotLoopSched);
+                %obj.playthread(3,"activate2");
+                %obj.setMoveX(0);
+                %obj.setMoveY(-0.25);
+                %obj.BotLoopSched = %this.schedule(2000,onBotLoop,%obj);   
+            }
         }
         else if(%obj.raisearms)//Too far, lower the arms once more
         {
@@ -184,27 +206,6 @@ function ShireZombieBot::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 {	
 	Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType,%damageLoc);
     %obj.addhealth(%damage);
-}
-
-function ShireZombieBot::onCollision(%this,%obj,%col,%normal,%speed)
-{
-	Parent::onCollision(%this,%obj,%col,%normal,%speed);
-
-    if(%obj.getState() !$= "Dead")
-    if((%col.getType() & $TypeMasks::PlayerObjectType) && %col.getState() !$= "Dead" && !%col.getdataBlock().isKiller) 
-    {
-        %col.damage(%obj,%col.getWorldBoxCenter(), 30, $DamageType::Default);        
-        %col.SetTempSpeed(0.5);
-        %col.schedule(1000,SetTempSpeed,1);
-        %col.playthread(3,"plant");
-
-        %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
-        cancel(%obj.BotLoopSched);
-        %obj.playthread(3,"activate2");
-        %obj.setMoveX(0);
-        %obj.setMoveY(-0.25);
-        %obj.BotLoopSched = %this.schedule(2000,onBotLoop,%obj);                 
-    }
 }
 
 function ShireZombieBot::onRemove(%this,%obj)
