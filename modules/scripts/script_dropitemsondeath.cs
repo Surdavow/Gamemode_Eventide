@@ -86,7 +86,7 @@ package Eventide_DropItemsOnDeath
 
 				if(!isObject(DroppedItemGroup))
 				{
-					new SimSet(DroppedItemGroup);
+					new SimGroup(DroppedItemGroup);
 					missioCleanUp.add(DroppedItemGroup);
 				}
 				DroppedItemGroup.add(%item);
