@@ -43,6 +43,26 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 					if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
 					{
+    					if(%obj.getdataBlock().getName() $= "PlayerSkinwalker")
+						if(!isObject(%obj.victim) && %col.getdataBlock().isDowned && %col.getDamagePercent() > 0.5)
+    					{
+    					    if(isObject(%col.client)) %col.client.setControlObject(%col.client.camera);
+    					    %obj.victim = %col;
+    					    %obj.victimreplicatedclient = %col.client;
+    					    %obj.playthread(1,"eat");
+    					    %obj.playthread(2,"talk");
+    					    %obj.playaudio(1,"skinwalker_grab_sound");
+    					    %obj.mountobject(%col,6);
+    					    %col.schedule(2250,kill);
+    					    %col.schedule(2250,spawnExplosion,"goryExplosionProjectile",%col.getScale()); 
+    					    %col.schedule(2300,delete);        
+    					    %obj.schedule(2250,playthread,1,"root");
+    					    %obj.schedule(2250,playthread,2,"root");
+    					    %obj.schedule(2250,setField,victim,0);
+    					    %this.schedule(2250,EventideAppearance,%obj,%obj.client);
+							return;
+    					}						
+						
 						if(%datablock.killermeleehitsound !$= "")
 						{
 							%obj.stopaudio(3);
