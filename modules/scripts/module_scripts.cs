@@ -241,7 +241,7 @@ package Eventide_MainPackage
 		if(isObject(%obj) && isObject(%col))
 		{
 			if((%obj.getType() & $TypeMasks::PlayerObjectType) && (%col.getType() & $TypeMasks::PlayerObjectType))
-			if(%obj.getdataBlock().getName() $= "PlayerGrabberNoJump") return true;
+			if(%obj.getdataBlock().getName() $= "PlayerGrabberNoJump" || (%obj.getdataBlock().getName() $= "PlayerSkinwalker" && %col.getDamagePercent() < 0.5)) return true;
 			else return false;
 		}		
 		

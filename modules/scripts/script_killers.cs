@@ -77,8 +77,7 @@ function Player::onKillerLoop(%obj)
 
 	for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(
 	if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
-	{
-			
+	{			
 		if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 40) 
 		continue;
 
