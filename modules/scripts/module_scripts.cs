@@ -247,7 +247,7 @@ package Eventide_MainPackage
 			if(!isObject(DroppedItemGroup))
 			{
 				new SimGroup(DroppedItemGroup);
-				missioCleanUp.add(DroppedItemGroup);
+				missionCleanUp.add(DroppedItemGroup);
 			}
 			DroppedItemGroup.add(%thrownItem);				
 			if(%item.className $= "Weapon") %player.weaponCount -= 1;

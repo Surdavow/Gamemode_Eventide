@@ -79,8 +79,8 @@ function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
 		%zvector = getWord(%vec,2);
 		if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"plant");
 
-		if(%zvector > %this.minImpactSpeed && %zvector < %this.minImpactSpeed+5) %force = %force*0.375;
-		else if(%zvector > %this.minImpactSpeed+5 && %zvector < %this.minImpactSpeed+13) %force = %force*1.5;
+		if(%zvector > %this.minImpactSpeed && %zvector < %this.minImpactSpeed+5) %force = %force*0.5;
+		else if(%zvector > %this.minImpactSpeed+5 && %zvector < %this.minImpactSpeed+20) %force = %force*1.5;
 		else %force = %force*2.5;
 	}
 	
@@ -222,7 +222,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	if(%damage >= %this.maxDamage*2 && %obj.getState() $= "Dead" && %damageType != $DamageType::Suicide) 
 	{
 		%obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
-		%obj.schedule(50,delete);
+		%obj.schedule(1,delete);
 	}
 }
 
@@ -295,7 +295,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			if(!isObject(DroppedItemGroup))
 			{
 				new SimGroup(DroppedItemGroup);
-				missioCleanUp.add(DroppedItemGroup);
+				missionCleanUp.add(DroppedItemGroup);
 			}
 			DroppedItemGroup.add(%item);
 		}		

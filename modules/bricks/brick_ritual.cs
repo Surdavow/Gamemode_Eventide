@@ -117,7 +117,7 @@ function brickEventideRitual::onActivate(%this, %obj, %player, %client, %pos, %v
 		}
 		EventideShapeGroup.add(%interactiveshape);
 
-		if(EventideShapeGroup.getCount() >= $EventideRitualAmount) 
+		if(EventideShapeGroup.getCount() >= $EventideRitualAmount)
 		{				
 			if(isObject(%minigame = getMiniGameFromObject(%player)))
 			{
