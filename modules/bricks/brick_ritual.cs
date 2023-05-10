@@ -11,7 +11,6 @@ datablock StaticShapeData(brickEventideRitualStaticShape)
 	isInvincible = true;
 	shapeFile = "./models/rittualstatic.dts";
 
-	//Positions are important!
 	gemPos1 = "2.28 2.875 0.1";
 	gemPos2 = "-2.28 2.875 0.1";
 	gemPos3 = "2.1 -2.725 0.1";
@@ -128,7 +127,8 @@ function brickEventideRitual::onActivate(%this, %obj, %player, %client, %pos, %v
 				if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
 			}
 	
-			if(isObject($EventideEventCaller))//lets call that console brick
+			//lets call that console brick
+			if(isObject($EventideEventCaller))
 			{
 				$InputTarget_["Self"] = $EventideEventCaller;
 				$InputTarget_["Player"] = %player;
@@ -177,10 +177,10 @@ function brickEventideRitual::onloadPlant(%this, %obj)
 function brickEventideRitual::onDeath(%this, %obj)
 {	
 	Parent::onDeath(%this,%obj);
+
 	if(isObject(%obj.ritualshape)) %obj.ritualshape.delete();
 	if(isObject(%obj.bookshape)) %obj.bookshape.delete();
 	if(isObject(%obj.daggershape)) %obj.daggershape.delete();
-
 	for(%i = 1; %i <= 4; %i++) if(isObject(%obj.candleshape[%i])) %obj.candleshape[%i].delete();
 	for(%j = 1; %j <= 4; %j++) if(isObject(%obj.gemshape[%j])) %obj.gemshape[%j].delete();
 
@@ -190,10 +190,10 @@ function brickEventideRitual::onDeath(%this, %obj)
 function brickEventideRitual::onRemove(%this, %obj)
 {	
 	Parent::onRemove(%this,%obj);
+	
 	if(isObject(%obj.ritualshape)) %obj.ritualshape.delete();
 	if(isObject(%obj.bookshape)) %obj.bookshape.delete();
 	if(isObject(%obj.daggershape)) %obj.daggershape.delete();
-
 	for(%i = 1; %i <= 4; %i++) if(isObject(%obj.candleshape[%i])) %obj.candleshape[%i].delete();
 	for(%j = 1; %j <= 4; %j++) if(isObject(%obj.gemshape[%j])) %obj.gemshape[%j].delete();	
 }

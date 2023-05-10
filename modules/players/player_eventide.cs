@@ -41,12 +41,35 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	uiName = "";
 };
 
+registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
+function EventidePlayer::GazeLoop(%this,%obj)
+{		
+	if(!isObject(%obj) || !isObject(%client = %obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock() != %this || !isObject(%minigame = getMinigamefromObject(%obj)) || strlwr(%client.slyrteam.name) !$= "killer") 
+	return;
+
+	cancel(%obj.GazeLoop);
+	%obj.GazeLoop = %this.schedule(33,GazeLoop,%obj);
+
+	if($Pref::Server::GazeEnabled)
+	{
+		%hit = firstWord(containerRaycast(%obj.getEyePoint(),vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange)),$TypeMasks::FxBrickObjectType,%obj));
+		if(isObject(%hit))
+		{
+			$InputTarget_Self = %hit;
+			$InputTarget_Player = %obj;
+			$InputTarget_Client = %client;
+			$InputTarget_Minigame = %minigame;
+			%hit.processInputEvent("onGaze", %gazer);
+		}
+	}
+}
+
 function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(1,setEnergyLevel,0);
-	%obj.setScale("1 1 1");
-	%obj.gazeLoop();
+	%obj.setScale("1 1 1");	
+	%this.GazeLoop(%obj);
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -57,7 +80,7 @@ function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
 		if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"plant");
 
 		if(%zvector > %this.minImpactSpeed && %zvector < %this.minImpactSpeed+5) %force = %force*0.375;
-		else if(%zvector > %this.minImpactSpeed+5 && %zvector < %this.minImpactSpeed+20) %force = %force*1.5;
+		else if(%zvector > %this.minImpactSpeed+5 && %zvector < %this.minImpactSpeed+13) %force = %force*1.5;
 		else %force = %force*2.5;
 	}
 	
@@ -196,7 +219,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
-	if(%damage >= %this.maxDamage*1.25 && %obj.getState() $= "Dead") 
+	if(%damage >= %this.maxDamage*2 && %obj.getState() $= "Dead" && %damageType != $DamageType::Suicide) 
 	{
 		%obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
 		%obj.schedule(50,delete);
@@ -240,15 +263,46 @@ function EventidePlayer::onDisabled(%this,%obj)
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
+	Parent::onDisabled(%this,%obj);
+
 	if(isObject(%client = %obj.client)) %obj.ghostclient = %client;
 
 	if(isObject(%minigame = getMinigamefromObject(%obj)))
 	{
-		for(%i = 0; %i < %minigame.numMembers; %i++) 
+		if(isObject(%client))
+		for(%i=0;%i<%obj.getDatablock().maxTools;%i++) if(isObject(%item = %obj.tool[%i]) && %item.image.isRitual)
+		{						
+			%pos = %obj.getPosition();
+			%posX = getWord(%pos,0);
+			%posY = getWord(%pos,1);
+			%posZ = getWord(%pos,2);
+			%vec = %obj.getVelocity();
+			%vecX = getWord(%vec,0);
+			%vecY = getWord(%vec,1);
+			%vecZ = getWord(%vec,2);
+			%item = new Item()
+			{
+				dataBlock = %item;
+				position = %pos;
+			};
+			%itemVec = %vec;
+			%itemVec = vectorAdd(%itemVec,getRandom(-8,8) SPC getRandom(-8,8) SPC 10);
+			%item.BL_ID = %client.BL_ID;
+			%item.minigame = %minigame;
+			%item.spawnBrick = -1;
+			%item.setVelocity(%itemVec);						
+
+			if(!isObject(DroppedItemGroup))
+			{
+				new SimGroup(DroppedItemGroup);
+				missioCleanUp.add(DroppedItemGroup);
+			}
+			DroppedItemGroup.add(%item);
+		}		
+		
+		for(%i = 0; %i < %minigame.numMembers; %i++)
 		if(isObject(%member = %minigame.member[%i])) %member.play2D("fallen_survivor_sound");
 	}	
-
-	Parent::onDisabled(%this,%obj);
 }
 
 function EventidePlayer::onRemove(%this,%obj)

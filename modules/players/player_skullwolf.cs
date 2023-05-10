@@ -112,7 +112,6 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 					cancel(%obj.reappearsched);
 					%this.reappear(%obj,0);
 				}
-		default:
 	}
 }
 

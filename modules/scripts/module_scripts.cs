@@ -1,6 +1,5 @@
 exec("./support_extraresources.cs");
 exec("./script_chatsystem.cs");
-exec("./script_gazeloop.cs");
 exec("./script_killers.cs");
 exec("./script_items.cs");
 exec("./support_dataInstance.cs");
@@ -8,8 +7,6 @@ exec("./support_itemammo.cs");
 exec("./support_statuseffect.cs");
 exec("./support_stringutilities.cs");
 exec("./script_peggyfootsteps.cs");
-exec("./script_peggyfootsteps.cs");
-exec("./script_dropitemsondeath.cs");
 
 registerOutputEvent("GameConnection", "Escape", "", false);
 
@@ -222,6 +219,45 @@ function Eventide_MinigameConditionalCheckNoKillers(%objA,%objB,%exemptDeath)//e
 
 package Eventide_MainPackage
 {
+
+	function ServerCmdDropTool(%client,%position)
+	{
+		if(!isObject(getMinigameFromObject(%client))) return Parent::ServerCmdDropTool(%client, %position);
+	
+		if(isObject(%player = %client.Player) && %player.getDatablock().isEventideModel && isObject(%item = %player.tool[%position]) && %item.canDrop)
+		{
+			if(!%item.image.isRitual) return Parent::ServerCmdDropTool(%client, %position);
+
+			%zScale = getWord (%player.getScale (), 2);
+			%muzzlepoint = VectorAdd (%player.getPosition (), "0 0" SPC 1.5 * %zScale);
+			%muzzlevector = %player.getEyeVector ();
+			%muzzlepoint = VectorAdd (%muzzlepoint, %muzzlevector);
+			%playerRot = rotFromTransform (%player.getTransform ());
+			%thrownItem = new Item ("")
+			{
+				dataBlock = %item;
+			};
+			%thrownItem.setScale (%player.getScale ());
+			MissionCleanup.add (%thrownItem);
+			%thrownItem.setTransform (%muzzlepoint @ " " @ %playerRot);
+			%thrownItem.setVelocity (VectorScale (%muzzlevector, 20 * %zScale));
+			%thrownItem.miniGame = %client.miniGame;
+			%thrownItem.bl_id = %client.getBLID ();
+			%thrownItem.setCollisionTimeout(%player);
+			if(!isObject(DroppedItemGroup))
+			{
+				new SimGroup(DroppedItemGroup);
+				missioCleanUp.add(DroppedItemGroup);
+			}
+			DroppedItemGroup.add(%thrownItem);				
+			if(%item.className $= "Weapon") %player.weaponCount -= 1;
+			
+			%player.tool[%position] = 0;
+			messageClient (%client, 'MsgItemPickup', '', %position, 0);			
+			if(isObject(%player.getMountedImage(%item.image.mountPoint))) %player.unmountImage (%item.image.mountPoint);			
+		}
+	}
+
 	function Armor::onImpact(%this, %obj, %col, %vec, %force)
 	{
 		Parent::onImpact(%this, %obj, %col, %vec, %force);
@@ -390,7 +426,8 @@ package Eventide_MainPackage
         }
 
 		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();
-		if(isObject(EventideShapeGroup)) EventideShapeGroup.delete();		
+		if(isObject(EventideShapeGroup)) EventideShapeGroup.delete();
+		if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
     }
 
     function MinigameSO::endGame(%minigame,%client)

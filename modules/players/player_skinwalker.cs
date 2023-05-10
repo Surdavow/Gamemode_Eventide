@@ -81,11 +81,6 @@ function PlayerSkinwalker::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("lshoe",%clientappearance.llegColor);
 }
 
-function PlayerSkinwalker::onCollision(%this,%obj,%col)
-{
-	Parent::onCollision(%this,%obj,%col);
-}
-
 function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
@@ -123,9 +118,4 @@ function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
         }
         %obj.changeaudio = false;
     }
-}
-
-function PlayerSkinwalker::onDisabled(%this, %obj, %state) //makes bots have death sound and animation and runs the required bot hole command
-{
-	Parent::onDisabled(%this, %obj, %state);
 }
