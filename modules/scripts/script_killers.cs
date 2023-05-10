@@ -79,7 +79,7 @@ function Player::onKillerLoop(%obj)
 	if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
 	{
 			
-		if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 100) 
+		if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 20) 
 		continue;
 
 		%scan = %nearbyplayer;
