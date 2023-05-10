@@ -79,7 +79,7 @@ function Player::onKillerLoop(%obj)
 	if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
 	{
 			
-		if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 20) 
+		if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 40) 
 		continue;
 
 		%scan = %nearbyplayer;
@@ -96,7 +96,7 @@ function Player::onKillerLoop(%obj)
             %killercansee[%cansee++] = %scan;
             %chasing = true;            
             
-            if(!%obj.isInvisible)
+            if(!%obj.isInvisible && VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) < 20)
             {
                 if(isObject(%victimclient))
                 {
