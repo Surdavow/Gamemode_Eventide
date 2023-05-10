@@ -5,6 +5,57 @@ package Eventide_DropItemsOnDeath
 		Parent::onDeath(%client,%source,%killer,%type,%location);					
 	}
 
+	function ServerCmdDropTool (%client, %position)
+	{
+		%player = %client.Player;
+		if (!isObject (%player))
+		{
+			return;
+		}
+		%item = %player.tool[%position];
+		if (isObject (%item))
+		{
+			if (%item.canDrop == 1)
+			{
+				%zScale = getWord (%player.getScale (), 2);
+				%muzzlepoint = VectorAdd (%player.getPosition (), "0 0" SPC 1.5 * %zScale);
+				%muzzlevector = %player.getEyeVector ();
+				%muzzlepoint = VectorAdd (%muzzlepoint, %muzzlevector);
+				%playerRot = rotFromTransform (%player.getTransform ());
+				%thrownItem = new Item ("")
+				{
+					dataBlock = %item;
+				};
+				%thrownItem.setScale (%player.getScale ());
+				MissionCleanup.add (%thrownItem);
+				%thrownItem.setTransform (%muzzlepoint @ " " @ %playerRot);
+				%thrownItem.setVelocity (VectorScale (%muzzlevector, 20 * %zScale));
+				%thrownItem.miniGame = %client.miniGame;
+				%thrownItem.bl_id = %client.getBLID ();
+				%thrownItem.setCollisionTimeout (%player);
+				if(!isObject(DroppedItemSet))
+				{
+					new SimSet(DroppedItemSet);
+					missioCleanUp.add(DroppedItemSet);
+				}
+				DroppedItemSet.add(%thrownItem);				
+				if (%item.className $= "Weapon")
+				{
+					%player.weaponCount -= 1;
+				}
+				%player.tool[%position] = 0;
+				messageClient (%client, 'MsgItemPickup', '', %position, 0);
+				if (%player.getMountedImage (%item.image.mountPoint) > 0)
+				{
+					if (%player.getMountedImage (%item.image.mountPoint).getId () == %item.image.getId ())
+					{
+						%player.unmountImage (%item.image.mountPoint);
+					}
+				}
+			}
+		}
+	}	
+
 	function Armor::onDisabled(%this, %obj, %state)
 	{
 		Parent::onDisabled(%this, %obj, %state);
