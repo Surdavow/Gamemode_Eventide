@@ -8,7 +8,8 @@ exec("./support_itemammo.cs");
 exec("./support_statuseffect.cs");
 exec("./support_stringutilities.cs");
 exec("./script_peggyfootsteps.cs");
-
+exec("./script_peggyfootsteps.cs");
+exec("./script_dropitemsondeath.cs");
 
 registerOutputEvent("GameConnection", "Escape", "", false);
 
