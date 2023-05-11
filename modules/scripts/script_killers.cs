@@ -66,7 +66,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 							}
 							else 
 							{
-								%obj.client.centerPrint("<font:Impact:40>\c3Your victim needs to have their health halved in order to eat them.",4);
+								%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
 								continue;
 							}
     					}						
