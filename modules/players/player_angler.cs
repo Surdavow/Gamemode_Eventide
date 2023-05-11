@@ -250,6 +250,8 @@ function AnglerHookProjectile::onCollision(%this,%proj,%col,%fade,%pos,%normal)
 	
 	if(Eventide_MinigameConditionalCheck(%obj,%col))
 	{
+		if(%col.getdataBlock().isDowned) return;
+		
 		%col.dismount();
 		%obj.hookrope.end = %col;
 		%col.playaudio(3,"angler_hookCatch_sound");

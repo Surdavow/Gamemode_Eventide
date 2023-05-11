@@ -142,21 +142,20 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 
 	if(!isObject(%obj.victim) && Eventide_MinigameConditionalCheck(%obj,%col,false))
 	{
-		if(minigameCanDamage(%obj,%col))
-		{
-			ServerCmdUnUseTool (%obj.client);
-			%obj.victim = %col;
-			%col.killer = %obj;
-			%obj.mountObject(%col,8);
-			%col.playaudio(0,"grabber_scream_sound");
+		if(%col.getdataBlock().isDowned) return;
+		
+		ServerCmdUnUseTool (%obj.client);
+		%obj.victim = %col;
+		%col.killer = %obj;
+		%obj.mountObject(%col,8);
+		%col.playaudio(0,"grabber_scream_sound");
 
-			switch$(%col.getClassName())
-			{
-				case "AIPlayer": %col.stopholeloop();
-				case "Player": 	%col.client.camera.setOrbitMode(%col, %col.getTransform(), 0, 5, 0, 1);
-								%col.client.setControlObject(%col.client.camera);
-			}
-		}							
+		switch$(%col.getClassName())
+		{
+			case "AIPlayer": %col.stopholeloop();
+			case "Player": 	%col.client.camera.setOrbitMode(%col, %col.getTransform(), 0, 5, 0, 1);
+							%col.client.setControlObject(%col.client.camera);
+		}
 	}	
 }
 
