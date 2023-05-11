@@ -44,7 +44,7 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
 function EventidePlayer::GazeLoop(%this,%obj)
 {		
-	if(!isObject(%obj) || !isObject(%client = %obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock() != %this || !isObject(%minigame = getMinigamefromObject(%obj)) || strlwr(%client.slyrteam.name) !$= "killer") 
+	if(!isObject(%obj) || !isObject(%client = %obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock() != %this || !isObject(%minigame = getMinigamefromObject(%obj)))
 	return;
 
 	cancel(%obj.GazeLoop);
