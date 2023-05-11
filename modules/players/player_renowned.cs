@@ -119,6 +119,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 					%search.mountImage("RenownedPossessedImage",3);
 					%search.schedule(4000,ClearRenownedEffect);
 				}
+				else %obj.setEnergyLevel(%obj.getEnergyLevel()-50);
 			}		
 		}
 	}
