@@ -126,6 +126,8 @@ function brickEventideRitual::onActivate(%this, %obj, %player, %client, %pos, %v
 				for(%i = 0; %i < %minigame.numMembers; %i++) 
 				if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
 			}
+
+			if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
 	
 			//lets call that console brick
 			if(isObject($EventideEventCaller))

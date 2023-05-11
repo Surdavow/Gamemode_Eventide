@@ -267,6 +267,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 
 	if(isObject(%client = %obj.client)) %obj.ghostclient = %client;
 
+	if(isObject(EventideShapeGroup) && EventideShapeGroup.getCount() >= $EventideRitualAmount) return;
+
 	if(isObject(%minigame = getMinigamefromObject(%obj)))
 	{
 		if(isObject(%client))

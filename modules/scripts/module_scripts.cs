@@ -223,6 +223,8 @@ package Eventide_MainPackage
 	function ServerCmdDropTool(%client,%position)
 	{
 		if(!isObject(getMinigameFromObject(%client))) return Parent::ServerCmdDropTool(%client, %position);
+
+		if(isObject(EventideShapeGroup) && EventideShapeGroup.getCount() >= $EventideRitualAmount) return Parent::ServerCmdDropTool(%client, %position);
 	
 		if(isObject(%player = %client.Player) && %player.getDatablock().isEventideModel && isObject(%item = %player.tool[%position]) && %item.canDrop)
 		{
