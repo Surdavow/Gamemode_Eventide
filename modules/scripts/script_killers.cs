@@ -44,24 +44,34 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 					if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
 					{
     					if(%obj.getdataBlock().getName() $= "PlayerSkinwalker")
-						if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned && %hit.getDamagePercent() > 0.5)
+						if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
     					{
-    					    if(isObject(%hit.client)) %hit.client.setControlObject(%hit.client.camera);
-    					    %obj.victim = %hit;
-    					    %obj.victimreplicatedclient = %hit.client;
-    					    %obj.playthread(1,"eat");
-    					    %obj.playthread(2,"talk");
-    					    %obj.playaudio(1,"skinwalker_grab_sound");
-    					    %obj.mountobject(%hit,6);
-    					    %hit.schedule(2250,kill);
-    					    %hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
-    					    %hit.schedule(2300,delete);        
-    					    %obj.schedule(2250,playthread,1,"root");
-    					    %obj.schedule(2250,playthread,2,"root");
-    					    %obj.schedule(2250,setField,victim,0);
-    					    %this.schedule(2250,EventideAppearance,%obj,%obj.client);
-							return;
+    					    if(%hit.getDamagePercent() > 0.5)
+							{
+								if(isObject(%hit.client)) %hit.client.setControlObject(%hit.client.camera);
+    					    	%obj.victim = %hit;
+    					    	%obj.victimreplicatedclient = %hit.client;
+    					    	%obj.playthread(1,"eat");
+    					    	%obj.playthread(2,"talk");
+    					    	%obj.playaudio(1,"skinwalker_grab_sound");
+    					    	%obj.mountobject(%hit,6);
+    					    	%hit.schedule(2250,kill);
+    					    	%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
+    					    	%hit.schedule(2300,delete);        
+    					    	%obj.schedule(2250,playthread,1,"root");
+    					    	%obj.schedule(2250,playthread,2,"root");
+    					    	%obj.schedule(2250,setField,victim,0);
+    					    	%this.schedule(2250,EventideAppearance,%obj,%obj.client);
+								return;
+							}
+							else 
+							{
+								%obj.client.centerPrint("<font:Impact:40>\c3Your victim needs to have their health halved in order to eat them.",4);
+								continue;
+							}
     					}						
+						
+						if(%hit.getdataBlock().isDowned) continue;
 						
 						if(%datablock.killermeleehitsound !$= "")
 						{
