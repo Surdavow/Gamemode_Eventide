@@ -28,8 +28,8 @@ datablock fxLightData(RitualLight)
 {
 	uiName = "Ritual Light";
 	LightOn = true;
-	radius = 15;
-	brightness = 10;
+	radius = 10;
+	brightness = 5;
 	color = "1 0.1 0.9";
 	FlareOn			= false;
 	FlareTP			= false;
