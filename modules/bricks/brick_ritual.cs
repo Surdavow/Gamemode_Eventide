@@ -197,5 +197,7 @@ function brickEventideRitual::onRemove(%this, %obj)
 	if(isObject(%obj.bookshape)) %obj.bookshape.delete();
 	if(isObject(%obj.daggershape)) %obj.daggershape.delete();
 	for(%i = 1; %i <= 4; %i++) if(isObject(%obj.candleshape[%i])) %obj.candleshape[%i].delete();
-	for(%j = 1; %j <= 4; %j++) if(isObject(%obj.gemshape[%j])) %obj.gemshape[%j].delete();	
+	for(%j = 1; %j <= 4; %j++) if(isObject(%obj.gemshape[%j])) %obj.gemshape[%j].delete();
+
+	$EventideRitualAmount = mClamp($EventideRitualAmount-8, 0, $EventideRitualAmount);	
 }
