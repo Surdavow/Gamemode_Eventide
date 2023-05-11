@@ -42,7 +42,6 @@ datablock PlayerData(PlayerGrabberNoJump : PlayerGrabber)
 function PlayerGrabber::onNewDatablock(%this,%obj)
 {
 	%obj.schedule(10,onKillerLoop);
-	%obj.gazeLoop();
 	
 	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
 	else applyCharacterPrefs(%obj.client);
