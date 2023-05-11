@@ -103,7 +103,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 							{
 								dataBlock = "DarknessProjectile";
 								initialVelocity = %velocity;
-								initialPosition = vectorAdd(%obj.getMuzzlePoint(1),"0 0 0.45");
+								initialPosition = vectorAdd(%obj.getEyePoint(),"0 0 0.45");
 								sourceObject = %obj;
 								client = %obj.client;
 							};
