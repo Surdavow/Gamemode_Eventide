@@ -1,9 +1,6 @@
-exec("./item_candle.cs");
-exec("./item_flaregun.cs");
-exec("./item_book.cs");
-exec("./item_gem.cs");
-exec("./item_radio.cs");
-exec("./item_soda.cs");
-exec("./item_rope.cs");
-exec("./weapon_dagger.cs");
-exec("./weapon_killers.cs");
+%path = "./*.cs";
+for(%file = findFirstFile(%path); %file !$= ""; %file = findNextFile(%path))
+{
+	if(strstr(strlwr(%file),"module_items") != -1) continue;
+	exec(%file);
+}

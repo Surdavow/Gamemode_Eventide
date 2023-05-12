@@ -1,11 +1,10 @@
 exec("./datablocks_misc.cs");
 exec("./player_eventide.cs");
 exec("./player_renowned.cs");
-exec("./player_angler.cs");
-exec("./player_grabber.cs");
-exec("./player_shire.cs");
-exec("./bot_shirezombie.cs");
-exec("./player_skinwalker.cs");
-exec("./player_skullwolf.cs");
-exec("./player_puppetmaster.cs");
-exec("./player_puppetmasterpuppet.cs");
+
+%path = "./*.cs";
+for(%file = findFirstFile(%path); %file !$= ""; %file = findNextFile(%path))
+{
+    if(strstr(strlwr(%file),"datablocks_misc") != -1 || strstr(strlwr(%file),"player_eventide") != -1 || strstr(strlwr(%file),"player_renowned") != -1 || strstr(strlwr(%file),"module_players") != -1) continue;
+	exec(%file);
+}

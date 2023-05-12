@@ -5,6 +5,7 @@ exec("./modules/sounds/module_sounds.cs");
 exec("./modules/items/module_items.cs");
 exec("./modules/players/module_players.cs");
 exec("./modules/bricks/module_bricks.cs");
+exec("./modules/weapons/module_weapons.cs");
 
 //check if slayer is enabled
 if ($Slayer::Server::GameModeArg $= "") $isSlayerEnabled = false;

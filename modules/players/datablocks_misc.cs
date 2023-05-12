@@ -528,7 +528,7 @@ datablock ShapeBaseImageData(DarkBlindPlayerImage)
 	stateTimeoutValue[0]       = 1;
 	stateEmitter[0]            = "DarkBlindEmitter";
 	stateEmitterTime[0]        = 1;
-	stateTransitionOnTimeout[0]= "Dismount";
+	stateTransitionOnTimeout[0]= "Wait";
 	stateScript[0]             = "onBlind";
 
 	stateName[1]               = "Wait";
