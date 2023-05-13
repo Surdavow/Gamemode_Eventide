@@ -24,7 +24,7 @@ datablock DebrisData(sm_bottleShard3Debris : sm_bottleShard1Debris)
 datablock ExplosionData(sm_bottleShard1Explosion)
 {
 	debris 					= sm_bottleShard1Debris;
-	debrisNum 				= 3;
+	debrisNum 				= 8;
 	debrisNumVariance 		= 1;
 	debrisPhiMin 			= 0;
 	debrisPhiMax 			= 360;
@@ -36,7 +36,7 @@ datablock ExplosionData(sm_bottleShard1Explosion)
 datablock ExplosionData(sm_bottleShard2Explosion : sm_bottleShard1Explosion)
 {
 	debris 					= sm_bottleShard2Debris;
-	debrisNum 				= 8;
+	debrisNum 				= 32;
 	debrisNumVariance 		= 3;
 	debrisVelocity 			= 12;
 	debrisVelocityVariance 	= 6;
@@ -195,7 +195,7 @@ datablock ShapeBaseImageData(sm_bottleImage)
 
 function sm_stunImage::onMount(%this,%obj)
 {
-	%obj.schedule(500,unmountImage,2);
+	%obj.schedule(1000,unmountImage,2);
 	%obj.setactionthread("sit",1);
 
 	switch$(%obj.getclassName())
@@ -208,6 +208,7 @@ function sm_stunImage::onMount(%this,%obj)
 
 function sm_stunImage::onunMount(%this,%obj)
 {
+	%obj.playThread(3,"undo");
 	switch$(%obj.getclassName())
 	{
 		case "Player": 	%obj.client.setControlObject(%obj);
@@ -266,8 +267,7 @@ function sm_bottleImage::onFire(%this,%obj,%slot)
 		}
 		else
 		{
-			serverPlay3D("bottle_broken_hit" @ getRandom(1,2) @ "_sound",%hitpos);
-			serverPlay3D("bottle_broken_hitplayer" @ getRandom(1,2) @ "_sound",%hitpos);
+			serverPlay3D("bottle_smash_sound",%hitpos);
 			%p = new Projectile()
 			{
 				dataBlock = "sm_bottleSmashProjectile";
