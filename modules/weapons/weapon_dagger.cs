@@ -171,50 +171,38 @@ function daggerImage::onReady(%this, %obj, %slot)
 function daggerImage::onFire(%this, %obj, %slot)
 {
 	if(%obj.getstate() $= "Dead") return;
-	DaggerCheck(%obj,%this,%slot);
 	%obj.playthread(1, "shiftTo");
+
+	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+	%startpos = %obj.getMuzzlePoint(0);
+	%endpos = %obj.getMuzzleVector(0);
 	
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,2.5)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+	if(isObject(%hit))
+	{
+		%hitpos = posFromRaycast(%hit);
+		serverPlay3D("sworddaggerhitEnv" @ getRandom(1,2) @ "_sound",%hitpos);
+		
+		%p = new Projectile()
+		{
+			dataBlock = "daggerProjectile";
+			initialPosition = %hitpos;
+			sourceObject = %obj;
+			client = %obj.client;
+		};
+		MissionCleanup.add(%p);
+		%p.explode();			
+		
+		if((%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
+		{						
+			%hit.Damage(%obj, %hit.getPosition(), 40, $DamageType::barStool);
+			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));
+			serverPlay3D("sworddaggerhitPL" @ getRandom(1,2) @ "_sound",%hitpos);
+		}
+	}		
 }
 
 function daggerImage::onPreFire(%this, %obj, %slot)
 {	
 	%obj.playthread(1, "shiftAway");
-}
-
-function DaggerCheck(%obj,%this,%slot)
-{   
-	%pos = %obj.getMuzzlePoint(%slot);
-	%searchMasks = $TypeMasks::StaticObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
-
-	for(%i = 0; %i < clientgroup.getCount(); %i++)
-	if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
-   	{		
-		if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData") continue;
-
-		%hitplayerpos = %nearbyplayer.getposition();
-		%line = vectorNormalize(vectorSub(%hitplayerpos,%pos));
-		%dot = vectorDot(%obj.getEyeVector(), %line);
-		%obscure = containerRayCast(%pos,%hitplayerpos,$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);		
-
-		if(isObject(%obscure) || %dot > 0.65 || VectorDist(%hitplayerpos,%pos) > 5) continue;
-		
-		if(minigameCanDamage(%obj,%nearbyplayer))
-		{
-			%p = new projectile()
-			{
-				datablock = "daggerProjectile";
-				initialPosition = %nearbyplayer.getHackPosition();
-			};
-			%p.explode();   
-
-			%damage = %nearbyplayer.getdatablock().maxDamage/8;
-			if(vectorDot(%nearbyplayer.getforwardvector(),%obj.getforwardvector()) > 0.65) %damageclamp = mClamp(%damagepower*1.5, 40, %nearbyplayer.getdatablock().maxDamage);
-			else %damageclamp = mClamp(%damagepower, 40, %nearbyplayer.getdatablock().maxDamage);
-			serverPlay3D("sworddaggerhitPL" @ getRandom(1,2) @ "_sound",%hitplayerpos);					
-			
-			%nearbyplayer.damage(%obj, %hitplayerpos, %damageclamp, $DamageType::Default);
-			%nearbyplayer.applyimpulse(%hitplayerpos,vectoradd(vectorscale(%vec,250),"0 0 250"));
-		}
-   } 
-   return;
 }
