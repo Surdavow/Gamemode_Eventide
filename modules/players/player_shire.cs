@@ -31,7 +31,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
 {
 	Parent::onCollision(%this, %obj, %col, %fade, %pos, %normal);
-    if(Eventide_MinigameConditionalCheck(%obj.sourceObject,%col)) %col.mountImage("DarkBlindPlayerImage",3);
+    if((%col.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj.sourceObject,%col)) %col.mountImage("DarkBlindPlayerImage",3);
 }
 
 function DarkBlindPlayerImage::onBlind(%this, %obj, %slot)

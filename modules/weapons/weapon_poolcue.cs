@@ -1,17 +1,6 @@
-sm_addDamageType("PoolCue");
-datablock AudioProfile(sm_poolCueSmash1Sound)
-{
-	filename    = "./sound/poolCue_Smash1.wav";
-	description = AudioClose3d;
-	preload = true;
-};
-datablock AudioProfile(sm_poolCueSmash2Sound : sm_poolCueSmash1Sound)
-{
-	filename    = "./sound/poolCue_Smash2.wav";
-};
 datablock DebrisData(sm_poolCueGripDebris)
 {
-	shapeFile 			= "./model/d_poolCueGrip.dts";
+	shapeFile 			= "./models/d_poolCueGrip.dts";
 	lifetime 			= 2.8;
 	spinSpeed			= 300.0;
 	minSpinSpeed 		= -1200.0;
@@ -26,11 +15,11 @@ datablock DebrisData(sm_poolCueGripDebris)
 };
 datablock DebrisData(sm_poolCueShaftDebris : sm_poolCueGripDebris)
 {
-	shapeFile 			= "./model/d_poolCueShaft.dts";
+	shapeFile 			= "./models/d_poolCueShaft.dts";
 };
 datablock DebrisData(sm_poolCueEndDebris : sm_poolCueGripDebris)
 {
-	shapeFile 			= "./model/d_poolCueEnd.dts";
+	shapeFile 			= "./models/d_poolCueEnd.dts";
 };
 datablock ExplosionData(sm_poolCueGripExplosion)
 {
@@ -85,7 +74,7 @@ datablock ItemData(sm_poolCueItem)
 	category 			= "Weapon";
 	className 			= "Weapon";
 
-	shapeFile 			= "./model/poolCue.dts";
+	shapeFile 			= "./models/poolCue.dts";
 	rotate 				= false;
 	mass 				= 1;
 	density 			= 2;
@@ -93,8 +82,8 @@ datablock ItemData(sm_poolCueItem)
 	friction 			= 0.9;
 	emap 				= true;
 
-	uiName 				= ($Pref::Swol_SMMelee_Prefix ? "SM " : "") @ "Pool Cue";
-	iconName 			= "./icon/icon_poolCue";
+	uiName 				= "Pool Cue";
+	iconName 			= "./icons/icon_poolCue";
 	doColorShift 		= true;
 	colorShiftColor 	= "0.56 0.4 0.2 1";
 
@@ -105,7 +94,7 @@ datablock ItemData(sm_poolCueItem)
 	meleeHealth			= 6;
 	meleeDamageHit		= 35;
 	meleeDamageBreak	= 35;
-	meleeDamageType 	= $DamageType::SM_PoolCue;
+	meleeDamageType 	= $DamageType::PoolCue;
 	meleeVelocity		= 7;
 	
 	meleeSound_Swing[0] = "sm_genericHeavySwing1Sound";

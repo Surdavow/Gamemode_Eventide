@@ -106,7 +106,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 				%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::ItemObjectType;
 				%search = containerRayCast (%start, %end, %mask, %obj);
 
-				if(isObject(%search) && Eventide_MinigameConditionalCheck(%obj,%search,false))
+				if(isObject(%search) && minigameCanDamage(%obj,%search))
 				{
 					%obj.client.setControlObject(%search);
 					%obj.returnObserveSchedule = %obj.schedule(4000,ClearRenownedEffect);

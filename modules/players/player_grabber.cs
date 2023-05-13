@@ -140,7 +140,7 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 {
 	Parent::onCollision(%this,%obj,%col,%vec,%speed);
 
-	if(!isObject(%obj.victim) && Eventide_MinigameConditionalCheck(%obj,%col,false))
+	if(!isObject(%obj.victim) && (%col.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%col))
 	{
 		if(%col.getdataBlock().isDowned) return;
 		

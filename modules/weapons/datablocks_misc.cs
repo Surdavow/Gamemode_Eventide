@@ -1,6 +1,13 @@
+AddDamageType("PoolCue",'<bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_poolCue> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_poolCue> %1',1,1);
+AddDamageType("BarStool",'<bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_barStool> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_barStool> %1',1,1);
+AddDamageType("Bottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_bottle> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_bottle> %1',1,1);
+AddDamageType("BrokenBottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_bottle_broken> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_bottle_broken> %1',1,1);
+AddDamageType("Chair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_chair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_chair> %1',1,1);
+AddDamageType("FoldingChair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_foldingChair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/weapons/icons/ci_foldingChair> %1',1,1);
+
 datablock DebrisData(sm_woodFragDebris)
 {
-	shapeFile 			= "./model/d_woodFrag.dts";
+	shapeFile 			= "./models/d_woodFrag.dts";
 	lifetime 			= 2.8;
 	spinSpeed			= 1200.0;
 	minSpinSpeed 		= -3600.0;

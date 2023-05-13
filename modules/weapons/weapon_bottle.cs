@@ -1,46 +1,6 @@
-sm_addDamageType("Bottle");
-sm_addDamageType("Bottle_Broken");
-datablock AudioProfile(sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_hit1.wav";
-	description = AudioClose3d;
-	preload = true;
-};
-datablock AudioProfile(sm_bottleHit2Sound : sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_hit2.wav";
-};
-datablock AudioProfile(sm_bottleHitPlayer1Sound : sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_hitPlayer1.wav";
-};
-datablock AudioProfile(sm_bottleHitPlayer2Sound : sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_hitPlayer2.wav";
-};
-datablock AudioProfile(sm_bottleBrokenHit1Sound : sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_broken_hit1.wav";
-};
-datablock AudioProfile(sm_bottleBrokenHit2Sound : sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_broken_hit2.wav";
-};
-datablock AudioProfile(sm_bottleBrokenHitPlayer1Sound : sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_broken_hitPlayer1.wav";
-};
-datablock AudioProfile(sm_bottleBrokenHitPlayer2Sound : sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_broken_hitPlayer2.wav";
-};
-datablock AudioProfile(sm_bottleBreakSound : sm_bottleHit1Sound)
-{
-	filename    = "./sound/bottle_smash.wav";
-};
 datablock DebrisData(sm_bottleShard1Debris)
 {
-	shapeFile 			= "./model/d_glassShard1.dts";
+	shapeFile 			= "./models/d_glassShard1.dts";
 	lifetime 			= 2.8;
 	spinSpeed			= 1200.0;
 	minSpinSpeed 		= -3600.0;
@@ -55,11 +15,11 @@ datablock DebrisData(sm_bottleShard1Debris)
 };
 datablock DebrisData(sm_bottleShard2Debris : sm_bottleShard1Debris)
 {
-	shapeFile 			= "./model/d_glassShard2.dts";
+	shapeFile 			= "./models/d_glassShard2.dts";
 };
 datablock DebrisData(sm_bottleShard3Debris : sm_bottleShard1Debris)
 {
-	shapeFile 			= "./model/d_glassShard3.dts";
+	shapeFile 			= "./models/d_glassShard3.dts";
 };
 datablock ExplosionData(sm_bottleShard1Explosion)
 {
@@ -179,7 +139,7 @@ datablock ItemData(sm_bottleItem)
 	category 			= "Weapon";
 	className 			= "Weapon";
 
-	shapeFile 			= "./model/bottle.dts";
+	shapeFile 			= "./models/bottle.dts";
 	rotate 				= false;
 	mass 				= 1;
 	density 			= 0.2;
@@ -187,8 +147,8 @@ datablock ItemData(sm_bottleItem)
 	friction 			= 0.6;
 	emap 				= true;
 
-	uiName 				= ($Pref::Swol_SMMelee_Prefix ? "SM " : "") @ "Bottle";
-	iconName 			= "./icon/icon_bottle";
+	uiName 				= "Bottle";
+	iconName 			= "./icons/icon_bottle";
 	doColorShift 		= true;
 	colorShiftColor 	= "0.4 0.2 0 1";
 
@@ -199,22 +159,7 @@ datablock ItemData(sm_bottleItem)
 	meleeHealth			= 3;
 	meleeDamageHit		= 25;
 	meleeDamageBreak	= 25;
-	meleeDamageType 	= $DamageType::SM_Bottle;
-	
-	meleeSound_Swing[0] = "sm_genericLightSwing1Sound";
-	meleeSound_Swing[1] = "sm_genericLightSwing2Sound";
-	meleeSound_SwingCnt = 2;
-	
-	meleeSound_Hit[0] = "sm_bottleHitPlayer1Sound";
-	meleeSound_Hit[1] = "sm_bottleHitPlayer2Sound";
-	meleeSound_HitCnt = 2;
-	
-	meleeSound_HitSolid[0] = "sm_bottleHit1Sound";
-	meleeSound_HitSolid[1] = "sm_bottleHit2Sound";
-	meleeSound_HitSolidCnt = 2;
-	
-	meleeSound_Smash[0] = "sm_bottleBreakSound";
-	meleeSound_SmashCnt = 1;
+	meleeDamageType 	= $DamageType::Bottle;
 	
 	meleeExplosion_Hit = "sm_bottleHitProjectile";
 	meleeExplosion_Smash = "sm_bottleMiniSmashProjectile";
@@ -258,19 +203,17 @@ datablock ShapeBaseImageData(sm_bottleImage)
 };
 function sm_bottleImage::onSwing(%db,%pl,%slot)
 {
-	%pl.playThread(2,shiftTo);
+	%pl.playThread(2,"shiftTo");
+	serverPlay3D("melee_swing_sound",%pl.getMuzzlePoint(0));
 }
 function sm_bottleImage::onFire(%db,%pl,%slot)
 {
-	swolMelee_onFire(%db,%pl,%slot);
+	//swolMelee_onFire(%db,%pl,%slot);
 }
 function sm_bottleImage::callback_hitPlayer(%db,%pl,%slot,%pos,%victim,%smash)
 {
-	if(minigameCanDamage(%pl,%victim) == 1)
-	{
-		if(%smash)
-			%victim.sm_stun(800,0);
-	}
+	if(minigameCanDamage(%pl,%victim) && %smash) %victim.sm_stun(800,0);
+	
 }
 function sm_bottleImage::callback_smash(%db,%pl,%slot,%currTool)
 {
@@ -283,9 +226,9 @@ function sm_bottleImage::callback_smash(%db,%pl,%slot,%currTool)
 }
 datablock ItemData(sm_bottleBrokenItem : sm_bottleItem)
 {
-	shapeFile 			= "./model/bottle_broken.dts";
-	uiName 				= ($Pref::Swol_SMMelee_Prefix ? "SM " : "") @ "Bottle Broken";
-	iconName 			= "./icon/icon_bottle_broken";
+	shapeFile 			= "./models/bottle_broken.dts";
+	uiName 				= "Bottle Broken";
+	iconName 			= "./icons/icon_bottle_broken";
 
 	image 				= sm_bottleBrokenImage;
 	
@@ -293,17 +236,7 @@ datablock ItemData(sm_bottleBrokenItem : sm_bottleItem)
 	meleeHealth			= 1;
 	meleeDamageHit		= 100;
 	meleeDamageBreak	= 100;
-	meleeDamageType 	= $DamageType::SM_Bottle_Broken;
-	
-	meleeSound_HitCnt = 0;
-	
-	meleeSound_HitSolid[0] = "sm_bottleBrokenHit1Sound";
-	meleeSound_HitSolid[1] = "sm_bottleBrokenHit2Sound";
-	meleeSound_HitSolidCnt = 0;
-	
-	meleeSound_Smash[0] = "sm_bottleBrokenHitPlayer1Sound";
-	meleeSound_Smash[1] = "sm_bottleBrokenHitPlayer1Sound";
-	meleeSound_SmashCnt = 0;
+	meleeDamageType 	= $DamageType::BrokenBottle;
 	
 	meleeExplosion_Smash = "sm_bottleSmashProjectile";
 };
@@ -316,7 +249,9 @@ datablock ShapeBaseImageData(sm_bottleBrokenImage : sm_bottleImage)
 };
 function sm_bottleBrokenImage::onSwing(%db,%pl,%slot)
 {
-	%pl.playThread(2,shiftAway);
+	%pl.playThread(2,"shiftAway");
+	%obj.stopaudio(3);
+	%pl.playaudio(3,"melee_swing_sound");
 }
 function sm_bottleBrokenImage::onFire(%db,%pl,%slot)
 {
@@ -328,11 +263,9 @@ function sm_bottleBrokenImage::callback_smash(%db,%pl,%slot,%currTool)
 }
 function sm_bottleBrokenImage::callback_hitPlayer(%db,%pl,%slot,%pos,%victim,%smash)
 {
-	if(%smash)
-		serverPlay3D(%db.item.meleeSound_Smash[getRandom(0,1)],%pos);
+	if(%smash) serverPlay3D(%db.item.meleeSound_Smash[getRandom(0,1)],%pos);
 }
 function sm_bottleBrokenImage::callback_hitSolid(%db,%pl,%slot,%pos,%victim,%smash)
 {
-	if(%smash)
-		serverPlay3D(%db.item.meleeSound_HitSolid[getRandom(0,1)],%pos);
+	if(%smash) serverPlay3D(%db.item.meleeSound_HitSolid[getRandom(0,1)],%pos);
 }

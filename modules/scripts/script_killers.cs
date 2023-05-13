@@ -25,21 +25,22 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				%dot = vectorDot(%obj.getEyeVector(), %line);
 				%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 
-				if(Eventide_MinigameConditionalCheck(%obj,%hit,true))
+				if(minigameCanDamage(%obj,%hit))
 				if(!isObject(%obscure) && %dot > 0.65)						
-				{			
-					if(%hit.getstate() $= "Dead" && vectorDist(%obj.getposition(),%hit.getposition()) < %radius*2.5)
-					{
-						if(%obj.getdataBlock().getName() $= "PlayerSkullwolf") 
-						{
-							%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
-							%obj.playthread(3,"plant");
-							%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
-							%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
-							%hit.schedule(50,delete);
-						}
-						continue;
-					}
+				{
+					//Temporarily not working right now
+					//if(%hit.getstate() $= "Dead" && vectorDist(%obj.getposition(),%hit.getposition()) < %radius*2.5)
+					//{
+					//	if(%obj.getdataBlock().getName() $= "PlayerSkullwolf") 
+					//	{
+					//		%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
+					//		%obj.playthread(3,"plant");
+					//		%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
+					//		%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
+					//		%hit.schedule(50,delete);
+					//	}
+					//	continue;
+					//}
 
 					if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
 					{
@@ -90,7 +91,6 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 						%obj.schedule(1000,setTempSpeed,1);
 					}
 				}				
-				
 			}
 			
 		}

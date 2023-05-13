@@ -1,14 +1,3 @@
-sm_addDamageType("FoldingChair");
-datablock AudioProfile(sm_foldingChairHit1Sound)
-{
-	filename    = "./sound/folding_chair_hit1.wav";
-	description = AudioClose3d;
-	preload = true;
-};
-datablock AudioProfile(sm_foldingChairHit2Sound : sm_foldingChairHit1Sound)
-{
-	filename    = "./sound/folding_chair_hit2.wav";
-};
 datablock ParticleData(sm_foldingChairExplosionParticle)
 {
 	dragCoefficient      = 1;
@@ -67,7 +56,7 @@ datablock ItemData(sm_foldingChairItem)
 	category 			= "Weapon";
 	className 			= "Weapon";
 
-	shapeFile 			= "./model/folding_chair.dts";
+	shapeFile 			= "./models/folding_chair.dts";
 	rotate 				= false;
 	mass 				= 1;
 	density 			= 2;
@@ -76,7 +65,7 @@ datablock ItemData(sm_foldingChairItem)
 	emap 				= true;
 
 	uiName 				= ($Pref::Swol_SMMelee_Prefix ? "SM " : "") @ "Folding Chair";
-	iconName 			= "./icon/icon_foldingChair";
+	iconName 			= "./icons/icon_foldingChair";
 	doColorShift 		= true;
 	colorShiftColor 	= "0.7 0.7 0.7 1";
 
@@ -87,7 +76,7 @@ datablock ItemData(sm_foldingChairItem)
 	meleeHealth			= 0;
 	meleeDamageHit		= 100;
 	meleeDamageBreak	= 25;
-	meleeDamageType 	= $DamageType::SM_FoldingChair;
+	meleeDamageType 	= $DamageType::FoldingChair;
 	meleeVelocity		= 32;
 	
 	meleeSound_Swing[0] = "sm_genericHeavySwing1Sound";

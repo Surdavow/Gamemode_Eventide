@@ -1,41 +1,14 @@
-function Eventide_MinigameConditionalCheck(%objA,%objB,%exemptDeath)//exemptdeath is to skip checking if the victim is dead
+function Eventide_isInGame(%a, %b, %exempt)
 {
-	if((%objA.getClassName() $= "Player" || %objA.getClassName() $= "AIPlayer") && (%objB.getClassName() $= "Player" || %objB.getClassName() $= "AIPlayer"))
-	{		
-		if(%exemptDeath) 
-		{				
-			if(%objA.getstate() !$= "Dead" && %objA.getdataBlock().isKiller && !%objB.getdataBlock().isKiller)
-			if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB) 
-			return true;
-		}
-		else 
-		if(%objA.getstate() !$= "Dead" && %objB.getstate() !$= "Dead" && %objA.getdataBlock().isKiller && !%objB.getdataBlock().isKiller)
-		{
-			if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB)
-			return true;
-		}
-	}
-	return false;
-}
-
-function Eventide_MinigameConditionalCheckNoKillers(%objA,%objB,%exemptDeath)//exemptdeath is to skip checking if the victim is dead
-{
-	if((%objA.getClassName() $= "Player" || %objA.getClassName() $= "AIPlayer") && (%objB.getClassName() $= "Player" || %objB.getClassName() $= "AIPlayer"))
-	{		
-		if(%exemptDeath) 
-		{				
-			if(%objA.getstate() !$= "Dead")
-			if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB) 
-			return true;
-		}
-		else 
-		if(%objA.getstate() !$= "Dead" && %objB.getstate() !$= "Dead")
-		{
-			if(isObject(%minigameA = getMinigamefromObject(%objA)) && isObject(%minigameB = getMinigamefromObject(%objB)) && %minigameA == %minigameB)
-			return true;
-		}
-	}
-	return false;
+    return    (%a.getType() & $TypeMasks::PlayerObjectType) &&    // is %a is a player?
+            (%b.getType() & $TypeMasks::PlayerObjectType) &&    // is %b is a player?
+            %a.isEnabled() &&                                    // is %a alive?
+            (%exempt ? true : %b.isEnabled()) &&                // is %b alive?
+            isObject(%miniA = getMinigameFromObject(%a)) &&        // does %a have a minigame?
+            isObject(%miniB = getMinigameFromObject(%a)) &&     // does %b have a minigame?
+            %miniA = %miniB &&                                    // are they in the same minigame?
+            %a.getDataBlock().isKiller &&                        // is %a the killer?
+            !%b.getDataBlock().isKiller;                        // is %b /not/ the killer?
 }
 
 package Eventide_MainPackage

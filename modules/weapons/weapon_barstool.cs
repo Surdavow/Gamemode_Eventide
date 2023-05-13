@@ -1,7 +1,6 @@
-sm_addDamageType("BarStool");
 datablock DebrisData(sm_barStoolLegDebris)
 {
-	shapeFile 			= "./model/d_barStoolLeg.dts";
+	shapeFile 			= "./models/d_barStoolLeg.dts";
 	lifetime 			= 2.8;
 	spinSpeed			= 300.0;
 	minSpinSpeed 		= -1200.0;
@@ -16,7 +15,7 @@ datablock DebrisData(sm_barStoolLegDebris)
 };
 datablock DebrisData(sm_barStoolSeat1Debris : sm_barStoolLegDebris)
 {
-	shapeFile 			= "./model/d_barStoolSeat1.dts";
+	shapeFile 			= "./models/d_barStoolSeat1.dts";
 };
 datablock ExplosionData(sm_barStoolLegExplosion)
 {
@@ -70,7 +69,7 @@ datablock ItemData(sm_barStoolItem)
 	category 			= "Weapon";
 	className 			= "Weapon";
 
-	shapeFile 			= "./model/barStool.dts";
+	shapeFile 			= "./models/barStool.dts";
 	rotate 				= false;
 	mass 				= 1;
 	density 			= 2;
@@ -78,8 +77,8 @@ datablock ItemData(sm_barStoolItem)
 	friction 			= 0.9;
 	emap 				= true;
 
-	uiName 				= ($Pref::Swol_SMMelee_Prefix ? "SM " : "") @ "Bar Stool";
-	iconName 			= "./icon/icon_barStool";
+	uiName 				= "Bar Stool";
+	iconName 			= "./icons/icon_barStool";
 	doColorShift 		= true;
 	colorShiftColor 	= "0.56 0.4 0.2 1";
 
@@ -90,7 +89,7 @@ datablock ItemData(sm_barStoolItem)
 	meleeHealth			= 4;
 	meleeDamageHit		= 50;
 	meleeDamageBreak	= 25;
-	meleeDamageType 	= $DamageType::SM_BarStool;
+	meleeDamageType 	= $DamageType::BarStool;
 	meleeVelocity		= 22;
 	
 	meleeSound_Swing[0] = "sm_genericHeavySwing1Sound";

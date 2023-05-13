@@ -1,26 +1,6 @@
-sm_addDamageType("Chair");
-datablock AudioProfile(sm_chairSmash1Sound)
-{
-	filename    = "./sound/chair_smash1.wav";
-	description = AudioClose3d;
-	preload = true;
-};
-datablock AudioProfile(sm_chairSmash2Sound : sm_chairSmash1Sound)
-{
-	filename    = "./sound/chair_smash2.wav";
-};
-datablock AudioProfile(sm_chairHit1Sound : sm_chairSmash1Sound)
-{
-	filename    = "./sound/chair_hit1.wav";
-};
-datablock AudioProfile(sm_chairHit2Sound : sm_chairSmash1Sound)
-{
-	filename    = "./sound/chair_hit2.wav";
-};
-
 datablock DebrisData(sm_chairSeat1Debris)
 {
-	shapeFile 			= "./model/d_chairSeat1.dts";
+	shapeFile 			= "./models/d_chairSeat1.dts";
 	lifetime 			= 2.8;
 	spinSpeed			= 1200.0;
 	minSpinSpeed 		= -3600.0;
@@ -35,22 +15,22 @@ datablock DebrisData(sm_chairSeat1Debris)
 };
 datablock DebrisData(sm_chairSeat2Debris : sm_chairSeat1Debris)
 {
-	shapeFile 			= "./model/d_chairSeat2.dts";
+	shapeFile 			= "./models/d_chairSeat2.dts";
 };
 datablock DebrisData(sm_chairSeat3Debris : sm_chairSeat1Debris)
 {
-	shapeFile 			= "./model/d_chairSeat3.dts";
+	shapeFile 			= "./models/d_chairSeat3.dts";
 };
 datablock DebrisData(sm_chairRestDebris : sm_chairSeat1Debris)
 {
-	shapeFile 			= "./model/d_chairRest.dts";
+	shapeFile 			= "./models/d_chairRest.dts";
 	spinSpeed			= 300.0;
 	minSpinSpeed 		= -1200.0;
 	maxSpinSpeed 		= 1200.0;
 };
 datablock DebrisData(sm_chairLegDebris : sm_chairRestDebris)
 {
-	shapeFile 			= "./model/d_chairLeg.dts";
+	shapeFile 			= "./models/d_chairLeg.dts";
 };
 datablock ExplosionData(sm_chairSeat1Explosion)
 {
@@ -183,7 +163,7 @@ datablock ItemData(sm_chairItem)
 	category 			= "Weapon";
 	className 			= "Weapon";
 
-	shapeFile 			= "./model/chair.dts";
+	shapeFile 			= "./models/chair.dts";
 	rotate 				= false;
 	mass 				= 1;
 	density 			= 0.2;
@@ -191,8 +171,8 @@ datablock ItemData(sm_chairItem)
 	friction 			= 0.6;
 	emap 				= true;
 
-	uiName 				= ($Pref::Swol_SMMelee_Prefix ? "SM " : "") @ "Chair";
-	iconName 			= "./icon/icon_chair";
+	uiName 				= "Chair";
+	iconName 			= "./icons/icon_chair";
 	doColorShift 		= true;
 	colorShiftColor 	= "0.56 0.4 0.2 1";
 
@@ -203,7 +183,7 @@ datablock ItemData(sm_chairItem)
 	meleeHealth			= 4;
 	meleeDamageHit		= 50;
 	meleeDamageBreak	= 25;
-	meleeDamageType 	= $DamageType::SM_Chair;
+	meleeDamageType 	= $DamageType::Chair;
 	meleeVelocity		= 22;
 	
 	meleeSound_Swing[0] = "sm_genericHeavySwing1Sound";
