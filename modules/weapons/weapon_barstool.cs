@@ -84,28 +84,6 @@ datablock ItemData(sm_barStoolItem)
 
 	image 				= sm_barStoolImage;
 	canDrop 			= true;
-	
-	meleeRange			= 3.5;
-	meleeHealth			= 4;
-	meleeDamageHit		= 50;
-	meleeDamageBreak	= 25;
-	meleeDamageType 	= $DamageType::BarStool;
-	meleeVelocity		= 22;
-	
-	meleeSound_Swing[0] = "sm_genericHeavySwing1Sound";
-	meleeSound_Swing[1] = "sm_genericHeavySwing2Sound";
-	meleeSound_SwingCnt = 2;
-	
-	meleeSound_Hit[0] 	= "sm_chairHit1Sound";
-	meleeSound_Hit[1] 	= "sm_chairHit2Sound";
-	meleeSound_HitCnt 	= 2;
-	
-	meleeSound_Smash[0] = "sm_chairSmash1Sound";
-	meleeSound_Smash[1] = "sm_chairSmash2Sound";
-	meleeSound_SmashCnt = 2;
-	
-	meleeExplosion_Hit 	= "sm_chairHitProjectile";
-	meleeExplosion_Smash= "sm_barStoolSmashProjectile";
 };
 datablock ShapeBaseImageData(sm_barStoolImage)
 {
@@ -130,45 +108,86 @@ datablock ShapeBaseImageData(sm_barStoolImage)
 	stateTransitionOnTimeout[0] 	= "Ready";
 	
 	stateName[1] 					= "Ready";
-	stateTransitionOnTriggerDown[1] = "Swing";
+	stateTransitionOnTriggerDown[1] = "PreSwing";
 	
-	stateName[2] 					= "Swing";
-	stateScript[2] 					= "onFire";
+	stateName[2] 					= "PreSwing";
+	stateScript[2] 					= "onSwing";
 	stateFire[2] 					= true;
-	stateTransitionOnTimeout[2] 	= "Ready";
-	stateTimeoutValue[2] 			= 0.48;
+	stateTransitionOnTimeout[2] 	= "Swing";
+	stateTimeoutValue[2] 			= 0.07;
+	
+	stateName[3] 					= "Swing";
+	stateScript[3] 					= "onFire";
+	stateFire[3] 					= true;
+	stateTransitionOnTimeout[3] 	= "Ready";
+	stateTimeoutValue[3] 			= 0.6;
 };
-function sm_barStoolImage::onFire(%db,%pl,%slot)
+function sm_barStoolImage::onSwing(%this,%obj,%slot)
 {
-	swolMelee_onFire(%db,%pl,%slot);
-	%pl.playThread(3,shiftDown);
+	%obj.playThread(3,shiftDown);
+	serverPlay3D("generic_heavyswing" @ getRandom(1,2) @ "_sound",%obj.getMuzzlePoint(0));
 }
-function sm_barStoolImage::callback_smash(%db,%pl,%slot,%currTool)
+
+function sm_barStoolImage::onFire(%this,%obj,%slot)
 {
-	%pl.playThread(1,activate2);
-	%pl.playThread(2,root);
-}
-function sm_barStoolImage::callback_hitPlayer(%db,%pl,%slot,%pos,%victim,%smash)
-{
-	if(minigameCanDamage(%pl,%victim) == 1)
+	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+	%startpos = %obj.getMuzzlePoint(0);
+	%endpos = %obj.getMuzzleVector(0);
+
+	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
+	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
+	
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType,%obj);
+	if(isObject(%hit) && %hit.getType() & $TypeMasks::PlayerObjectType)
 	{
-		%victim.sm_stun(500,1);
-		if(%smash)
+		%hitpos = posFromRaycast(%hit);
+
+		if(minigameCanDamage(%obj,%hit))
 		{
-			if(getRandom(0,20) == 0)
-				serverPlay3d("sm_screamSound",%pos);
+			%obj.barstoolhit++;
+			%hit.playThread(3,"plant");
+			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));			
+
+			if(%obj.barstoolhit < 5)
+			{
+				%hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::Bottle);
+				serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
+				%hit.spawnExplosion("sm_chairHitProjectile",%hit.getScale());
+			}
+			else
+			{			
+				serverPlay3D("chair_smash" @ getRandom(1,2) @ "_sound",%hitpos);
+
+				%hit.mountimage("sm_stunImage",2);				
+				%hit.spawnExplosion("sm_chairSmashProjectile",%hit.getScale());
+				if(minigameCanDamage(%obj,%hit)) %hit.Damage(%obj, %hit.getPosition(), 50, $DamageType::BottleBroken);
+
+				if(isObject(%obj.client))
+				{
+					%obj.tool[%itemslot] = 0;
+					messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
+				}
+				if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
+
+				%obj.playThread(1,"root");
+				%obj.barstoolhit = 0;
+			}					
+		}
+		else
+		{
+			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
+			%hit.spawnExplosion("sm_chairHitProjectile",%hit.getScale());
 		}
 	}
 }
+
 function sm_barStoolImage::onMount(%db,%pl,%slot)
 {
 	parent::onMount(%db,%pl,%slot);
 	%pl.playThread(2,armReadyLeft);
-	%pl.setArmThread(land);
 }
 function sm_barStoolImage::onUnMount(%db,%pl,%slot)
 {
-	%pl.setArmThread(look);
 	%pl.playThread(2,root);
 	parent::onUnMount(%db,%pl,%slot);
 }
