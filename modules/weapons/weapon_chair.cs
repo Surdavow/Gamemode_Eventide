@@ -231,46 +231,60 @@ function sm_chairImage::onFire(%this,%obj,%slot)
 	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
 	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
 	
-	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType,%obj);
-	if(isObject(%hit) && %hit.getType() & $TypeMasks::PlayerObjectType)
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+	if(isObject(%hit))
 	{
 		%hitpos = posFromRaycast(%hit);
+		%obj.chairhit++;
 
-		if(minigameCanDamage(%obj,%hit))
+		if(%obj.chairhit < 5)
 		{
-			%obj.woodenchairhit++;
-			%hit.playThread(3,"plant");
-			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));			
-
-			if(%obj.woodenchairhit < 5)
+			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
+			%p = new Projectile()
 			{
-				%hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::Bottle);
-				serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
-				%hit.spawnExplosion("sm_chairHitProjectile",%hit.getScale());
-			}
-			else
-			{			
-				serverPlay3D("chair_smash" @ getRandom(1,2) @ "_sound",%hitpos);
-
-				%hit.mountimage("sm_stunImage",2);				
-				%hit.spawnExplosion("sm_chairSmashProjectile",%hit.getScale());
-				if(minigameCanDamage(%obj,%hit)) %hit.Damage(%obj, %hit.getPosition(), 50, $DamageType::BottleBroken);
-
-				if(isObject(%obj.client))
-				{
-					%obj.tool[%itemslot] = 0;
-					messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
-				}
-				if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
-
-				%obj.playThread(1,"root");
-				%obj.woodenchairhit = 0;
-			}					
+				dataBlock = "sm_chairHitProjectile";
+				initialPosition = %hitpos;
+				sourceObject = %obj;
+				client = %obj.client;
+			};
+			MissionCleanup.add(%p);
+			%p.explode();			
 		}
 		else
 		{
-			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
-			%hit.spawnExplosion("sm_chairHitProjectile",%hit.getScale());
+			serverPlay3D("chair_smash" @ getRandom(1,2) @ "_sound",%hitpos);
+			%p = new Projectile()
+			{
+				dataBlock = "sm_chairSmashProjectile";
+				initialPosition = %hitpos;
+				sourceObject = %obj;
+				client = %obj.client;
+			};
+			MissionCleanup.add(%p);
+			%p.explode();	
+
+			if(isObject(%obj.client))
+			{
+				%obj.tool[%itemslot] = 0;
+				messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
+			}
+			if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
+			%obj.chairhit = 0;
+		}		
+
+		if(%hit.getType() & $TypeMasks::PlayerObjectType)
+		{
+			if(minigameCanDamage(%obj,%hit))
+			{
+				if(%obj.chairhit < 5) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
+				else
+				{
+					%hit.mountimage("sm_stunImage",2);
+					%hit.Damage(%obj, %hit.getPosition(), 50, $DamageType::barStool);
+				}
+				
+				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));
+			}
 		}
 	}
 }

@@ -120,27 +120,26 @@ function sm_foldingChairAttackImage::onFire(%this,%obj,%slot)
 	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
 	%startpos = %obj.getMuzzlePoint(0);
 	%endpos = %obj.getMuzzleVector(0);
-
-	for(%i = 0; %i < %obj.getDataBlock().maxTools; %i++)
-	if(%obj.tool[%i] == %this.item) %itemslot = %i-1;
 	
-	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType,%obj);
-	if(isObject(%hit) && %hit.getType() & $TypeMasks::PlayerObjectType)
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+	if(isObject(%hit))
 	{
 		%hitpos = posFromRaycast(%hit);
-
-		if(minigameCanDamage(%obj,%hit))
+		serverPlay3D("folding_chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
+		%p = new Projectile()
 		{
-			%hit.playThread(3,"plant");
-			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));			
-			%hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::Bottle);
-			serverPlay3D("folding_chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
-			%hit.spawnExplosion("sm_foldingChairHitProjectile",%hit.getScale());		
-		}
-		else
-		{
-			serverPlay3D("folding_chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
-			%hit.spawnExplosion("sm_chairHitProjectile",%hit.getScale());
+			dataBlock = "sm_foldingChairHitProjectile";
+			initialPosition = %hitpos;
+			sourceObject = %obj;
+			client = %obj.client;
+		};
+		MissionCleanup.add(%p);
+		%p.explode();			
+		
+		if((%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
+		{			
+			%hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
+			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));
 		}
 	}
 }

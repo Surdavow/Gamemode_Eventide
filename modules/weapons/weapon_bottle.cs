@@ -230,46 +230,61 @@ function sm_bottleImage::onFire(%this,%obj,%slot)
 	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
 	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
 	
-	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,5)),$TypeMasks::PlayerObjectType,%obj);
-	if(isObject(%hit) && %hit.getType() & $TypeMasks::PlayerObjectType)
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,5)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+	if(isObject(%hit))
 	{
 		%hitpos = posFromRaycast(%hit);
+		%obj.bottlehit++;
 
-		if(minigameCanDamage(%obj,%hit))
+		if(%obj.bottlehit < 3)
 		{
-			%obj.bottlehit++;
-			%hit.playThread(3,"plant");
-			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),500),"0 0 500"));
-
-			if(%obj.bottlehit < 3)
+			serverPlay3D("bottle_hitplayer" @ getRandom(1,2) @ "_sound",%hitpos);
+			%p = new Projectile()
 			{
-				%hit.Damage(%obj, %hit.getPosition(), 10, $DamageType::Bottle);
-				serverPlay3D("bottle_hitplayer" @ getRandom(1,2) @ "_sound",%hitpos);
-				%hit.spawnExplosion("sm_bottleHitProjectile",%hit.getScale());
-			}
-			else
-			{			
-				serverPlay3D("bottle_broken_hit" @ getRandom(1,2) @ "_sound",%hitpos);
-				serverPlay3D("bottle_broken_hitplayer" @ getRandom(1,2) @ "_sound",%hitpos);
-
-				%hit.mountimage("sm_stunImage",2);				
-				%hit.spawnExplosion("sm_bottleSmashProjectile",%hit.getScale());
-				if(minigameCanDamage(%obj,%hit)) %hit.Damage(%obj, %hit.getPosition(), 20, $DamageType::BottleBroken);
-
-				if(isObject(%obj.client))
-				{
-					%obj.tool[%itemslot] = 0;
-					messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
-				}
-				if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
-
-				%obj.bottlehit = 0;
-			}					
+				dataBlock = "sm_bottleHitProjectile";
+				initialPosition = %hitpos;
+				sourceObject = %obj;
+				client = %obj.client;
+			};
+			MissionCleanup.add(%p);
+			%p.explode();			
 		}
 		else
 		{
-			serverPlay3D("bottle_hitplayer" @ getRandom(1,2) @ "_sound",%hitpos);
-			%hit.spawnExplosion("sm_bottleHitProjectile",%hit.getScale());
+			serverPlay3D("bottle_broken_hit" @ getRandom(1,2) @ "_sound",%hitpos);
+			serverPlay3D("bottle_broken_hitplayer" @ getRandom(1,2) @ "_sound",%hitpos);
+			%p = new Projectile()
+			{
+				dataBlock = "sm_bottleSmashProjectile";
+				initialPosition = %hitpos;
+				sourceObject = %obj;
+				client = %obj.client;
+			};
+			MissionCleanup.add(%p);
+			%p.explode();	
+
+			if(isObject(%obj.client))
+			{
+				%obj.tool[%itemslot] = 0;
+				messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
+			}
+			if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
+			%obj.bottlehit = 0;
+		}		
+
+		if(%hit.getType() & $TypeMasks::PlayerObjectType)
+		{
+			if(minigameCanDamage(%obj,%hit))
+			{
+				if(%obj.bottlehit < 3) %hit.Damage(%obj, %hit.getPosition(), 10, $DamageType::Bottle);
+				else
+				{
+					%hit.mountimage("sm_stunImage",2);
+					%hit.Damage(%obj, %hit.getPosition(), 20, $DamageType::BottleBroken);
+				}
+				
+				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),500),"0 0 500"));						
+			}
 		}
 	}
 }
