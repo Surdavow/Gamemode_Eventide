@@ -143,6 +143,21 @@ function sm_barStoolImage::onFire(%this,%obj,%slot)
 		%hitpos = posFromRaycast(%hit);
 		%obj.barstoolhit++;
 
+		if(%hit.getType() & $TypeMasks::PlayerObjectType)
+		{
+			if(minigameCanDamage(%obj,%hit))
+			{
+				if(%obj.barstoolhit < 5) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
+				else
+				{
+					%hit.mountimage("sm_stunImage",2);
+					%hit.Damage(%obj, %hit.getPosition(), 50, $DamageType::barStool);
+				}
+				
+				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));
+			}
+		}		
+
 		if(%obj.barstoolhit < 5)
 		{
 			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
@@ -176,21 +191,6 @@ function sm_barStoolImage::onFire(%this,%obj,%slot)
 			}
 			if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
 			%obj.barstoolhit = 0;
-		}		
-
-		if(%hit.getType() & $TypeMasks::PlayerObjectType)
-		{
-			if(minigameCanDamage(%obj,%hit))
-			{
-				if(%obj.barstoolhit < 5) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
-				else
-				{
-					%hit.mountimage("sm_stunImage",2);
-					%hit.Damage(%obj, %hit.getPosition(), 50, $DamageType::barStool);
-				}
-				
-				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));
-			}
 		}
 	}
 }

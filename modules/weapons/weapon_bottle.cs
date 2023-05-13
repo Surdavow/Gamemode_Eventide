@@ -236,6 +236,21 @@ function sm_bottleImage::onFire(%this,%obj,%slot)
 		%hitpos = posFromRaycast(%hit);
 		%obj.bottlehit++;
 
+		if(%hit.getType() & $TypeMasks::PlayerObjectType)
+		{
+			if(minigameCanDamage(%obj,%hit))
+			{				
+				if(%obj.bottlehit < 3) %hit.Damage(%obj, %hit.getPosition(), 10, $DamageType::Bottle);
+				else
+				{
+					%hit.mountimage("sm_stunImage",2);
+					%hit.Damage(%obj, %hit.getPosition(), 20, $DamageType::BottleBroken);
+				}
+				
+				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),500),"0 0 500"));						
+			}
+		}		
+
 		if(%obj.bottlehit < 3)
 		{
 			serverPlay3D("bottle_hitplayer" @ getRandom(1,2) @ "_sound",%hitpos);
@@ -270,21 +285,6 @@ function sm_bottleImage::onFire(%this,%obj,%slot)
 			}
 			if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
 			%obj.bottlehit = 0;
-		}		
-
-		if(%hit.getType() & $TypeMasks::PlayerObjectType)
-		{
-			if(minigameCanDamage(%obj,%hit))
-			{
-				if(%obj.bottlehit < 3) %hit.Damage(%obj, %hit.getPosition(), 10, $DamageType::Bottle);
-				else
-				{
-					%hit.mountimage("sm_stunImage",2);
-					%hit.Damage(%obj, %hit.getPosition(), 20, $DamageType::BottleBroken);
-				}
-				
-				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),500),"0 0 500"));						
-			}
 		}
 	}
 }

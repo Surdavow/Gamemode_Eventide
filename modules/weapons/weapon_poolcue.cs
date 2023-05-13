@@ -145,49 +145,63 @@ function sm_poolCueImage::onFire(%this,%obj,%slot)
 	%startpos = %obj.getMuzzlePoint(0);
 	%endpos = %obj.getMuzzleVector(0);
 
-	for(%i = 0; %i < %obj.getDataBlock().maxTools; %i++)
-	if(%obj.tool[%i] == %this.item) %itemslot = %i-1;
+	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
+	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
 	
-	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType,%obj);
-	if(isObject(%hit) && %hit.getType() & $TypeMasks::PlayerObjectType)
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+	if(isObject(%hit))
 	{
 		%hitpos = posFromRaycast(%hit);
+		%obj.poolcuehit++;
 
-		if(minigameCanDamage(%obj,%hit))
+		if(%hit.getType() & $TypeMasks::PlayerObjectType)
 		{
-			%obj.poolcuehit++;
-			%hit.playThread(3,"plant");
-			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),500),"0 0 500"));
-
-			if(%obj.poolcuehit < 6)
+			if(minigameCanDamage(%obj,%hit))
 			{
-				%hit.Damage(%obj, %hit.getPosition(), 15, $DamageType::Bottle);
-				serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
-				%hit.spawnExplosion("sm_chairHitProjectile",%hit.getScale());
-			}
-			else
-			{			
-				serverPlay3D("poolcue_smash" @ getRandom(1,2) @ "_sound",%hitpos);
-
-				%hit.mountimage("sm_stunImage",2);				
-				%hit.spawnExplosion("sm_poolCueSmashProjectile",%hit.getScale());
-				if(minigameCanDamage(%obj,%hit)) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::BottleBroken);
-
-				if(isObject(%obj.client))
+				if(%obj.poolcuehit < 5) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
+				else
 				{
-					%obj.tool[%itemslot] = 0;
-					messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
+					%hit.mountimage("sm_stunImage",2);
+					%hit.Damage(%obj, %hit.getPosition(), 50, $DamageType::barStool);
 				}
-				if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
+				
+				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));
+			}
+		}		
 
-				%obj.playThread(1,"root");
-				%obj.poolcuehit = 0;
-			}					
+		if(%obj.poolcuehit < 5)
+		{
+			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
+			%p = new Projectile()
+			{
+				dataBlock = "sm_chairHitProjectile";
+				initialPosition = %hitpos;
+				sourceObject = %obj;
+				client = %obj.client;
+			};
+			MissionCleanup.add(%p);
+			%p.explode();			
 		}
 		else
 		{
-			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
-			%hit.spawnExplosion("sm_chairHitProjectile",%hit.getScale());
+			serverPlay3D("poolcue_smash" @ getRandom(1,2) @ "_sound",%hitpos);
+			%p = new Projectile()
+			{
+				dataBlock = "sm_poolCueSmashProjectile";
+				initialPosition = %hitpos;
+				sourceObject = %obj;
+				client = %obj.client;
+			};
+			MissionCleanup.add(%p);
+			%p.explode();	
+
+			if(isObject(%obj.client))
+			{
+				%obj.tool[%itemslot] = 0;
+				messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
+			}
+			if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
+			%obj.poolcuehit = 0;
 		}
 	}
 }
