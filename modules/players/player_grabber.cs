@@ -100,6 +100,7 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	%obj.ChokeAmount = 0;
 	%obj.setEnergyLevel(0);
 	%obj.victim.unmount();
+	%obj.victim.setarmthread("look");
 	%obj.victim.playthread(0,"root");
 	%obj.playthread(3,"leftrecoil");
 	%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),25));				
