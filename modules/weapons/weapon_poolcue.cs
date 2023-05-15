@@ -148,7 +148,7 @@ function sm_poolCueImage::onFire(%this,%obj,%slot)
 	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
 	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
 	
-	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,4)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
 	if(isObject(%hit))
 	{
 		%hitpos = posFromRaycast(%hit);
