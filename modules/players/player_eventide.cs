@@ -214,6 +214,19 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
     {        
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
+
+		if(isObject(%minigame = getMinigamefromObject(%obj)))
+		{
+			if(isObject(%client = %obj.client))
+			if(isObject(%team = %client.slayerteam))
+			{
+				for(%i = 0; %i < %team.numMembers; %i++) if(isObject(%team.member[%i])) %livingcount++;
+				if(!%livingcount && isObject(%team)) %minigame.endRound(%minigame.victoryCheck_Lives());
+			}			
+		}
+		
+		
+
         return;
     }
 
