@@ -136,7 +136,7 @@ function sm_foldingChairAttackImage::onFire(%this,%obj,%slot)
 		MissionCleanup.add(%p);
 		%p.explode();			
 		
-		if((%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
+		if((%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == 1)
 		{			
 			%hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
 			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));

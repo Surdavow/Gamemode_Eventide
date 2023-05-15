@@ -239,8 +239,7 @@ function sm_bottleImage::onFire(%this,%obj,%slot)
 
 		if(%hit.getType() & $TypeMasks::PlayerObjectType)
 		{
-			%candamage = minigameCanDamage(%obj,%hit.getID());
-			if(%candamage == 1)
+			if(minigameCanDamage(%obj,%hit) == 1)
 			{				
 				if(%obj.bottlehit < 3) %hit.Damage(%obj, %hit.getPosition(), 10, $DamageType::Bottle);
 				else

@@ -156,7 +156,7 @@ function sm_poolCueImage::onFire(%this,%obj,%slot)
 
 		if(%hit.getType() & $TypeMasks::PlayerObjectType)
 		{
-			if(minigameCanDamage(%obj,%hit))
+			if(minigameCanDamage(%obj,%hit) == 1)
 			{
 				if(%obj.poolcuehit < 5) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
 				else

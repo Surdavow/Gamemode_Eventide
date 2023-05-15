@@ -239,7 +239,7 @@ function sm_chairImage::onFire(%this,%obj,%slot)
 
 		if(%hit.getType() & $TypeMasks::PlayerObjectType)
 		{
-			if(minigameCanDamage(%obj,%hit))
+			if(minigameCanDamage(%obj,%hit) == 1)
 			{
 				if(%obj.chairhit < 3) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
 				else

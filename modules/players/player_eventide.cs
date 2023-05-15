@@ -233,23 +233,17 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
     %obj.playthread(0,sit);
 
 	if(isObject(%obj.client) && isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%teams = %minigame.teams))
-	{
-		for(%i = 0; %i < %teams.getCount; %i++) 			
-		if(isObject(%team = %teams.getObject(%i)))
+	{				
+		for(%i = 0; %i < %teams.getCount(); %i++) if(isObject(%team = %teams.getObject(%i)))
 		{
-			talk("test0");
-			if(%team.name $= "Hunter") %hunterteam = %team;
+			if(strstr(strlwr(%team.name), "hunter") != -1) %hunterteam = %team;
 			
-			if(%team.name $= "Survivors")
+			if(strstr(strlwr(%team.name), "survivor") != -1)
 			for(%j = 0; %j < %team.numMembers; %j++) if(isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) %livingcount++;
-
-			if(!%livingcount) 
-			{
-				%minigame.endRound(%hunterteam);
-				talk("test");
-			}
-		}	
-	}			
+		}
+		
+		if(!%livingcount) %minigame.endRound(%hunterteam);
+	}		
 }
 
 function EventidePlayerDowned::DownLoop(%this,%obj)

@@ -25,62 +25,68 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				%dot = vectorDot(%obj.getEyeVector(), %line);
 				%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 
-				if(minigameCanDamage(%obj,%hit))
+				if(minigameCanDamage(%obj,%hit) == 1)
 				if(!isObject(%obscure) && %dot > 0.65)						
 				{
-					//Temporarily not working right now
-					//if(%hit.getstate() $= "Dead" && vectorDist(%obj.getposition(),%hit.getposition()) < %radius*2.5)
-					//{
-					//	if(%obj.getdataBlock().getName() $= "PlayerSkullwolf") 
-					//	{
-					//		%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
-					//		%obj.playthread(3,"plant");
-					//		%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
-					//		%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
-					//		%hit.schedule(50,delete);
-					//	}
-					//	continue;
-					//}
-
 					if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
 					{
-    					if(%obj.getdataBlock().getName() $= "PlayerSkinwalker")
-						if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
-    					{
-    					    if(%hit.getDamagePercent() > 0.5)
-							{
-								if(isObject(%hit.client)) %hit.client.setControlObject(%hit.client.camera);
-    					    	%obj.victim = %hit;
-    					    	%obj.victimreplicatedclient = %hit.client;
-    					    	%obj.playthread(1,"eat");
-    					    	%obj.playthread(2,"talk");
-    					    	%obj.playaudio(1,"skinwalker_grab_sound");
-    					    	%obj.mountobject(%hit,6);
-    					    	%hit.schedule(2250,kill);
-    					    	%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
-    					    	%hit.schedule(2300,delete);        
-    					    	%obj.schedule(2250,playthread,1,"root");
-    					    	%obj.schedule(2250,playthread,2,"root");
-    					    	%obj.schedule(2250,setField,victim,0);
-    					    	%this.schedule(2250,EventideAppearance,%obj,%obj.client);
-								return;
-							}
-							else 
-							{
-								%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
-								continue;
-							}
-    					}						
+						switch$(%obj.getdataBlock().getName())
+						{
+							case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
+														{
+															if(%hit.getDamagePercent() > 0.5)
+															{
+																if(isObject(%hit.client)) %hit.client.setControlObject(%hit.client.camera);
+																%obj.victim = %hit;
+																%obj.victimreplicatedclient = %hit.client;
+																%obj.playthread(1,"eat");
+																%obj.playthread(2,"talk");
+																%obj.playaudio(1,"skinwalker_grab_sound");
+																%obj.mountobject(%hit,6);
+																%hit.schedule(2250,kill);
+																%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
+																%hit.schedule(2300,delete);        
+																%obj.schedule(2250,playthread,1,"root");
+																%obj.schedule(2250,playthread,2,"root");
+																%obj.schedule(2250,setField,victim,0);
+																%this.schedule(2250,EventideAppearance,%obj,%obj.client);
+																return;
+															}
+															else 
+															{
+																%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
+																continue;
+															}
+														}
+
+							case "PlayerSkullwolf":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
+													{
+														if(%hit.getDamagePercent() > 0.5)
+														{
+															%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
+															%obj.playthread(3,"plant");
+															%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
+															%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
+															%hit.schedule(50,delete);
+															return;
+														}
+														else 
+														{
+															%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
+															continue;
+														}														
+													}
+						}
 						
+						if(isObject(%obj.hookrope)) %obj.hookrope.delete();
+
 						if(%hit.getdataBlock().isDowned) continue;
 						
 						if(%datablock.killermeleehitsound !$= "")
 						{
 							%obj.stopaudio(3);
 							%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
-						}
-
-						if(isObject(%obj.hookrope)) %obj.hookrope.delete();
+						}						
 
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
 						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								

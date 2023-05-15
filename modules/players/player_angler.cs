@@ -141,7 +141,7 @@ function PlayerAngler::idlesounds(%this,%obj)
 		%line = vectorNormalize(vectorSub(%targetid.getWorldBoxCenter(),%obj.getWorldBoxCenter()));
 		%dot = vectorDot(%obj.getEyeVector(), %line);
 		%obscure = containerRayCast(%obj.getEyePoint(),%targetid.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-		if(%dot > 0.55 && !isObject(%obscure) && minigameCanDamage(%obj,%targetid,false)) %detectedvictims++;
+		if(%dot > 0.55 && !isObject(%obscure) && minigameCanDamage(%obj,%targetid) == 1) %detectedvictims++;
 	}
 
 	if(!%obj.isInvisible)
@@ -248,7 +248,7 @@ function AnglerHookProjectile::onCollision(%this,%proj,%col,%fade,%pos,%normal)
 	%obj = %proj.sourceObject;
 	if(!isObject(%obj.hookrope)) return;
 	
-	if((%col.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%col))
+	if((%col.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%col) == 1)
 	{
 		if(%col.getdataBlock().isDowned) return;
 		
