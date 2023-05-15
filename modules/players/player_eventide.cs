@@ -237,6 +237,7 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 		for(%i = 0; %i < %teams.getCount; %i++) 			
 		if(isObject(%team = %teams.getObject(%i)))
 		{
+			talk("test0");
 			if(%team.name $= "Hunter") %hunterteam = %team;
 			
 			if(%team.name $= "Survivors")
