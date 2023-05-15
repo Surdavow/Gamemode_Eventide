@@ -100,7 +100,6 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	%obj.ChokeAmount = 0;
 	%obj.setEnergyLevel(0);
 	%obj.victim.unmount();
-	%obj.victim.setarmthread("look");
 	%obj.victim.playthread(0,"root");
 	%obj.playthread(3,"leftrecoil");
 	%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),25));				
@@ -154,7 +153,7 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 		%col.killer = %obj;
 		%obj.mountObject(%col,8);
 		%col.playaudio(0,"grabber_scream_sound");
-		%col.w("activate2");
+		%col.setarmthread("activate2");
 		%this.schedule(5000,"releaseVictim",%obj);
 
 		switch$(%col.getClassName())
