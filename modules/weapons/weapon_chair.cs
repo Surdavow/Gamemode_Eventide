@@ -231,7 +231,7 @@ function sm_chairImage::onFire(%this,%obj,%slot)
 	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
 	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
 	
-	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,7)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,3)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
 	if(isObject(%hit))
 	{
 		%hitpos = posFromRaycast(%hit);
@@ -241,7 +241,7 @@ function sm_chairImage::onFire(%this,%obj,%slot)
 		{
 			if(minigameCanDamage(%obj,%hit))
 			{
-				if(%obj.chairhit < 5) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
+				if(%obj.chairhit < 3) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
 				else
 				{
 					%hit.mountimage("sm_stunImage",2);
@@ -252,7 +252,7 @@ function sm_chairImage::onFire(%this,%obj,%slot)
 			}
 		}		
 
-		if(%obj.chairhit < 5)
+		if(%obj.chairhit < 3)
 		{
 			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
 			%p = new Projectile()
