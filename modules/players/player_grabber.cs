@@ -93,6 +93,29 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 	}
 }
 
+function PlayerGrabber::releaseVictim(%this,%obj)
+{
+	if(!isObject(%obj) || !isObject(%obj.victim)) return;
+
+	%obj.ChokeAmount = 0;
+	%obj.setEnergyLevel(0);
+	%obj.victim.unmount();
+	%obj.victim.playthread(0,"root");
+	%obj.playthread(3,"leftrecoil");
+	%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),25));				
+	%obj.victim.position = %obj.getEyePoint();
+
+	switch$(%obj.victim.getClassName())
+	{
+		case "AIPlayer":	%obj.victim.startholeloop();
+							%obj.victim.hRunAwayFromPlayer(%obj);
+		case "Player":	%obj.victim.client.schedule(100,setControlObject,%obj.victim);
+	}
+	
+	%obj.victim.killer = 0;
+	%obj.victim = 0;
+}
+
 function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 {
 	Parent::EventideAppearance(%this,%obj,%client);
@@ -150,29 +173,6 @@ function PlayerGrabberNoJump::checkVictim(%this,%obj)
 {
 	PlayerGrabber::checkVictim(%this,%obj);
 	%obj.setdatablock("PlayerGrabber");
-}
-
-function PlayerGrabberNoJump::releaseVictim(%this,%obj)
-{
-	if(!isObject(%obj) || !isObject(%obj.victim)) return;
-
-	%obj.ChokeAmount = 0;
-	%obj.setEnergyLevel(0);
-	%obj.victim.unmount();
-	%obj.victim.playthread(0,"root");
-	%obj.playthread(3,"leftrecoil");
-	%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),25));				
-	%obj.victim.position = %obj.getEyePoint();
-
-	switch$(%obj.victim.getClassName())
-	{
-		case "AIPlayer":	%obj.victim.startholeloop();
-							%obj.victim.hRunAwayFromPlayer(%obj);
-		case "Player":	%obj.victim.client.schedule(100,setControlObject,%obj.victim);
-	}
-	
-	%obj.victim.killer = 0;
-	%obj.victim = 0;
 }
 
 function PlayerGrabberNoJump::onTrigger(%this,%obj,%triggerNum,%bool)
