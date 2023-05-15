@@ -214,19 +214,6 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
     {        
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
-
-		if(isObject(%minigame = getMinigamefromObject(%obj)))
-		{
-			if(isObject(%client = %obj.client))
-			if(isObject(%team = %client.slayerteam))
-			{
-				for(%i = 0; %i < %team.numMembers; %i++) if(isObject(%member = %team.member[%i].player) && %member.getdataBlock().isDowned) %livingcount++;
-				if(!%livingcount && isObject(%team)) %minigame.endRound(%minigame.victoryCheck_Lives());
-			}			
-		}
-		
-		
-
         return;
     }
 
@@ -243,7 +230,22 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 {
 	Parent::onNewDataBlock(%this,%obj);
 	%this.DownLoop(%obj);
-    %obj.playthread(0,sit);	
+    %obj.playthread(0,sit);
+
+	if(isObject(%obj.client) && isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%teams = %minigame.teams))
+	{
+		for(%i = 0; %i < %teams.getCount; %i++) 			
+		if(isObject(%team = %teams.getObject(%i)))
+		{
+			if(%team.name $= "Killer") %killerteam = %team;
+			
+			if(%team.name $= "Survivors")
+			{
+				for(%i = 0; %i < %team.numMembers; %i++) if(isObject(%member = %team.member[%i].player) && !%member.getdataBlock().isDowned) %livingcount++;
+				if(!%livingcount) %minigame.endRound(%killerteam);
+			}						
+		}	
+	}			
 }
 
 function EventidePlayerDowned::DownLoop(%this,%obj)
