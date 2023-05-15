@@ -66,6 +66,8 @@ package Eventide_MainPackage
 	{
 		Parent::onImpact(%this, %obj, %col, %vec, %force);
 
+		if(%obj.isInvisible) return;
+
 		if(%force < 40) serverPlay3D("impact_medium" @ getRandom(1,3) @ "_sound",%obj.getPosition());
 		else serverPlay3D("impact_hard" @ getRandom(1,3) @ "_sound",%obj.getPosition());
 
