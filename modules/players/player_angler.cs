@@ -171,7 +171,7 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 		return;
 	}
 
-	if((%end.getClassName() $= "Player" || %end.getClassName() $= "AIPlayer") && %end.getState() $= "Dead")//Check if the end attachment is a player and that it isn't dead, return and delete the object if this doesnt pass
+	if((%end.getClassName() $= "Player" || %end.getClassName() $= "AIPlayer") && %end.getState() $= "Dead" || %end.getdataBlock().isDowned)//Check if the end attachment is a player and that it isn't dead, return and delete the object if this doesnt pass
 	{
 		if(isObject(%obj)) %obj.delete();
 		return;
