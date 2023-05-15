@@ -86,26 +86,7 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 						%obj.playthread(0,"plant");
 						%obj.ChokeAmount++;
 					}
-					else 
-					{
-						%obj.ChokeAmount = 0;
-						%obj.setEnergyLevel(0);
-						%obj.victim.unmount();
-						%obj.victim.playthread(0,"root");
-						%obj.playthread(3,"leftrecoil");
-						%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),25));				
-						%obj.victim.position = %obj.getEyePoint();
-
-						switch$(%obj.victim.getClassName())
-						{
-							case "AIPlayer":	%obj.victim.startholeloop();
-												%obj.victim.hRunAwayFromPlayer(%obj);
-							case "Player":	%obj.victim.client.schedule(100,setControlObject,%obj.victim);
-						}
-						
-						%obj.victim.killer = 0;
-						%obj.victim = 0;
-					}
+					else %this.releaseVictim(%obj);	
 				}
 
 		default:
@@ -149,6 +130,7 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 		%col.killer = %obj;
 		%obj.mountObject(%col,8);
 		%col.playaudio(0,"grabber_scream_sound");
+		%this.schedule(5000,"releaseVictim",%obj);
 
 		switch$(%col.getClassName())
 		{
@@ -168,6 +150,29 @@ function PlayerGrabberNoJump::checkVictim(%this,%obj)
 {
 	PlayerGrabber::checkVictim(%this,%obj);
 	%obj.setdatablock("PlayerGrabber");
+}
+
+function PlayerGrabberNoJump::releaseVictim(%this,%obj)
+{
+	if(!isObject(%obj) || !isObject(%obj.victim)) return;
+
+	%obj.ChokeAmount = 0;
+	%obj.setEnergyLevel(0);
+	%obj.victim.unmount();
+	%obj.victim.playthread(0,"root");
+	%obj.playthread(3,"leftrecoil");
+	%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),25));				
+	%obj.victim.position = %obj.getEyePoint();
+
+	switch$(%obj.victim.getClassName())
+	{
+		case "AIPlayer":	%obj.victim.startholeloop();
+							%obj.victim.hRunAwayFromPlayer(%obj);
+		case "Player":	%obj.victim.client.schedule(100,setControlObject,%obj.victim);
+	}
+	
+	%obj.victim.killer = 0;
+	%obj.victim = 0;
 }
 
 function PlayerGrabberNoJump::onTrigger(%this,%obj,%triggerNum,%bool)

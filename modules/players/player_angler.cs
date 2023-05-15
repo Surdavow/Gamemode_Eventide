@@ -255,7 +255,8 @@ function AnglerHookProjectile::onCollision(%this,%proj,%col,%fade,%pos,%normal)
 		%col.dismount();
 		%obj.hookrope.end = %col;
 		%col.playaudio(3,"angler_hookCatch_sound");
-		%col.damage(%obj, %pos, 10, $DamageType::Default);		
+		%col.damage(%obj, %pos, 10, $DamageType::Default);
+		%col.schedule(5000,"delete");
 		return;
 	}
 	else %obj.hookrope.delete();
