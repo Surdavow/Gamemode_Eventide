@@ -241,7 +241,7 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 			
 			if(%team.name $= "Survivors")
 			{
-				for(%i = 0; %i < %team.numMembers; %i++) if(isObject(%member = %team.member[%i].player) && !%member.getdataBlock().isDowned) %livingcount++;
+				for(%j = 0; %j < %team.numMembers; %j++) if(isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) %livingcount++;
 				if(!%livingcount) %minigame.endRound(%killerteam);
 			}						
 		}	
