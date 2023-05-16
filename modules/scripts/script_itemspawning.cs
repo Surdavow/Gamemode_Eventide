@@ -19,6 +19,7 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
 {	    
     if(!isObject(EventideItemSpawnSet) || !EventideItemSpawnSet.getCount()) return;
 
+    //Set a ritual list of items to reference later in the function
     %randomritual[%rrl++] = "candleItem";
     %randomritual[%rrl++] = "candleItem";
     %randomritual[%rrl++] = "candleItem";
@@ -34,22 +35,26 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
             {
                 case "ritual":  if(%rrl)
                                 {
+                                    //Choose a random ritual from the list
                                     %randomnumber = getRandom(1,%rrl);
                                     %randomritual = %randomritual[%randomnumber];
                                     %brick.setItem(%randomritual);
 
+                                    //Remove it from the list
                                     %randomritual[%randomnumber] = %randomritual[%rrl];
                                     %rrl--;
                                 }                      
 
-                case "item":    switch(getRandom(1,3))
+                case "item":    %itemcount++;
+                                if(%itemcount <= 5) switch(getRandom(1,3))
                                 {
                                     case 1: %brick.setItem("CRadioItem");
                                     case 2: %brick.setItem("Rope");
                                     case 3: %brick.setItem("SodaItem");		    
                                 }
 
-                case "weapon":  switch(getRandom(1,8))
+                case "weapon":  %weaponcount++;
+                                if(%weaponcount <= 5) switch(getRandom(1,8))
                                 {
                                     case 1: %brick.setItem("sm_barStoolItem");
                                     case 2: %brick.setItem("sm_bottleItem");
@@ -98,9 +103,4 @@ function brickEventideItemSpawnData::onPlant(%data,%obj)
 function brickEventideItemSpawnData::onloadPlant(%data, %obj)
 {
 	brickEventideItemSpawnData::onPlant(%this, %obj);
-}
-
-function brickEventideItemSpawnData::onDeath(%this,%obj)
-{
-    Parent::onDeath(%this, %obj);
 }
