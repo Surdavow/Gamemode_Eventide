@@ -14,8 +14,9 @@ package Eventide_MainPackage
 {
 	function Player::Pickup(%obj,%item)
 	{		
-		Parent::Pickup(%obj,%item);
+		%parent = Parent::Pickup(%obj,%item);
 
+		if(%parent == 1)
 		if(%obj.getDatablock().getName() $= "EventidePlayer" && isObject(getMinigameFromObject(%obj)) && isObject(%brick = %item.spawnBrick)) 
 		{
 			%brick.setEmitter();
