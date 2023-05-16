@@ -11,7 +11,7 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 }
 
 package Eventide_MainPackage
-{
+{	
 	function Player::Pickup(%obj,%item)
 	{		
 		%parent = Parent::Pickup(%obj,%item);
