@@ -18,7 +18,7 @@ activatePackage(Eventide_ItemSpawning);
 function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
 {	    
     if(!isObject(EventideItemSpawnSet) || !EventideItemSpawnSet.getCount()) return;
-    
+
     %randomritual[%rrl++] = "candleItem";
     %randomritual[%rrl++] = "candleItem";
     %randomritual[%rrl++] = "candleItem";
@@ -34,7 +34,6 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
             {
                 case "ritual":  if(%rrl)
                                 {
-                                    %brick.setEmitter("SparkleGroundEmitter");
                                     %randomnumber = getRandom(1,%rrl);
                                     %randomritual = %randomritual[%randomnumber];
                                     %brick.setItem(%randomritual);
@@ -43,16 +42,14 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                                     %rrl--;
                                 }                      
 
-                case "item":   %brick.setEmitter("SparkleGroundEmitter");
-                                switch(getRandom(1,3))
+                case "item":    switch(getRandom(1,3))
                                 {
                                     case 1: %brick.setItem("CRadioItem");
                                     case 2: %brick.setItem("Rope");
                                     case 3: %brick.setItem("SodaItem");		    
                                 }
 
-                case "weapon": %brick.setEmitter("SparkleGroundEmitter");
-                                switch(getRandom(1,8))
+                case "weapon":  switch(getRandom(1,8))
                                 {
                                     case 1: %brick.setItem("sm_barStoolItem");
                                     case 2: %brick.setItem("sm_bottleItem");
@@ -70,6 +67,8 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
             %brick.setItem("none");
             %brick.setEmitter("none");
         }
+
+        if(isObject(%brick.item)) %brick.setEmitter("SparkleGroundEmitter");
     }
 }
 
