@@ -12,13 +12,15 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 
 package Eventide_MainPackage
 {
-
 	function Player::Pickup(%obj,%item)
 	{		
 		Parent::Pickup(%obj,%item);
 
-		if(%obj.getDatablock().getName() $= "EventidePlayer" && isObject(getMinigameFromObject(%obj))) 
-		%item.delete();
+		if(%obj.getDatablock().getName() $= "EventidePlayer" && isObject(getMinigameFromObject(%obj)) && isObject(%brick = %item.spawnBrick)) 
+		{
+			%brick.setEmitter();
+			%item.delete();
+		}
 	}
 
 	function ServerCmdDropTool(%client,%slot)
