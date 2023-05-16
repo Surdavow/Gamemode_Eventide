@@ -4,7 +4,6 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 	{
 		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
-		%oscale = getWord(%obj.getScale(),2);
 		
 		if(%datablock.killermeleesound !$= "")
 		{
@@ -38,12 +37,13 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 															{
 																if(isObject(%hit.client)) %hit.client.setControlObject(%hit.client.camera);
 																%obj.victim = %hit;
-																%obj.victimreplicatedclient = %hit.client;
+																%obj.victimreplicatedclient = %hit.client;																
 																%obj.playthread(1,"eat");
 																%obj.playthread(2,"talk");
 																%obj.playaudio(1,"skinwalker_grab_sound");
 																%obj.mountobject(%hit,6);
 																%hit.schedule(2250,kill);
+																%hit.setarmthread("activate2");
 																%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
 																%hit.schedule(2300,delete);        
 																%obj.schedule(2250,playthread,1,"root");
@@ -90,7 +90,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
 						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
-						%hit.damage(%obj, %hit.getWorldBoxCenter(), 25*%oscale, $DamageType::Default);
+						%hit.damage(%obj, %hit.getWorldBoxCenter(), 25*getWord(%obj.getScale(),2), $DamageType::Default);
 						%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
 
 						%obj.setTempSpeed(0.65);
