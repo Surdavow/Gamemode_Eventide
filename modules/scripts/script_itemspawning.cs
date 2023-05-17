@@ -26,50 +26,50 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
     %randomritual[%rrl++] = "candleItem";
     %randomritual[%rrl++] = "bookItem";
     %randomritual[%rrl++] = "daggerItem";
+    //%randomritual[%rrl++] = "gem1Item";
+    //%randomritual[%rrl++] = "gem2Item";
+    //%randomritual[%rrl++] = "gem3Item";
+    //%randomritual[%rrl++] = "gem4Item";
         
     for(%g = 0; %g < EventideItemSpawnSet.getCount(); %g++) if(isObject(%brick = EventideItemSpawnSet.getObject(%g)))
     {
-        if(%randomize)
+        %brick.setItem("none");
+        %brick.setEmitter("none");
+                
+        if(%randomize) switch$(strreplace(strlwr(%brick.getname()),"_",""))
         {
-            switch$(strreplace(strlwr(%brick.getname()),"_",""))
-            {
-                case "ritual":  if(%rrl)
-                                {
-                                    //Choose a random ritual from the list
-                                    %randomnumber = getRandom(1,%rrl);
-                                    %randomritual = %randomritual[%randomnumber];
-                                    %brick.setItem(%randomritual);
+            case "ritual":  if(%rrl)
+                            {
+                                //Choose a random ritual from the list
+                                %randomnumber = getRandom(1,%rrl);
+                                %randomritual = %randomritual[%randomnumber];
+                                %brick.setItem(%randomritual);
 
-                                    //Remove it from the list
-                                    %randomritual[%randomnumber] = %randomritual[%rrl];
-                                    %rrl--;
-                                }                      
+                                //Remove it from the list
+                                %randomritual[%randomnumber] = %randomritual[%rrl];
+                                %rrl--;
+                            }                      
 
-                case "item":    if(%itemcount++ < 6) switch(getRandom(1,3))
-                                {
-                                    case 1: %brick.setItem("CRadioItem");
-                                    case 2: %brick.setItem("Rope");
-                                    case 3: %brick.setItem("SodaItem");		    
-                                }
+            case "item":    if(%itemcount++ < 6) switch(getRandom(1,3))
+                            {
+                                case 1: %brick.setItem("CRadioItem");
+                                case 2: %brick.setItem("Rope");
+                                case 3: %brick.setItem("SodaItem");		    
+                            }
 
-                case "weapon":  if(%weaponcount++ < 6) switch(getRandom(1,8))
-                                {
-                                    case 1: %brick.setItem("sm_barStoolItem");
-                                    case 2: %brick.setItem("sm_bottleItem");
-                                    case 3: %brick.setItem("sm_chairItem");
-                                    case 4: %brick.setItem("sm_foldingChairItem");
-                                    case 5: %brick.setItem("sm_poolCueItem");
-                                    case 6: %brick.setItem("bearTrapItem");
-                                    case 7: %brick.setItem("sm_chairItem");
-                                    case 8: %brick.setItem("FlareGunItem");
-                                }
-            }
+            case "weapon":  if(%weaponcount++ < 6) switch(getRandom(1,8))
+                            {
+                                case 1: %brick.setItem("sm_barStoolItem");
+                                case 2: %brick.setItem("sm_bottleItem");
+                                case 3: %brick.setItem("sm_chairItem");
+                                case 4: %brick.setItem("sm_foldingChairItem");
+                                case 5: %brick.setItem("sm_poolCueItem");
+                                case 6: %brick.setItem("bearTrapItem");
+                                case 7: %brick.setItem("sm_chairItem");
+                                case 8: %brick.setItem("FlareGunItem");
+                            }
         }
-        else 
-        {
-            %brick.setItem("none");
-            %brick.setEmitter("none");
-        }
+
 
         if(isObject(%brick.item)) %brick.setEmitter("SparkleGroundEmitter");
     }

@@ -84,37 +84,3 @@ datablock ShapeBaseImageData(sm_stunImage)
 	stateTimeoutValue[2]		= 0.01;
 	stateTransitionOnTimeout[2]	= "FireA";
 };
-datablock PlayerData(sm_playerFrozen : PlayerStandardArmor)
-{
-	runForce = 1800;
-	runEnergyDrain = 0;
-	minRunEnergy = 0;
-	maxForwardSpeed = 0;
-	maxBackwardSpeed = 0;
-	maxSideSpeed = 0;
-	maxForwardCrouchSpeed = 0;
-	maxBackwardCrouchSpeed = 0;
-	maxSideCrouchSpeed = 0;
-	jumpForce = 0;
-	jumpDelay = 0;
-	minJetEnergy = 0;
-	jetEnergyDrain = 0;
-	canJet = 0;
-	runSurfaceAngle  = 150;
-	jumpSurfaceAngle = 150;
-	uiName = "";
-};
-datablock PlayerData(PlayerMeleeFP : PlayerStandardArmor)
-{
-	cameraHorizontalOffset = 0;
-	cameraVerticalOffset = 2;
-	cameraMaxDist = 1;
-	thirdPersonOnly = 1;
-	minJetEnergy = 0;
-	jetEnergyDrain = 0;
-	canJet = 0;
-	firstPersonOnly = 1;
-	uiName = ($Pref::Swol_SMMelee_Prefix ? "SM " : "") @ "Melee Player";
-	maxTools = 1;
-	maxWeapons = 1;
-};

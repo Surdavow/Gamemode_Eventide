@@ -63,14 +63,14 @@ function brickBookStaticShape::onAdd(%this,%obj)
 function bookImage::onUnmount(%this,%obj,%slot)
 {    
     Parent::onUnmount(%this,%obj,%slot);
-    %obj.playAudio(1,"bookconceal_sound");
+    %obj.playAudio(1,"book_conceal_sound");
     %obj.playthread(2,"plant");
 }
 
 function bookImage::onMount(%this,%obj,%slot)
 {    
     Parent::onMount(%this,%obj,%slot);
-    %obj.playAudio(1,"bookequip_sound");
+    %obj.playAudio(1,"book_equip_sound");
     %obj.playthread(1,"armReadyBoth");
     %obj.playthread(2,"plant");
 }

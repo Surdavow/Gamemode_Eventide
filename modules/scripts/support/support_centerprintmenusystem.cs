@@ -59,58 +59,6 @@ else if ($CenterprintMenuSystemVersion >= 2.1)
 }
 $CenterprintMenuSystemVersion = 2.1;
 
-if (!isObject(exampleCenterprintMenu))
-{
-	new ScriptObject(exampleCenterprintMenu)
-	{
-		isCenterprintMenu = 1;
-		menuName = "Test Menu";
-
-		menuOption[0] = "Option 1";
-		menuFunction[0] = "option1Func";
-		menuOption[1] = "Option 2";
-		menuFunction[1] = "option2Func";
-		menuOption[2] = "Option 3";
-		menuFunction[2] = "option3Func";
-
-		justify = "<just:right>";
-
-		//deleteOnExit = 1;
-
-		menuOptionCount = 3;
-	};
-	// MissionCleanup.add(exampleCenterprintMenu);
-}
-
-if (!isObject(exampleCenterprintMenu2))
-{
-	new ScriptObject(exampleCenterprintMenu2)
-	{
-		isCenterprintMenu = 1;
-		menuName = "Test Menu2";
-
-		menuOption[0] = "Option 0";
-		menuFunction[0] = "option0Func";
-		menuOption[1] = "Option 1";
-		menuFunction[1] = "option1Func";
-		menuOption[2] = "Option 2";
-		menuFunction[2] = "option2Func";
-		menuOption[3] = "Option 3";
-		menuFunction[3] = "option3Func";
-		menuOption[4] = "Option 4";
-		menuFunction[4] = "option4Func";
-		menuOption[5] = "Option 5";
-		menuFunction[5] = "option5Func";
-		menuOption[6] = "Option 6";
-		menuFunction[6] = "option6Func";
-
-		justify = ""; //defaults to <just:center>
-
-		menuOptionCount = 7;
-	};
-	// MissionCleanup.add(exampleCenterprintMenu2);
-}
-
 //core//
 //put in package to override previous versions which did not have version checking prior to overwrite 
 
@@ -131,7 +79,7 @@ package Support_CenterprintMenuSystemPackage
 
 		if (%cl.lastMessagedBrickControls + 20 < $Sim::Time)
 		{
-			messageClient(%cl, '', "\c5Use brick controls/numpad to navigate the centerprint menu. Use Ctrl-W to drop items into the storage box.");
+			messageClient(%cl, '', "\c5Use brick controls/numpad to navigate the centerprint menu.");
 		}
 		%cl.lastMessagedBrickControls = $Sim::Time;
 
