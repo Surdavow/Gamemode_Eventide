@@ -56,6 +56,8 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 function PlayerRender::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
+
+	if(isObject(%obj.light)) %obj.light.delete();
 	%this.EventideAppearance(%obj);
 	%this.Prepperizer(%obj);
 	KillerSpawnMessage(%obj);
@@ -229,7 +231,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 		%obj.setmaxforwardspeed(%this.maxForwardSpeed);
 	}
 
-	%alpha = mClampF(%alpha+0.05,0,1);		
+	%alpha = mClampF(%alpha+0.1,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 	%obj.setTempSpeed(0.375);
 	if(%alpha == 1) 
