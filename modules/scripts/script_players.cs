@@ -158,6 +158,7 @@ function GameConnection::Escape(%client)
 	%client.setcontrolobject(%client.camera);	
 	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
 	%client.lives = 0;
+	%client.setdead(1);
 
 	if(%escaped >= %living)
 	{
