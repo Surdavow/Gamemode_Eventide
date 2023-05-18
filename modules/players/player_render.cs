@@ -112,7 +112,8 @@ function PlayerRender::Prepperizer(%this,%obj)
 			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1)
 			{				
 				%closeness = 1/(VectorDist(%obj.getPosition(),%player.getPosition())*0.005);
-				%player.damage(%obj,%player.getWorldBoxCenter(), %closeness, $DamageType::Default);
+				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
+				%player.markedforRenderDeath = true;
 				%client.play2d("render_blind");
 				%player.setWhiteOut(%closeness*0.1);
 			}
@@ -189,7 +190,15 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 {
 	if(!isObject(%obj) || isEventPending(%obj.reappearsched)) return;
 
-	if(%alpha == 1) %obj.playaudio(1,"render_disappear_sound");
+	if(%alpha == 1)
+	{
+		cancel(%obj.Prepperizer);
+		%obj.setArmThread("look");
+		%obj.stopaudio(3);
+		%obj.playaudio(1,"render_disappear_sound");		
+		%this.EventideAppearance(%obj);
+		%obj.setScale("1 1 1");
+	}
 	
 	%alpha = mClampF(%alpha-0.025,0,1);
 
@@ -204,8 +213,6 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 	}
 	else 
 	{
-		cancel(%obj.Prepperizer);
-		%obj.setArmThread("look");
 		%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 		%obj.setEnergyLevel(%alpha*100);
 	}
