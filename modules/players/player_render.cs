@@ -39,11 +39,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 	switch(%trig)
 	{
 		case 0:
-		case 4: if(!%obj.isInvisible)
-				{		
-					if(%obj.getEnergyLevel() == %this.maxEnergy && !isEventPending(%obj.disappearsched)) 
-					%this.disappear(%obj,1);		
-				}
+		case 4: if(!%obj.isInvisible) if(!isEventPending(%obj.disappearsched)) %this.disappear(%obj,1);				
 				else 
 				{
 					cancel(%obj.reappearsched);
@@ -115,8 +111,8 @@ function PlayerRender::Prepperizer(%this,%obj)
 				%closeness = 1/(VectorDist(%obj.getPosition(),%player.getPosition())*0.005);
 				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
 				%player.markedforRenderDeath = true;
-				%client.play2d("render_blind");
-				%player.setWhiteOut(%closeness*0.1);
+				%client.play2d("render_blind_sound");
+				%player.setWhiteOut(%closeness*0.025);
 			}
 		}
 		
@@ -201,22 +197,19 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 		%obj.setScale("1 1 1");
 	}
 	
-	%alpha = mClampF(%alpha-0.025,0,1);
+	%alpha = mClampF(%alpha-0.05,0,1);
 
 	if(%alpha == 0)
 	{
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);
-		%obj.setmaxforwardspeed(9);
+		%obj.setmaxforwardspeed(10);
 		%obj.isInvisible = true;	
 		%obj.reappearsched = %this.schedule(12500, reappear, %obj, 0);
 		return;
 	}
-	else 
-	{
-		%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
-		%obj.setEnergyLevel(%alpha*100);
-	}
+	else %obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
+	
 
 	%obj.disappearsched = %this.schedule(25, disappear, %obj, %alpha);	
 }
@@ -230,11 +223,10 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 		%this.EventideAppearance(%obj,%obj.client);
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"render_appear_sound");
-		%obj.setmaxforwardspeed(6.84);
-		%obj.setEnergyLevel(0);
+		%obj.setmaxforwardspeed(%this.maxForwardSpeed);
 	}
 
-	%alpha = mClampF(%alpha+0.025,0,1);		
+	%alpha = mClampF(%alpha+0.05,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 	%obj.setTempSpeed(0.375);
 	if(%alpha == 1) 
