@@ -112,7 +112,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 			%dot = vectorDot(%player.getEyeVector(), %line);
 			%obscure = containerRayCast(%player.getEyePoint(),%obj.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 			
-			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1)
+			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
 			{				
 				%closeness = 1/(VectorDist(%obj.getPosition(),%player.getPosition())*0.01);
 				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
