@@ -7,8 +7,8 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	showEnergyBar = false;
 	cameramaxdist = 4;
 
-	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
-	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
+	killerChaseLvl1Music = "";
+	killerChaseLvl2Music = "";
 
 	killeridlesound = "";
 	killeridlesoundamount = 9;
