@@ -205,7 +205,6 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 		%obj.stopaudio(0);
 		%obj.setmaxforwardspeed(10);
 		%obj.isInvisible = true;	
-		%obj.reappearsched = %this.schedule(12500, reappear, %obj, 0);
 		return;
 	}
 	else %obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
