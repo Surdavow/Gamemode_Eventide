@@ -120,6 +120,7 @@ function PlayerShire::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);	
 	%obj.setScale("1.1 1.1 1.1");
 	%obj.mountImage("meleeAxeImage",0);
+	KillerSpawnMessage(%obj);
 }
 
 function PlayerShire::EventideAppearance(%this,%obj,%client)

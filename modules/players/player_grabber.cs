@@ -47,6 +47,7 @@ function PlayerGrabber::onNewDatablock(%this,%obj)
 	else applyCharacterPrefs(%obj.client);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1.15 1.15 1.15");
+	KillerSpawnMessage(%obj);
 
 	%obj.mountImage("meleeMacheteImage",0);
 }

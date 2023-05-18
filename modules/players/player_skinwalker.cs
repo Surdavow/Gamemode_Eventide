@@ -55,9 +55,9 @@ function PlayerSkinwalker::onNewDatablock(%this,%obj)
     
     %obj.schedule(1,playaudio,0,"skinwalker_roar_sound");
     %obj.schedule(1, setEnergyLevel,0);    
-    for(%i = 0; %i < getRandom(1,2); %i++)
-    %obj.schedule(50,spawnExplosion,"goryExplosionProjectile",%obj.getScale());    
+    for(%i = 0; %i < getRandom(1,2); %i++) %obj.schedule(50,spawnExplosion,"goryExplosionProjectile",%obj.getScale());    
 
+	KillerSpawnMessage(%obj);
     %obj.isSkinwalker = true;
 }
 

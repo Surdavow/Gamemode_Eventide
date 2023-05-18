@@ -58,6 +58,7 @@ function PlayerRender::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%this.EventideAppearance(%obj);
 	%this.Prepperizer(%obj);
+	KillerSpawnMessage(%obj);
 }
 
 function PlayerRender::EventideAppearance(%this,%obj)

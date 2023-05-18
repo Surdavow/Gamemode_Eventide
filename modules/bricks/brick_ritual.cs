@@ -144,7 +144,7 @@ function brickEventideRitual::onActivate(%this, %obj, %player, %client, %pos, %v
 
 function brickEventideRitual::onPlant(%this, %obj)
 {	
-	Parent::onPlant(%this,%obj);	
+	Parent::onPlant(%this,%obj);
 
 	%obj.setRendering(0);
 	%obj.setColliding(0);

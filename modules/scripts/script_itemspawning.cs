@@ -26,10 +26,10 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
     %randomritual[%rrl++] = "candleItem";
     %randomritual[%rrl++] = "bookItem";
     %randomritual[%rrl++] = "daggerItem";
-    //%randomritual[%rrl++] = "gem1Item";
-    //%randomritual[%rrl++] = "gem2Item";
-    //%randomritual[%rrl++] = "gem3Item";
-    //%randomritual[%rrl++] = "gem4Item";
+    %randomritual[%rrl++] = "gem1Item";
+    %randomritual[%rrl++] = "gem2Item";
+    %randomritual[%rrl++] = "gem3Item";
+    %randomritual[%rrl++] = "gem4Item";
         
     for(%g = 0; %g < EventideItemSpawnSet.getCount(); %g++) if(isObject(%brick = EventideItemSpawnSet.getObject(%g)))
     {

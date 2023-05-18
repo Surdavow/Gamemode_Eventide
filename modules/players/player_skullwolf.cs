@@ -35,6 +35,7 @@ function PlayerSkullWolf::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);	
 	%obj.schedule(1, setEnergyLevel, 0);
 	%obj.setScale("1.15 1.15 1.15");
+	KillerSpawnMessage(%obj);
 }
 
 function PlayerSkullWolf::disappear(%this,%obj,%alpha)

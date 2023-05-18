@@ -43,10 +43,12 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 function PlayerPuppetMaster::onNewDatablock(%this,%obj)
 {
     Parent::onNewDataBlock(%this,%obj);
+
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1.15 1.15 1.15");
 	%obj.getDataBlock().EventideAppearance(%obj,%obj.client);
 	%obj.mountImage("meleePuppetMasterDaggerImage",0);
+	KillerSpawnMessage(%obj);
 }
 
 function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
