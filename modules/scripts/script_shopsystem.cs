@@ -11,7 +11,7 @@ package Eventide_CustomTitles
         if(%client.customtitlebitmap $= "") %bitmap = "";
         else %bitmap = %client.customtitlebitmap;
 
-        %client.clanPrefix = %bitmap SPC "<color:" @ %color @ ">" @ "<font:" @ %font @ ":25>" @ %client.customtitle SPC "";
+        %client.clanPrefix = %bitmap @ "<color:" @ %color @ ">" @ "<font:" @ %font @ ":25>" @ %client.customtitle SPC "";
 		Parent::serverCmdMessageSent(%client,%msg);
 	}
 };
