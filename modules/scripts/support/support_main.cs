@@ -24,6 +24,12 @@ package Eventide_MainPackage
 		}
 	}
 
+	function serverCmdLight(%client)
+	{
+		if(isObject(%client.player) && %client.player.getdataBlock().isKiller) return;
+		Parent::serverCmdLight(%client);		
+	}
+
 	function ServerCmdDropTool(%client,%slot)
 	{
 		if(!isObject(getMinigameFromObject(%client))) return Parent::ServerCmdDropTool(%client, %slot);		

@@ -1,18 +1,22 @@
 function KillerSpawnMessage(%obj)
 {
-	if(!isObject(%obj) || %obj.firstMessageSpawn || !isObject(%minigame = getMiniGameFromObject(%player))) return;
+	if(!isObject(%obj) || !isObject(%minigame = getMiniGameFromObject(%obj))) return;
 
-	%obj.firstMessageSpawn = true;
-	switch(getRandom(1,4))
+	if(%obj.firstMessageSpawn) return;
+	
+	switch(getRandom(1,5))
 	{
-		case 1: %message = "Prepare to face the beast hungering for blood and revenge!";
+		case 1: %message = "Prepare to face the hunter hungering for fury!";
 		case 2: %message = "Prepare to face the fury of the relentless slayer!";
-		case 3: %mesasge = "From the depths of darkness emerges the hunter of souls.";
-		case 4: %message = "Fear the bloodthirsty hunter, armed with lethal intent";
+		case 3: %message = "From the depths of darkness emerges the hunter of souls.";
+		case 4: %message = "Fear the bloodthirsty hunter, armed with lethal intent.";
+		case 5: %message = "Your fates are sealed, the hunter arrives!";
 	}
 
-	%minigame.chatmsgall("<font:Impact:20>\c3" @ %messsage);
+	%minigame.chatmsgall("<font:Impact:30>\c3" @ %message);
 	for(%i = 0; %i < %minigame.numMembers; %i++) if(isObject(%member = %minigame.member[%i])) %member.play2D("render_wind_sound");
+
+	%obj.firstMessageSpawn = true;
 }
 
 function Player::KillerMelee(%obj,%datablock,%radius)

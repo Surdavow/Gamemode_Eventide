@@ -2,10 +2,8 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 {
 	uiName = "Render Player";
 
-	firstpersononly = false;
-	thirdpersononly = true;
+	firstpersononly = true;
 	showEnergyBar = false;
-	cameramaxdist = 4;
 
 	killerChaseLvl1Music = "";
 	killerChaseLvl2Music = "";
@@ -37,9 +35,17 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
-	switch(%trig)
+	if(%press) switch(%trig)
 	{
-		case 0:
+		case 0:	%p = new projectile()
+				{
+					dataBlock = "PrepperProjectile";
+					initialposition = VectorSub(VectorAdd(%obj.getEyePoint(),VectorScale(%obj.getEyeVector(),10)),"0 0 1.5");
+				};
+				MissionCleanup.add(%p);
+				%p.explode();
+				
+				
 		case 4: if(!%obj.isInvisible)
 				{ 
 					if(!isEventPending(%obj.disappearsched)) %this.disappear(%obj,1);					
@@ -49,7 +55,6 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					cancel(%obj.reappearsched);
 					%this.reappear(%obj,0);
 				}
-		default:
 	}	
 }
 
@@ -94,34 +99,19 @@ function PlayerRender::onRemove(%this,%obj)
 	if(isObject(%obj.light)) %obj.light.delete();
 }
 
-function PlayerRender::Prepperizer(%this,%obj)
-{
+function Player::Prepperizer(%obj)
+{	
 	if(!isObject(%obj) || %obj.isInvisible) return;
 
-	if(%obj.lastSearch < getSimTime())
-	{
-		%obj.lastSearch = getSimTime()+100;
+	%obj.PrepperizerEffect();
+	
+	cancel(%obj.Prepperizer);
+	%obj.Prepperizer = %obj.schedule(33,Prepperizer);	
+}
 
-		if(isObject(ClientGroup))
-		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i)))
-		if(isObject(%player = %client.player))
-		{
-			if(%player == %obj) continue;
-
-			%line = vectorNormalize(vectorSub(%obj.getPosition(),%player.getEyePoint()));
-			%dot = vectorDot(%player.getEyeVector(), %line);
-			%obscure = containerRayCast(%player.getEyePoint(),%obj.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			
-			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
-			{				
-				%closeness = 1/(VectorDist(%obj.getPosition(),%player.getPosition())*0.01);
-				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
-				%player.markedforRenderDeath = true;
-				%client.play2d("render_blind_sound");
-				%player.setWhiteOut(%closeness*0.01);
-			}
-		}		
-	}
+function Player::PrepperizerEffect(%obj)
+{	
+	if(!isObject(%obj) || %obj.isInvisible) return;
 
 	%obj.setScale(getRandom(70,110)*0.01 SPC getRandom(70,110)*0.01 SPC getRandom(100,110)*0.01);
 
@@ -182,6 +172,37 @@ function PlayerRender::Prepperizer(%this,%obj)
 		%obj.stopaudio(3);
 		%obj.playaudio(3,"render_glitch" @ getRandom(1,4) @ "_sound");	
 	}
+}
+
+function PlayerRender::Prepperizer(%this,%obj)
+{
+	if(!isObject(%obj) || %obj.isInvisible) return;
+
+	if(%obj.lastSearch < getSimTime())
+	{
+		%obj.lastSearch = getSimTime()+100;
+		
+		if(isObject(ClientGroup)) for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i)))
+		if(isObject(%player = %client.player))
+		{
+			if(%player == %obj) continue;
+
+			%line = vectorNormalize(vectorSub(%obj.getPosition(),%player.getEyePoint()));
+			%dot = vectorDot(%player.getEyeVector(), %line);
+			%obscure = containerRayCast(%player.getEyePoint(),%obj.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			
+			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
+			{				
+				%closeness = 1/(VectorDist(%obj.getPosition(),%player.getPosition())*0.025);
+				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
+				%player.markedforRenderDeath = true;
+				%client.play2d("render_blind_sound");
+				%player.setWhiteOut((%closeness*0.25)+%player.getdamagepercent()*0.25);
+			}
+		}		
+	}
+
+	%obj.PrepperizerEffect();
 	
 	cancel(%obj.Prepperizer);
 	%obj.Prepperizer = %this.schedule(33,Prepperizer,%obj);
@@ -229,7 +250,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 		%obj.setmaxforwardspeed(%this.maxForwardSpeed);
 	}
 
-	%alpha = mClampF(%alpha+0.1,0,1);		
+	%alpha = mClampF(%alpha+0.2,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 	%obj.setTempSpeed(0.375);
 	if(%alpha == 1) 

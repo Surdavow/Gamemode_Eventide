@@ -280,7 +280,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 
 	if(isObject(%client = %obj.client)) %obj.ghostclient = %client;
 
-	if(%obj.markedforRenderDeath) %obj.DeathPrepperizer();
+	if(%obj.markedforRenderDeath) %obj.Prepperizer();
 
 	if(isObject(EventideShapeGroup) && EventideShapeGroup.getCount() >= $EventideRitualAmount) return;
 
@@ -320,74 +320,6 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		for(%i = 0; %i < %minigame.numMembers; %i++)
 		if(isObject(%member = %minigame.member[%i])) %member.play2D("fallen_survivor_sound");
 	}	
-}
-
-function Player::DeathPrepperizer(%obj)
-{	
-	if(!isObject(%obj)) return;
-
-	%obj.setScale(getRandom(70,110)*0.01 SPC getRandom(70,110)*0.01 SPC getRandom(100,110)*0.01);
-
-	if(getRandom(1,10) == 1) %obj.setShapeName (getRandom(1,999999), 8564862);
-	else %obj.setShapeName ("", 8564862);
-	
-	if(getRandom(1,10) == 1) %obj.setfacename("smiley");
-	else %obj.setfacename("asciiTerror");
-
-	if(getRandom(1,10) == 1) %obj.hideNode("headskin");
-	else %obj.unhidenode("headskin");
-
-	if(getRandom(1,10) == 1) %obj.hideNode("chest");
-	else %obj.unhidenode("chest");	
-
-	if(getRandom(1,10) == 1) %obj.hideNode("rhand");
-	else %obj.unhidenode("rhand");	
-
-	if(getRandom(1,10) == 1) %obj.hideNode("lhand");
-	else %obj.unhidenode("lhand");
-
-	if(getRandom(1,10) == 1) %obj.hideNode("rshoe");
-	else %obj.unhidenode("rshoe");	
-
-	if(getRandom(1,10) == 1) %obj.hideNode("lshoe");
-	else %obj.unhidenode("lshoe");		
-
-	if(getRandom(1,4) == 1) %obj.setnodecolor("ALL","0 0 0 0.1");
-	else %obj.setnodecolor("ALL","0 0 0 1");
-
-	if(getRandom(1,4) == 1) 
-	{
-		switch(getRandom(1,2))
-		{
-			case 1: %obj.setArmThread("death1");
-			case 2: %obj.setArmThread("sit");
-			case 3: %obj.setArmThread("crouch");
-		}				
-	}
-	else %obj.setArmThread("look");
-
-	if(getRandom(1,5) == 1)
-	{
-		%obj.light = new fxLight ("")
-		{
-			dataBlock = "NegativePlayerLight";
-			source = %obj;
-		};
-		MissionCleanup.add(%obj.light);
-		%obj.light.setTransform(%obj.getTransform());
-		%obj.light.attachToObject(%obj);
-		%obj.light.schedule(1000,delete);
-	}
-	else if(isObject(%obj.light)) %obj.light.delete();
-
-	if(getRandom(1,50) == 1)
-	{
-		%obj.stopaudio(3);
-		%obj.playaudio(3,"render_glitch" @ getRandom(1,4) @ "_sound");	
-	}
-	
-	cancel(%obj.DeathPrepperizer);
-	%obj.DeathPrepperizer = %obj.schedule(33,DeathPrepperizer);	
 }
 
 function EventidePlayer::onRemove(%this,%obj)

@@ -569,6 +569,8 @@ function Armor::onLand(%data, %obj, %horiz)
 //+++ Drop some rad peggstep noise in here!
 function PeggFootsteps(%obj, %lastVert)
 {
+	if(isObject(%obj) && %obj.getdataBlock().getName() $= "PlayerRender") return;
+
 	cancel(%obj.peggstep);
 	if($Pref::Server::PF::footstepsEnabled == 1 && isObject(%obj))
 	{
