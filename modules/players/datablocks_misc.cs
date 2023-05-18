@@ -653,6 +653,27 @@ datablock StaticShapeData(AnglerHookRope)
 	isHookRope = true;
 };
 
+datablock fxLightData(NegativePlayerLight)
+{
+	uiName = "Player\'s Negative Light";
+	LightOn = 1;
+	radius = 15;
+	Brightness = -5;
+	color = "1 1 1 1";
+	FlareOn = 0;
+	FlareTP = 1;
+	FlareBitmap = "base/lighting/corona";
+	FlareColor = "1 1 1";
+	ConstantSizeOn = 1;
+	ConstantSize = 1;
+	NearSize = 3;
+	FarSize = 0.5;
+	NearDistance = 10;
+	FarDistance = 30;
+	FadeTime = 0.1;
+	BlendMode = 0;
+};
+
 datablock fxLightData(NoFlareGLight)
 {
 	uiName = "No Flare Green";
@@ -689,6 +710,6 @@ datablock fxLightData(NoFlareYLight : NoFlareGLight)
 };
 datablock fxLightData(NoFlareBLight : NoFlareGLight)
 {
-	uiName = "No Flare Red";
+	uiName = "No Flare Blue";
 	color = "0.1 0.1 1";
 };

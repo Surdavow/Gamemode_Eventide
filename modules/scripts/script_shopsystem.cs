@@ -5,10 +5,13 @@ package Eventide_CustomTitles
 		if(%client.customtitlecolor $= "") %color = "FFFFFF";
         else %color = %client.customtitlecolor;
 
-        if(%client.customtitlefont $= "") %font = "Arial";
+        if(%client.customtitlefont $= "") %font = "Palatino Linotype";
         else %font = %client.customtitlefont;
 
-        %client.clanPrefix = "<color:" @ %color @ ">" @ "<font:" @ %font @ ":25>" @ %client.customtitle SPC "";
+        if(%client.customtitlebitmap $= "") %bitmap = "";
+        else %bitmap = %client.customtitlebitmap;
+
+        %client.clanPrefix = %bitmap SPC "<color:" @ %color @ ">" @ "<font:" @ %font @ ":25>" @ %client.customtitle SPC "";
 		Parent::serverCmdMessageSent(%client,%msg);
 	}
 };
@@ -39,163 +42,6 @@ function openOptionShop(%client,%menu,%option)
         case 0: %type = "EventideHatShopMenu";
         case 1: %type = "EventideEffectsShopMenu";
         case 2: %type = "EventideTitlesShopMenu";
-    }
-
-    %client.startCenterprintMenu(%type);
-}
-
-function PromptCustomTitle(%client)
-{
-    switch(%client.canChangeTitle)
-    {
-        case true: messageClient(%client, '', "\c0You already purchased the ability to set titles.");
-        case false: commandToClient(%client, 'messageBoxYesNo', "Custom Title - 25 points", "Are you sure you want to buy a custom title?",'BuyCustomTitle');
-    }    
-}
-
-function serverCmdBuyCustomTitle(%client)
-{
-    if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title.");
-    else 
-    {
-        commandToClient(%client, 'messageboxOK', "Success!", "Use the /settitle command to change your title!");
-        %client.canChangeTitle = true;
-        %client.incScore(-25);
-    }
-}
-
-function servercmdsettitle(%client,%title)
-{
-    %allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
-
-	for(%i = 0; %i < strLen(%title); %i++)
-	if(strStr(%allowed, getSubStr(%title, %i, 1)) == -1)
-	{
-		%forbidden = true;
-		break;
-	}
-
-    %title = strreplace(%title,"_"," ");
-	
-	if(%forbidden || strLen(%title) > 15)
-	{
-		messageClient(%client, '', "\c0The title needs to be less than 15 characters and cannot contain illegal characters!");
-		return;
-	}
-
-    %client.customtitle = %title;
-}
-
-function PromptCustomTitleBitmap(%client)
-{
-    switch(%client.canChangeTitleBitmap)
-    {
-        case true: messageClient(%client, '', "\c0You already purchased the ability to set title bitmaps.");
-        case false: commandToClient(%client, 'messageBoxYesNo', "Custom Title Bitmap - 50 points", "Are you sure you want to buy a custom title bitmap?",'BuyCustomTitleBitmap');
-    }    
-}
-
-function serverCmdBuyCustomTitleBitmap(%client)
-{
-    if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title bitmap.");
-    else 
-    {
-        commandToClient(%client, 'messageboxOK', "Success!", "Use the /settitlebitmap command to change your title!");
-        %client.canChangeTitleBitmap = true;
-        %client.incScore(-50);
-    }
-}
-
-function PromptCustomTitleColor(%client)
-{
-    switch(%client.canChangeTitleColor)
-    {
-        case true: messageClient(%client, '', "\c0You already purchased the ability to set title colors.");
-        case false: commandToClient(%client, 'messageBoxYesNo', "Custom Title Color - 25 points", "Are you sure you want to buy a custom title color?",'BuyCustomTitleColor');
-    }    
-}
-
-function serverCmdBuyCustomTitleColor(%client)
-{
-    if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title color.");
-    else 
-    {
-        commandToClient(%client, 'messageboxOK', "Success!", "Use the /settitlecolor command to change your title color! Make sure it's HEX!");
-        %client.canChangeTitleColor = true;
-        %client.incScore(-25);
-    }
-}
-
-function servercmdsettitlecolor(%client,%color)
-{
-    %allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-	for(%i = 0; %i < strLen(%color); %i++)
-	if(strStr(%allowed, getSubStr(%color, %i, 1)) == -1)
-	{
-		%forbidden = true;
-		break;
-	}
-	
-	if(%forbidden || strLen(%color) > 6)
-	{
-		messageClient(%client, '', "\c0The color needs to be a HEX color!");
-		return;
-	}
-
-    %client.customtitlecolor = %color;
-}
-
-function PromptCustomTitleFont(%client)
-{
-    switch(%client.canChangeTitleFont)
-    {
-        case true: messageClient(%client, '', "\c0You already purchased the ability to set title Fonts.");
-        case false: commandToClient(%client, 'messageBoxYesNo', "Custom Title Font - 50 points", "Are you sure you want to buy a custom title Font?",'BuyCustomTitleFont');
-    }    
-}
-
-function serverCmdBuyCustomTitleFont(%client)
-{
-    if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title Font.");
-    else 
-    {
-        commandToClient(%client, 'messageboxOK', "Success!", "Use the /settitleFont command to change your title Font!");
-        %client.canChangeTitleFont = true;
-        %client.incScore(-50);
-    }
-}
-
-function servercmdsettitleFont(%client,%font)
-{
-    %allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-	for(%i = 0; %i < strLen(%font); %i++)
-	if(strStr(%allowed, getSubStr(%font, %i, 1)) == -1)
-	{
-		%forbidden = true;
-		break;
-	}
-	
-	if(%forbidden || strLen(%font) > 15)
-	{
-		messageClient(%client, '', "\c0Use an actual font, don't use illegal characters!");
-		return;
-	}
-
-    %client.customtitleFont = %font;
-}
-
-function TitleShopOptions(%client,%menu,%option)
-{
-    %client.exitCenterprintMenu();
-
-    switch(%option)
-    {
-        case 0: PromptCustomTitle(%client);
-        case 1: PromptCustomTitleBitmap(%client);
-        case 2: PromptCustomTitleFont(%client);
-        case 3: PromptCustomTitleColor(%client);
     }
 
     %client.startCenterprintMenu(%type);
@@ -274,17 +120,179 @@ new ScriptObject(EventideTitlesShopMenu)
     isCenterprintMenu = 1;
     menuName = "Eventide Shop - Titles";
 
-    menuOption[0] = "Title";
-    menuFunction[0] = "TitleShopOptions";
-    menuOption[1] = "Bitmaps";
-    menuFunction[1] = "TitleShopOptions";
-    menuOption[2] = "Font";
-    menuFunction[2] = "TitleShopOptions";    
-    menuOption[3] = "Color";
-    menuFunction[3] = "TitleShopOptions";
+    menuOption[0] = "Title - 50 points";
+    menuFunction[0] = "BuyTitle";
+    menuOption[1] = "Color - 25 points";
+    menuFunction[1] = "BuyTitle";    
+    menuOption[2] = "Bitmaps";
+    menuFunction[2] = "BuyTitle";
+    menuOption[3] = "Font";
+    menuFunction[3] = "BuyTitle";    
     menuOption[4] = "Return";
     menuFunction[4] = "returnToMainShopMenu";
 
     justify = "<just:right>";
-    menuOptionCount = 7;
+    menuOptionCount = 5;
 };
+
+function BuyTitle(%client,%menu,%option)
+{
+    switch(%option)
+    {
+        case 0: if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title.");                    
+                else 
+                {
+                    commandToClient(%client, 'messageboxOK', "Success!", "Use the /st command to change your title!");
+                    %client.canChangeTitle = true;
+                    %client.incScore(-25);
+                }
+
+                return;
+
+        case 1: if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title bitmap.");
+                else 
+                {
+                    commandToClient(%client, 'messageboxOK', "Success!", "Use the /st bitmap command to change your title!");
+                    %client.canChangeTitleBitmap = true;
+                    %client.incScore(-50);
+                }
+
+                return;
+
+        case 2: if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title color.");
+                else 
+                {
+                    commandToClient(%client, 'messageboxOK', "Success!", "Use the /st color command to change your title color! Make sure it's HEX!");
+                    %client.canChangeTitleColor = true;
+                    %client.incScore(-25);
+                }
+
+                return;
+
+        case 3: if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title Font.");
+                else 
+                {
+                    commandToClient(%client, 'messageboxOK', "Success!", "Use the /st font command to change your title Font!");
+                    %client.canChangeTitleFont = true;
+                    %client.incScore(-50);
+                }
+                
+                return;
+    }
+}
+
+function servercmdst(%client,%type,%input)
+{
+    switch$(%type)
+    {
+        case "title":   if(!%client.canChangeTitle) return;
+
+                        %allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
+
+                        for(%i = 0; %i < strLen(%input); %i++)
+                        if(strStr(%allowed, getSubStr(%input, %i, 1)) == -1)
+                        {
+                           %forbidden = true;
+                           break;
+                        }
+
+                        %input = strreplace(%input,"_"," ");
+
+                        if(%forbidden || strLen(%input) > 15)
+                        {
+                           messageClient(%client, '', "\c0The title needs to be less than 15 characters and cannot contain illegal characters!");
+                           return;
+                        }
+
+                        %client.customtitle = %input;
+                        return;
+
+        case "color":   if(!%client.canChangeTitleColor) return;
+        
+                        %allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+                        for(%i = 0; %i < strLen(%input); %i++)
+                        if(strStr(%allowed, getSubStr(%input, %i, 1)) == -1)
+                        {
+                            %forbidden = true;
+                            break;
+                        }
+
+                        if(%forbidden || strLen(%input) > 6)
+                        {
+                            messageClient(%client, '', "\c0The color needs to be a HEX color!");
+                            return;
+                        }
+
+                        %client.customtitlecolor = %input;
+                        return;
+                
+        case "font":    if(!%client.canChangeTitleFont) return;
+        
+                        %client.startCenterprintMenu(EventideSetTitleFontMenu);
+                        return;
+
+        case "Bitmap":  if(!%client.canChangeTitleBitmap) return;
+                        
+                        %client.startCenterprintMenu(EventideSetTitleBitmapMenu);
+                        return;                        
+    }
+}
+
+if(isObject(EventideSetTitleFontMenu)) EventideSetTitleFontMenu.delete();
+new ScriptObject(EventideSetTitleFontMenu)
+{
+    isCenterprintMenu = 1;
+    menuName = "Title - Set Font";
+
+    menuOption[0] = "Impact";
+    menuFunction[0] = "EventideSetCustomFont";
+    menuOption[1] = "Comic Sans MS";
+    menuFunction[1] = "EventideSetCustomFont";
+    menuOption[2] = "Arial";
+    menuFunction[2] = "EventideSetCustomFont";    
+    menuOption[3] = "Constantia";
+    menuFunction[3] = "EventideSetCustomFont";
+    menuOption[4] = "Exit";
+    menuFunction[4] = "exitCenterprintMenu";
+
+    justify = "<just:right>";
+    menuOptionCount = 5;
+};
+
+function EventideSetCustomFont(%client,%menu,%option)
+{    
+    switch(%option)
+    {
+        case 0: %client.customtitlefont = "Impact";
+        case 1: %client.customtitlefont = "Comic Sans MS";
+        case 2: %client.customtitlefont = "Arial";
+        case 3: %client.customtitlefont = "Constantia";
+    }
+}
+
+if(isObject(EventideSetTitleBitmapMenu)) EventideSetTitleBitmapMenu.delete();
+new ScriptObject(EventideSetTitleBitmapMenu)
+{
+    isCenterprintMenu = 1;
+    menuName = "Title - Set Bitmap";
+
+    menuOption[0] = "Arrow";
+    menuFunction[0] = "EventideSetCustomBitmap";
+    menuOption[1] = "Gun";
+    menuFunction[1] = "EventideSetCustomBitmap";
+    menuOption[2] = "Exit";
+    menuFunction[2] = "exitCenterprintMenu";
+
+    justify = "<just:right>";
+    menuOptionCount = 3;
+};
+
+function EventideSetCustomBitmap(%client,%menu,%option)
+{    
+    switch(%option)
+    {
+        case 0: %client.customtitlebitmap = "<bitmap:add-ons/weapon_bow/CI_arrow.png>";
+        case 1: %client.customtitlebitmap = "<bitmap:add-ons/weapon_gun/CI_gun.png>";
+    }
+}

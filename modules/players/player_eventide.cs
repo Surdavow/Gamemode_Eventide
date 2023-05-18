@@ -207,15 +207,15 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 }
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
-{	
-	if(%obj.isSkinwalker) %obj.addhealth(%damage*5);	
-	
-	if(isObject(%obj.client) && %obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33))
+{			
+	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33))
     {        
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
         return;
     }
+
+	if(%obj.isSkinwalker) %obj.addhealth(%damage*5);	
 
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
