@@ -121,7 +121,7 @@ function brickEventideRitual::onActivate(%this, %obj, %player, %client, %pos, %v
 		{				
 			if(isObject(%minigame = getMiniGameFromObject(%player)))
 			{
-				%minigame.centerprintall("<font:Impact:40>\c3All" SPC $EventideRitualAmount SPC "\c3rituals have been placed!",3);
+				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
 	
 				for(%i = 0; %i < %minigame.numMembers; %i++) 
 				if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
