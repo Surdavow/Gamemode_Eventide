@@ -27,9 +27,9 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	rechargeRate = 0.3;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.93;
-	maxBackwardSpeed = 3.96;
-	maxSideSpeed = 5.94;
+	maxForwardSpeed = 4;
+	maxBackwardSpeed = 2;
+	maxSideSpeed = 3;
 };
 
 function PlayerRender::onTrigger(%this, %obj, %trig, %press) 
