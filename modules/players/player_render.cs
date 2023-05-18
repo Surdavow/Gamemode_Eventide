@@ -7,8 +7,8 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	showEnergyBar = false;
 	cameramaxdist = 4;
 
-	killerChaseLvl1Music = "musicData_OUT_SkullWolfNear";
-	killerChaseLvl2Music = "musicData_OUT_SkullWolfChase";
+	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
+	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
 
 	killeridlesound = "";
 	killeridlesoundamount = 9;
