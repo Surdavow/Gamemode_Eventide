@@ -142,10 +142,13 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 			case 0:	%ray = containerRayCast(%obj.getEyePoint(), vectoradd(%obj.getEyePoint(),vectorscale(%obj.getEyeVector(),5*getWord(%obj.getScale(),2))),$TypeMasks::FxBrickObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType,%obj);
 					if(isObject(%ray) && (%ray.getClassName() $= "Player" || %ray.getClassName() $= "AIPlayer") && %ray.getdataBlock().isDowned && !isObject(%obj.getMountedImage(0)))
 					{
-						%obj.isSaving = %ray;
-						%obj.playthread(2,"armReadyRight");
-						%ray.isBeingSaved = true;
-						%this.SaveVictim(%obj,%ray,%press);
+						if(!%ray.isBeingSaved)
+						{
+							%obj.isSaving = %ray;
+							%obj.playthread(2,"armReadyRight");
+							%ray.isBeingSaved = true;
+							%this.SaveVictim(%obj,%ray,%press);
+						}
 					}
 			case 4: if(%obj.isSkinwalker && %obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
 					PlayerSkinwalker.monstertransform(%obj,true);

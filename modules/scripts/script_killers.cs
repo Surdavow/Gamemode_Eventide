@@ -4,7 +4,8 @@ function KillerSpawnMessage(%obj)
 
 	if(%obj.firstMessageSpawn) return;
 	
-	switch(getRandom(1,5))
+	%random = getRandom(1,5);
+	switch(%random)
 	{
 		case 1: %message = "Prepare to face the hunter hungering for fury!";
 		case 2: %message = "Prepare to face the fury of the relentless slayer!";
