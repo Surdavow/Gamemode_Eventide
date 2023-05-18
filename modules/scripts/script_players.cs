@@ -146,8 +146,6 @@ function GameConnection::Escape(%client)
 	if(strlwr(%client.slyrTeam.name) !$= "survivors") return %client.centerprint("Only survivors can escape the map!",1);
 
 	%client.escaped = true;
-	%client.camera.setMode("Spectator",%client.player);
-	%client.setcontrolobject(%client.camera);
 	
 	for(%i = 0; %i < %client.slyrTeam.numMembers; %i++)
 	{
@@ -155,8 +153,9 @@ function GameConnection::Escape(%client)
 		if(isObject(%members = %client.slyrTeam.member[%i]) && isObject(%members.player)) %living++;
 	}
 	
-
 	%client.player.delete();
+	%client.camera.setMode("Spectator",%client);
+	%client.setcontrolobject(%client.camera);	
 	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
 	%client.lives = 0;
 
