@@ -53,7 +53,7 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
             case "item":    if(%itemcount++ < 6) switch(getRandom(1,3))
                             {
                                 case 1: %brick.setItem("CRadioItem");
-                                case 2: %brick.setItem("Rope");
+                                case 2: %brick.setItem("ZombieMedpackItem");
                                 case 3: %brick.setItem("SodaItem");		    
                             }
 
