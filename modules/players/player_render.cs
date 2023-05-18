@@ -39,7 +39,10 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 	switch(%trig)
 	{
 		case 0:
-		case 4: if(!%obj.isInvisible) if(!isEventPending(%obj.disappearsched)) %this.disappear(%obj,1);				
+		case 4: if(!%obj.isInvisible)
+				{ 
+					if(!isEventPending(%obj.disappearsched)) %this.disappear(%obj,1);					
+				}
 				else 
 				{
 					cancel(%obj.reappearsched);
