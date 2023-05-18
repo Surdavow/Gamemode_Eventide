@@ -280,7 +280,12 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 
 	if(isObject(%client = %obj.client)) %obj.ghostclient = %client;
 
-	if(%obj.markedforRenderDeath) %obj.Prepperizer();
+	if(%obj.markedforRenderDeath) 
+	{
+		serverPlay3d("render_kill_sound",%obj.getPosition());
+		if(isObject(%client)) %client.play2D("render_kill_sound");
+		%obj.Prepperizer();
+	}
 
 	if(isObject(EventideShapeGroup) && EventideShapeGroup.getCount() >= $EventideRitualAmount) return;
 
