@@ -4,6 +4,7 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 
 	firstpersononly = false;
 	thirdpersononly = true;
+	showEnergyBar = false;
 	cameramaxdist = 4;
 
 	killerChaseLvl1Music = "musicData_OUT_RenderNear";
@@ -97,7 +98,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 
 	if(%obj.lastSearch < getSimTime())
 	{
-		%obj.lastSearch = getSimTime()+250;
+		%obj.lastSearch = getSimTime()+100;
 
 		if(isObject(ClientGroup))
 		for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i)))
