@@ -20,7 +20,6 @@ function brickEventideEventCaller::onloadPlant(%this, %obj)
 }
 
 function brickEventideEventCaller::onRemove(%this, %obj)
-{	
-	$EventideEventCaller = "";
+{
 	Parent::onRemove(%this,%obj);
 }
