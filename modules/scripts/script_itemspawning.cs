@@ -46,11 +46,12 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                                 %rrl--;
                             }                      
 
-            case "item":    if(%itemcount++ < 6) switch(getRandom(1,3))
+            case "item":    if(%itemcount++ < 6) switch(getRandom(1,4))
                             {
                                 case 1: %brick.setItem("CRadioItem");
                                 case 2: %brick.setItem("ZombieMedpackItem");
-                                case 3: %brick.setItem("SodaItem");		    
+                                case 3: %brick.setItem("SodaItem");
+                                case 4: %brick.setItem("FlareGunItem");
                             }
 
             case "weapon":  if(%weaponcount++ < 6) switch(getRandom(1,8))
@@ -61,8 +62,7 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                                 case 4: %brick.setItem("sm_foldingChairItem");
                                 case 5: %brick.setItem("sm_poolCueItem");
                                 case 6: %brick.setItem("bearTrapItem");
-                                case 7: %brick.setItem("sm_chairItem");
-                                case 8: %brick.setItem("FlareGunItem");
+                                case 7: %brick.setItem("sm_chairItem");                                
                             }
         }
 
