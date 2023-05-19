@@ -116,10 +116,11 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 
 	%obj.client.setControlObject(%obj.client.camera);
 	%obj.client.camera.setMode("Corpse",%obj);
+	%obj.stunned = 1;
 						
 	%obj.client.schedule(2000,setControlObject,%obj);
-	%obj.client.camera.schedule(2000,setMode,"Observer",%obj);
-	
+	%obj.schedule(2000,%obj.stunned = 0);
+	%obj.client.camera.schedule(2000,setMode,"Observer",%obj);	
 	
 	%obj.victim.killer = 0;
 	%obj.victim = 0;
