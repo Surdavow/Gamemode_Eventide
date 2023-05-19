@@ -215,7 +215,7 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 						%source.lastdamage = getsimtime();
 					}
 
-					if(%source.ChokeUpCount > 3)
+					if(%source.ChokeUpCount > 5)
 					{
 						%end.playaudio(0,"norm_cough" @ getrandom(1,3) @ "_sound");
 						%end.playthread(2,"plant");								
