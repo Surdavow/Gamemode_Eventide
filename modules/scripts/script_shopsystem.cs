@@ -139,13 +139,17 @@ function BuyTitle(%client,%menu,%option)
 {
     switch(%option)
     {
-        case 0: if(!%client.canChangeTitle)
+        case 0: if(%client.canChangeTitle)
                 {                    
-                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    commandToClient(%client, 'messageboxOK', "Nope", "You have this already!");                    
                     return;
                 }
         
-                if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title.");                    
+                if(%client.score < 25)
+                {
+                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    return;
+                }
                 else 
                 {
                     commandToClient(%client, 'messageboxOK', "Success!", "Use the /st command to change your title!");
@@ -155,13 +159,17 @@ function BuyTitle(%client,%menu,%option)
 
                 return;
 
-        case 1: if(!%client.canChangeTitleBitmap)
+        case 1: if(%client.canChangeTitleBitmap)
                 {                    
-                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    commandToClient(%client, 'messageboxOK', "Nope", "You have this already!");
                     return;
                 }
         
-                if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title bitmap.");
+                if(%client.score < 50)
+                {
+                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    return;
+                }
                 else 
                 {
                     commandToClient(%client, 'messageboxOK', "Success!", "Use the /st bitmap command to change your title!");
@@ -171,13 +179,17 @@ function BuyTitle(%client,%menu,%option)
 
                 return;
 
-        case 2: if(!%client.canChangeTitleColor)
+        case 2: if(%client.canChangeTitleColor)
                 {                    
-                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    commandToClient(%client, 'messageboxOK', "Nope", "You have this already!");
                     return;
                 }
         
-                if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title color.");
+                if(%client.score < 25)
+                {
+                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    return;
+                }                
                 else 
                 {
                     commandToClient(%client, 'messageboxOK', "Success!", "Use the /st color command to change your title color! Make sure it's HEX!");
@@ -187,9 +199,9 @@ function BuyTitle(%client,%menu,%option)
 
                 return;
 
-        case 3: if(!%client.canChangeTitleFont)
+        case 3: if(%client.canChangeTitleFont)
                 {                    
-                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    commandToClient(%client, 'messageboxOK', "Nope", "You have this already!");
                     return;
                 }
         
