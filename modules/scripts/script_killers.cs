@@ -59,6 +59,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 															{
 																if(isObject(%hit.client)) 
 																{
+																	%obj.stunned = true;
 																	%hit.client.setControlObject(%hit.client.camera);
 																	%hit.client.camera.setMode("Corpse",%hit);
 																}
@@ -93,6 +94,14 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 															%obj.playthread(3,"plant");
 															%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
 															%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
+
+															if(isObject(%hit.client)) 
+															{
+																%hit.client.setControlObject(%hit.client.camera);
+																%hit.client.camera.setMode("Corpse",%hit);
+																%hit.client.setdead(1);
+															}
+
 															%hit.schedule(50,delete);
 															return;
 														}
