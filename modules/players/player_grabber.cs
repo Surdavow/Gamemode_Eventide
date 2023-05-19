@@ -114,16 +114,12 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 		case "Player":	%obj.victim.client.schedule(100,setControlObject,%obj.victim);
 	}
 
-	switch$(%obj.getClassName())
-	{
-		case "AIPlayer":	
-
-		case "Player":	%obj.client.setControlObject(%obj.client.camera);
-						%obj.client.camera.setMode("Corpse",%obj);
-
-						%obj.client.schedule(2000,setControlObject,%obj);
-						%obj.client.camera.schedule(2000,setMode,"Observer",%obj);
-	}	
+	%obj.client.setControlObject(%obj.client.camera);
+	%obj.client.camera.setMode("Corpse",%obj);
+						
+	%obj.client.schedule(2000,setControlObject,%obj);
+	%obj.client.camera.schedule(2000,setMode,"Observer",%obj);
+	
 	
 	%obj.victim.killer = 0;
 	%obj.victim = 0;
