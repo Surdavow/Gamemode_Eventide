@@ -35,28 +35,22 @@ datablock ShapeBaseImageData(CRadioImage)
 	stateSequence[3] = "Ready";
 };
 
-function CRadioImage::onMount(%t,%o,%s)
-{
-	Parent::onMount(%t,%o,%s);
-	
-	%o.RadioChannel = (%o.RadioChannel+1) % ($Pref::Server::ChatMod::radioNumChannels);
+function CRadioImage::onMount(%this,%obj,%slot)
+{	
+	%obj.RadioChannel = (%obj.RadioChannel+1) % ($Pref::Server::ChatMod::radioNumChannels);
 
-	for(%i = 0; %i <= %o.getDataBlock().maxTools; %i++)
-	if(%o.tool[%i] $= %t.item.getID()) %itemslot = %i;
+	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
+	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
 	
-	if($Pref::Server::ChatMod::radioNumChannels > 1)
+	%obj.radioEquipped = true;
+	%obj.stopAudio(3);
+	%obj.playaudio(3,"radio_change_sound");
+	%obj.client.centerPrint("\c4Radio equipped!",2);
+
+	if(isObject(%obj.client))
 	{
-		if(isObject(%o.client)) %o.client.centerPrint("\c4Radio equipped!",2);
-
-		%o.radioEquipped = true;
-		%o.stopAudio(3);
-		%o.playaudio(3,"radio_change_sound");
-
-		if(isObject(%o.client))
-		{
-			%o.tool[%itemslot] = 0;
-			messageClient(%o.client,'MsgItemPickup','',%itemslot,0);
-		}
-		if(isObject(%o.getMountedImage(%t.mountPoint))) %o.unmountImage(%t.mountPoint);		
+		%obj.tool[%itemslot] = 0;
+		messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
 	}
+	if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);		
 }
