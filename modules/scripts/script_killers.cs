@@ -57,7 +57,11 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 														{
 															if(%hit.getDamagePercent() > 0.5)
 															{
-																if(isObject(%hit.client)) %hit.client.setControlObject(%hit.client.camera);
+																if(isObject(%hit.client)) 
+																{
+																	%hit.client.setControlObject(%hit.client.camera);
+																	%hit.client.camera.setMode("Corpse",%hit);
+																}
 																%obj.victim = %hit;
 																%obj.victimreplicatedclient = %hit.client;																
 																%obj.playthread(1,"eat");
