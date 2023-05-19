@@ -126,7 +126,7 @@ new ScriptObject(EventideTitlesShopMenu)
     menuFunction[1] = "BuyTitle";    
     menuOption[2] = "Bitmaps - 50 Points";
     menuFunction[2] = "BuyTitle";
-    menuOption[3] = "Font - 50";
+    menuOption[3] = "Font - 50 Points";
     menuFunction[3] = "BuyTitle";    
     menuOption[4] = "Return";
     menuFunction[4] = "returnToMainShopMenu";
