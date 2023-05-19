@@ -201,11 +201,11 @@ function PlayerRender::Prepperizer(%this,%obj)
 			
 			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
 			{				
-				%closeness = 1/(VectorDist(%obj.getPosition(),%player.getPosition())*0.125);
+				%closeness = 1/(VectorDist(%obj.getPosition(),%player.getPosition())*0.25);
 				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
 				%player.markedforRenderDeath = true;
 				%client.play2d("render_blind_sound");
-				%player.setWhiteOut((%closeness*0.1)+%player.getdamagepercent()*0.25);
+				%player.setWhiteOut((%closeness*0.1)+%player.getdamagepercent()*0.375);
 			}
 		}		
 	}
