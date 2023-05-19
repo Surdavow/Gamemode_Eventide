@@ -281,17 +281,17 @@ new ScriptObject(EventideSetTitleFontMenu)
     isCenterprintMenu = 1;
     menuName = "Title - Set Font";
 
-    menuOption[0] = "Impact";
+    menuOption[0] = "<font:impact:25>\c6Impact";
     menuFunction[0] = "EventideSetCustomFont";
-    menuOption[1] = "Comic Sans MS";
+    menuOption[1] = "<font:Comic Sans MS:25>\c6Comic Sans MS";
     menuFunction[1] = "EventideSetCustomFont";
-    menuOption[2] = "Arial";
+    menuOption[2] = "<font:Arial:25>\c6Arial";
     menuFunction[2] = "EventideSetCustomFont";    
-    menuOption[3] = "Constantia";
+    menuOption[3] = "<font:Constantia:25>\c6Constantia";
     menuFunction[3] = "EventideSetCustomFont";
-    menuOption[4] = "Georgia";
+    menuOption[4] = "<font:Georgia:25>\c6Georgia";
     menuFunction[4] = "EventideSetCustomFont";
-    menuOption[5] = "Courier New";
+    menuOption[5] = "<font:Courier New:25>\c6Courier New";
     menuFunction[5] = "EventideSetCustomFont";
     menuOption[6] = "Exit";
     menuFunction[6] = "exitCenterprintMenu";
