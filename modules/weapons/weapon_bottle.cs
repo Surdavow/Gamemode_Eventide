@@ -195,13 +195,13 @@ datablock ShapeBaseImageData(sm_bottleImage)
 
 function sm_stunImage::onMount(%this,%obj)
 {
-	%obj.schedule(1000,unmountImage,2);
+	%obj.schedule(2000,unmountImage,2);
 	%obj.setactionthread("sit",1);
 
 	switch$(%obj.getclassName())
 	{
 		case "Player": %obj.client.setControlObject(%obj.client.camera);
-						%obj.client.camera.setMode("Corpse",%obj);
+						%obj.client.camera.setMode("Spectator",%obj);
 		case "AIPlayer": %obj.stopholeloop();
 	}
 }
