@@ -15,7 +15,9 @@ package Eventide_MainPackage
 
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
 	{		
-		if(isObject(%client = %obj.getControllingClient ()) && isObject(%player = %client.Player) && %player.stunned) return;		
+		if(isObject(%client = %obj.getControllingClient ()) && isObject(%player = %client.Player)) 
+		if(%player.stunned) return;
+		
 		Parent::onTrigger (%this, %obj, %trigger, %state);
 	}
 
