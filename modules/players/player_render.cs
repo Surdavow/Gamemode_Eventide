@@ -5,7 +5,7 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	firstpersononly = true;
 
 	showEnergyBar = true;
-	rechargeRate = 0.125;
+	rechargeRate = 0.375;
 
 	killerChaseLvl1Music = "";
 	killerChaseLvl2Music = "";
