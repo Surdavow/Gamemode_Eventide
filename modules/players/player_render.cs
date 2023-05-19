@@ -250,7 +250,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 		%obj.setmaxforwardspeed(%this.maxForwardSpeed);
 	}
 
-	%alpha = mClampF(%alpha+0.2,0,1);		
+	%alpha = mClampF(%alpha+0.25,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 	%obj.setTempSpeed(0.375);
 	if(%alpha == 1) 
