@@ -12,6 +12,13 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 
 package Eventide_MainPackage
 {	
+
+	function Observer::onTrigger (%this, %obj, %trigger, %state)
+	{		
+		if(isObject(%client = %obj.getControllingClient ()) && isObject(%player = %client.Player) && %player.stunned) return;		
+		Parent::onTrigger (%this, %obj, %trigger, %state);
+	}
+
 	function Player::Pickup(%obj,%item)
 	{		
 		%parent = Parent::Pickup(%obj,%item);

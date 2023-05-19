@@ -197,17 +197,19 @@ function sm_stunImage::onMount(%this,%obj)
 {
 	%obj.schedule(2000,unmountImage,2);
 	%obj.setactionthread("sit",1);
+	%obj.stunned = 1;
 
 	switch$(%obj.getclassName())
 	{
 		case "Player": %obj.client.setControlObject(%obj.client.camera);
-						%obj.client.camera.setMode("Spectator",%obj);
+						%obj.client.camera.setMode("Corpse",%obj);
 		case "AIPlayer": %obj.stopholeloop();
 	}
 }
 
 function sm_stunImage::onunMount(%this,%obj)
 {
+	%obj.stunned = 0;
 	%obj.playThread(3,"undo");
 	switch$(%obj.getclassName())
 	{
