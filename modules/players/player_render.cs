@@ -5,7 +5,7 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	firstpersononly = true;
 
 	showEnergyBar = true;
-	rechargeRate = 0.375;
+	rechargeRate = 0.6;
 
 	killerChaseLvl1Music = "";
 	killerChaseLvl2Music = "";
@@ -238,7 +238,7 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 	{
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);
-		%obj.setmaxforwardspeed(15);
+		%obj.setTempSpeed(2.5);
 		%obj.isInvisible = true;	
 		return;
 	}
@@ -264,7 +264,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 	if(%alpha == 1) 
 	{
-		%obj.setTempSpeed(0);
+		%obj.setTempSpeed(0.1);
 		%this.EventideAppearance(%obj);
 		%this.Prepperizer(%obj);
 		%obj.setmaxforwardspeed(1);

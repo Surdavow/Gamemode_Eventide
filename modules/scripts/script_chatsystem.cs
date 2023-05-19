@@ -20,7 +20,7 @@ function ServerCmdChatHelp(%cl)
 function Chatmod_resetRadioChannels()
 {
 	for (%i = 0; %i < clientGroup.getCount(); %i++)
-	if(isObject(%client = clientGroup.getObject(%i)) && isObject(%player = %client.player) && isObject(%player.getMountedImage(0)) && %player.getMountedImage(0).getName() $= "CRadioImage")
+	if(isObject(%client = clientGroup.getObject(%i)) && isObject(%player = %client.player) && %player.radioEquipped)
 	{
 		%client.centerPrint("\c5More channels are being broadcasted! Check what channels are available.",4);
 		%player.playaudio(3,"radio_change_sound");
@@ -160,8 +160,7 @@ function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
 	if(isObject(%player = %client.player) && isObject(%player.victimreplicatedclient)) %tempclient = %player.victimreplicatedclient;
 	else %tempclient = %client;
 
-	if(getSubStr(%message, 0, 1) $= ".") 
-	%message = strreplace(%message, getSubStr(%message, 0, 1), "");	
+	if(getSubStr(%message, 0, 1) $= ".") %message = strreplace(%message, getSubStr(%message, 0, 1), "");	
 
 	%pre = "\c4[Channel "@ (%client.player.RadioChannel+1) @"]";	
 
@@ -172,7 +171,7 @@ function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
 	for(%i = 0; %i < clientGroup.getCount(); %i++)
 	{
 		if(isObject(%target = clientGroup.getObject(%i)) && isObject(%target.player))
-		if(%target.player.RadioChannel == %client.player.RadioChannel && %target.player.RadioOn) 
+		if(%target.player.RadioChannel == %client.player.RadioChannel && %target.player.radioEquipped) 
 		{
 			if(%isTeamMessage && isObject(Slayer) && %client.getTeam() $= %target.getTeam())
 			{
@@ -207,9 +206,9 @@ package Eventide_ChatSystem
 				%client.player.playThread(3,talk);
 				%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
 
-				if(%client.player.RadioOn) ChatMod_RadioMessage(%client, %message, true);
+				if(%client.player.radioEquipped) ChatMod_RadioMessage(%client, %message, true);
 				if(isObject(%client.minigame)) ChatMod_TeamLocalChat(%client, %message);
-				else if(!%client.player.RadioOn) messageClient(%client,'',"\c5You must be in a minigame to team chat.");
+				else if(!%client.player.radioEquipped) messageClient(%client,'',"\c5You must be in a minigame to team chat.");
 			}
 			else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
 			%client.lastMessageSent = %client;

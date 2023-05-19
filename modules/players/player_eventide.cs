@@ -33,9 +33,9 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	maxForwardSpeed = 0;
    	maxBackwardSpeed = 0;
    	maxSideSpeed = 0;
-   	maxForwardCrouchSpeed = 0;
-   	maxBackwardCrouchSpeed = 0;
-   	maxSideCrouchSpeed = 0;
+   	maxForwardCrouchSpeed = 1.5;
+   	maxBackwardCrouchSpeed = 1.5;
+   	maxSideCrouchSpeed = 1.5;
    	jumpForce = 0;
 	isDowned = true;
 	uiName = "";
