@@ -219,7 +219,7 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 					{
 						%end.playaudio(0,"norm_cough" @ getrandom(1,3) @ "_sound");
 						%end.playthread(2,"plant");								
-						%end.damage(%source, %end.getposition(), %end.getdataBlock().maxDamage/10, $DamageType::sourceConstrict);		
+						%end.damage(%source, %end.getposition(), %end.getdataBlock().maxDamage/12.5, $DamageType::sourceConstrict);		
 					}
 				}
 			}			
