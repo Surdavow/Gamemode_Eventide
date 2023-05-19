@@ -197,7 +197,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 
 			%line = vectorNormalize(vectorSub(%obj.getPosition(),%player.getEyePoint()));
 			%dot = vectorDot(%player.getEyeVector(), %line);
-			%obscure = containerRayCast(%player.getEyePoint(),%obj.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			%obscure = containerRayCast(%player.getEyePoint(),%obj.getPosition(),$TypeMasks::FxBrickObjectType, %obj);
 			
 			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
 			{				
