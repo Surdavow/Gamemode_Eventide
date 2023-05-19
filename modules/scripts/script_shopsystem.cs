@@ -124,9 +124,9 @@ new ScriptObject(EventideTitlesShopMenu)
     menuFunction[0] = "BuyTitle";
     menuOption[1] = "Color - 25 points";
     menuFunction[1] = "BuyTitle";    
-    menuOption[2] = "Bitmaps";
+    menuOption[2] = "Bitmaps - 50 Points";
     menuFunction[2] = "BuyTitle";
-    menuOption[3] = "Font";
+    menuOption[3] = "Font - 50";
     menuFunction[3] = "BuyTitle";    
     menuOption[4] = "Return";
     menuFunction[4] = "returnToMainShopMenu";
@@ -139,7 +139,13 @@ function BuyTitle(%client,%menu,%option)
 {
     switch(%option)
     {
-        case 0: if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title.");                    
+        case 0: if(!%client.canChangeTitle)
+                {                    
+                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    return;
+                }
+        
+                if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title.");                    
                 else 
                 {
                     commandToClient(%client, 'messageboxOK', "Success!", "Use the /st command to change your title!");
@@ -149,7 +155,13 @@ function BuyTitle(%client,%menu,%option)
 
                 return;
 
-        case 1: if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title bitmap.");
+        case 1: if(!%client.canChangeTitleBitmap)
+                {                    
+                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    return;
+                }
+        
+                if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title bitmap.");
                 else 
                 {
                     commandToClient(%client, 'messageboxOK', "Success!", "Use the /st bitmap command to change your title!");
@@ -159,7 +171,13 @@ function BuyTitle(%client,%menu,%option)
 
                 return;
 
-        case 2: if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title color.");
+        case 2: if(!%client.canChangeTitleColor)
+                {                    
+                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    return;
+                }
+        
+                if(%client.score < 25) messageClient(%client, '', "\c0You don't have enough to buy a title color.");
                 else 
                 {
                     commandToClient(%client, 'messageboxOK', "Success!", "Use the /st color command to change your title color! Make sure it's HEX!");
@@ -169,7 +187,13 @@ function BuyTitle(%client,%menu,%option)
 
                 return;
 
-        case 3: if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title Font.");
+        case 3: if(!%client.canChangeTitleFont)
+                {                    
+                    commandToClient(%client, 'messageboxOK', "Fail!", "Not enough!");
+                    return;
+                }
+        
+                if(%client.score < 50) messageClient(%client, '', "\c0You don't have enough to buy a title Font.");
                 else 
                 {
                     commandToClient(%client, 'messageboxOK', "Success!", "Use the /st font command to change your title Font!");
@@ -185,7 +209,7 @@ function servercmdst(%client,%type,%input)
 {
     switch$(%type)
     {
-        case "title":   if(!%client.canChangeTitle) return;
+        case "title":   if(!%client.canChangeTitle) return messageClient(%client, '', "\c0You havent purchased this ability!");
 
                         %allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
 
@@ -207,7 +231,7 @@ function servercmdst(%client,%type,%input)
                         %client.customtitle = %input;
                         return;
 
-        case "color":   if(!%client.canChangeTitleColor) return;
+        case "color":   if(!%client.canChangeTitleColor) return messageClient(%client, '', "\c0You havent purchased this ability!");
         
                         %allowed = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -227,12 +251,12 @@ function servercmdst(%client,%type,%input)
                         %client.customtitlecolor = %input;
                         return;
                 
-        case "font":    if(!%client.canChangeTitleFont) return;
+        case "font":    if(!%client.canChangeTitleFont) return messageClient(%client, '', "\c0You havent purchased this ability!");
         
                         %client.startCenterprintMenu(EventideSetTitleFontMenu);
                         return;
 
-        case "Bitmap":  if(!%client.canChangeTitleBitmap) return;
+        case "Bitmap":  if(!%client.canChangeTitleBitmap) return messageClient(%client, '', "\c0You havent purchased this ability!");
                         
                         %client.startCenterprintMenu(EventideSetTitleBitmapMenu);
                         return;                        
