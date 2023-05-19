@@ -201,7 +201,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 			
 			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
 			{				
-				%closeness = 1/(VectorDist(%obj.getPosition(),%player.getPosition())*0.8);
+				%closeness = 1*(VectorDist(%obj.getPosition(),%player.getPosition())*0.1);
 				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,20), $DamageType::Default);
 				%player.markedforRenderDeath = true;
 				%client.play2d("render_blind_sound");
