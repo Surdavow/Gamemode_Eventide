@@ -3,7 +3,9 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	uiName = "Render Player";
 
 	firstpersononly = true;
-	showEnergyBar = false;
+
+	showEnergyBar = true;
+	rechargeRate = 0.125;
 
 	killerChaseLvl1Music = "";
 	killerChaseLvl2Music = "";
@@ -46,14 +48,19 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 				%p.explode();
 				
 				
-		case 4: if(!%obj.isInvisible)
+		case 4: if(!%obj.isInvisible && %obj.getEnergyLevel() == %this.maxEnergy)
 				{ 
-					if(!isEventPending(%obj.disappearsched)) %this.disappear(%obj,1);					
+					if(!isEventPending(%obj.disappearsched)) 
+					{
+						%this.disappear(%obj,1);
+						%obj.setEnergylevel(0);
+					}
 				}
 				else 
 				{
 					cancel(%obj.reappearsched);
 					%this.reappear(%obj,0);
+					if(!isEventPending(reappearsched)) %obj.setEnergylevel(0);										
 				}
 	}	
 }
