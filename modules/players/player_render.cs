@@ -259,12 +259,12 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 
 	%alpha = mClampF(%alpha+0.15,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
-	%obj.setTempSpeed(0.1);
 	if(%alpha == 1) 
 	{
 		%obj.setTempSpeed(0);
 		%this.EventideAppearance(%obj);
 		%this.Prepperizer(%obj);
+		%obj.setmaxforwardspeed(1);
 		return;
 	}
 
