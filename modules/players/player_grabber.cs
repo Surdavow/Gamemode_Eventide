@@ -105,7 +105,7 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	%obj.victim.playthread(0,"root");
 	%obj.playthread(3,"leftrecoil");
 	%obj.victim.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.005"),25));				
-	%obj.victim.position = vectorAdd(%obj.getEyePoint(),"0 0 -1.25");
+	%obj.victim.position = vectorAdd(%obj.getWorldBoxCenter(),"0 0 -0.25");
 
 	switch$(%obj.victim.getClassName())
 	{
