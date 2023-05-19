@@ -205,7 +205,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,20), $DamageType::Default);
 				%player.markedforRenderDeath = true;
 				%client.play2d("render_blind_sound");
-				%player.setWhiteOut((%closeness*0.1)+%player.getdamagepercent()*0.375);
+				%player.setWhiteOut(%player.getdamagepercent()*0.25);
 			}
 		}		
 	}
