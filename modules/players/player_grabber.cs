@@ -97,8 +97,7 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 function PlayerGrabber::releaseVictim(%this,%obj)
 {
 	if(!isObject(%obj) || !isObject(%obj.victim)) return;
-
-	%obj.mountimage("sm_stunImage",2);
+	
 	%obj.ChokeAmount = 0;
 	%obj.setEnergyLevel(0);
 	%obj.victim.unmount();
@@ -117,6 +116,7 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	
 	%obj.victim.killer = 0;
 	%obj.victim = 0;
+	%obj.schedule(50,mountimage,"sm_stunImage",2);
 }
 
 function PlayerGrabber::EventideAppearance(%this,%obj,%client)
