@@ -42,6 +42,7 @@ function openOptionShop(%client,%menu,%option)
         case 0: %type = "EventideHatShopMenu";
         case 1: %type = "EventideEffectsShopMenu";
         case 2: %type = "EventideTitlesShopMenu";
+        case 3: %type = "EventideInstrumentsShopMenu";
     }
 
     %client.startCenterprintMenu(%type);
@@ -59,8 +60,10 @@ new ScriptObject(EventideShopMainMenu)
     menuFunction[1] = "openOptionShop";    
     menuOption[2] = "Custom Title";
     menuFunction[2] = "openOptionShop";
-    menuOption[3] = "Exit";
-    menuFunction[3] = "exitCenterprintMenu";    
+    menuOption[3] = "Instruments";
+    menuFunction[3] = "openOptionShop";
+    menuOption[4] = "Exit";
+    menuFunction[4] = "exitCenterprintMenu";    
 
     justify = "<just:right>";
     menuOptionCount = 4;
