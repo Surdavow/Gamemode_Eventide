@@ -197,7 +197,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
 				%player.markedforRenderDeath = true;
 				%client.play2d("render_blind_sound");
-				%player.setWhiteOut((%closeness*0.25)+%player.getdamagepercent()*0.25);
+				%player.setWhiteOut((%closeness*0.1)+%player.getdamagepercent()*0.25);
 			}
 		}		
 	}
@@ -228,7 +228,7 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 	{
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);
-		%obj.setmaxforwardspeed(10);
+		%obj.setmaxforwardspeed(15);
 		%obj.isInvisible = true;	
 		return;
 	}
@@ -250,9 +250,9 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 		%obj.setmaxforwardspeed(%this.maxForwardSpeed);
 	}
 
-	%alpha = mClampF(%alpha+0.25,0,1);		
+	%alpha = mClampF(%alpha+0.15,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
-	%obj.setTempSpeed(0.375);
+	%obj.setTempSpeed(0.1);
 	if(%alpha == 1) 
 	{
 		%obj.setTempSpeed(1);
@@ -261,5 +261,5 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 		return;
 	}
 
-	%obj.reappearsched = %this.schedule(20, reappear, %obj, %alpha);	
+	%obj.reappearsched = %this.schedule(33, reappear, %obj, %alpha);	
 }
