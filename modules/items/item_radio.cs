@@ -37,6 +37,8 @@ datablock ShapeBaseImageData(CRadioImage)
 
 function CRadioImage::onMount(%this,%obj,%slot)
 {	
+	if(!isObject(%obj) || %obj.radioEquipped) return;
+
 	%obj.RadioChannel = (%obj.RadioChannel+1) % ($Pref::Server::ChatMod::radioNumChannels);
 
 	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
