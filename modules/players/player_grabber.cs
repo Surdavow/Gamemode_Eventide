@@ -113,10 +113,20 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 							%obj.victim.hRunAwayFromPlayer(%obj);
 		case "Player":	%obj.victim.client.schedule(100,setControlObject,%obj.victim);
 	}
+
+	switch$(%obj.getClassName())
+	{
+		case "AIPlayer":	%obj.client.setControlObject(%obj.client.camera);
+							%obj.client.camera.setMode("Corpse",%obj);
+
+							%obj.client.schedule(2000,setControlObject,%obj);
+							%obj.client.camera.schedule(2000,setMode,"Observer",%obj);
+							
+		case "Player":	%obj.client.schedule(100,setControlObject,%obj.victim);
+	}	
 	
 	%obj.victim.killer = 0;
 	%obj.victim = 0;
-	%obj.schedule(50,mountimage,"sm_stunImage",2);
 }
 
 function PlayerGrabber::EventideAppearance(%this,%obj,%client)
