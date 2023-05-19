@@ -104,8 +104,7 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	if(!isObject(%obj) || !isObject(%obj.victim)) return;
 	
 	%obj.ChokeAmount = 0;
-	%obj.victim.stunned = false;
-	%obj.stunned = true;
+	%obj.victim.stunned = false;	
 	%obj.setEnergyLevel(0);
 	%obj.victim.unmount();
 	%obj.victim.setarmthread("look");
@@ -121,16 +120,30 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 		case "Player":	%obj.victim.client.schedule(100,setControlObject,%obj.victim);
 	}
 	
-	%obj.client.schedule(100,setControlObject,%obj.client.camera);
-	%obj.client.camera.schedule(100,setMode,"Corpse",%obj);
-							
-	//%obj.schedule(2000,%obj.stunned = false);
-	%obj.client.schedule(2000,setControlObject,%obj);
-	%obj.client.camera.schedule(2000,setMode,"Observer",%obj);
+	%this.setStun(%obj,true);
+	%this.schedule(2000,setStun,%obj,false);
 	
 	%obj.victim.killer = 0;
 	%obj.victim = 0;
 }
+
+function PlayerGrabber::setStun(%this,%obj,%bool)
+{
+	if(!isObject(%obj) || !isObject(%client = %obj.client)) return;
+
+	%obj.stunned = %bool;
+
+	switch(%bool)
+	{
+		case true: 	%obj.client.setControlObject(%obj.client.camera);
+					%obj.client.camera.setMode("Corpse",%obj);
+
+		case false:	%obj.client.setControlObject(%obj);
+					%obj.client.camera.setMode("Observer",%obj);
+	}
+	
+}
+
 
 function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 {
