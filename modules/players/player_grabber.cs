@@ -94,6 +94,11 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 	}
 }
 
+function PlayerGrabberNoJump::releaseVictim(%this,%obj)
+{
+	PlayerGrabber::releaseVictim(%this,%obj);
+}
+
 function PlayerGrabber::releaseVictim(%this,%obj)
 {
 	if(!isObject(%obj) || !isObject(%obj.victim)) return;
@@ -120,8 +125,8 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	%obj.client.camera.setMode("Corpse",%obj);
 							
 	%obj.schedule(2000,%obj.stunned = false);		
-	%obj.client.schedule(2000,setControlObject,%obj);	
-	%obj.client.camera.schedule(2000,setMode,"Observer",%obj);	
+	%obj.client.schedule(2000,setControlObject,%obj);
+	%obj.client.camera.schedule(2000,setMode,"Observer",%obj);
 	
 	%obj.victim.killer = 0;
 	%obj.victim = 0;
