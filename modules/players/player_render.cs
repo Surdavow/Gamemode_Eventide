@@ -255,7 +255,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	%obj.setTempSpeed(0.1);
 	if(%alpha == 1) 
 	{
-		%obj.setTempSpeed(1);
+		%obj.setTempSpeed(0);
 		%this.EventideAppearance(%obj);
 		%this.Prepperizer(%obj);
 		return;
