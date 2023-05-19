@@ -98,6 +98,7 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 {
 	if(!isObject(%obj) || !isObject(%obj.victim)) return;
 
+	%obj.mountimage("sm_stunImage",2);
 	%obj.ChokeAmount = 0;
 	%obj.setEnergyLevel(0);
 	%obj.victim.unmount();
