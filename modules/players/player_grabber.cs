@@ -99,6 +99,7 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	if(!isObject(%obj) || !isObject(%obj.victim)) return;
 	
 	%obj.ChokeAmount = 0;
+	%obj.victim.stunned = false;
 	%obj.setEnergyLevel(0);
 	%obj.victim.unmount();
 	%obj.victim.setarmthread("look");
@@ -114,12 +115,12 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 		case "Player":	%obj.victim.client.schedule(100,setControlObject,%obj.victim);
 	}
 
+	%obj.stunned = true;
 	%obj.client.setControlObject(%obj.client.camera);
-	%obj.client.camera.setMode("Corpse",%obj);
-	%obj.stunned = 1;
+	%obj.client.camera.setMode("Corpse",%obj);	
 						
-	%obj.client.schedule(2000,setControlObject,%obj);
-	%obj.schedule(2000,%obj.stunned = 0);
+	%obj.schedule(2000,%obj.stunned = false);
+	%obj.client.schedule(2000,setControlObject,%obj);	
 	%obj.client.camera.schedule(2000,setMode,"Observer",%obj);	
 	
 	%obj.victim.killer = 0;
@@ -161,6 +162,7 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 		ServerCmdUnUseTool (%obj.client);
 		%obj.victim = %col;
 		%col.killer = %obj;
+		%col.stunned = false;
 		%obj.mountObject(%col,8);
 		%col.playaudio(0,"grabber_scream_sound");
 		%col.setarmthread("activate2");
