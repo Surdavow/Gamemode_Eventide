@@ -35,8 +35,10 @@ datablock ShapeBaseImageData(CRadioImage)
 	stateSequence[3] = "Ready";
 };
 
-function CRadioImage::onRadioChange(%t,%o,%s)
+function CRadioImage::onMount(%t,%o,%s)
 {
+	Parent::onMount(%t,%o,%s);
+	
 	%o.RadioChannel = (%o.RadioChannel+1) % ($Pref::Server::ChatMod::radioNumChannels);
 
 	for(%i = 0; %i <= %o.getDataBlock().maxTools; %i++)
@@ -57,19 +59,4 @@ function CRadioImage::onRadioChange(%t,%o,%s)
 		}
 		if(isObject(%o.getMountedImage(%t.mountPoint))) %o.unmountImage(%t.mountPoint);		
 	}
-}
-function CRadioImage::onMount(%t,%o,%s)
-{
-	Parent::onMount(%t,%o,%s);
-
-	if(isObject(%o.client)) %o.client.centerPrint("\c4Click to change channels. Chat in the radio using team chat.",4);
-	%o.playaudio(3,"radio_mount_sound");
-	%o.playThread(0,"armReadyRight");	
-}
-function CRadioImage::onUnMount(%t,%o,%s)
-{
-	Parent::onUnMount(%t,%o,%s);
-	%o.RadioChannel = mFloor(%o.RadioChannel);
-	%o.playThread(0, "root");
-	%o.playaudio(3,"radio_unmount_sound");
 }

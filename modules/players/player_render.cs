@@ -49,17 +49,15 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 				
 				
 		case 4: if(!%obj.isInvisible)
-				{ 
-					if(%obj.getEnergyLevel() == %this.maxEnergy)
+				{ 					
+					if(!isEventPending(%obj.disappearsched)) 
 					{
-						if(!isEventPending(%obj.disappearsched)) 
-						{
-							%this.disappear(%obj,1);
-							%obj.setEnergylevel(0);
-						}
+						%this.disappear(%obj,1);
+						%obj.setEnergylevel(0);
 					}
+
 				}
-				else 
+				else if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{
 					cancel(%obj.reappearsched);
 					%this.reappear(%obj,0);

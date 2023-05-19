@@ -282,10 +282,12 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	Parent::onDisabled(%this,%obj);
 
 	if(isObject(%client = %obj.client)) %obj.ghostclient = %client;
-
+	
+	if(%obj.radioEquipped) serverPlay3d("radio_unmount_sound",%obj.getPosition());
+	
 	if(%obj.markedforRenderDeath) 
 	{
-		serverPlay3d("render_kill_sound",%obj.getPosition());
+		
 		if(isObject(%client)) %client.play2D("render_kill_sound");
 		%obj.Prepperizer();
 	}
