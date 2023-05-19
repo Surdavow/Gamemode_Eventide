@@ -215,11 +215,11 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 						%source.lastdamage = getsimtime();
 					}
 
-					if(%source.ChokeUpCount > 5)
+					if(%source.ChokeUpCount > 3)
 					{
 						%end.playaudio(0,"norm_cough" @ getrandom(1,3) @ "_sound");
 						%end.playthread(2,"plant");								
-						%end.damage(%source.hFakeProjectile, %end.getposition(), %end.getdataBlock().maxDamage/15, $DamageType::sourceConstrict);		
+						%end.damage(%source.hFakeProjectile, %end.getposition(), %end.getdataBlock().maxDamage/20, $DamageType::sourceConstrict);		
 					}
 				}
 			}			
@@ -241,7 +241,8 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 
 function AnglerHookRope::onRemove(%this,%obj)
 {		
-	if(isObject(%source = %obj.source)) %source.mountImage("AnglerHookImage",1);	
+	if(isObject(%source = %obj.source)) %source.mountImage("AnglerHookImage",1);
+	if(isObject(%end = %obj.end)) %end.ChokeUpCount = 0;
 }
 
 function AnglerHookProjectile::onCollision(%this,%proj,%col,%fade,%pos,%normal)
