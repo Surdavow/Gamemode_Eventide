@@ -85,7 +85,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 															}
 														}
 
-							case "PlayerSkullwolf":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
+							case "PlayerSkullwolf":	if(%hit.getdataBlock().isDowned)
 													{
 														if(%hit.getDamagePercent() > 0.5)
 														{
