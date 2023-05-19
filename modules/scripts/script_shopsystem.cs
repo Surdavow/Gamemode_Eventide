@@ -295,7 +295,7 @@ new ScriptObject(EventideSetTitleFontMenu)
     menuFunction[5] = "exitCenterprintMenu";
 
     justify = "<just:right>";
-    menuOptionCount = 5;
+    menuOptionCount = 6;
 };
 
 function EventideSetCustomFont(%client,%menu,%option)
