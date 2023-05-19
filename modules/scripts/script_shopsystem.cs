@@ -306,7 +306,7 @@ function EventideSetCustomFont(%client,%menu,%option)
         case 1: %client.customtitlefont = "Comic Sans MS";
         case 2: %client.customtitlefont = "Arial";
         case 3: %client.customtitlefont = "Constantia";
-        case 3: %client.customtitlefont = "Georgia";
+        case 4: %client.customtitlefont = "Georgia";
     }
 }
 
