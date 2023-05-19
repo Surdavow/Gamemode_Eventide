@@ -291,11 +291,13 @@ new ScriptObject(EventideSetTitleFontMenu)
     menuFunction[3] = "EventideSetCustomFont";
     menuOption[4] = "Georgia";
     menuFunction[4] = "EventideSetCustomFont";
-    menuOption[5] = "Exit";
-    menuFunction[5] = "exitCenterprintMenu";
+    menuOption[5] = "Courier New";
+    menuFunction[5] = "EventideSetCustomFont";
+    menuOption[6] = "Exit";
+    menuFunction[6] = "exitCenterprintMenu";
 
     justify = "<just:right>";
-    menuOptionCount = 6;
+    menuOptionCount = 7;
 };
 
 function EventideSetCustomFont(%client,%menu,%option)
@@ -307,6 +309,7 @@ function EventideSetCustomFont(%client,%menu,%option)
         case 2: %client.customtitlefont = "Arial";
         case 3: %client.customtitlefont = "Constantia";
         case 4: %client.customtitlefont = "Georgia";
+        case 4: %client.customtitlefont = "Courier New";
     }
 }
 
