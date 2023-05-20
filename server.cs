@@ -4,6 +4,7 @@ exec("./modules/scripts/module_scripts.cs");
 exec("./modules/sounds/module_sounds.cs");
 exec("./modules/items/module_items.cs");
 exec("./modules/players/module_players.cs");
+exec("./modules/effects/module_effects.cs");
 exec("./modules/bricks/module_bricks.cs");
 exec("./modules/weapons/module_weapons.cs");
 

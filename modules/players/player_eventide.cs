@@ -17,7 +17,11 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	maxWeapons = 3;
 	jumpDelay = 0;
 	jumpForce = 10 * 85;
-	cameramaxdist = 2.25;
+	cameramaxdist = 2;
+    cameraVerticalOffset = 1;
+    cameraHorizontalOffset = 0.75;
+    cameratilt = 0.1;
+
 	maxfreelookangle = 2.25;
 	minimpactspeed = 15;
 

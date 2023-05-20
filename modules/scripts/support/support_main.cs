@@ -13,6 +13,13 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 package Eventide_MainPackage
 {	
 
+	function GameConnection::createPlayer (%client, %spawnPoint)
+	{
+		Parent::createPlayer(%client,%spawnPoint);
+
+		if(isObject(%client.player) && isObject(%client.effect)) %client.player.mountImage(%client.effect,2);
+	}
+
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
 	{		
 		if(isObject(%client = %obj.getControllingClient ()) && isObject(%player = %client.Player)) 
