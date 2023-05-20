@@ -36,7 +36,7 @@ package Eventide_StatsLogger
 	function GameConnection::onClientEnterGame(%client)
 	{
 		parent::onClientEnterGame(%client);
-		Eventide_loadEventideStats(%client);
+		schedule(100,0,Eventide_loadEventideStats,%client);
 	}
 
 	function GameConnection::onClientLeaveGame(%client)
