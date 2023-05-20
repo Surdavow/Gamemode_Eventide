@@ -47,7 +47,7 @@ datablock ShapeBaseImageData(HeartStatusImage)
 	shapeFile = "base/data/shapes/empty.dts";
 	emap = true;
 	mountPoint = 5;
-	offset = "0 0 0";
+	offset = "0 0 -1";
 	eyeOffset = 0;
 	rotation = "0 0 0";
 	correctMuzzleVector = true;
