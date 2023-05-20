@@ -676,7 +676,6 @@ function PeggFootsteps(%obj, %lastVert)
 			%obj.getDatablock().onPeggFootstep(%obj);
 		}
 
-		// Thanks Queuenard!
 		%obj.peggstep = schedule(1000, 0, PeggFootsteps, %obj);
 		return;
 	}

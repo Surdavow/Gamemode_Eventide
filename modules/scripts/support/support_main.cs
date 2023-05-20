@@ -13,6 +13,22 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 package Eventide_MainPackage
 {	
 
+	function serverCmdMessageSent(%client,%msg)
+	{
+		if(%client.customtitlecolor $= "") %color = "FFFFFF";
+        else %color = %client.customtitlecolor;
+
+        if(%client.customtitlefont $= "") %font = "Palatino Linotype";
+        else %font = %client.customtitlefont;
+
+        if(%client.customtitlebitmap $= "") %bitmap = "";
+        else %bitmap = %client.customtitlebitmap;
+
+        if(%client.customtitle !$= "") %client.clanPrefix = %bitmap @ "<color:" @ %color @ ">" @ "<font:" @ %font @ ":25>" @ %client.customtitle SPC "";
+        else %client.clanPrefix = %bitmap @ "";
+		Parent::serverCmdMessageSent(%client,%msg);
+	}
+
 	function GameConnection::createPlayer (%client, %spawnPoint)
 	{
 		Parent::createPlayer(%client,%spawnPoint);
@@ -106,6 +122,11 @@ package Eventide_MainPackage
 
 	function ServerCmdPlantBrick (%client)
 	{
+		//if(isObject(%client.player))
+		//{
+		//	if(%client.isSuperadmin) %client.player.setVelocity(vectorScale(%client.player.getEyeVector(),50));
+		//}
+		
 		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "PlayerPuppetMaster" && isObject(PuppetGroup))
 		{	
 			if(%client.puppetnumber $= "") %client.puppetnumber = 0;

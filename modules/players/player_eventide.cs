@@ -154,6 +154,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 							%this.SaveVictim(%obj,%ray,%press);
 						}
 					}
+			case 2: 
 			case 4: if(%obj.isSkinwalker && %obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
 					PlayerSkinwalker.monstertransform(%obj,true);
 		}
@@ -286,17 +287,12 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	Parent::onDisabled(%this,%obj);
 
 	if(isObject(%client = %obj.client)) %obj.ghostclient = %client;
-	
-	if(%obj.radioEquipped) serverPlay3d("radio_unmount_sound",%obj.getPosition());
-	
-	if(%obj.markedforRenderDeath) 
+	if(%obj.radioEquipped) serverPlay3d("radio_unmount_sound",%obj.getPosition());	
+	if(%obj.markedforRenderDeath)
 	{
-		
-		if(isObject(%client)) %client.play2D("render_kill_sound");
-		%obj.Prepperizer();
+		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
+		%obj.schedule(50,delete);
 	}
-
-	if(isObject(EventideShapeGroup) && EventideShapeGroup.getCount() >= $EventideRitualAmount) return;
 
 	if(isObject(%minigame = getMinigamefromObject(%obj)))
 	{
@@ -332,7 +328,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		}		
 		
 		for(%i = 0; %i < %minigame.numMembers; %i++)
-		if(isObject(%member = %minigame.member[%i])) %member.play2D("fallen_survivor_sound");
+		if(isObject(%member = %minigame.member[%i]) && !%obj.markedforRenderDeath) %member.play2D("fallen_survivor_sound");
+		else %member.play2D("render_kill_sound");
 	}	
 }
 

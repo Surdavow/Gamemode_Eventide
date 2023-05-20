@@ -107,16 +107,6 @@ function PlayerRender::onRemove(%this,%obj)
 	if(isObject(%obj.light)) %obj.light.delete();
 }
 
-function Player::Prepperizer(%obj)
-{	
-	if(!isObject(%obj) || %obj.isInvisible) return;
-
-	%obj.PrepperizerEffect();
-	
-	cancel(%obj.Prepperizer);
-	%obj.Prepperizer = %obj.schedule(33,Prepperizer);	
-}
-
 function Player::PrepperizerEffect(%obj)
 {	
 	if(!isObject(%obj) || %obj.isInvisible) return;
@@ -174,17 +164,11 @@ function Player::PrepperizerEffect(%obj)
 		%obj.light.schedule(1000,delete);
 	}
 	else if(isObject(%obj.light)) %obj.light.delete();
-
-	if(getRandom(1,50) == 1)
-	{
-		%obj.stopaudio(3);
-		%obj.playaudio(3,"render_glitch" @ getRandom(1,4) @ "_sound");	
-	}
 }
 
 function PlayerRender::Prepperizer(%this,%obj)
 {
-	if(!isObject(%obj) || %obj.isInvisible) return;
+	if(!isObject(%obj) || %obj.isInvisible || %obj.getdataBlock() != %this) return;
 
 	if(%obj.lastSearch < getSimTime())
 	{
@@ -202,11 +186,10 @@ function PlayerRender::Prepperizer(%this,%obj)
 			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
 			{				
 				%closeness = 8/(VectorDist(%obj.getPosition(),%player.getPosition())*0.25);
-
 				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
 				%player.markedforRenderDeath = true;
 				%client.play2d("render_blind_sound");
-				%player.setWhiteOut(%player.getdamagepercent()*0.25);
+				%player.setWhiteOut((%closeness/10)+%player.getdamagepercent()*0.25);
 			}
 		}		
 	}
@@ -224,6 +207,7 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 	if(%alpha == 1)
 	{
 		cancel(%obj.Prepperizer);
+		%obj.setShapeName ("", 8564862);
 		%obj.setArmThread("look");
 		%obj.stopaudio(3);
 		%obj.playaudio(1,"render_disappear_sound");		

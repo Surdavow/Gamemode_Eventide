@@ -1,23 +1,3 @@
-package Eventide_CustomTitles
-{
-	function serverCmdMessageSent(%client,%msg)
-	{
-		if(%client.customtitlecolor $= "") %color = "FFFFFF";
-        else %color = %client.customtitlecolor;
-
-        if(%client.customtitlefont $= "") %font = "Palatino Linotype";
-        else %font = %client.customtitlefont;
-
-        if(%client.customtitlebitmap $= "") %bitmap = "";
-        else %bitmap = %client.customtitlebitmap;
-
-        if(%client.customtitle !$= "") %client.clanPrefix = %bitmap @ "<color:" @ %color @ ">" @ "<font:" @ %font @ ":25>" @ %client.customtitle SPC "";
-        else %client.clanPrefix = %bitmap @ "";
-		Parent::serverCmdMessageSent(%client,%msg);
-	}
-};
-activatepackage(Eventide_CustomTitles);
-
 function servercmdshop(%client)
 {
     %client.startCenterprintMenu(EventideShopMainMenu);
@@ -70,153 +50,83 @@ new ScriptObject(EventideShopMainMenu)
     menuOptionCount = 5;
 };
 
-if(isObject(EventideHatShopMenu)) EventideHatShopMenu.delete();
-new ScriptObject(EventideHatShopMenu)
+if(isObject(EventideInstrumentsShopMenu)) EventideInstrumentsShopMenu.delete();
+new ScriptObject(EventideInstrumentsShopMenu)
 {
     isCenterprintMenu = 1;
-    menuName = "Eventide Shop - Hats";
+    menuName = "Eventide Shop - Instruments";
 
-    menuOption[0] = "Cap";
-    menuFunction[0] = "";
-    menuOption[1] = "Fancy";
-    menuFunction[1] = "";
-    menuOption[2] = "Straw Hat";
-    menuFunction[2] = "";    
-    menuOption[3] = "Mask";
-    menuFunction[3] = "";
-    menuOption[4] = "Top";
-    menuFunction[4] = "";
-    menuOption[5] = "Return";
-    menuFunction[5] = "returnToMainShopMenu";
-
-    justify = "<just:right>";
-    menuOptionCount = 6;
-};
-
-if(isObject(EventideEffectsShopMenu)) EventideEffectsShopMenu.delete();
-new ScriptObject(EventideEffectsShopMenu)
-{
-    isCenterprintMenu = 1;
-    menuName = "Eventide Shop - Effects";
-
-    menuOption[0] = "Heart - 25 Points";
-    menuFunction[0] = "BuyEffect";
-    menuOption[1] = "Stinky - 25 Points";
-    menuFunction[1] = "BuyEffect";
-    menuOption[2] = "Confetti - 25 Points";
-    menuFunction[2] = "BuyEffect";
-    menuOption[3] = "Electric - 50 Points";
-    menuFunction[3] = "BuyEffect";
-    menuOption[4] = "Fire - 50 Points";
-    menuFunction[4] = "BuyEffect";
-    menuOption[5] = "Sparkle - 50 Points";
-    menuFunction[5] = "BuyEffect";
-    menuOption[6] = "Return";
-    menuFunction[6] = "returnToMainShopMenu";
+    menuOption[0] = "Guitar - 50 Points";
+    menuFunction[0] = "BuyInstrument";
+    menuOption[1] = "Banjo - 50 Points";
+    menuFunction[1] = "BuyInstrument";
+    menuOption[2] = "Harmonica - 50 Points";
+    menuFunction[2] = "BuyInstrument";
+    menuOption[3] = "Violin - 50 Points";
+    menuFunction[3] = "BuyInstrument";
+    menuOption[4] = "Keytar - 50 Points";
+    menuFunction[4] = "BuyInstrument";
+    menuOption[5] = "Flute - 50 Points";
+    menuFunction[5] = "BuyInstrument";
+    menuOption[6] = "Electric - 50 Points";
+    menuFunction[6] = "BuyInstrument";
+    menuOption[7] = "Bass - 50 Points";
+    menuFunction[7] = "BuyInstrument";
+    menuOption[8] = "Return";
+    menuFunction[8] = "returnToMainShopMenu";    
 
     justify = "<just:right>";
-    menuOptionCount = 7;
+    menuOptionCount = 9;
 };
 
-function BuyEffect(%client,%menu,%option)
+function BuyInstrument(%client,%menu,%option)
 {
     %client.exitCenterprintMenu();
-    if(%client.hasEffect[%option]) return commandToClient(%client, 'messageboxOK', "Error", "You already have this! Check your effects with /effect");
-    else
+    if(%client.hasInstrument[%option]) return commandToClient(%client, 'messageboxOK', "Error", "You already have this! Check your instrument with /instrument");
+    else if(%client.score > 50)
     {
-        if(%option < 3)
-        {
-            if(%client.score > 25)
-            {
-                %client.incScore(-25);
-                %client.hasEffect[%option] = true;
-                commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased this effect! It will be applied automatically, remove or reapply it with /effect");
-            }
-            else return;
-        }
-        else if(%option < 6)
-        {
-            if(%client.score > 50)
-            {
-                %client.incScore(-50);
-                %client.hasEffect[%option] = true;
-                commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased this effect! It will be applied automatically, remove or reapply it with /effect");
-            }
-            else return;
-        }
-    }  
-
-    switch(%option)
-    {
-        case 0: %client.player.mountImage("HeartStatusImage",2);
-                %client.effect = "HeartStatusImage";
-        case 1: %client.player.mountImage("StinkyStatusImage",2);
-                %client.effect = "StinkyStatusImage";
-        case 2: %client.player.mountImage("ConfettiStatusImage",2);
-                %client.effect = "ConfettiStatusImage";
-        case 3: %client.player.mountImage("ElectricStatusImage",2);
-                %client.effect = "ElectricStatusImage";
-        case 4: %client.player.mountImage("FireStatusImage",2);
-                %client.effect = "FireStatusImage";
-        case 5: %client.player.mountImage("SparkleStatusImage",2);
-                %client.effect = "SparkleStatusImage";
+        %client.incScore(-50);
+        %client.hasInstrument[%option] = true;
+        commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased this instrument! Check your instrument with /instrument");
     }
+    else return;
 }
 
-function servercmdeffect(%client,%type)
+function servercmdinstrument(%client,%type)
 {    
     if(!isObject(%client.player)) return;
+    
+    %image[%g = 0] = "GuitarImage";
+    %image[%g++] = "BanjoImage";
+    %image[%g++] = "HarmonicaImage";
+    %image[%g++] = "ViolinImage";
+    %image[%g++] = "KeytarImage";
+    %image[%g++] = "FluteImage";
+    %image[%g++] = "ElectricGuitarImage";
+    %image[%g++] = "ElectricBassImage";
 
-    switch$(strlwr(%type))
-    {        
-        case "heart":   if(%client.hasEffect[0]) 
-                        {
-                            %client.player.mountImage("HeartStatusImage",2);
-                            %client.effect = "HeartStatusImage";
-                        }
+    if(%type $= "")
+    {            
+        messageClient(%client, '', "<tab:280>\c6Instruments List");
+        messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
+        for(%i = 0; %i <= %g; %i++)  
+        if(%client.hasInstrument[%i]) messageClient(%client, '', "<tab:280>\c6" @ strreplace(%image[%i],"Image",""));
+    }
+    else
+    {
+        for(%i = 0; %i <= %g; %i++)  
+        if(strlwr(%type) $= strlwr(strreplace(%image[%i],"Image","")))
+        {
+            if(%client.hasInstrument[%i]) 
+            {
+                %client.player.mountImage(%image[%i],0);
+                return;
+            }
+            else %typemismatch++;
+        }
+        else %typemismatch++;
 
-        case "stinky":  if(%client.hasEffect[1]) 
-                        {
-                            %client.player.mountImage("StinkyStatusImage",2);
-                            %client.effect = "StinkyStatusImage";
-                        }
-
-        case "confetti":    if(%client.hasEffect[2]) 
-                            {
-                                %client.player.mountImage("ConfettiStatusImage",2);
-                                %client.effect = "ConfettiStatusImage";
-                            }
-
-        case "electric":    if(%client.hasEffect[3]) 
-                            {
-                                %client.player.mountImage("ElectricStatusImage",2);
-                                %client.effect = "ElectricStatusImage";
-                            }
-
-        case "fire":    if(%client.hasEffect[4]) 
-                        {
-                            %client.player.mountImage("FireStatusImage",2);
-                            %client.effect = "FireStatusImage";
-                        }
-
-        case "sparkle": if(%client.hasEffect[5]) 
-                        {
-                            %client.player.mountImage("SparkleStatusImage",2);
-                            %client.effect = "SparkleStatusImage";
-                        }
-        case "none":    %client.player.unmountimage(2);
-                        %client.effect = "";
-
-        default:    messageClient(%client, '', "<tab:280>\c6Effects List");
-                    messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
-                    if(%client.hasEffect[0]) messageClient(%client, '', "<tab:280>\c6Heart");
-                    if(%client.hasEffect[1]) messageClient(%client, '', "<tab:280>\c6Stinky");
-                    if(%client.hasEffect[2]) messageClient(%client, '', "<tab:280>\c6Confetti");
-                    if(%client.hasEffect[3]) messageClient(%client, '', "<tab:280>\c6Electric");
-                    if(%client.hasEffect[4]) messageClient(%client, '', "<tab:280>\c6Fire");
-                    if(%client.hasEffect[5]) messageClient(%client, '', "<tab:280>\c6Sparkle");
-                    messageClient(%client, '', "<tab:280>\c6None");
-
+        if(%typemismatch) return messageClient(%client, '', "That item does not exist from the list or you do not own it.","");
     }
 }
 
@@ -265,7 +175,7 @@ function BuyTitle(%client,%menu,%option)
 
                 return;
 
-        case 1: if(%client.canChangeTitleColor)
+        case 1: if(%client.canChangeTitleBitmap)
                 {                    
                     commandToClient(%client, 'messageboxOK', "Nope", "You have this already!");
                     return;
@@ -285,7 +195,7 @@ function BuyTitle(%client,%menu,%option)
 
                 return;
 
-        case 2: if(%client.canChangeTitleBitmap)
+        case 2: if(%client.canChangeTitleColor)
                 {                    
                     commandToClient(%client, 'messageboxOK', "Nope", "You have this already!");
                     return;
@@ -378,87 +288,5 @@ function servercmdst(%client,%type,%input)
                         
                         %client.startCenterprintMenu(EventideSetTitleBitmapMenu);
                         return;                        
-    }
-}
-
-if(isObject(EventideSetTitleFontMenu)) EventideSetTitleFontMenu.delete();
-new ScriptObject(EventideSetTitleFontMenu)
-{
-    isCenterprintMenu = 1;
-    menuName = "Title - Set Font";
-
-    menuOption[0] = "Impact";
-    menuFunction[0] = "EventideSetCustomFont";
-    menuOption[1] = "Comic Sans MS";
-    menuFunction[1] = "EventideSetCustomFont";
-    menuOption[2] = "Arial";
-    menuFunction[2] = "EventideSetCustomFont";    
-    menuOption[3] = "Constantia";
-    menuFunction[3] = "EventideSetCustomFont";
-    menuOption[4] = "Georgia";
-    menuFunction[4] = "EventideSetCustomFont";
-    menuOption[5] = "Courier New";
-    menuFunction[5] = "EventideSetCustomFont";
-    menuOption[6] = "Exit";
-    menuFunction[6] = "exitCenterprintMenu";
-
-    justify = "<just:right>";
-    menuOptionCount = 7;
-};
-
-function EventideSetCustomFont(%client,%menu,%option)
-{    
-    switch(%option)
-    {
-        case 0: %client.customtitlefont = "Impact";
-        case 1: %client.customtitlefont = "Comic Sans MS";
-        case 2: %client.customtitlefont = "Arial";
-        case 3: %client.customtitlefont = "Constantia";
-        case 4: %client.customtitlefont = "Georgia";
-        case 4: %client.customtitlefont = "Courier New";
-    }
-}
-
-if(isObject(EventideSetTitleBitmapMenu)) EventideSetTitleBitmapMenu.delete();
-new ScriptObject(EventideSetTitleBitmapMenu)
-{
-    isCenterprintMenu = 1;
-    menuName = "Title - Set Bitmap";
-
-    menuOption[0] = "Arrow";
-    menuFunction[0] = "EventideSetCustomBitmap";
-    menuOption[1] = "Gun";
-    menuFunction[1] = "EventideSetCustomBitmap";
-    menuOption[2] = "Skull";
-    menuFunction[2] = "EventideSetCustomBitmap";
-    menuOption[3] = "Blue Ribbon";
-    menuFunction[3] = "EventideSetCustomBitmap";
-    menuOption[4] = "Car";
-    menuFunction[4] = "EventideSetCustomBitmap";
-    menuOption[5] = "Bomb";
-    menuFunction[5] = "EventideSetCustomBitmap";
-    menuOption[6] = "Trophy";
-    menuFunction[6] = "EventideSetCustomBitmap";
-    menuOption[7] = "Star";
-    menuFunction[7] = "EventideSetCustomBitmap";
-    menuOption[8] = "Exit";
-    menuFunction[8] = "exitCenterprintMenu";
-
-    justify = "<just:right>";
-    menuOptionCount = 9;
-};
-
-function EventideSetCustomBitmap(%client,%menu,%option)
-{    
-    switch(%option)
-    {
-        case 0: %client.customtitlebitmap = "<bitmap:add-ons/weapon_bow/CI_arrow.png>";
-        case 1: %client.customtitlebitmap = "<bitmap:add-ons/weapon_gun/CI_gun.png>";
-        case 2: %client.customtitlebitmap = "<bitmap:base/client/ui/CI/skull.png>";
-        case 3: %client.customtitlebitmap = "<bitmap:base/client/ui/CI/blueRibbon.png>";
-        case 4: %client.customtitlebitmap = "<bitmap:base/client/ui/CI/car.png>";
-        case 5: %client.customtitlebitmap = "<bitmap:base/client/ui/CI/bomb.png>";
-        case 6: %client.customtitlebitmap = "<bitmap:base/client/ui/CI/trophy.png>";
-        case 7: %client.customtitlebitmap = "<bitmap:base/client/ui/CI/star.png>";
     }
 }

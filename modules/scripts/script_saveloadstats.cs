@@ -1,4 +1,4 @@
-$Eventide_ReferenceStats = "score canChangeTitle customtitle canChangeTitleColor customtitlecolor canChangeTitleFont customtitlefont canChangeTitleBitmap customtitlebitmap hasEffect0 hasEffect1 hasEffect2 hasEffect3 hasEffect4 hasEffect5 effect";
+$Eventide_ReferenceStats = "score canChangeTitle customtitle canChangeTitleColor customtitlecolor canChangeTitleFont customtitlefont canChangeTitleBitmap customtitlebitmap hasEffect0 hasEffect1 hasEffect2 hasEffect3 hasEffect4 hasEffect5 effect hasInstrument0 hasInstrument1 hasInstrument2 hasInstrument3 hasInstrument4 hasInstrument5 hasInstrument6 hasInstrument7";
 $Eventide_ReferenceStatsPath = "config/server/eventide/playerstats/";	
 
 function Eventide_storeEventideStats(%client)

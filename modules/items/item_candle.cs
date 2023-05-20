@@ -124,18 +124,6 @@ datablock ShapeBaseImageData(candleImage)
     stateTransitionOnTimeout[0]      = "Ready";
 
     stateName[1]                     = "Ready";
-    stateScript[1]                  = "onReady";
-    stateTransitionOnTriggerDown[1]  = "Light";
-
-    stateName[2]			= "Light";
-    stateScript[2]                  = "onLight";
-    stateTimeoutValue[2]            = 25;
-    stateTransitionOnTimeout[2]     = "Extinguish";
-
-    stateName[3]			= "Extinguish";
-    stateScript[3]                  = "onExtinguish";
-    stateTimeoutValue[3]            = 0;
-    stateTransitionOnTimeout[3]     = "Ready";    
 };
 
 datablock StaticShapeData(brickCandleStaticShape)
@@ -180,18 +168,6 @@ function candleImage::onActivate(%this, %obj, %slot)
 
     %obj.playaudio(0,"WeaponSwitchsound");
 	%obj.playthread(2, "plant");
-}
-
-function candleImage::onLight(%this, %obj, %slot)
-{
-	%obj.playthread(2, "shiftRight");
-    %obj.emptycandlebot.candlebot.getDataBlock().ToggleLight(%obj.emptycandlebot.candlebot,true);
-}
-
-function candleImage::onExtinguish(%this, %obj, %slot)
-{
-    %obj.emptycandlebot.candlebot.getDataBlock().ToggleLight(%obj.emptycandlebot.candlebot,false);
-    if(isObject(%obj.emptycandlebot.candlebot.light)) %obj.emptycandlebot.candlebot.light.delete();
 }
 
 function candleImage::onUnmount(%this,%obj,%slot)
