@@ -66,7 +66,7 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 
 function PlayerSkullWolf::onPeggFootstep(%this,%obj)
 {
-	serverplay3d("angler_walking" @ getRandom(1,8) @ "_sound", %obj.getHackPosition());
+	serverplay3d("skullwolf_walking" @ getRandom(1,6) @ "_sound", %obj.getHackPosition());
 }
 
 function PlayerSkullWolf::reappear(%this,%obj,%alpha)

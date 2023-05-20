@@ -115,6 +115,11 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 	}	
 }
 
+function PlayerShire::onPeggFootstep(%this,%obj)
+{
+	serverplay3d("shire_walking" @ getRandom(1,6) @ "_sound", %obj.getHackPosition());
+}
+
 function PlayerShire::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);	

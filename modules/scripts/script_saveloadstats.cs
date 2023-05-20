@@ -11,7 +11,7 @@ function Eventide_storeEventideStats(%client)
 
 	for(%rat = 0; %rat < getWordCount($Eventide_ReferenceStats); %rat++)
 	if(%client.getField(getWord($Eventide_ReferenceStats,%rat)) !$= "") %readfile.writeLine(%client.getField(getWord($Eventide_ReferenceStats,%rat)));
-	else %readfile.writeLine("0");
+	else %readfile.writeLine("");
 
 	%readfile.close();
 	%readfile.delete();	
@@ -25,7 +25,10 @@ function Eventide_loadEventideStats(%client)
 	%readfile.openForRead(%file);
 
 	for(%apc = 0; %apc < getWordCount($Eventide_ReferenceStats); %apc++)
-	%client.setField(getWord($Eventide_ReferenceStats,%apc),%readfile.readLine());	
+	{
+		%line = %readfile.readLine();
+		if(%line !$= "") %client.setField(getWord($Eventide_ReferenceStats,%apc),%line);	
+	}
 
 	%readfile.close();
 	%readfile.delete();
@@ -35,7 +38,7 @@ package Eventide_StatsLogger
 {
 	function GameConnection::onClientEnterGame(%client)
 	{
-		parent::onClientEnterGame(%client);
+		parent::onClientEnterGame(%client);		
 		schedule(100,0,Eventide_loadEventideStats,%client);
 	}
 

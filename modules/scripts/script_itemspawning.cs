@@ -64,6 +64,7 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                                 case 6: %brick.setItem("bearTrapItem");
                                 case 7: %brick.setItem("sm_chairItem");                                
                                 case 8: %brick.setItem("FlareGunItem");
+                                case 9: %brick.setItem("StunGun");
                             }
         }
 

@@ -52,6 +52,11 @@ function PlayerGrabber::onNewDatablock(%this,%obj)
 	%obj.mountImage("meleeMacheteImage",0);
 }
 
+function PlayerGrabber::onPeggFootstep(%this,%obj)
+{
+	serverplay3d("grabber_walking" @ getRandom(1,5) @ "_sound", %obj.getHackPosition());
+}
+
 function PlayerGrabber::checkVictim(%this,%obj)
 {
 	if(!%obj.victim) %obj.playthread(3,"root");

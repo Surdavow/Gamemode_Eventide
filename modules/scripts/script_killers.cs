@@ -3,6 +3,7 @@ function KillerSpawnMessage(%obj)
 	if(!isObject(%obj) || !isObject(%minigame = getMiniGameFromObject(%obj))) return;
 
 	if(%obj.firstMessageSpawn) return;
+	%obj.firstMessageSpawn = true;
 	
 	%random = getRandom(1,5);
 	switch(%random)
@@ -15,9 +16,7 @@ function KillerSpawnMessage(%obj)
 	}
 
 	%minigame.chatmsgall("<font:Impact:30>\c3" @ %message);
-	for(%i = 0; %i < %minigame.numMembers; %i++) if(isObject(%member = %minigame.member[%i])) %member.play2D("render_wind_sound");
-
-	%obj.firstMessageSpawn = true;
+	for(%i = 0; %i < %minigame.numMembers; %i++) if(isObject(%member = %minigame.member[%i])) %member.play2D("render_wind_sound");	
 }
 
 function Player::KillerMelee(%obj,%datablock,%radius)
