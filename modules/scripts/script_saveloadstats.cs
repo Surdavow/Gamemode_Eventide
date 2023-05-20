@@ -36,11 +36,17 @@ function Eventide_loadEventideStats(%client)
 
 package Eventide_StatsLogger
 {
-	function GameConnection::onClientEnterGame(%client)
+	function GameConnection::onConnect(%client)
 	{
-		parent::onClientEnterGame(%client);		
+		parent::onConnect(%client);
 		schedule(100,0,Eventide_loadEventideStats,%client);
 	}
+
+	function GameConnection::onClientEnterGame(%client)
+	{
+		parent::onClientEnterGame(%client);
+		Eventide_loadEventideStats(%client);		
+	}	
 
 	function GameConnection::onClientLeaveGame(%client)
 	{
@@ -48,4 +54,5 @@ package Eventide_StatsLogger
 		Eventide_storeEventideStats(%client);		
 	}
 };
+if(isPackage(Eventide_StatsLogger)) deactivatePackage(Eventide_StatsLogger);
 activatePackage(Eventide_StatsLogger);
