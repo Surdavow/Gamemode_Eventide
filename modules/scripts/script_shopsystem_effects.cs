@@ -1,27 +1,25 @@
+$ShopEffectList = "HeartStatusImage StinkyStatusImage ConfettiStatusImage ElectricStatusImage SparkleStatusImage FireStatusImage";
+
 if(isObject(EventideEffectsShopMenu)) EventideEffectsShopMenu.delete();
 new ScriptObject(EventideEffectsShopMenu)
 {
-    isCenterprintMenu = 1;
     menuName = "Eventide Shop - Effects";
-
-    menuOption[0] = "Heart - 25 Points";
-    menuFunction[0] = "BuyEffect";
-    menuOption[1] = "Stinky - 25 Points";
-    menuFunction[1] = "BuyEffect";
-    menuOption[2] = "Confetti - 25 Points";
-    menuFunction[2] = "BuyEffect";
-    menuOption[3] = "Electric - 50 Points";
-    menuFunction[3] = "BuyEffect";
-    menuOption[4] = "Fire - 50 Points";
-    menuFunction[4] = "BuyEffect";
-    menuOption[5] = "Sparkle - 50 Points";
-    menuFunction[5] = "BuyEffect";
-    menuOption[6] = "Return";
-    menuFunction[6] = "returnToMainShopMenu";
-
+    isCenterprintMenu = true;
     justify = "<just:right>";
-    menuOptionCount = 7;
 };
+
+for (%i = 0; %i < getWordCount($ShopEffectList); %i++) 
+{    
+    if(%i < 3) %price = " - 25 Points";
+    else if (%i < 6) %price = " - 50 Points";
+    
+    EventideEffectsShopMenu.menuOption[%i] = strreplace(getWord($ShopEffectList,%i),"StatusImage","") @ %price;
+    EventideEffectsShopMenu.menuFunction[%i] = "BuyEffect";
+}
+
+EventideEffectsShopMenu.menuOption[getWordCount($ShopEffectList)] = "Return";
+EventideEffectsShopMenu.menuFunction[getWordCount($ShopEffectList)] = "returnToMainShopMenu";
+EventideEffectsShopMenu.menuOptionCount = getWordCount($ShopEffectList)+1;
 
 function BuyEffect(%client,%menu,%option)
 {
@@ -38,63 +36,31 @@ function BuyEffect(%client,%menu,%option)
             %client.hasEffect[%option] = true;
             commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased! Check your effect with /effect");
         }
-        else return;
+        else return commandToClient(%client, 'messageboxOK', "Error", "Not enough points!");
     }  
 }
 
-function servercmdeffect(%client,%type)
+function servercmdeffect(%client,%effect)
 {    
-    if(!isObject(%client.player)) return;
+    if(!isObject(%client) || !isObject(%client.player)) return;
+    
+    for(%i = 0; %i < getWordCount($ShopEffectList); %i++)
+    if(strlwr(%effect) $= strreplace(strlwr(getWord($ShopEffectList,%i)),"statusimage","") && %client.hasEffect[%i])
+    {
+        %client.player.mountImage(getWord($ShopEffectList,%i),2);
+        %client.effect = getWord($ShopEffectList,%i);
+        return;
+    }
+    else %effectmismatch = true;
 
-    switch$(strlwr(%type))
-    {        
-        case "heart":   if(%client.hasEffect[0]) 
-                        {
-                            %client.player.mountImage("HeartStatusImage",2);
-                            %client.effect = "HeartStatusImage";
-                        }
-
-        case "stinky":  if(%client.hasEffect[1]) 
-                        {
-                            %client.player.mountImage("StinkyStatusImage",2);
-                            %client.effect = "StinkyStatusImage";
-                        }
-
-        case "confetti":    if(%client.hasEffect[2]) 
-                            {
-                                %client.player.mountImage("ConfettiStatusImage",2);
-                                %client.effect = "ConfettiStatusImage";
-                            }
-
-        case "electric":    if(%client.hasEffect[3]) 
-                            {
-                                %client.player.mountImage("ElectricStatusImage",2);
-                                %client.effect = "ElectricStatusImage";
-                            }
-
-        case "fire":    if(%client.hasEffect[4]) 
-                        {
-                            %client.player.mountImage("FireStatusImage",2);
-                            %client.effect = "FireStatusImage";
-                        }
-
-        case "sparkle": if(%client.hasEffect[5]) 
-                        {
-                            %client.player.mountImage("SparkleStatusImage",2);
-                            %client.effect = "SparkleStatusImage";
-                        }
-        case "none":    %client.player.unmountimage(2);
-                        %client.effect = "";
-
-        default:    messageClient(%client, '', "<tab:280>\c6Effects List");
-                    messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
-                    if(%client.hasEffect[0]) messageClient(%client, '', "<tab:280>\c6Heart");
-                    if(%client.hasEffect[1]) messageClient(%client, '', "<tab:280>\c6Stinky");
-                    if(%client.hasEffect[2]) messageClient(%client, '', "<tab:280>\c6Confetti");
-                    if(%client.hasEffect[3]) messageClient(%client, '', "<tab:280>\c6Electric");
-                    if(%client.hasEffect[4]) messageClient(%client, '', "<tab:280>\c6Fire");
-                    if(%client.hasEffect[5]) messageClient(%client, '', "<tab:280>\c6Sparkle");
-                    messageClient(%client, '', "<tab:280>\c6None");
-
+    if(%effectmismatch) 
+    {
+        messageClient(%client, '', "<tab:280>\c6Your Effects List");
+        messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
+        for(%i = 0; %i <= getWordCount($ShopEffectList); %i++) if(%client.hasEffect[%i]) 
+        messageClient(%client, '', "<tab:280>\c6" @ strreplace(getWord($ShopEffectList,%i),"StatusImage",""));        
+        %client.player.unmountImage(2);
+        %client.effect = 0;
+        return;
     }
 }

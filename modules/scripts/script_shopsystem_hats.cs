@@ -1,22 +1,24 @@
+$ShopHat[%g = 0] = "CapHatImage";
+$ShopHat[%g++] = "FancyHatImage";
+$ShopHat[%g++] = "StrawHatImage";
+$ShopHat[%g++] = "MaskHatImage";
+$ShopHat[%g++] = "TopHatImage";
+$ShopHatAmount = %g;
+
 if(isObject(EventideHatShopMenu)) EventideHatShopMenu.delete();
 new ScriptObject(EventideHatShopMenu)
 {
-    isCenterprintMenu = 1;
     menuName = "Eventide Shop - Hats";
-
-    menuOption[0] = "Cap";
-    menuFunction[0] = "";
-    menuOption[1] = "Fancy";
-    menuFunction[1] = "";
-    menuOption[2] = "Straw Hat";
-    menuFunction[2] = "";    
-    menuOption[3] = "Mask";
-    menuFunction[3] = "";
-    menuOption[4] = "Top";
-    menuFunction[4] = "";
-    menuOption[5] = "Return";
-    menuFunction[5] = "returnToMainShopMenu";
-
+    isCenterprintMenu = true;
     justify = "<just:right>";
-    menuOptionCount = 6;
 };
+
+for (%i = 0; %i <= $ShopHatAmount; %i++) 
+{    
+    EventideHatShopMenu.menuOption[%i] = strreplace($ShopHat[%i],"Image","") @ " - 10 Points";
+    EventideHatShopMenu.menuFunction[%i] = "BuyHat";    
+}
+
+EventideHatShopMenu.menuOption[$ShopHatAmount+1] = "Return";
+EventideHatShopMenu.menuFunction[$ShopHatAmount+1] = "returnToMainShopMenu";
+EventideHatShopMenu.menuOptionCount = $ShopHatAmount+2;

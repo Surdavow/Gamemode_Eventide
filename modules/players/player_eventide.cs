@@ -291,7 +291,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	if(%obj.markedforRenderDeath)
 	{
 		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
-		%obj.schedule(50,delete);
+		%obj.schedule(1,delete);
 	}
 
 	if(isObject(%minigame = getMinigamefromObject(%obj)))
