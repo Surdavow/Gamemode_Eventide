@@ -122,12 +122,7 @@ package Eventide_MainPackage
 	}
 
 	function ServerCmdPlantBrick (%client)
-	{
-		//if(isObject(%client.player))
-		//{
-		//	if(%client.isSuperadmin) %client.player.setVelocity(vectorScale(%client.player.getEyeVector(),50));
-		//}
-		
+	{		
 		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "PlayerPuppetMaster" && isObject(PuppetGroup))
 		{	
 			if(%client.puppetnumber $= "") %client.puppetnumber = 0;
