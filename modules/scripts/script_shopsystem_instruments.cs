@@ -6,6 +6,7 @@ new ScriptObject(EventideInstrumentsShopMenu)
     menuName = "Eventide Shop - Instruments";
     isCenterprintMenu = true;
     justify = "<just:right>";
+    menuOptionCount = getWordCount($ShopInstrumentList)+1;    
 };
 
 for(%i = 0; %i <= getWordCount($ShopInstrumentList); %i++) 
@@ -16,7 +17,6 @@ for(%i = 0; %i <= getWordCount($ShopInstrumentList); %i++)
 
 EventideInstrumentsShopMenu.menuOption[getWordCount($ShopInstrumentList)] = "Return";
 EventideInstrumentsShopMenu.menuFunction[getWordCount($ShopInstrumentList)] = "returnToMainShopMenu";
-EventideInstrumentsShopMenu.menuOptionCount = getWordCount($ShopInstrumentList)+1;
 
 function BuyInstrument(%client,%menu,%option)
 {
@@ -34,18 +34,15 @@ function BuyInstrument(%client,%menu,%option)
 function serverCmdInstrument(%client,%instrument)
 {    
     if(!isObject(%client) || !isObject(%client.player)) return;
+    if(strlwr(%instrument) $= "none") return %client.player.unmountImage(0);
     
     for(%i = 0; %i <= getWordCount($ShopInstrumentList); %i++)
-    if(strlwr(%instrument) $= strreplace(strlwr(getWord($ShopInstrumentList,%i)),"image","") && %client.hasInstrument[%i]) return %client.player.mountImage($ShopInstrument[%i],0);            
-    else %instrumentmismatch = true;
+    if(strlwr(%instrument) $= strreplace(strlwr(getWord($ShopInstrumentList,%i)),"image","") && %client.hasInstrument[%i]) return %client.player.mountImage(getWord($ShopInstrumentList,%i),0);            
 
-    if(%instrumentmismatch) 
-    {
-        messageClient(%client, '', "<tab:280>\c6Your Instruments List");
-        messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
-        for(%i = 0; %i <= getWordCount($ShopInstrumentList); %i++) if(%client.hasInstrument[%i]) 
-        messageClient(%client, '', "<tab:280>\c6" @ strreplace(getWord($ShopInstrumentList,%i),"Image",""));
-        %client.player.unmountImage(0);
-        return;
-    }
+    messageClient(%client, '', "<tab:280>\c6Your Instruments List");
+    messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
+    for(%i = 0; %i <= getWordCount($ShopInstrumentList); %i++) if(%client.hasInstrument[%i]) 
+    messageClient(%client, '', "<tab:280>\c6" @ strreplace(getWord($ShopInstrumentList,%i),"Image",""));
+    messageClient(%client, '', "<tab:280>\c6None");
+    %client.player.unmountImage(0);
 }

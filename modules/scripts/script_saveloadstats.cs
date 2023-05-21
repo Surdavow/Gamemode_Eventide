@@ -1,4 +1,9 @@
-$Eventide_ReferenceStats = "score canChangeTitle customtitle canChangeTitleColor customtitlecolor canChangeTitleFont customtitlefont canChangeTitleBitmap customtitlebitmap hasEffect0 hasEffect1 hasEffect2 hasEffect3 hasEffect4 hasEffect5 effect hasInstrument0 hasInstrument1 hasInstrument2 hasInstrument3 hasInstrument4 hasInstrument5 hasInstrument6 hasInstrument7";
+$Eventide_ReferenceStats = "score effect customtitle customtitlebitmap customtitlefont";
+
+for (%i = 0; %i < getWordCount($ShopEffectList); %i++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasEffect" @ %i;
+for (%j = 0; %j < getWordCount($ShopInstrumentList); %j++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasInstrument" @ %j;
+for (%h = 0; %h < getWordCount($ShopTitlesList); %h++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasTitleAccess" @ %h;
+
 $Eventide_ReferenceStatsPath = "config/server/eventide/playerstats/";	
 
 function Eventide_storeEventideStats(%client)

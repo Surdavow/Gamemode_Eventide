@@ -47,6 +47,5 @@ function openOptionShop(%client,%menu,%option)
         case 2: %type = "EventideTitlesShopMenu";
         case 3: %type = "EventideInstrumentsShopMenu";
     }
-
     %client.startCenterprintMenu(%type);
 }

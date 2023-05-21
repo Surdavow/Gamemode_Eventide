@@ -25,7 +25,8 @@ package Eventide_MainPackage
         else %bitmap = %client.customtitlebitmap;
 
         if(%client.customtitle !$= "") %client.clanPrefix = %bitmap @ "<color:" @ %color @ ">" @ "<font:" @ %font @ ":25>" @ %client.customtitle SPC "";
-        else %client.clanPrefix = %bitmap @ "";
+        else if(%client.customtitlebitmap !$= "") %client.clanPrefix = %bitmap @ "";
+		else %client.clanPrefix = "";
 		Parent::serverCmdMessageSent(%client,%msg);
 	}
 
