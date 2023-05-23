@@ -1,12 +1,7 @@
 if(ForceRequiredAddOn("Server_VehicleGore") == $Error::AddOn_NotFound) return error("Server_VehicleGore must be enabled for Gamemode_Eventide to work");
 
 exec("./modules/scripts/module_scripts.cs");
-exec("./modules/sounds/module_sounds.cs");
-exec("./modules/items/module_items.cs");
-exec("./modules/players/module_players.cs");
-exec("./modules/effects/module_effects.cs");
-exec("./modules/bricks/module_bricks.cs");
-exec("./modules/weapons/module_weapons.cs");
+exec("./modules/data/module_data.cs");
 
 //check if slayer is enabled
 if ($Slayer::Server::GameModeArg $= "") $isSlayerEnabled = false;

@@ -1,6 +1,7 @@
 $ShopInstrumentList = "GuitarImage BanjoImage HarmonicaImage ViolinImage KeytarImage FluteImage ElectricGuitarImage ElectricBassImage";
-$ShopEffectList = "HeartStatusImage StinkyStatusImage ConfettiStatusImage ElectricStatusImage SparkleStatusImage FireStatusImage";
-$ShopTitlesList = "Title Color Bitmap Font";
+$ShopHatList = "CapHatImage FancyHatImage StrawHatImage MaskHatImage TopHatImage";
+$ShopEffectList = "HeartStatusImage StinkyStatusImage ConfettiStatusImage ElectricStatusImage SparkleStatusImage FireStatusImage NeonFlameStatusImage";
+$ShopTitleList = "Title Color Bitmap Font";
 
 if(isObject(EventideShopMainMenu)) EventideShopMainMenu.delete();
 new ScriptObject(EventideShopMainMenu)
@@ -77,7 +78,7 @@ function BuyInstrument(%client,%menu,%option)
 {
     %client.exitCenterprintMenu();
     if(%client.hasInstrument[%option]) return commandToClient(%client, 'messageboxOK', "Error", "You already have this! Check your instrument with /instrument");
-    else if(%client.score > 50)
+    else if(%client.score >= 50)
     {
         %client.incScore(-50);
         %client.hasInstrument[%option] = true;
@@ -110,35 +111,35 @@ new ScriptObject(EventideTitlesShopMenu)
     menuName = "Eventide Shop - Titles";
     isCenterprintMenu = true;
     justify = "<just:right>";
-    menuOptionCount = getWordCount($ShopTitlesList)+1;
+    menuOptionCount = getWordCount($ShopTitleList)+1;
 };
 
-for (%i = 0; %i < getWordCount($ShopTitlesList); %i++) 
+for (%i = 0; %i < getWordCount($ShopTitleList); %i++) 
 {    
     if(%i <= 1) %price = " - 25 Points";
     else %price = " - 50 Points";
     
-    EventideTitlesShopMenu.menuOption[%i] = getWord($ShopTitlesList,%i) @ %price;
+    EventideTitlesShopMenu.menuOption[%i] = getWord($ShopTitleList,%i) @ %price;
     EventideTitlesShopMenu.menuFunction[%i] = "BuyTitle";
 }
 
-EventideTitlesShopMenu.menuOption[getWordCount($ShopTitlesList)] = "Return";
-EventideTitlesShopMenu.menuFunction[getWordCount($ShopTitlesList)] = "returnToMainShopMenu";
+EventideTitlesShopMenu.menuOption[getWordCount($ShopTitleList)] = "Return";
+EventideTitlesShopMenu.menuFunction[getWordCount($ShopTitleList)] = "returnToMainShopMenu";
 
 function BuyTitle(%client,%menu,%option)
 {
     %client.exitCenterprintMenu();
-    if(%client.hasTitleAccess[%option]) return commandToClient(%client, 'messageboxOK', "Error", "You already have this! Check your title option with /st" SPC strlwr(getWord($ShopTitlesList,%option)));
+    if(%client.hasTitleAccess[%option]) return commandToClient(%client, 'messageboxOK', "Error", "You already have this! Check your title option with /st" SPC strlwr(getWord($ShopTitleList,%option)));
     else
     {
         if(%option <= 1) %minScore = 25;
         else %minScore = 50;
             
-        if(%client.score > %minScore)
+        if(%client.score >= %minScore)
         {
             %client.incScore(-%minScore);
             %client.hasTitleAccess[%option] = true;
-            commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased! Check your title option with /st" SPC strlwr(getWord($ShopTitlesList,%option)));
+            commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased! Check your title option with /st" SPC strlwr(getWord($ShopTitleList,%option)));
         }
         else return commandToClient(%client, 'messageboxOK', "Error", "Not enough points!");
     }
@@ -158,7 +159,17 @@ function servercmdst(%client,%type,%input)
                             return;
                         }                        
 
-                        return %client.customtitle = %input;
+                        if(%input !$= "")
+                        {
+                            %client.customtitle = %input;
+                            messageClient(%client, '', "\c2Set title to" SPC %client.customtitle);
+                        }
+                        else
+                        {
+                            %client.customtitle = %input;
+                            messageClient(%client, '', "\c2Cleared title");                            
+                        }
+                        return;
 
         case "color":   if(!%client.hasTitleAccess[1]) return messageClient(%client, '', "\c0You haven't purchased this ability!");
         
@@ -166,7 +177,17 @@ function servercmdst(%client,%type,%input)
                         if(strStr("abcdefghijklmnopqrstuvwxyz0123456789", getSubStr(strlwr(%input), %i, 1)) == -1 || strLen(strlwr(%input)) != 6)
                         return messageClient(%client, '', "\c0The color needs to be a HEX value!");
 
-                        return %client.customtitlecolor = strupr(%input);                                  
+                        if(%input !$= "")
+                        {
+                            %client.customtitlecolor = %input;
+                            messageClient(%client, '', "\c2Set color to" SPC %client.customtitlecolor);
+                        }
+                        else
+                        {
+                            %client.customtitlecolor = %input;
+                            messageClient(%client, '', "\c2Cleared color");                            
+                        }                        
+                        return;                              
 
         case "bitmap":  if(!%client.hasTitleAccess[2]) return messageClient(%client, '', "\c0You haven't purchased this ability!");
                         
@@ -261,7 +282,7 @@ function BuyEffect(%client,%menu,%option)
         if(%option < 3) %minScore = 25;
         else if(%option < 6) %minScore = 50;
             
-        if(%client.score > %minScore)
+        if(%client.score >= %minScore)
         {
             %client.incScore(-%minScore);
             %client.hasEffect[%option] = true;
@@ -298,12 +319,6 @@ function servercmdeffect(%client,%effect)
     %client.effect = 0;
 }
 
-
-
-
-
-$ShopHatList = "CapHatImage FancyHatImage StrawHatImage MaskHatImage TopHatImage";
-
 if(isObject(EventideHatShopMenu)) EventideHatShopMenu.delete();
 new ScriptObject(EventideHatShopMenu)
 {
@@ -316,8 +331,37 @@ new ScriptObject(EventideHatShopMenu)
 for(%i = 0; %i <= getWordCount($ShopHatList); %i++) 
 {    
     EventideHatShopMenu.menuOption[%i] = strreplace(getWord($ShopHatList,%i),"Image","") @ " - 50 Points";
-    EventideHatShopMenu.menuFunction[%i] = "BuyInstrument";
+    EventideHatShopMenu.menuFunction[%i] = "BuyHat";
 }
 
 EventideHatShopMenu.menuOption[getWordCount($ShopHatList)] = "Return";
 EventideHatShopMenu.menuFunction[getWordCount($ShopHatList)] = "returnToMainShopMenu";
+
+function BuyHat(%client,%menu,%option)
+{
+    %client.exitCenterprintMenu();
+    if(%client.hasHat[%option]) return commandToClient(%client, 'messageboxOK', "Error", "You already have this! Check your hat with /hat");
+    else if(%client.score >= 50)
+    {
+        %client.incScore(-50);
+        %client.hasHat[%option] = true;
+        commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased this hat! Check your hat with /hat");
+    }
+    else return commandToClient(%client, 'messageboxOK', "Error", "Not enough points!");
+}
+
+function serverCmdHat(%client,%Hat)
+{    
+    if(!isObject(%client) || !isObject(%client.player)) return;
+    if(strlwr(%Hat) $= "none") return %client.player.unmountImage(0);
+    
+    for(%i = 0; %i <= getWordCount($ShopHatList); %i++)
+    if(strlwr(%Hat) $= strreplace(strlwr(getWord($ShopHatList,%i)),"image","") && %client.hasHat[%i]) return %client.player.mountImage(getWord($ShopHatList,%i),0);            
+
+    messageClient(%client, '', "<tab:280>\c6Your Hats List");
+    messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
+    for(%i = 0; %i <= getWordCount($ShopHatList); %i++) if(%client.hasHat[%i]) 
+    messageClient(%client, '', "<tab:280>\c6" @ strreplace(getWord($ShopHatList,%i),"Image",""));
+    messageClient(%client, '', "<tab:280>\c6None");
+    %client.player.unmountImage(0);
+}

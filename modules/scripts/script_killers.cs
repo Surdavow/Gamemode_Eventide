@@ -313,8 +313,7 @@ function Player::KillerGhostLightCheck(%obj)
 		}
 
 		%obj.lightbot.light.setNetFlag(6,true);
-		for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj)
-		%obj.lightbot.light.schedule(10,clearScopeToClient,%client);
+		for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj) %obj.lightbot.light.clearScopeToClient(%client);
 	}
 	else
 	{

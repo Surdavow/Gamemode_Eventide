@@ -2,7 +2,7 @@ $Eventide_ReferenceStats = "score effect customtitle customtitlebitmap customtit
 
 for (%i = 0; %i < getWordCount($ShopEffectList); %i++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasEffect" @ %i;
 for (%j = 0; %j < getWordCount($ShopInstrumentList); %j++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasInstrument" @ %j;
-for (%h = 0; %h < getWordCount($ShopTitlesList); %h++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasTitleAccess" @ %h;
+for (%h = 0; %h < getWordCount($ShopTitleList); %h++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasTitleAccess" @ %h;
 
 $Eventide_ReferenceStatsPath = "config/server/eventide/playerstats/";	
 
