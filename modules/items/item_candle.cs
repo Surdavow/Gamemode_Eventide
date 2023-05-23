@@ -50,28 +50,6 @@ datablock fxLightData(CandleLight)
 	LerpRotation	= false;
 };
 
-datablock PlayerData(EmptyCandleBot : PlayerStandardArmor)
-{
-	shapeFile = "base/data/shapes/empty.dts";
-	uiName = "";
-	className = PlayerData;
-};
-
-datablock PlayerData(EmptyLightBot : PlayerStandardArmor)
-{
-	shapeFile = "base/data/shapes/empty.dts";
-	uiName = "";
-	className = PlayerData;
-};
-
-datablock PlayerData(CandleItemProp : PlayerStandardArmor)
-{
-	shapeFile = "./models/candle.dts";
-	uiName = "";
-    renderFirstPerson = false;
-	className = PlayerData;
-};
-
 datablock ItemData(candleItem)
 {
 	category = "Weapon";
@@ -95,7 +73,7 @@ datablock ItemData(candleItem)
 
 datablock ShapeBaseImageData(candleImage)
 {
-    shapeFile = "base/data/shapes/empty.dts";
+    shapeFile = candleItem.shapeFile;
     emap = true;
 
     mountPoint = 0;
@@ -114,16 +92,11 @@ datablock ShapeBaseImageData(candleImage)
 
     melee = true;
     doRetraction = false;
-    armReady = true;
     doColorShift = candleItem.doColorShift;
     colorShiftColor = candleItem.colorShiftColor;
 
     stateName[0]                     = "Activate";
-    stateScript[0]                  = "onActivate";
-    stateTimeoutValue[0]             = 0.5;
-    stateTransitionOnTimeout[0]      = "Ready";
-
-    stateName[1]                     = "Ready";
+    stateSound[0]                  = "WeaponSwitchSound";
 };
 
 datablock StaticShapeData(brickCandleStaticShape)
@@ -155,112 +128,4 @@ function brickCandleStaticShape::onAdd(%this,%obj)
 {
     %obj.schedule(33,playaudio,3,%this.placementSound);
     %this.schedule(500,Light,%obj);
-}
-
-function candleImage::onActivate(%this, %obj, %slot)
-{
-    %obj.emptycandlebot = new Player() 
-    { 
-        dataBlock = "EmptyCandleBot";
-        source = %obj;
-        slotToMountBot = 0;
-    };
-
-    %obj.playaudio(0,"WeaponSwitchsound");
-	%obj.playthread(2, "plant");
-}
-
-function candleImage::onUnmount(%this,%obj,%slot)
-{
-    if(isObject(%obj.emptycandlebot)) %obj.emptycandlebot.delete();
-    Parent::onUnmount(%this,%obj,%slot);
-}
-
-function EmptyCandleBot::onAdd(%this, %obj) 
-{
-	%obj.setDamageLevel(%this.maxDamage);
-
-	if(isObject(%source = %obj.source))
-    { 
-        %source.mountObject(%obj,%obj.slotToMountBot);
-
-        %obj.candlebot = new Player() 
-        { 
-            dataBlock = "CandleItemProp";
-            source = %obj;
-            slotToMountBot = %obj.slotToMountBot;
-        };        
-    }
-	else
-	{
-		%obj.delete();
-		return;
-	}
-}
-
-function EmptyCandleBot::doDismount(%this, %obj, %forced) 
-{
-	return;
-}
-
-function EmptyCandleBot::onDisabled(%this, %obj) 
-{
-	return;
-}
-
-function EmptyCandleBot::onRemove(%this,%obj)
-{
-    if(isObject(%obj.candlebot)) %obj.candlebot.delete();
-}
-
-function EmptyLightBot::onRemove(%this,%obj)
-{
-    if(isObject(%obj.light)) %obj.light.delete();
-}		
-
-function CandleItemProp::onAdd(%this, %obj) 
-{
-	%obj.setDamageLevel(%this.maxDamage);
-
-	if(isObject(%source = %obj.source)) %source.mountObject(%obj,%obj.slotToMountBot);	
-	else
-	{
-		%obj.delete();
-		return;
-	}
-}
-
-function CandleItemProp::ToggleLight(%this,%obj,%bool)
-{
-    if(%bool)
-    {        
-        %obj.light = new fxlight()
-        {
-            dataBlock = "CandleLight";
-            enable = true;
-            iconsize = 1;
-        };
-        %obj.light.attachToObject(%obj);
-        %obj.playAudio(0,"candleignite_sound");
-    }
-    else
-    {
-        if(isObject(%obj.light)) %obj.light.delete();
-        %obj.playAudio(1,"candleextinguish_sound");
-    }
-}
-
-function CandleItemProp::doDismount(%this, %obj, %forced) 
-{
-	return;
-}
-
-function CandleItemProp::onDisabled(%this, %obj) 
-{
-	return;
-}
-
-function CandleItemProp::onRemove(%this,%obj)
-{
-    if(isObject(%obj.light)) %obj.light.delete();
 }

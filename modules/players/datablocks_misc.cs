@@ -81,6 +81,18 @@ if(isFile("add-ons/Gamemode_Eventide/modules/players/models/decal.ifl"))//Decals
 	addExtraResource("add-ons/Gamemode_Eventide/modules/players/models/decal.ifl");
 }
 
+datablock PlayerData(EmptyBot : PlayerStandardArmor)
+{
+	shapeFile = "base/data/shapes/empty.dts";
+	uiName = "";
+	className = PlayerData;
+};
+
+function EmptyBot::doDismount(%this,%obj,%forced)
+{
+	return;
+}
+
 datablock ParticleData(PrepperParticle)
 {
    dragCoefficient      = 5.0;

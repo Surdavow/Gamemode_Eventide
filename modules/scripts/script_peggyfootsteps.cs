@@ -529,41 +529,13 @@ function parseSoundFromNumber(%val, %obj) // brick is an optional parameter
 	}
 }
 
-//+++ When any lifeform spawns, create a footstep loop.
-deactivatepackage(peggsteps);
-package peggsteps
-{
-	function Armor::onNewDatablock(%this, %obj)
-	{
-		// creatures like horses won't make footsteps, but other AI will
-		if (%this.rideable	|| isEventPending(%obj.peggstep)) return parent::onNewDatablock(%this,%obj);
-		%obj.touchcolor = "";
-		%obj.surface = parseSoundFromNumber($Pref::Server::PF::defaultStep, %obj);
-		%obj.isSlow = 0;
-		%obj.peggstep = schedule(50,0,PeggFootsteps,%obj);
-		return parent::onNewDatablock(%this, %obj);
-	}
-
-	// I don't actually know how this built-in function works, but I know this will work.
-	function onMissionEnded(%this, %a, %b, %c, %d)
-	{
-		$PFGlassInit = false;
-		$PFRTBInit = false;
-		return parent::onMissionEnded(%this, %a, %b, %c, %d);
-	}
-};
-activatepackage(peggsteps);
-
-
-//+++ Landing from a fall
 function Armor::onLand(%data, %obj, %horiz)
 {
 	if (!$Pref::Server::PF::landingFX || %obj.isInvisible) return;
 
 	if (%horiz > $Pref::Server::PF::minLandSpeed + 16) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
 	else if (%horiz > $Pref::Server::PF::minLandSpeed + 8) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
-	else if (%horiz >= $Pref::Server::PF::minLandSpeed) serverplay3d("land_lite" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
-	
+	else if (%horiz >= $Pref::Server::PF::minLandSpeed) serverplay3d("land_lite" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());	
 }
 
 //+++ Drop some rad peggstep noise in here!

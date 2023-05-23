@@ -1,20 +1,3 @@
-package Eventide_ItemSpawning
-{
-    function MiniGameSO::Reset(%minigame,%client)
-	{		
-		Parent::Reset(%minigame,%client);
-		%minigame.randomizeEventideItems(true);
-	}
-
-    function MiniGameSO::Endgame(%minigame,%client)
-	{		
-		Parent::Endgame(%minigame,%client);
-		%minigame.randomizeEventideItems(false);
-	}    
-};
-if(isPackage(Eventide_ItemSpawning)) deactivatePackage(Eventide_ItemSpawning);
-activatePackage(Eventide_ItemSpawning);
-
 function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
 {	    
     if(!isObject(EventideItemSpawnSet) || !EventideItemSpawnSet.getCount()) return;

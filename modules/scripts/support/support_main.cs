@@ -11,10 +11,48 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 }
 
 package Eventide_MainPackage
-{	
-
-	function serverCmdMessageSent(%client,%msg)
+{
+	function onMissionEnded(%this, %a, %b, %c, %d)
 	{
+		$PFGlassInit = false;
+		$PFRTBInit = false;
+		return Parent::onMissionEnded(%this, %a, %b, %c, %d);
+	}
+
+	function ServerCmdTeamMessageSent(%client, %message)
+	{
+		if(!$Pref::Server::ChatMod::lchatEnabled)
+		{
+			Parent::ServerCmdTeamMessageSent(%client, %message);
+			return;
+		}
+
+		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
+
+		if(%message !$= "0")
+		{
+			if(isObject(%client.player))
+			{
+				%client.player.playThread(3,talk);
+				%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+
+				if(%client.player.radioEquipped) ChatMod_RadioMessage(%client, %message, true);
+				if(isObject(%client.minigame)) ChatMod_TeamLocalChat(%client, %message);
+				else if(!%client.player.radioEquipped) messageClient(%client,'',"\c5You must be in a minigame to team chat.");
+			}
+			else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
+			%client.lastMessageSent = %client;
+		}			
+	}	
+
+	function ServerCmdStartTalking(%client)
+	{
+		if($Pref::Server::ChatMod::lchatEnabled) return;
+		else parent::ServerCmdStartTalking(%client);
+	}	
+
+	function serverCmdMessageSent(%client,%message)
+	{		
 		if(%client.customtitlecolor $= "") %color = "FFFFFF";
         else %color = %client.customtitlecolor;
 
@@ -27,14 +65,38 @@ package Eventide_MainPackage
         if(%client.customtitle !$= "") %client.clanPrefix = %bitmap @ "<color:" @ %color @ ">" @ "<font:" @ %font @ ":25>" @ %client.customtitle SPC "";
         else if(%client.customtitlebitmap !$= "") %client.clanPrefix = %bitmap @ "";
 		else %client.clanPrefix = "";
-		Parent::serverCmdMessageSent(%client,%msg);
-	}
 
-	function GameConnection::createPlayer (%client, %spawnPoint)
-	{
-		Parent::createPlayer(%client,%spawnPoint);
-
-		if(isObject(%client.player) && isObject(%client.effect)) %client.player.mountImage(%client.effect,2);
+		Parent::ServerCmdMessageSent(%client,%message);		
+//
+		//if(!$Pref::Server::ChatMod::lchatEnabled)
+		//{
+		//	Parent::ServerCmdMessageSent(%client, %message);
+		//	return;
+		//}		
+//
+		//%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
+//
+		//if(%message !$= "0")
+		//{
+		//	if(ChatMod_getGlobalChatPerm(%client) && getSubStr(%message, 0, 1) $= "&") 
+		//	{
+		//		messageAll('', "\c6[\c4GLOBAL\c6] \c3" @ %client.name @ "\c6: " @ getSubStr(%message, 1, strlen(%message)));
+		//		if(isObject(%client.player))
+		//		{				
+		//			%client.player.playThread(3,talk);
+		//			%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+		//		}
+		//	}
+		//	else if(isObject(%client.player))
+		//	{
+		//		ChatMod_LocalChat(%client, %message);
+		//		%client.player.playThread(3,talk);
+		//		%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+		//	}
+		//	else for(%i=0; %i<clientGroup.getCount(); %i++) if(isObject(%targetClient = clientGroup.getObject(%i)) && !isObject(%targetClient.player)) 
+		//	chatMessageClientRP(%targetClient, "", "\c7[DEAD] "@ %client.name, "", %message);
+		//}		
+		//%client.lastMessageSent = %message;		
 	}
 
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
@@ -153,8 +215,24 @@ package Eventide_MainPackage
 	}
 
 	function Armor::onNewDatablock(%this,%obj)
-	{
+	{		
 		Parent::onNewDatablock(%this,%obj);
+
+		if(%this.isKiller) %obj.onKillerLoop();		
+
+		if(isObject(%client = %obj.client) && !isObject(%obj.effectbot))
+		{
+			%obj.effectbot = new Player() 
+    		{
+    	    	dataBlock = "EmptyBot";
+    		};
+			%obj.mountobject(%obj.effectbot,5);			
+			%obj.effectbot.mountImage(%client.effect,0);
+
+			%obj.effectbot.setNetFlag(6,true);
+			for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj)
+			%obj.effectbot.clearScopeToClient(%client);			
+		}
 
 		if(%this != %obj.getDatablock() && %this.maxTools != %obj.client.lastMaxTools)
 		{
@@ -171,14 +249,21 @@ package Eventide_MainPackage
 				if(isObject(%obj.tool[%i])) messageClient(%obj.client,'MsgItemPickup',"",%i,%obj.tool[%i].getID(),1);
 				else messageClient(%obj.client,'MsgItemPickup',"",%i,0,1);
 			}
-		}		
+		}
 
-		%obj.schedule(10,onKillerLoop);
+		if(%this.rideable || isEventPending(%obj.peggstep)) return;
+		%obj.touchcolor = "";
+		%obj.surface = parseSoundFromNumber($Pref::Server::PF::defaultStep, %obj);
+		%obj.isSlow = 0;
+		%obj.peggstep = schedule(50,0,PeggFootsteps,%obj);
 	}
 
 	function Armor::onDisabled(%this, %obj, %state)
 	{
         Parent::onDisabled(%this, %obj, %state);
+
+		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++) 
+		if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) %obj.getMountedObject(%i).delete();		
 
         if(isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
 		{
@@ -212,15 +297,15 @@ package Eventide_MainPackage
 	}
 
 	function fxDTSBrick::onRemove(%data, %brick)
-	{
-		if(isObject(%brick.interactiveshape)) %brick.interactiveshape.delete();
+	{		
 		Parent::OnRemove(%data,%brick);
+		if(isObject(%brick.interactiveshape)) %brick.interactiveshape.delete();
 	}
 
 	function fxDTSBrick::onDeath(%data, %brick)
-	{
-		if(isObject(%brick.interactiveshape)) %brick.interactiveshape.delete();
+	{		
 	   	Parent::onDeath(%data, %brick);
+		if(isObject(%brick.interactiveshape)) %brick.interactiveshape.delete();
 	}	
 	
 	function serverCmdUseTool(%client, %tool)
@@ -264,6 +349,8 @@ package Eventide_MainPackage
 		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();
 		if(isObject(EventideShapeGroup)) EventideShapeGroup.delete();
 		if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
+
+		%minigame.randomizeEventideItems(true);
     }
 
     function MinigameSO::endGame(%minigame,%client)
@@ -276,8 +363,28 @@ package Eventide_MainPackage
 			%client.EventidemusicEmitter.delete();
 			%client.escaped = false;
 		}
-		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();    
+		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();
+
+		%minigame.randomizeEventideItems(false);
     }
+
+	function GameConnection::onConnect(%client)
+	{
+		parent::onConnect(%client);
+		schedule(100,0,Eventide_loadEventideStats,%client);
+	}
+
+	function GameConnection::onClientEnterGame(%client)
+	{
+		parent::onClientEnterGame(%client);
+		Eventide_loadEventideStats(%client);		
+	}	
+
+	function GameConnection::onClientLeaveGame(%client)
+	{
+		parent::onClientLeaveGame(%client);
+		Eventide_storeEventideStats(%client);	
+	}	
 
 	function GameConnection::setControlObject(%this,%obj)
 	{
