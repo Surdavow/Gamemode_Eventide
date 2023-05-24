@@ -1,6 +1,13 @@
+datablock TSShapeConstructor(SkullwolfDTS) 
+{
+	baseShape = "./models/skullwolf.dts";
+	sequence0 = "./models/skullwolf.dsq";
+};
+
 datablock PlayerData(PlayerSkullWolf : PlayerRenowned) 
 {
 	uiName = "Skullwolf Player";
+	shapeFile = SkullwolfDTS.baseShape;	
 
 	killerchaselvl1music = "musicData_OUT_SkullWolfNear";
 	killerchaselvl2music = "musicData_OUT_SkullWolfChase";
@@ -69,13 +76,24 @@ function PlayerSkullWolf::onPeggFootstep(%this,%obj)
 	serverplay3d("skullwolf_walking" @ getRandom(1,6) @ "_sound", %obj.getHackPosition());
 }
 
+function PlayerSkullWolf::onImpact(%this, %obj, %col, %vec, %force)
+{
+	if(%obj.getState() !$= "Dead") 
+	{				
+		%zvector = getWord(%vec,2);
+		if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"land");
+	}
+	
+	Parent::onImpact(%this, %obj, %col, %vec, %force);	
+}
+
 function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 {
 	if(!isObject(%obj) || isEventPending(%obj.disappearsched)) return;
 
 	if(%alpha == 0) 
 	{
-		%this.EventideAppearance(%obj,%obj.client);
+		%obj.unHideNode("ALL");
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"skullwolf_uncloak_sound");
 		%obj.setmaxforwardspeed(6.84);
@@ -88,7 +106,7 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 	if(%alpha == 1) 
 	{
 		%obj.setTempSpeed(1);
-		%this.EventideAppearance(%obj,%obj.client);
+		%obj.unHideNode("ALL");
 		return;
 	}
 
@@ -118,43 +136,16 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 
 function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 {
-	Parent::EventideAppearance(%this,%obj,%client);
-
-	%furColor = "0.05 0.05 0.05 1";
-	%obj.setDecalName("");
-
-	%obj.HideNode("headskin");
-	%obj.HideNode((%client.rhand ? "rhook" : "rhand"));
-	%obj.HideNode((%client.lhand ? "lhook" : "lhand"));
-	%obj.HideNode($hat[%client.hat]);
-	%obj.HideNode($accent[%client.accent]);
-	%obj.HideNode($secondPack[%client.secondPack]);
-	%obj.hideNode($pack[%client.pack]);
-	%obj.HideNode("visor");
-	%obj.HideNode("rpeg");
-	%obj.HideNode("lpeg");
-	%obj.unHideNode("rshoe");
-	%obj.unHideNode("lshoe");	
-	%obj.unHideNode("skull");
-	%obj.unHideNode("fur");
-	%obj.unHideNode("RhandClaws");
-	%obj.unHideNode("LhandClaws");
-	%obj.setNodeColor("skull","1 1 1 1");
-	%obj.setNodeColor("fur",%furColor);
-
-	%obj.unhidenode("chest_blood_front");
-	%obj.unhidenode("Lhand_blood");
-	%obj.unhidenode("Rhand_blood");
-	
-	%obj.setNodeColor((%client.rarm ? "rarmSlim" : "rarm"),%furColor);
-	%obj.setNodeColor((%client.larm ? "larmSlim" : "larm"),%furColor);
-	%obj.setNodeColor("RhandClaws",%furColor);
-	%obj.setNodeColor("LhandClaws",%furColor);
-	%obj.setNodeColor((%client.chest ? "femChest" : "chest"),%furColor);
-	%obj.setNodeColor("pants",%furColor);
-	%obj.setNodeColor("rshoe",%furColor);
-	%obj.setNodeColor("lshoe",%furColor);
-	%obj.setHeadUp(0);
+	%furcolor = "0.05 0.05 0.05 1";
+	%obj.setnodecolor("head",%furcolor);		
+	%obj.setnodecolor("rarm",%furcolor);
+	%obj.setnodecolor("larm",%furcolor);
+	%obj.setnodecolor("rhand",%furcolor);
+	%obj.setnodecolor("lhand",%furcolor);
+	%obj.setnodecolor("femchest",%furcolor);
+	%obj.setnodecolor("pants",%furcolor);
+	%obj.setnodecolor("rshoe",%furcolor);
+	%obj.setnodecolor("lshoe",%furcolor);
 }
 
 function PlayerSkullWolf::onDisabled(%this, %obj, %state)

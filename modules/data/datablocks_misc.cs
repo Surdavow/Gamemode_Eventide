@@ -5,10 +5,10 @@ AddDamageType("BrokenBottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/ico
 AddDamageType("Chair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_chair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_chair> %1',1,1);
 AddDamageType("FoldingChair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_foldingChair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_foldingChair> %1',1,1);
 
-if(isFile("add-ons/Gamemode_Eventide/modules/players/models/face.ifl"))//Faces
+if(isFile("add-ons/Gamemode_Eventide/modules/data/models/face.ifl"))//Faces
 {
 	%write = new FileObject();
-	%write.openForWrite("add-ons/Gamemode_Eventide/modules/players/models/face.ifl");
+	%write.openForWrite("add-ons/Gamemode_Eventide/modules/data/models/face.ifl");
 	%write.writeLine("base/data/shapes/player/faces/smiley.png");
 	%write.writeLine("Add-Ons/Face_Default/smileyRedBeard2.png");
 	%write.writeLine("Add-Ons/Face_Default/smileyRedBeard.png");
@@ -30,7 +30,7 @@ if(isFile("add-ons/Gamemode_Eventide/modules/players/models/face.ifl"))//Faces
 	%write.writeLine("Add-Ons/Face_Default/memeBlockMongler.png");
 	%write.writeLine("Add-Ons/Face_Default/asciiTerror.png");
 	
-	%decalpath = "add-ons/Gamemode_Eventide/modules/players/models/faces/*.png";
+	%decalpath = "add-ons/Gamemode_Eventide/modules/data/models/faces/*.png";
 	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
 		eval("addExtraResource(\""@ %decalfile @ "\");");
@@ -39,13 +39,13 @@ if(isFile("add-ons/Gamemode_Eventide/modules/players/models/face.ifl"))//Faces
 
 	%write.close();
 	%write.delete();
-	addExtraResource("add-ons/Gamemode_Eventide/modules/players/models/face.ifl");
+	addExtraResource("add-ons/Gamemode_Eventide/modules/data/models/face.ifl");
 }
 
-if(isFile("add-ons/Gamemode_Eventide/modules/players/models/decal.ifl"))//Decals
+if(isFile("add-ons/Gamemode_Eventide/modules/data/models/decal.ifl"))//Decals
 {
 	%write = new FileObject();
-	%write.openForWrite("add-ons/Gamemode_Eventide/modules/players/models/decal.ifl");
+	%write.openForWrite("add-ons/Gamemode_Eventide/modules/data/models/decal.ifl");
 	%write.writeLine("base/data/shapes/players/decals/AAA-none.png");
 	%write.writeLine("Add-Ons/Decal_WORM/worm_engineer.png");
 	%write.writeLine("Add-Ons/Decal_WORM/worm-sweater.png");
@@ -76,7 +76,7 @@ if(isFile("add-ons/Gamemode_Eventide/modules/players/models/decal.ifl"))//Decals
 	%write.writeLine("Add-Ons/Decal_Default/Medieval-Lion.png");
 	%write.writeLine("Add-Ons/Decal_Default/Medieval-Eagle.png");
 	
-	%decalpath = "add-ons/Gamemode_Eventide/modules/players/models/decals/*.png";
+	%decalpath = "add-ons/Gamemode_Eventide/modules/data/models/decals/*.png";
 	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
 		eval("addExtraResource(\""@ %decalfile @ "\");");
@@ -85,7 +85,7 @@ if(isFile("add-ons/Gamemode_Eventide/modules/players/models/decal.ifl"))//Decals
 
 	%write.close();
 	%write.delete();
-	addExtraResource("add-ons/Gamemode_Eventide/modules/players/models/decal.ifl");
+	addExtraResource("add-ons/Gamemode_Eventide/modules/data/models/decal.ifl");
 }
 
 datablock DebrisData(sm_woodFragDebris)
@@ -1301,12 +1301,6 @@ datablock ShapeBaseImageData(ZombieBodyImage)
 	stateScript[0]				= "onGlow";
 };
 
-datablock StaticShapeData(AnglerHookRope)
-{
-	shapeFile = "./models/hookrope.dts";
-	isHookRope = true;
-};
-
 datablock fxLightData(NegativePlayerLight)
 {
 	uiName = "Player\'s Negative Light";
@@ -1366,4 +1360,78 @@ datablock fxLightData(NoFlareBLight : NoFlareGLight)
 {
 	uiName = "No Flare Blue";
 	color = "0.1 0.1 1";
+};
+
+%imageskinpath = "./models/hats/*.png";
+for(%imageskinfile = findFirstFile(%imageskinpath); %imageskinfile !$= ""; %imageskinfile = findNextFile(%imageskinpath)) eval("addExtraResource(\""@ %imageskinfile @ "\");");
+
+datablock shapeBaseImageData(scouthatimage)
+{
+	shapefile = "./models/hats/scouthat.dts";
+	mountPoint = 6;
+	offset = "0 0 0";
+	eyeOffset = "0 0 10";
+	doColorShift = false;
+	className = "WeaponImage";
+	armReady = false;
+};
+
+datablock shapeBaseImageData(knithatimage : scouthatimage)
+{
+	shapefile = "./models/hats/knitHat.dts";
+	offset = "0 0 0";
+};
+
+datablock shapeBaseImageData(helmetimage : scouthatimage)
+{
+	shapefile = "./models/hats/helmet.dts";
+	offset = "0 0 0";
+};
+
+datablock shapeBaseImageData(fedorahatimage : scouthatimage)
+{
+	shapefile = "./models/hats/fedorahat.dts";
+	offset = "0 0 0.05";
+};
+
+datablock shapeBaseImageData(fancyhatimage : scouthatimage)
+{
+	shapefile = "./models/hats/fancyhat.dts";
+	offset = "0 0 0";
+};
+
+datablock shapeBaseImageData(hoodieimage : scouthatimage)
+{
+	shapefile = "./models/hats/hoodie.dts";
+	offset = "0 0 0";
+};
+
+datablock shapeBaseImageData(detectivehatimage : scouthatimage)
+{
+	shapefile = "./models/hats/detectivehat.dts";
+	offset = "0 0 0";
+};
+
+datablock shapeBaseImageData(cophatimage : scouthatimage)
+{
+	shapefile = "./models/hats/cophat.dts";
+	offset = "0 0 0";
+};
+
+datablock shapeBaseImageData(constructionhelmetimage : scouthatimage)
+{
+	shapefile = "./models/hats/constructionhelmet.dts";
+	offset = "0 0 0";
+};
+
+datablock shapeBaseImageData(caphatimage : scouthatimage)
+{
+	shapefile = "./models/hats/caphat.dts";
+	offset = "0 0 0";
+};
+
+datablock shapeBaseImageData(armorhelmetimage : scouthatimage)
+{
+	shapefile = "./models/hats/armorhelmet.dts";
+	offset = "0 0 0";
 };

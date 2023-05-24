@@ -9,3 +9,8 @@ function EmptyBot::doDismount(%this,%obj,%forced)
 {
 	return;
 }
+
+function EmptyBot::onRemove(%this,%obj)
+{
+	if(isObject(%obj.light)) %obj.light.delete();
+}

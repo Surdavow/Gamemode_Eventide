@@ -18,7 +18,6 @@ Add-Ons/Face_Default/memeDesu.png
 Add-Ons/Face_Default/memeCats.png
 Add-Ons/Face_Default/memeBlockMongler.png
 Add-Ons/Face_Default/asciiTerror.png
-Add-Ons/Gamemode_Eventide/modules/players/models/faces/shire.png
-Add-Ons/Gamemode_Eventide/modules/players/models/faces/renownedface.png
-Add-Ons/Gamemode_Eventide/modules/players/models/faces/hexZombie.png
-Add-Ons/Gamemode_Eventide/modules/players/models/faces/gloweyes.png
+Add-Ons/Gamemode_Eventide/modules/data/models/faces/shire.png
+Add-Ons/Gamemode_Eventide/modules/data/models/faces/renownedface.png
+Add-Ons/Gamemode_Eventide/modules/data/models/faces/hexZombie.png

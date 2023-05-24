@@ -279,7 +279,7 @@ function Player::onKillerLoop(%obj)
 				%obj.playthread(1,"root");
 				%obj.raisearms = false;
 			}
-		}		
+		}
 	}
 
     cancel(%obj.onKillerLoop);//Prevent duplicate processes
@@ -292,33 +292,33 @@ function Player::KillerGhostLightCheck(%obj)
 	
 	if(!%obj.isInvisible)
 	{
-		if(!isObject(%obj.lightbot))
+		if(!isObject(%obj.effectbot))
 		{
-			%obj.lightbot = new Player() 
+			%obj.effectbot = new Player() 
 			{ 
 				dataBlock = "EmptyBot";
 				source = %obj;			
 			};
-			%obj.mountObject(%obj.lightbot,5);
-			MissionCleanup.add(%obj.lightbot);
+			%obj.mountObject(%obj.effectbot,5);
+			MissionCleanup.add(%obj.effectbot);
 
-			%obj.lightbot.light = new fxLight ("")
+			%obj.effectbot.light = new fxLight ("")
 			{
 				dataBlock = %obj.getdataBlock().killerlight;
-				source = %obj.lightbot;
+				source = %obj.effectbot;
 			};
-			MissionCleanup.add(%obj.lightbot.light);
-			%obj.lightbot.light.setTransform(%obj.lightbot.getTransform());
-			%obj.lightbot.light.attachToObject(%obj.lightbot);
+			MissionCleanup.add(%obj.effectbot.light);
+			%obj.effectbot.light.setTransform(%obj.effectbot.getTransform());
+			%obj.effectbot.light.attachToObject(%obj.effectbot);
 		}
 
-		%obj.lightbot.light.setNetFlag(6,true);
-		for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj) %obj.lightbot.light.clearScopeToClient(%client);
+		%obj.effectbot.light.setNetFlag(6,true);
+		for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj) %obj.effectbot.light.clearScopeToClient(%client);
 	}
 	else
 	{
-		if(isObject(%obj.lightbot.light)) %obj.lightbot.light.delete();
-		if(isObject(%obj.lightbot)) %obj.lightbot.delete();	
+		if(isObject(%obj.effectbot.light)) %obj.effectbot.light.delete();
+		if(isObject(%obj.effectbot)) %obj.effectbot.delete();	
 	}
 }
 

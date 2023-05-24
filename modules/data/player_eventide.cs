@@ -91,7 +91,6 @@ function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
 	Parent::onImpact(%this, %obj, %col, %vec, %force);	
 }
 
-
 function EventidePlayer_BreakFreePrint(%client,%amount)
 {
     if(!isobject(%client)) return;
