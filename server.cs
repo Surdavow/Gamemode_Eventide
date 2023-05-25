@@ -1,4 +1,5 @@
 if(ForceRequiredAddOn("Server_VehicleGore") == $Error::AddOn_NotFound) return error("Server_VehicleGore must be enabled for Gamemode_Eventide to work");
+if(ForceRequiredAddOn("Support_Lua") == $Error::AddOn_NotFound) return error("Support_Lua must be enabled for Gamemode_Eventide to work");
 
 exec("./modules/scripts/module_scripts.cs");
 exec("./modules/data/module_data.cs");
