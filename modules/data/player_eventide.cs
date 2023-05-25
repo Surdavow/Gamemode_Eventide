@@ -230,7 +230,7 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 		%obj.unHideNode($secondPack[%funcclient.secondPack]);
 		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
 	}
-	if($hat[%funcclient.hat] !$= "None") %obj.mountImage($hat[%funcclient.hat] @ "image",2,1,addTaggedString(luacall(getcolorname,%funcclient.hatColor)));
+	if($hat[%funcclient.hat] != 0) %obj.mountImage($hat[%funcclient.hat] @ "image",2,1,addTaggedString(luacall(getcolorname,%funcclient.hatColor)));
 	else if(isObject(%funcclient.customhat)) %obj.mountImage(%funcclient.customhat,2,1,addTaggedString(luacall(getcolorname,%funcclient.hatColor)));
 	if(%funcclient.hip)
 	{
