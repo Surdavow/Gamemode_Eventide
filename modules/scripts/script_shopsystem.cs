@@ -353,10 +353,18 @@ function BuyHat(%client,%menu,%option)
 function serverCmdHat(%client,%Hat)
 {    
     if(!isObject(%client) || !isObject(%client.player)) return;
-    if(strlwr(%Hat) $= "none") return %client.player.mountImage($hat[%client.hat] @ "image",2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));
+    if(strlwr(%Hat) $= "none") 
+    {
+        %client.player.mountImage($hat[%client.hat] @ "image",2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));
+        %client.customhat = "";
+    }
     
     for(%i = 0; %i <= getWordCount($ShopHatList); %i++)
-    if(strlwr(%Hat) $= strreplace(strlwr(getWord($ShopHatList,%i)),"image","") && %client.hasHat[%i]) return %client.player.mountImage(getWord($ShopHatList,%i),2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));            
+    if(strlwr(%Hat) $= strreplace(strlwr(getWord($ShopHatList,%i)),"image","") && %client.hasHat[%i]) 
+    {
+        %client.player.mountImage(getWord($ShopHatList,%i),2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));            
+        %client.customhat = getWord($ShopHatList,%i);
+    }
 
     messageClient(%client, '', "<tab:280>\c6Your Hats List");
     messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
@@ -364,4 +372,5 @@ function serverCmdHat(%client,%Hat)
     messageClient(%client, '', "<tab:280>\c6" @ strreplace(getWord($ShopHatList,%i),"Image",""));
     messageClient(%client, '', "<tab:280>\c6None");
     %client.player.mountImage($hat[%client.hat] @ "image",2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));
+    %client.customhat = "";
 }

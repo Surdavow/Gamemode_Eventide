@@ -1,4 +1,4 @@
-$Eventide_ReferenceStats = "score effect customtitle customtitlebitmap customtitlefont customtitlecolor";
+$Eventide_ReferenceStats = "score effect customhat customtitle customtitlebitmap customtitlefont customtitlecolor";
 
 for (%i = 0; %i < getWordCount($ShopEffectList); %i++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasEffect" @ %i;
 for (%j = 0; %j < getWordCount($ShopInstrumentList); %j++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasInstrument" @ %j;
