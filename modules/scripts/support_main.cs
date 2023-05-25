@@ -66,37 +66,34 @@ package Eventide_MainPackage
         else if(%client.customtitlebitmap !$= "") %client.clanPrefix = %bitmap @ "";
 		else %client.clanPrefix = "";
 
-		Parent::ServerCmdMessageSent(%client,%message);		
-//
-		//if(!$Pref::Server::ChatMod::lchatEnabled)
-		//{
-		//	Parent::ServerCmdMessageSent(%client, %message);
-		//	return;
-		//}		
-//
-		//%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
-//
-		//if(%message !$= "0")
-		//{
-		//	if(ChatMod_getGlobalChatPerm(%client) && getSubStr(%message, 0, 1) $= "&") 
-		//	{
-		//		messageAll('', "\c6[\c4GLOBAL\c6] \c3" @ %client.name @ "\c6: " @ getSubStr(%message, 1, strlen(%message)));
-		//		if(isObject(%client.player))
-		//		{				
-		//			%client.player.playThread(3,talk);
-		//			%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
-		//		}
-		//	}
-		//	else if(isObject(%client.player))
-		//	{
-		//		ChatMod_LocalChat(%client, %message);
-		//		%client.player.playThread(3,talk);
-		//		%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
-		//	}
-		//	else for(%i=0; %i<clientGroup.getCount(); %i++) if(isObject(%targetClient = clientGroup.getObject(%i)) && !isObject(%targetClient.player)) 
-		//	chatMessageClientRP(%targetClient, "", "\c7[DEAD] "@ %client.name, "", %message);
-		//}		
-		//%client.lastMessageSent = %message;		
+		if(!$Pref::Server::ChatMod::lchatEnabled)
+		{
+			Parent::ServerCmdMessageSent(%client, %message);
+			return;
+		}		
+
+		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
+		if(%message !$= "0")
+		{
+			if(ChatMod_getGlobalChatPerm(%client) && getSubStr(%message, 0, 1) $= "&") 
+			{
+				messageAll('', "\c6[\c4GLOBAL\c6] \c3" @ %client.name @ "\c6: " @ getSubStr(%message, 1, strlen(%message)));
+				if(isObject(%client.player))
+				{				
+					%client.player.playThread(3,talk);
+					%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+				}
+			}
+			else if(isObject(%client.player))
+			{
+				ChatMod_LocalChat(%client, %message);
+				%client.player.playThread(3,talk);
+				%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+			}
+			else for(%i=0; %i<clientGroup.getCount(); %i++) if(isObject(%targetClient = clientGroup.getObject(%i)) && !isObject(%targetClient.player)) 
+			chatMessageClientRP(%targetClient, "", "\c7[DEAD] "@ %client.name, "", %message);
+		}		
+		%client.lastMessageSent = %message;		
 	}
 
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
