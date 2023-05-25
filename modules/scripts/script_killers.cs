@@ -5,17 +5,16 @@ function KillerSpawnMessage(%obj)
 	if(%obj.firstMessageSpawn) return;
 	%obj.firstMessageSpawn = true;
 	
-	%random = getRandom(1,5);
+	%random = getRandom(1,4);
 	switch(%random)
 	{
-		case 1: %message = "Prepare to face the hunter hungering for fury!";
-		case 2: %message = "Prepare to face the fury of the relentless slayer!";
-		case 3: %message = "From the depths of darkness emerges the hunter of souls.";
-		case 4: %message = "Fear the bloodthirsty hunter, armed with lethal intent.";
-		case 5: %message = "Your fates are sealed, the hunter arrives!";
+		case 1: %message = "The hunter has arrived.";
+		case 2: %message = "Ready yourselves, the hunter has arrived.";
+		case 3: %message = "Prepare yourselves, it is coming...";
+		case 4: %message = %obj.getdataBlock().killerSpawnMessage;
 	}
 
-	%minigame.chatmsgall("<font:Impact:30>\c3" @ %message);
+	%minigame.chatmsgall("<font:Impact:30>\c0" @ %message);
 	for(%i = 0; %i < %minigame.numMembers; %i++) if(isObject(%member = %minigame.member[%i])) %member.play2D("render_wind_sound");	
 }
 

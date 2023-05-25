@@ -128,3 +128,14 @@ function PlayerPuppetMaster::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%bonecolor);
 	%obj.setHeadUp(0);
 }
+
+function PlayerPuppetMaster::onImpact(%this, %obj, %col, %vec, %force)
+{
+	if(%obj.getState() !$= "Dead") 
+	{				
+		%zvector = getWord(%vec,2);
+		if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"land");
+	}
+	
+	Parent::onImpact(%this, %obj, %col, %vec, %force);	
+}

@@ -1362,76 +1362,9 @@ datablock fxLightData(NoFlareBLight : NoFlareGLight)
 	color = "0.1 0.1 1";
 };
 
-%imageskinpath = "./models/hats/*.png";
-for(%imageskinfile = findFirstFile(%imageskinpath); %imageskinfile !$= ""; %imageskinfile = findNextFile(%imageskinpath)) eval("addExtraResource(\""@ %imageskinfile @ "\");");
+%hatpngpath = "./models/hats/*.png";
+for(%hatpngfile = findFirstFile(%hatpngpath); %hatpngfile !$= ""; %hatpngfile = findNextFile(%hatpngpath)) eval("addExtraResource(\""@ %hatpngfile @ "\");");
 
-datablock shapeBaseImageData(scouthatimage)
-{
-	shapefile = "./models/hats/scouthat.dts";
-	mountPoint = 6;
-	offset = "0 0 0";
-	eyeOffset = "0 0 10";
-	doColorShift = false;
-	className = "WeaponImage";
-	armReady = false;
-};
-
-datablock shapeBaseImageData(knithatimage : scouthatimage)
-{
-	shapefile = "./models/hats/knitHat.dts";
-	offset = "0 0 0";
-};
-
-datablock shapeBaseImageData(helmetimage : scouthatimage)
-{
-	shapefile = "./models/hats/helmet.dts";
-	offset = "0 0 0";
-};
-
-datablock shapeBaseImageData(fedorahatimage : scouthatimage)
-{
-	shapefile = "./models/hats/fedorahat.dts";
-	offset = "0 0 0.05";
-};
-
-datablock shapeBaseImageData(fancyhatimage : scouthatimage)
-{
-	shapefile = "./models/hats/fancyhat.dts";
-	offset = "0 0 0";
-};
-
-datablock shapeBaseImageData(hoodieimage : scouthatimage)
-{
-	shapefile = "./models/hats/hoodie.dts";
-	offset = "0 0 0";
-};
-
-datablock shapeBaseImageData(detectivehatimage : scouthatimage)
-{
-	shapefile = "./models/hats/detectivehat.dts";
-	offset = "0 0 0";
-};
-
-datablock shapeBaseImageData(cophatimage : scouthatimage)
-{
-	shapefile = "./models/hats/cophat.dts";
-	offset = "0 0 0";
-};
-
-datablock shapeBaseImageData(constructionhelmetimage : scouthatimage)
-{
-	shapefile = "./models/hats/constructionhelmet.dts";
-	offset = "0 0 0";
-};
-
-datablock shapeBaseImageData(caphatimage : scouthatimage)
-{
-	shapefile = "./models/hats/caphat.dts";
-	offset = "0 0 0";
-};
-
-datablock shapeBaseImageData(armorhelmetimage : scouthatimage)
-{
-	shapefile = "./models/hats/armorhelmet.dts";
-	offset = "0 0 0";
-};
+%hatimagepath = "./models/hats/*.dts";
+for(%hatimagefile = findFirstFile(%hatimagepath); %hatimagefile !$= ""; %hatimagefile = findNextFile(%hatimagepath)) 
+eval("datablock shapeBaseImageData(" @ strreplace(fileName(%hatimagefile),".dts","") @ "image) { shapefile = \"" @ %hatimagefile @ "\"; mountPoint = 6; offset = \"0 0 0\"; eyeOffset = \"0 0 10\"; doColorShift = false; className = \"WeaponImage\"; armReady = false; };");

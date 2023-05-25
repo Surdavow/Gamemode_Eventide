@@ -2,6 +2,8 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 {
 	uiName = "Render Player";
 
+	killerSpawnMessage = "A silent anomally reemerges from the past.";
+
 	firstpersononly = true;
 
 	showEnergyBar = true;

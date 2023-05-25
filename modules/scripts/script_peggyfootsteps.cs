@@ -636,7 +636,7 @@ function PeggFootsteps(%obj, %lastVert)
 			%obj.touchColor = "";
 			%obj.surface = "under water";
 			serverplay3d(checkPlayback(%obj), %obj.getHackPosition());
-			%obj.getDatablock().onPeggFootstep(%obj);
+			if(!%obj.isCrouched()) %obj.getDatablock().onPeggFootstep(%obj);
 			%obj.peggstep = schedule(500 * getWord(%obj.getScale(), 0), 0, PeggFootsteps, %obj);
 		}
 		else if(mFloor(%horiz) == 0 || !%isGround) %obj.peggstep = schedule(50, 0, PeggFootsteps, %obj, %vert);
@@ -645,7 +645,7 @@ function PeggFootsteps(%obj, %lastVert)
 		{
 			%obj.peggstep = schedule(320 * getWord(%obj.getScale(), 0), 0, PeggFootsteps, %obj, %vert);
 			serverplay3d(checkPlayback(%obj), %obj.getHackPosition());
-			%obj.getDatablock().onPeggFootstep(%obj);
+			if(!%obj.isCrouched()) %obj.getDatablock().onPeggFootstep(%obj);
 		}
 
 		%obj.peggstep = schedule(1000, 0, PeggFootsteps, %obj);
@@ -655,7 +655,7 @@ function PeggFootsteps(%obj, %lastVert)
 
 function Armor::onPeggFootstep(%this,%obj)
 {
-	//yee
+	
 }
 
 registerOutputEvent("fxDTSBrick","setFootstep","List Clear -1 Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9");

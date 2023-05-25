@@ -9,6 +9,8 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	uiName = "Skullwolf Player";
 	shapeFile = SkullwolfDTS.baseShape;	
 
+	killerSpawnMessage = "A fanged anomally of the forest has arrived.";
+
 	killerchaselvl1music = "musicData_OUT_SkullWolfNear";
 	killerchaselvl2music = "musicData_OUT_SkullWolfChase";
 

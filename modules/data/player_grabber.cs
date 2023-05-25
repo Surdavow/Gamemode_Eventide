@@ -2,6 +2,8 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 {
 	uiName = "Grabber Player";
 
+	killerSpawnMessage = "The masked man arrives with silence and dread.";
+
 	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
 	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
 	
@@ -152,18 +154,62 @@ function PlayerGrabber::setStun(%this,%obj,%bool)
 
 function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 {
-	Parent::EventideAppearance(%this,%obj,%client);
+	if(%obj.isSkinwalker && isObject(%obj.victimreplicatedclient)) %funcclient = %obj.victimreplicatedclient;
+    else %funcclient = %client;	
+	
+	%obj.hideNode("ALL");
+	%obj.unHideNode((%funcclient.chest ? "femChest" : "chest"));	
+	%obj.unHideNode((%funcclient.rhand ? "rhook" : "rhand"));
+	%obj.unHideNode((%funcclient.lhand ? "lhook" : "lhand"));
+	%obj.unHideNode((%funcclient.rarm ? "rarmSlim" : "rarm"));
+	%obj.unHideNode((%funcclient.larm ? "larmSlim" : "larm"));
+	%obj.unHideNode("headskin");
+
+	if($pack[%funcclient.pack] !$= "none")
+	{
+		%obj.unHideNode($pack[%funcclient.pack]);
+		%obj.setNodeColor($pack[%funcclient.pack],%funcclient.packColor);
+	}
+	if($secondPack[%funcclient.secondPack] !$= "none")
+	{
+		%obj.unHideNode($secondPack[%funcclient.secondPack]);
+		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
+	}
+	
+	if(%funcclient.hip)
+	{
+		%obj.unHideNode("skirthip");
+		%obj.unHideNode("skirttrimleft");
+		%obj.unHideNode("skirttrimright");
+	}
+	else
+	{
+		%obj.unHideNode("pants");
+		%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
+		%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));
+	}
+
+	%obj.setHeadUp(0);
+	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
+
+	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
+	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
+	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
+	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
+	if (%obj.bloody["chest_front"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_front");
+	if (%obj.bloody["chest_back"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_back");
+
 	%obj.setDecalName("classicshirt");
 	%shirtColor = "0.28 0.21 0.12 1";
 	%pantsColor = "0.075 0.075 0.075 1";
-	%obj.HideNode($hat[%client.hat]);
-	%obj.HideNode($accent[%client.accent]);
+	%skinColor = "0.83 0.73 0.66 1";
 	%obj.HideNode($secondPack[%client.secondPack]);
 	%obj.hideNode($pack[%client.pack]);
 	%obj.HideNode("visor");
-	%obj.unHideNode("jasonmask");
-	%obj.setNodeColor("jasonmask","0.75 0.75 0.75 1");	
-	%obj.setNodeColor($hat[%client.hat],%shirtColor);
+	%obj.mountImage("jasonmaskimage",2);
+	%obj.setNodeColor("headskin",%skinColor);
+	%obj.setNodeColor("Rhand",%skinColor);
+	%obj.setNodeColor("Lhand",%skinColor);
 	%obj.setNodeColor((%client.rarm ? "rarmSlim" : "rarm"),%shirtColor);
 	%obj.setNodeColor((%client.larm ? "larmSlim" : "larm"),%shirtColor);
 	%obj.setNodeColor((%client.chest ? "femChest" : "chest"),%shirtColor);

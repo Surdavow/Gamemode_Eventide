@@ -1,6 +1,13 @@
+datablock TSShapeConstructor(AnglerDTS) {
+	baseShape = "./models/angler.dts";
+	sequence0 = "./models/angler.dsq";
+};
+
 datablock PlayerData(PlayerAngler : PlayerRenowned) 
 {
 	uiName = "Angler Player";
+	shapeFile = AnglerDTS.baseShape;
+
 	rechargeRate = 0.215;
 	maxTools = 0;
 	maxWeapons = 0;
@@ -12,7 +19,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
 
-	killerraisearms = true;
+	killerraisearms = false;
 	killerlight = "NoFlareBLight";	
 
 	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
@@ -112,37 +119,28 @@ function PlayerAngler::onNewDatablock(%this,%obj)
 }
 
 function PlayerAngler::EventideAppearance(%this,%obj,%client)
+{	
+	%skinColor = "0.16 0.27 0.43 1";
+	%obj.setNodeColor("chest",%skinColor);
+	%obj.setNodeColor("pants",%skinColor);
+	%obj.setNodeColor("Lhand",%skinColor);
+	%obj.setNodeColor("Rhand",%skinColor);
+	%obj.setNodeColor("Larm",%skinColor);
+	%obj.setNodeColor("Rarm",%skinColor);
+	%obj.setNodeColor("LShoe",%skinColor);
+	%obj.setNodeColor("RShoe",%skinColor);
+	%obj.setNodeColor("HeadSkin",%skinColor);
+}
+
+function PlayerAngler::onImpact(%this, %obj, %col, %vec, %force)
 {
-	Parent::EventideAppearance(%this,%obj,%client);
-	%obj.setDecalName("decalchest");
-	%obj.setFaceName("gloweyes");
-
-	%headColor = "0.16 0.27 0.43 1";
-
-	%obj.setNodeColor((%client.rarm ? "rarmSlim" : "rarm"),%headColor);
-	%obj.setNodeColor((%client.larm ? "larmSlim" : "larm"),%headColor);
-	%obj.setNodeColor("chest",%headColor);
-	%obj.setNodeColor("headskin",%headColor);
-	%obj.HideNode("Rhand");
-	%obj.unHideNode("RhandClaws");
-	%obj.setNodeColor("RhandClaws",%headColor);
-	%obj.setNodeColor("lhand",%headColor);
-	%obj.setNodeColor("rhook",%headColor);
-	%obj.setNodeColor("lhook",%headColor);
-	%obj.setNodeColor("anglerhead",%headColor);
-	%obj.HideNode("rpeg");
-	%obj.HideNode("lpeg");
-	%obj.unHideNode("rshoe");
-	%obj.unHideNode("lshoe");
-	%obj.hideNode($hat[%client.hat]);
-	%obj.HideNode($accent[%client.accent]);
-	%obj.HideNode($secondPack[%client.secondPack]);
-	%obj.hideNode($pack[%client.pack]);
-	%obj.HideNode("visor");
-	%obj.hideNode("femchest");
-	%obj.unhideNode("chest");
-	%obj.unhideNode("anglerhead");
-	%obj.setHeadUp(0);
+	if(%obj.getState() !$= "Dead") 
+	{				
+		%zvector = getWord(%vec,2);
+		if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"land");
+	}
+	
+	Parent::onImpact(%this, %obj, %col, %vec, %force);	
 }
 
 function PlayerAngler::onTrigger(%this, %obj, %trig, %press) 
@@ -180,7 +178,6 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 						%p.hookrope = %hookrope;
 					}								
 				}
-				else if(%press) %obj.playthread(0,"undo");
 	}
 	
 }

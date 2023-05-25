@@ -2,6 +2,8 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 {
 	uiName = "Renowned Player";	
 
+	killerSpawnMessage = "A droll of the mind arrives with death in close pursuit.";
+
 	rechargeRate = 0.26;
 	maxDamage = 9999;
 	maxTools = 0;
@@ -48,7 +50,84 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 
 function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 {
-	Parent::EventideAppearance(%this,%obj,%client);
+	if(%obj.isSkinwalker && isObject(%obj.victimreplicatedclient)) %funcclient = %obj.victimreplicatedclient;
+    else %funcclient = %client;	
+	
+	%obj.hideNode("ALL");
+	%obj.unHideNode((%funcclient.chest ? "femChest" : "chest"));	
+	%obj.unHideNode((%funcclient.rhand ? "rhook" : "rhand"));
+	%obj.unHideNode((%funcclient.lhand ? "lhook" : "lhand"));
+	%obj.unHideNode((%funcclient.rarm ? "rarmSlim" : "rarm"));
+	%obj.unHideNode((%funcclient.larm ? "larmSlim" : "larm"));
+	%obj.unHideNode("headskin");
+
+	if($pack[%funcclient.pack] !$= "none")
+	{
+		%obj.unHideNode($pack[%funcclient.pack]);
+		%obj.setNodeColor($pack[%funcclient.pack],%funcclient.packColor);
+	}
+	if($secondPack[%funcclient.secondPack] !$= "none")
+	{
+		%obj.unHideNode($secondPack[%funcclient.secondPack]);
+		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
+	}
+	
+	if(%funcclient.hip)
+	{
+		%obj.unHideNode("skirthip");
+		%obj.unHideNode("skirttrimleft");
+		%obj.unHideNode("skirttrimright");
+	}
+	else
+	{
+		%obj.unHideNode("pants");
+		%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
+		%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));
+	}
+
+	%obj.setHeadUp(0);
+	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
+
+	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
+	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
+	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
+	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
+	if (%obj.bloody["chest_front"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_front");
+	if (%obj.bloody["chest_back"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_back");
+
+	%obj.setFaceName(%funcclient.faceName);
+	%obj.setDecalName(%funcclient.decalName);
+
+	%obj.setNodeColor("headskin",%funcclient.headColor);	
+	%obj.setNodeColor("chest",%funcclient.chestColor);
+	%obj.setNodeColor("femChest",%funcclient.chestColor);
+	%obj.setNodeColor("pants",%funcclient.hipColor);
+	%obj.setNodeColor("skirthip",%funcclient.hipColor);	
+	%obj.setNodeColor("rarm",%funcclient.rarmColor);
+	%obj.setNodeColor("larm",%funcclient.larmColor);
+	%obj.setNodeColor("rarmSlim",%funcclient.rarmColor);
+	%obj.setNodeColor("larmSlim",%funcclient.larmColor);
+	%obj.setNodeColor("rhand",%funcclient.rhandColor);
+	%obj.setNodeColor("lhand",%funcclient.lhandColor);
+	%obj.setNodeColor("rhook",%funcclient.rhandColor);
+	%obj.setNodeColor("lhook",%funcclient.lhandColor);	
+	%obj.setNodeColor("rshoe",%funcclient.rlegColor);
+	%obj.setNodeColor("lshoe",%funcclient.llegColor);
+	%obj.setNodeColor("rpeg",%funcclient.rlegColor);
+	%obj.setNodeColor("lpeg",%funcclient.llegColor);
+	%obj.setNodeColor("skirttrimright",%funcclient.rlegColor);
+	%obj.setNodeColor("skirttrimleft",%funcclient.llegColor);
+
+	//Set blood colors.
+	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("lhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
+	
 	%obj.setFaceName("renownedface");
 	%obj.setDecalName("renowneddecal");
 	
@@ -74,7 +153,7 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.HideNode("lpeg");
 	%obj.unHideNode("rshoe");
 	%obj.unHideNode("lshoe");
-	%obj.unhideNode("renownedeyes");
+	%obj.mountImage("renownedeyesimage",2);
 	%obj.setHeadUp(0);
 }
 

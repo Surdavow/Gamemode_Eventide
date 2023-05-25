@@ -14,7 +14,9 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	useCustomPainEffects = true;
 	shapeFile = SkinwalkerDTS.baseShape;
 	killerraisearms = true;
-	killerlight = "NoFlareRLight";    
+	killerlight = "NoFlareRLight";
+
+	killerSpawnMessage = "Humans are the warmest place to hide.";
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
