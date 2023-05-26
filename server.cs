@@ -1,6 +1,6 @@
 if(ForceRequiredAddOn("Server_VehicleGore") == $Error::AddOn_NotFound) return error("Server_VehicleGore is required for Gamemode_Eventide to work");
 if(ForceRequiredAddOn("Brick_Halloween") == $Error::AddOn_NotFound) return error("Brick_Halloween is required for Gamemode_Eventide to work");
-//if(ForceRequiredAddOn("System_Instruments") == $Error::AddOn_NotFound) return error("System_Instruments is required for Gamemode_Eventide to work");
+if(ForceRequiredAddOn("System_Instruments") == $Error::AddOn_NotFound) return error("System_Instruments is required for Gamemode_Eventide to work");
 if(ForceRequiredAddOn("Support_Lua") == $Error::AddOn_NotFound || !isFunction(luacall)) return error("Support_Lua and the Lua dll are required for Gamemode_Eventide to work");
 
 exec("./modules/scripts/module_scripts.cs");
