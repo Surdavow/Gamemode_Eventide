@@ -350,20 +350,22 @@ function BuyHat(%client,%menu,%option)
     else return commandToClient(%client, 'messageboxOK', "Error", "Not enough points!");
 }
 
-function serverCmdHat(%client,%Hat)
+function serverCmdHat(%client,%hat)
 {    
     if(!isObject(%client) || !isObject(%client.player)) return;
-    if(strlwr(%Hat) $= "none") 
+    if(strlwr(%hat) $= "none") 
     {
         %client.player.mountImage($hat[%client.hat] @ "image",2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));
         %client.customhat = "";
+        return;
     }
     
     for(%i = 0; %i <= getWordCount($ShopHatList); %i++)
-    if(strlwr(%Hat) $= strreplace(strlwr(getWord($ShopHatList,%i)),"image","") && %client.hasHat[%i]) 
+    if(strlwr(%hat) $= strreplace(strlwr(getWord($ShopHatList,%i)),"image","") && %client.hasHat[%i]) 
     {
         %client.player.mountImage(getWord($ShopHatList,%i),2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));            
         %client.customhat = getWord($ShopHatList,%i);
+        return;
     }
 
     messageClient(%client, '', "<tab:280>\c6Your Hats List");

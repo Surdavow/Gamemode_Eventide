@@ -291,34 +291,27 @@ function Player::KillerGhostLightCheck(%obj)
 	
 	if(!%obj.isInvisible)
 	{
-		if(!isObject(%obj.effectbot))
+		if(isObject(%obj.effectbot) && !isObject(%obj.effectbot.light))
 		{
-			%obj.effectbot = new Player() 
-			{ 
-				dataBlock = "EmptyBot";
-				source = %obj;			
-			};
-			%obj.mountObject(%obj.effectbot,5);
-			MissionCleanup.add(%obj.effectbot);
-
 			%obj.effectbot.light = new fxLight ("")
 			{
 				dataBlock = %obj.getdataBlock().killerlight;
 				source = %obj.effectbot;
 			};
-			MissionCleanup.add(%obj.effectbot.light);
-			%obj.effectbot.light.setTransform(%obj.effectbot.getTransform());
-			%obj.effectbot.light.attachToObject(%obj.effectbot);
-		}
 
-		%obj.effectbot.light.setNetFlag(6,true);
-		for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj) %obj.effectbot.light.clearScopeToClient(%client);
+			MissionCleanup.add(%obj.effectbot.light);
+			%obj.effectbot.light.attachToObject(%obj.effectbot);		
+			%obj.effectbot.light.setNetFlag(6,true);
+
+			for(%i = 0; %i < clientgroup.getCount(); %i++) 
+			if(isObject(%client = clientgroup.getObject(%i))) 
+			{
+				if(%obj == %client.player) %obj.effectbot.light.ScopeToClient(%client);
+				else %obj.effectbot.light.clearScopeToClient(%client);
+			}			
+		}
 	}
-	else
-	{
-		if(isObject(%obj.effectbot.light)) %obj.effectbot.light.delete();
-		if(isObject(%obj.effectbot)) %obj.effectbot.delete();	
-	}
+	else if(isObject(%obj.effectbot.light)) %obj.effectbot.light.delete();	
 }
 
 function GameConnection::SetChaseMusic(%client,%songname)

@@ -110,7 +110,7 @@ datablock ShapeBaseImageData(daggerImage)
 	stateName[0]                     = "Activate";
 	stateTimeoutValue[0]             = 0;
 	stateTransitionOnTimeout[0]      = "Ready";
-	stateSound[0]                    = WeaponSwitchsound;
+	stateSound[0]                    = "WeaponSwitchsound";
 
 	stateName[1]                     = "Ready";
 	stateScript[1]                  = "onReady";

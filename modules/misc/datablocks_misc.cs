@@ -18,7 +18,7 @@ datablock AudioDescription(AudioFSWalk)
 	type = $SimAudioType;
 };
 
-%pattern = "Add-Ons/Gamemode_Eventide/modules/data/sounds/*.wav";
+%pattern = "./*.wav";
 %file = findFirstFile(%pattern);
 while(%file !$= "")
 {
@@ -39,17 +39,17 @@ while(%file !$= "")
 	%file = findNextFile(%pattern);
 }
 
-AddDamageType("PoolCue",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_poolCue> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_poolCue> %1',1,1);
-AddDamageType("BarStool",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_barStool> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_barStool> %1',1,1);
-AddDamageType("Bottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_bottle> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_bottle> %1',1,1);
-AddDamageType("BrokenBottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_bottle_broken> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_bottle_broken> %1',1,1);
-AddDamageType("Chair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_chair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_chair> %1',1,1);
-AddDamageType("FoldingChair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_foldingChair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/data/icons/ci_foldingChair> %1',1,1);
+AddDamageType("PoolCue",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_poolCue> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_poolCue> %1',1,1);
+AddDamageType("BarStool",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_barStool> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_barStool> %1',1,1);
+AddDamageType("Bottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_bottle> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_bottle> %1',1,1);
+AddDamageType("BrokenBottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_bottle_broken> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_bottle_broken> %1',1,1);
+AddDamageType("Chair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_chair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_chair> %1',1,1);
+AddDamageType("FoldingChair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_foldingChair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_foldingChair> %1',1,1);
 
-if(isFile("add-ons/Gamemode_Eventide/modules/data/models/face.ifl"))//Faces
+if(isFile(%faceiflpath = "./models/face.ifl"))//Faces
 {
 	%write = new FileObject();
-	%write.openForWrite("add-ons/Gamemode_Eventide/modules/data/models/face.ifl");
+	%write.openForWrite(findFirstFile(%faceiflpath));
 	%write.writeLine("base/data/shapes/player/faces/smiley.png");
 	%write.writeLine("Add-Ons/Face_Default/smileyRedBeard2.png");
 	%write.writeLine("Add-Ons/Face_Default/smileyRedBeard.png");
@@ -71,7 +71,7 @@ if(isFile("add-ons/Gamemode_Eventide/modules/data/models/face.ifl"))//Faces
 	%write.writeLine("Add-Ons/Face_Default/memeBlockMongler.png");
 	%write.writeLine("Add-Ons/Face_Default/asciiTerror.png");
 	
-	%decalpath = "add-ons/Gamemode_Eventide/modules/data/models/faces/*.png";
+	%decalpath = "./models/faces/*.png";
 	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
 		eval("addExtraResource(\""@ %decalfile @ "\");");
@@ -80,13 +80,13 @@ if(isFile("add-ons/Gamemode_Eventide/modules/data/models/face.ifl"))//Faces
 
 	%write.close();
 	%write.delete();
-	addExtraResource("add-ons/Gamemode_Eventide/modules/data/models/face.ifl");
+	addExtraResource(findFirstFile(%faceiflpath));
 }
 
-if(isFile("add-ons/Gamemode_Eventide/modules/data/models/decal.ifl"))//Decals
+if(isFile(%decalfilepath = "./models/decal.ifl"))//Decals
 {
 	%write = new FileObject();
-	%write.openForWrite("add-ons/Gamemode_Eventide/modules/data/models/decal.ifl");
+	%write.openForWrite(findFirstFile(%decalfilepath));
 	%write.writeLine("base/data/shapes/players/decals/AAA-none.png");
 	%write.writeLine("Add-Ons/Decal_WORM/worm_engineer.png");
 	%write.writeLine("Add-Ons/Decal_WORM/worm-sweater.png");
@@ -117,7 +117,7 @@ if(isFile("add-ons/Gamemode_Eventide/modules/data/models/decal.ifl"))//Decals
 	%write.writeLine("Add-Ons/Decal_Default/Medieval-Lion.png");
 	%write.writeLine("Add-Ons/Decal_Default/Medieval-Eagle.png");
 	
-	%decalpath = "add-ons/Gamemode_Eventide/modules/data/models/decals/*.png";
+	%decalpath = "./models/decals/*.png";
 	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
 		eval("addExtraResource(\""@ %decalfile @ "\");");
@@ -126,7 +126,7 @@ if(isFile("add-ons/Gamemode_Eventide/modules/data/models/decal.ifl"))//Decals
 
 	%write.close();
 	%write.delete();
-	addExtraResource("add-ons/Gamemode_Eventide/modules/data/models/decal.ifl");
+	addExtraResource(findFirstFile(%decalfilepath));
 }
 
 datablock DebrisData(sm_woodFragDebris)
