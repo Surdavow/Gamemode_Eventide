@@ -302,12 +302,21 @@ function Player::KillerGhostLightCheck(%obj)
 			MissionCleanup.add(%obj.effectbot.light);
 			%obj.effectbot.light.attachToObject(%obj.effectbot);		
 			%obj.effectbot.light.setNetFlag(6,true);
+			%obj.effectbot.setNetFlag(6,true);
 
 			for(%i = 0; %i < clientgroup.getCount(); %i++) 
 			if(isObject(%client = clientgroup.getObject(%i))) 
 			{
-				if(%obj == %client.player) %obj.effectbot.light.ScopeToClient(%client);
-				else %obj.effectbot.light.clearScopeToClient(%client);
+				if(%obj == %client.player)
+				{
+					%obj.effectbot.light.ScopeToClient(%client);
+					%obj.effectbot.ScopeToClient(%client);
+				}
+				else 
+				{
+					%obj.effectbot.light.clearScopeToClient(%client);
+					%obj.effectbot.clearScopeToClient(%client);
+				}
 			}			
 		}
 	}

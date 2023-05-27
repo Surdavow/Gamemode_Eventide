@@ -215,7 +215,11 @@ package Eventide_MainPackage
 	{		
 		Parent::onNewDatablock(%this,%obj);
 
-		if(%this.isKiller) %obj.onKillerLoop();		
+		if(%this.isKiller) 
+		{
+			%obj.onKillerLoop();		
+			if(isObject(%obj.getMountedImage(2))) %obj.unmountImage(2);
+		}
 
 		if(isObject(%client = %obj.client) && !isObject(%obj.effectbot))
 		{

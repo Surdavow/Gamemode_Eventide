@@ -225,7 +225,7 @@ function EventideSetCustomBitmap(%client,%menu,%option)
     else return %client.customtitlebitmap = "<bitmap:base/client/ui/" @ strreplace(getWord($TitleBitmapList,%option),"_","") @ ".png>";
 }
 
-$TitleFontList = "Impact Arial Constantia Georgia Courier_New Comic_Sans_MS Corbel Cambria";
+$TitleFontList = "Impact Arial Constantia Georgia Corbel Cambria";
 
 if(isObject(EventideSetTitleFontMenu)) EventideSetTitleFontMenu.delete();
 new ScriptObject(EventideSetTitleFontMenu)
