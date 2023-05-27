@@ -74,7 +74,7 @@ if(isFile(%faceiflpath = "./models/face.ifl"))//Faces
 	%decalpath = "./models/faces/*.png";
 	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
-		eval("addExtraResource(\""@ %decalfile @ "\");");
+		addExtraResource(%decalfile);
 		%write.writeLine(%decalfile);
 	}
 
