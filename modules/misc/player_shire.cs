@@ -132,36 +132,34 @@ function PlayerShire::onNewDatablock(%this,%obj)
 
 function PlayerShire::EventideAppearance(%this,%obj,%client)
 {
-	Parent::EventideAppearance(%this,%obj,%client);
+	%obj.hideNode("ALL");
 	
-	%obj.hideNode($pack[%client.pack]);
-	%obj.hideNode($secondPack[%client.secondPack]);
-	%obj.hideNode($accent[%client.accent]);
-	%obj.hideNode($hat[%client.hat]);
-	%obj.HideNode("visor");
-	%obj.unhideNode("newhoodie");
-	
-	if(!%obj.chest)
-	{
-		%obj.hideNode("chest");
-		%obj.unhideNode("femchest");
-	}
+	%obj.unhideNode("pants");
+	%obj.unhideNode("headskin");
+	%obj.unhideNode("larm");
+	%obj.unhideNode("rarm");
+	%obj.unhideNode("rshoe");
+	%obj.unhideNode("lshoe");
+	%obj.unhideNode("lhand");
+	%obj.unhideNode("rhand");
+	%obj.unhideNode("femchest");
+
+	%hoodieColor = "0.22 0.11 0.3 1";
+	%pantsColor = "0.075 0.075 0.075 1";
+	%skinColor = "1 1 1 1";
 
 	%obj.setFaceName("shire");
 	%obj.setDecalName("hoodie");
-
-	%hoodieColor = "0.22 0.11 0.3 1";
-	%pantsColor = "0.075 0.075 0.075 1";	
-
-	%obj.setNodeColor("newhoodie",%hoodieColor);
-	%obj.setNodeColor((%client.rarm ? "rarmSlim" : "rarm"),%hoodieColor);
-	%obj.setNodeColor((%client.larm ? "larmSlim" : "larm"),%hoodieColor);
-	%obj.setNodeColor((%client.chest ? "chest" : "femchest"),%hoodieColor);
+	%obj.setNodeColor("rarm",%hoodieColor);
+	%obj.setNodeColor("larm",%hoodieColor);
+	%obj.setNodeColor("femchest",%hoodieColor);
 	%obj.setNodeColor("pants",%pantsColor);
-	%obj.setNodeColor((%client.rleg ? "rpeg" : "rshoe"),%pantsColor);
-	%obj.setNodeColor((%client.lleg ? "lpeg" : "lshoe"),%pantsColor);
-
-	%obj.setHeadUp(0);
+	%obj.setNodeColor("rshoe",%pantsColor);
+	%obj.setNodeColor("lshoe",%pantsColor);
+	%obj.setNodeColor("rhand",%skinColor);
+	%obj.setNodeColor("lhand",%skinColor);
+	%obj.setNodeColor("headskin",%skinColor);
+	%obj.mountImage("newhoodieimage",2,1,addTaggedString("darkpurple"));
 }
 
 function PlayerShire::onDamage(%this, %obj, %delta)
