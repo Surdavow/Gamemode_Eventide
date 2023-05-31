@@ -7,6 +7,7 @@ $colorName["pink"] = "1 0.5 1 1";
 $colorName["magneta"] = "1 0 1 1";
 $colorName["violet"] = "0.5 0 1 1";
 $colorName["purple"] = "0.5 0 0.5 1";
+$colorName["darkpurple"] = "0.243 0.093 1 1";
 $colorName["violet"] = "0.2 0 0.8 1";
 $colorName["blue"] = "0 0 1 1";
 $colorName["darkblue"] = "0.0 0.14 0.33 1";
@@ -29,7 +30,7 @@ $colorName["lightergray"] = "0.89 0.89 0.89 1";
 $colorName["white"] = "1 1 1 1";
 $colorName["black"] = "0.078 0.078 0.078 1";
 $colorName["pitchblack"] = "0 0 0 1";
-$colorNames = "red burgundy darkorange trueorange lightpink pink magneta violet purple blue darkblue lightblue cyan cyan chartreusegreen limegreen mint mint truegreen darkgreen yellow brown chocolate gray lightgray darkgray lightergray white black pitchblack";
+$colorNames = "red burgundy darkorange trueorange lightpink pink magneta violet purple darkpurple blue darkblue lightblue cyan cyan chartreusegreen limegreen mint mint truegreen darkgreen yellow brown chocolate gray lightgray darkgray lightergray white black pitchblack";
 
 function getColorName(%rgb)
 {
