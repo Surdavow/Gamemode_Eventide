@@ -1,3 +1,64 @@
+$colorName["red"] = "1 0 0 1";
+$colorName["burgundy"] = "0.59 0 0.14 1";
+$colorName["darkorange"] = "0.9 0.34 0.08 1";
+$colorName["trueorange"] = "1 0.5 0 1";
+$colorName["lightpink"] = "1 0.75 0.8 1";
+$colorName["pink"] = "1 0.5 1 1";
+$colorName["magneta"] = "1 0 1 1";
+$colorName["violet"] = "0.5 0 1 1";
+$colorName["purple"] = "0.5 0 0.5 1";
+$colorName["violet"] = "0.2 0 0.8 1";
+$colorName["blue"] = "0 0 1 1";
+$colorName["darkblue"] = "0.0 0.14 0.33 1";
+$colorName["lightblue"] = "0.11 0.46 0.77 1";
+$colorName["cyan"] = "0 1 1 1";
+$colorName["cyan"] = "0.56 0.93 0.96 1";
+$colorName["chartreusegreen"] = "0.5 1 0 1";
+$colorName["limegreen"] = "0.75 1 0 1";
+$colorName["mint"] = "0.5 1 0.65 1";
+$colorName["mint"] = "0.54 0.69 0.55 1";
+$colorName["truegreen"] = "0 1 0 1";
+$colorName["darkgreen"] = "0 0.5 0.25 1";
+$colorName["yellow"] = "1 1 0 1";
+$colorName["brown"] = "0.39 0.2 0 1";
+$colorName["chocolate"] = "0.22 0.07 0 1";
+$colorName["gray"] = "0.5 0.5 0.5 1";
+$colorName["lightgray"] = "0.75 0.75 0.75 1";
+$colorName["darkgray"] = "0.2 0.2 0.2 1";
+$colorName["lightergray"] = "0.89 0.89 0.89 1";
+$colorName["white"] = "1 1 1 1";
+$colorName["black"] = "0.078 0.078 0.078 1";
+$colorName["pitchblack"] = "0 0 0 1";
+$colorNames = "red burgundy darkorange trueorange lightpink pink magneta violet purple blue darkblue lightblue cyan cyan chartreusegreen limegreen mint mint truegreen darkgreen yellow brown chocolate gray lightgray darkgray lightergray white black pitchblack";
+
+function getColorName(%rgb)
+{
+    %closestColor = "";
+    %closestDistance = 1e9;
+    
+    for(%i = 0; %i < getWordCount($colorNames); %i++)
+    {
+        %color = getWord($colorNames,%i);
+        %colorRGB = $colorName[getWord($colorNames,%i)];
+        
+        %colorR = getWord(%colorRGB, 0);
+        %colorG = getWord(%colorRGB, 1);
+        %colorB = getWord(%colorRGB, 2);
+        
+        // Calculate the distance between the input RGB and the current color
+        %distance = mSqrt(mPow(getWord(%rgb, 0) - %colorR, 2) + mPow(getWord(%rgb, 1) - %colorG, 2) + mPow(getWord(%rgb, 2) - %colorB, 2));		
+        
+        // Update the closest color if the distance is smaller
+        if(%distance < %closestDistance)
+        {
+            %closestColor = %color;
+            %closestDistance = %distance;
+        }
+    }
+    
+    return %closestColor;
+}
+
 function getString(%s,%sep,%a)
 {
 	for(%i = 0; %i <= %a; %i++)

@@ -141,7 +141,6 @@ function Player::onKillerLoop(%obj)
     if(!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getdataBlock().isKiller || !isObject(getMinigamefromObject(%obj))) return;
 
 	if(%obj.getClassName() $= "Player") %obj.KillerGhostLightCheck();
-
 	%this = %obj.getdataBlock();
 
 	for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(

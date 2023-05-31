@@ -132,8 +132,7 @@ function PlayerShire::onNewDatablock(%this,%obj)
 
 function PlayerShire::EventideAppearance(%this,%obj,%client)
 {
-	%obj.hideNode("ALL");
-	
+	%obj.hideNode("ALL");	
 	%obj.unhideNode("pants");
 	%obj.unhideNode("headskin");
 	%obj.unhideNode("larm");
