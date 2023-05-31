@@ -33,27 +33,17 @@ $colorName["pitchblack"] = "0 0 0 1";
 $colorNames = "red burgundy darkorange trueorange lightpink pink magneta violet purple darkpurple blue darkblue lightblue cyan cyan chartreusegreen limegreen mint mint truegreen darkgreen yellow brown chocolate gray lightgray darkgray lightergray white black pitchblack";
 
 function getColorName(%rgb)
-{
-    %closestColor = "";
-    %closestDistance = 1e9;
-    
+{   
     for(%i = 0; %i < getWordCount($colorNames); %i++)
     {
         %color = getWord($colorNames,%i);
-        %colorRGB = $colorName[getWord($colorNames,%i)];
-        
-        %colorR = getWord(%colorRGB, 0);
-        %colorG = getWord(%colorRGB, 1);
-        %colorB = getWord(%colorRGB, 2);
-        
-        // Calculate the distance between the input RGB and the current color
-        %distance = mSqrt(mPow(getWord(%rgb, 0) - %colorR, 2) + mPow(getWord(%rgb, 1) - %colorG, 2) + mPow(getWord(%rgb, 2) - %colorB, 2));		
-        
-        // Update the closest color if the distance is smaller
-        if(%distance < %closestDistance)
+        %colorRGBA = $colorName[getWord($colorNames,%i)];        
+		%distance = 1;
+            
+        if(VectorDist(%rgb,%colorRGB) < %distance)
         {
-            %closestColor = %color;
-            %closestDistance = %distance;
+            %distance = VectorDist(%rgb,%colorRGB);
+			%closestColor = %color;
         }
     }
     
