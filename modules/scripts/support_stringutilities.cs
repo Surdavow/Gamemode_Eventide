@@ -38,8 +38,11 @@ function getColorName(%rgb)
     {
         %color = getWord($colorNames,%i);
         %colorRGBA = $colorName[getWord($colorNames,%i)];
+
+		talk("%color:" @ %color);
+		talk("%colorRGBA:" @ %colorRGBA);
             
-        if(VectorDist(%rgb,%colorRGB) < 0.1) return %color;        
+        if(VectorDist(%rgb,%colorRGBA) < 0.1) return %color;        
     }
 }
 
