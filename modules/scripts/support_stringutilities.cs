@@ -1,4 +1,4 @@
-$colorNames = "red burgundy darkorange trueorange lightpink pink magenta violet purple darkpurple blue darkblue lightblue cyan cyan chartreusegreen limegreen mint truegreen darkgreen yellow brown chocolate gray lightgray darkgray lightergray white black pitchblack";
+$colorNames = "red burgundy darkorange trueorange lightpink pink magenta violet purple darkpurple blue darkblue lightblue cyan chartreusegreen limegreen mint truegreen darkgreen yellow brown chocolate gray lightgray darkgray lightergray white black pitchblack";
 $colorValues["red"] = "1 0 0 1";
 $colorValues["burgundy"] = "0.59 0 0.14 1";
 $colorValues["darkorange"] = "0.9 0.34 0.08 1";
