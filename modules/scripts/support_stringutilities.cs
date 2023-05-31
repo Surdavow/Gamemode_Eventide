@@ -37,17 +37,10 @@ function getColorName(%rgb)
     for(%i = 0; %i < getWordCount($colorNames); %i++)
     {
         %color = getWord($colorNames,%i);
-        %colorRGBA = $colorName[getWord($colorNames,%i)];        
-		%distance = 1;
+        %colorRGBA = $colorName[getWord($colorNames,%i)];
             
-        if(VectorDist(%rgb,%colorRGB) < %distance)
-        {
-            %distance = VectorDist(%rgb,%colorRGB);
-			%closestColor = %color;
-        }
+        if(VectorDist(%rgb,%colorRGB) < 0.1)return %closestColor;        
     }
-    
-    return %closestColor;
 }
 
 function getString(%s,%sep,%a)
