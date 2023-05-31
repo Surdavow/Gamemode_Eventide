@@ -51,7 +51,6 @@ function getColorName(%RGBA)
     return %closestColor;
 }
 
-
 function getString(%s,%sep,%a)
 {
 	for(%i = 0; %i <= %a; %i++) %s = nextToken(%s,"t",%sep);
