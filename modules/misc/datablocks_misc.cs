@@ -131,7 +131,7 @@ if(isFile(%decalfilepath = "./models/decal.ifl"))//Decals
 
 datablock DebrisData(sm_woodFragDebris)
 {
-	shapeFile 			= "./models/d_woodFrag.dts";
+	shapeFile 			= "./models/wood_fragment.dts";
 	lifetime 			= 2.8;
 	spinSpeed			= 1200.0;
 	minSpinSpeed 		= -3600.0;
