@@ -1,54 +1,60 @@
-$colorName["red"] = "1 0 0 1";
-$colorName["burgundy"] = "0.59 0 0.14 1";
-$colorName["darkorange"] = "0.9 0.34 0.08 1";
-$colorName["trueorange"] = "1 0.5 0 1";
-$colorName["lightpink"] = "1 0.75 0.8 1";
-$colorName["pink"] = "1 0.5 1 1";
-$colorName["magneta"] = "1 0 1 1";
-$colorName["violet"] = "0.5 0 1 1";
-$colorName["purple"] = "0.5 0 0.5 1";
-$colorName["darkpurple"] = "0.243 0.093 1 1";
-$colorName["violet"] = "0.2 0 0.8 1";
-$colorName["blue"] = "0 0 1 1";
-$colorName["darkblue"] = "0.0 0.14 0.33 1";
-$colorName["lightblue"] = "0.11 0.46 0.77 1";
-$colorName["cyan"] = "0 1 1 1";
-$colorName["cyan"] = "0.56 0.93 0.96 1";
-$colorName["chartreusegreen"] = "0.5 1 0 1";
-$colorName["limegreen"] = "0.75 1 0 1";
-$colorName["mint"] = "0.5 1 0.65 1";
-$colorName["mint"] = "0.54 0.69 0.55 1";
-$colorName["truegreen"] = "0 1 0 1";
-$colorName["darkgreen"] = "0 0.5 0.25 1";
-$colorName["yellow"] = "1 1 0 1";
-$colorName["brown"] = "0.39 0.2 0 1";
-$colorName["chocolate"] = "0.22 0.07 0 1";
-$colorName["gray"] = "0.5 0.5 0.5 1";
-$colorName["lightgray"] = "0.75 0.75 0.75 1";
-$colorName["darkgray"] = "0.2 0.2 0.2 1";
-$colorName["lightergray"] = "0.89 0.89 0.89 1";
-$colorName["white"] = "1 1 1 1";
-$colorName["black"] = "0.078 0.078 0.078 1";
-$colorName["pitchblack"] = "0 0 0 1";
-$colorNames = "red burgundy darkorange trueorange lightpink pink magneta violet purple darkpurple blue darkblue lightblue cyan cyan chartreusegreen limegreen mint mint truegreen darkgreen yellow brown chocolate gray lightgray darkgray lightergray white black pitchblack";
+$colorNames = "red burgundy darkorange trueorange lightpink pink magenta violet purple darkpurple blue darkblue lightblue cyan cyan chartreusegreen limegreen mint truegreen darkgreen yellow brown chocolate gray lightgray darkgray lightergray white black pitchblack";
+$colorValues["red"] = "1 0 0 1";
+$colorValues["burgundy"] = "0.59 0 0.14 1";
+$colorValues["darkorange"] = "0.9 0.34 0.08 1";
+$colorValues["trueorange"] = "1 0.5 0 1";
+$colorValues["lightpink"] = "1 0.75 0.8 1";
+$colorValues["pink"] = "1 0.5 1 1";
+$colorValues["magenta"] = "1 0 1 1";
+$colorValues["violet"] = "0.5 0 1 1";
+$colorValues["purple"] = "0.5 0 0.5 1";
+$colorValues["darkpurple"] = "0.243 0.093 1 1";
+$colorValues["blue"] = "0 0 1 1";
+$colorValues["darkblue"] = "0.0 0.14 0.33 1";
+$colorValues["lightblue"] = "0.11 0.46 0.77 1";
+$colorValues["cyan"] = "0 1 1 1";
+$colorValues["chartreusegreen"] = "0.5 1 0 1";
+$colorValues["limegreen"] = "0.75 1 0 1";
+$colorValues["mint"] = "0.5 1 0.65 1";
+$colorValues["truegreen"] = "0 1 0 1";
+$colorValues["darkgreen"] = "0 0.5 0.25 1";
+$colorValues["yellow"] = "1 1 0 1";
+$colorValues["brown"] = "0.39 0.2 0 1";
+$colorValues["chocolate"] = "0.22 0.07 0 1";
+$colorValues["gray"] = "0.5 0.5 0.5 1";
+$colorValues["lightgray"] = "0.75 0.75 0.75 1";
+$colorValues["darkgray"] = "0.2 0.2 0.2 1";
+$colorValues["lightergray"] = "0.89 0.89 0.89 1";
+$colorValues["white"] = "1 1 1 1";
+$colorValues["black"] = "0.078 0.078 0.078 1";
+$colorValues["pitchblack"] = "0 0 0 1";
 
-function getColorName(%rgb)
-{   
+function getColorName(%RGBA)
+{
+    %closestColor = "";
+    %minDistance = 99999;
+
     for(%i = 0; %i < getWordCount($colorNames); %i++)
     {
-        %color = getWord($colorNames,%i);
-        %colorRGBA = $colorName[getWord($colorNames,%i)];
-            
-        if(VectorDist(%rgb,%colorRGBA) < 0.25) return %color;        
+        %currentColor = getWord($colorNames, %i);
+        %currentColorRGBA = $colorValues[%currentColor];
+        %distance = VectorDist(%RGBA, %currentColorRGBA);
+
+        if(%distance == 0) return %closestColor;
+		else if(%distance < %minDistance)
+        {
+            %minDistance = %distance;
+            %closestColor = %currentColor;
+        }
     }
+
+    return %closestColor;
 }
+
 
 function getString(%s,%sep,%a)
 {
-	for(%i = 0; %i <= %a; %i++)
-	{
-		%s = nextToken(%s,"t",%sep);
-	}
+	for(%i = 0; %i <= %a; %i++) %s = nextToken(%s,"t",%sep);
 	return %t;
 }
 
