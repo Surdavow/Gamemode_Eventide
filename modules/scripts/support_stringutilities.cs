@@ -39,7 +39,7 @@ function getColorName(%rgb)
         %color = getWord($colorNames,%i);
         %colorRGBA = $colorName[getWord($colorNames,%i)];
             
-        if(VectorDist(%rgb,%colorRGB) < 0.1)return %closestColor;        
+        if(VectorDist(%rgb,%colorRGB) < 0.1) return %color;        
     }
 }
 
