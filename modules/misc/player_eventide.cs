@@ -232,7 +232,20 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 	}
 	
 	if(isObject(%funcclient.customhat)) %obj.mountImage(%funcclient.customhat,2,1,addTaggedString(getColorName(%funcclient.hatColor)));
-	else if($hat[%funcclient.hat] !$= "none") %obj.mountImage($hat[%funcclient.hat] @ "image",2,1,addTaggedString(getColorName(%funcclient.hatColor)));
+	else switch$(%client.hat)
+	{
+		case 1: if(%client.accent)
+				{
+					%obj.mountImage("helmetimage",2,1,addTaggedString(getColorName(%funcclient.hatColor)));	
+					%obj.currentHat = "helmet";
+				}		
+				else
+				{
+					%obj.mountImage("hoodieimage",2,1,addTaggedString(getColorName(%funcclient.hatColor)));	
+					%obj.currentHat = "hoodie";
+				}
+		default: %obj.mountImage($hat[%funcclient.hat] @ "image",2,1,addTaggedString(getColorName(%funcclient.hatColor)));
+	}	
 	
 	if(%funcclient.hip)
 	{
