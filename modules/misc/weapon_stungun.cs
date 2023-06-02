@@ -80,5 +80,16 @@ function StunGunImage::onDetonate(%this, %obj, %slot)
         %obj.tool[%itemslot] = 0;
         messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
     }
-    if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);    
+    if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint); 
+
+    for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(
+    {
+        if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
+        {
+            if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > %radius) 
+            continue;
+
+            if(%nearbyplayer.getDataBlock().isKiller) %nearbyplayer.mountimage("sm_stunImage",2);
+        }
+    }      
 }
