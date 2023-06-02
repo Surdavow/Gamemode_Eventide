@@ -40,7 +40,7 @@ function getColorName(%RGBA)
         %currentColorRGBA = $colorValues[%currentColor];
         %distance = VectorDist(%RGBA, %currentColorRGBA);
 
-        if(%distance == 0) return %closestColor;
+        if(%distance <= 0.1) return %currentColor;
 		else if(%distance < %minDistance)
         {
             %minDistance = %distance;

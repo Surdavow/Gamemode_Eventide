@@ -27,7 +27,7 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	killermeleehitsoundamount = 3;	
 	
 	showEnergyBar = true;
-	firstpersononly = true;
+	firstpersononly = false;
 	rechargeRate = 0.75;
 	maxTools = 0;
 	maxWeapons = 0;

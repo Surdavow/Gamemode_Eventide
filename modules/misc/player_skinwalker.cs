@@ -16,6 +16,8 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	killerraisearms = true;
 	killerlight = "NoFlareRLight";
 
+	renderFirstPerson = false;
+
 	killerSpawnMessage = "Humans are the warmest place to hide.";
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";

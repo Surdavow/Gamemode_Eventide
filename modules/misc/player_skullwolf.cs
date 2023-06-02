@@ -29,6 +29,8 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	killerraisearms = true;
 	killerlight = "NoFlareRLight";
 
+	renderFirstPerson = false;
+
 	rechargeRate = 0.25;
 	maxTools = 0;
 	maxWeapons = 0;

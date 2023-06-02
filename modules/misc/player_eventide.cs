@@ -12,6 +12,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	isEventideModel = true;
 	showEnergyBar = false;
 	canJet = false;
+	renderFirstPerson = true;
 	rechargeRate = 0.375;
 	maxTools = 3;
 	maxWeapons = 3;
@@ -29,7 +30,10 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	groundImpactShakeFreq = "4.0 4.0 4.0";
 	groundImpactShakeAmp = "1.0 1.0 1.0";
 	groundImpactShakeDuration = 0.8;
-	groundImpactShakeFalloff = 15;	
+	groundImpactShakeFalloff = 15;
+
+	boundingBox = "4.5 4 10.6";
+	crouchboundingBox = "4.5 4 9";	
 };
 
 datablock PlayerData(EventidePlayerDowned : EventidePlayer)
