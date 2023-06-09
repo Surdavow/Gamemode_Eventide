@@ -37,8 +37,6 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	maxForwardSpeed = 6.84;
 	maxBackwardSpeed = 3.91;
 	maxSideSpeed = 5.87;
-	boundingBox = "4.8 4.8 10.1";
-	crouchBoundingBox = "4.8 4.8 3.8";
 };
 
 function PlayerSkullWolf::onNewDatablock(%this,%obj)

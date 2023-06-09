@@ -31,8 +31,6 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	maxSideSpeed = 5.46;
 	cameramaxdist = 3;
 	maxfreelookangle = 2.5;
-	boundingBox = "4.8 4.8 10.1";
-	crouchBoundingBox = "4.8 4.8 3.8";
 };
 
 datablock PlayerData(PlayerGrabberNoJump : PlayerGrabber) 

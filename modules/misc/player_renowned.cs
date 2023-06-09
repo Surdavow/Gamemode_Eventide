@@ -15,6 +15,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	jumpSound = "";
 	PainSound		= "";
 	DeathSound		= "";
+	renderFirstPerson = true;
 	firstpersononly = true;
 	showenergybar = true;
 
@@ -102,21 +103,16 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("chest",%funcclient.chestColor);
 	%obj.setNodeColor("femChest",%funcclient.chestColor);
 	%obj.setNodeColor("pants",%funcclient.hipColor);
-	%obj.setNodeColor("skirthip",%funcclient.hipColor);	
 	%obj.setNodeColor("rarm",%funcclient.rarmColor);
 	%obj.setNodeColor("larm",%funcclient.larmColor);
 	%obj.setNodeColor("rarmSlim",%funcclient.rarmColor);
 	%obj.setNodeColor("larmSlim",%funcclient.larmColor);
 	%obj.setNodeColor("rhand",%funcclient.rhandColor);
 	%obj.setNodeColor("lhand",%funcclient.lhandColor);
-	%obj.setNodeColor("rhook",%funcclient.rhandColor);
-	%obj.setNodeColor("lhook",%funcclient.lhandColor);	
 	%obj.setNodeColor("rshoe",%funcclient.rlegColor);
 	%obj.setNodeColor("lshoe",%funcclient.llegColor);
 	%obj.setNodeColor("rpeg",%funcclient.rlegColor);
 	%obj.setNodeColor("lpeg",%funcclient.llegColor);
-	%obj.setNodeColor("skirttrimright",%funcclient.rlegColor);
-	%obj.setNodeColor("skirttrimleft",%funcclient.llegColor);
 
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
@@ -142,8 +138,6 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("headskin",%skinColor);
 	%obj.setNodeColor("Rhand",%skinColor);
 	%obj.setNodeColor("Lhand",%skinColor);
-	%obj.setNodeColor("Rhook",%skinColor);
-	%obj.setNodeColor("Lhook",%skinColor);
 	%obj.hideNode($hat[%client.hat]);
 	%obj.HideNode($accent[%client.accent]);
 	%obj.HideNode($secondPack[%client.secondPack]);

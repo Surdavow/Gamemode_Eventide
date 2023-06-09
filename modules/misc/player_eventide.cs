@@ -8,32 +8,31 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 {
 	shapeFile = EventideplayerDts.baseShape;
 	uiName = "Eventide Player";
-	uniformCompatible = true;//For slayer uniform compatibility
+
+	uniformCompatible = true;
 	isEventideModel = true;
 	showEnergyBar = false;
+	firstpersononly = true;
 	canJet = false;
 	renderFirstPerson = true;
+
 	rechargeRate = 0.375;
 	maxTools = 3;
 	maxWeapons = 3;
-	jumpDelay = 0;
 	jumpForce = 10 * 85;
-	cameramaxdist = 2;
-    cameraVerticalOffset = 1;
-    cameraHorizontalOffset = 0.75;
-    cameratilt = 0.1;
-
-	maxfreelookangle = 2.25;
-	minimpactspeed = 15;
-
-	groundImpactMinSpeed = 5;
-	groundImpactShakeFreq = "4.0 4.0 4.0";
-	groundImpactShakeAmp = "1.0 1.0 1.0";
-	groundImpactShakeDuration = 0.8;
-	groundImpactShakeFalloff = 15;
-
-	boundingBox = "4.5 4 10.6";
-	crouchboundingBox = "4.5 4 9";	
+	
+	//cameramaxdist = 2;
+    //cameraVerticalOffset = 1;
+    //cameraHorizontalOffset = 0.75;
+    //cameratilt = 0.1;
+	//maxfreelookangle = 2.25;
+//
+	//minimpactspeed = 15;
+	//groundImpactMinSpeed = 5;
+	//groundImpactShakeFreq = "4.0 4.0 4.0";
+	//groundImpactShakeAmp = "1.0 1.0 1.0";
+	//groundImpactShakeDuration = 0.8;
+	//groundImpactShakeFalloff = 15;
 };
 
 datablock PlayerData(EventidePlayerDowned : EventidePlayer)

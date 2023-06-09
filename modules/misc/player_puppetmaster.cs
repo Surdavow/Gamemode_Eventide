@@ -24,10 +24,10 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	killermeleesoundamount = 3;	
 
 	killermeleehitsound = "melee_tanto";
-	killermeleehitsoundamount = 3;	
+	killermeleehitsoundamount = 3;
 	
 	showEnergyBar = true;
-	firstpersononly = false;
+	renderFirstPerson = false;
 	rechargeRate = 0.75;
 	maxTools = 0;
 	maxWeapons = 0;
