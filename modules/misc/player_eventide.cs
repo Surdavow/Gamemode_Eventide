@@ -21,18 +21,18 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	maxWeapons = 3;
 	jumpForce = 10 * 85;
 	
-	//cameramaxdist = 2;
-    //cameraVerticalOffset = 1;
-    //cameraHorizontalOffset = 0.75;
-    //cameratilt = 0.1;
-	//maxfreelookangle = 2.25;
-//
-	//minimpactspeed = 15;
-	//groundImpactMinSpeed = 5;
-	//groundImpactShakeFreq = "4.0 4.0 4.0";
-	//groundImpactShakeAmp = "1.0 1.0 1.0";
-	//groundImpactShakeDuration = 0.8;
-	//groundImpactShakeFalloff = 15;
+	cameramaxdist = 2;
+    cameraVerticalOffset = 1;
+    cameraHorizontalOffset = 0.75;
+    cameratilt = 0.1;
+	maxfreelookangle = 2.25;
+
+	minimpactspeed = 15;
+	groundImpactMinSpeed = 5;
+	groundImpactShakeFreq = "4.0 4.0 4.0";
+	groundImpactShakeAmp = "1.0 1.0 1.0";
+	groundImpactShakeDuration = 0.8;
+	groundImpactShakeFalloff = 15;
 };
 
 datablock PlayerData(EventidePlayerDowned : EventidePlayer)
