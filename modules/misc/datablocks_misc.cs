@@ -1302,7 +1302,7 @@ datablock ShapeBaseImageData(RenownedPossessedImage)
 datablock ShapeBaseImageData(GlowFaceImage) 
 {
 	shapeFile			= "base/data/shapes/empty.dts";
-	mountPoint			= 6;
+	mountPoint			= 5;
 	correctMuzzleVector	= false;
 	stateName[0]				= "Glow";
 	stateEmitter[0]				= GlowFaceEmitter;
@@ -1408,4 +1408,4 @@ for(%hatpngfile = findFirstFile(%hatpngpath); %hatpngfile !$= ""; %hatpngfile = 
 
 %hatimagepath = "./models/hats/*.dts";
 for(%hatimagefile = findFirstFile(%hatimagepath); %hatimagefile !$= ""; %hatimagefile = findNextFile(%hatimagepath)) 
-eval("datablock shapeBaseImageData(" @ strreplace(fileName(%hatimagefile),".dts","") @ "image) { shapefile = \"" @ %hatimagefile @ "\"; mountPoint = 6; offset = \"0 0 0\"; eyeOffset = \"0 0 10\"; doColorShift = false; className = \"WeaponImage\"; armReady = false; };");
+eval("datablock shapeBaseImageData(" @ strreplace(fileName(%hatimagefile),".dts","") @ "image) { shapefile = \"" @ %hatimagefile @ "\"; mountPoint = 5; offset = \"0 0 0\"; eyeOffset = \"0 0 10\"; doColorShift = false; className = \"WeaponImage\"; armReady = false; };");

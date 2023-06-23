@@ -15,7 +15,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	jumpSound = "";
 	PainSound		= "";
 	DeathSound		= "";
-	renderFirstPerson = true;
+	renderFirstPerson = false;
 	firstpersononly = true;
 	showenergybar = true;
 

@@ -2,6 +2,10 @@ datablock TSShapeConstructor(SkullwolfDTS)
 {
 	baseShape = "./models/skullwolf.dts";
 	sequence0 = "./models/skullwolf.dsq";
+	sequence1 = "./models/skullwolfroot2.dsq crouch";
+	sequence2 = "./models/skullwolfroot2.dsq crouchRun";
+	sequence3 = "./models/skullwolfroot2.dsq crouchBack";
+	sequence4 = "./models/skullwolfroot2.dsq crouchSide";
 };
 
 datablock PlayerData(PlayerSkullWolf : PlayerRenowned) 
@@ -37,6 +41,12 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	maxForwardSpeed = 6.84;
 	maxBackwardSpeed = 3.91;
 	maxSideSpeed = 5.87;
+
+
+	maxForwardCrouchSpeed = 6.84;
+	maxBackwardCrouchSpeed = 3.91;
+	maxSideCrouchSpeed = 5.87;
+	crouchBoundingBox = PlayerStandardArmor.boundingBox;
 };
 
 function PlayerSkullWolf::onNewDatablock(%this,%obj)

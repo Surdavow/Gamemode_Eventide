@@ -14,7 +14,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	showEnergyBar = false;
 	firstpersononly = true;
 	canJet = false;
-	renderFirstPerson = true;
+	renderFirstPerson = false;
 
 	rechargeRate = 0.375;
 	maxTools = 3;
