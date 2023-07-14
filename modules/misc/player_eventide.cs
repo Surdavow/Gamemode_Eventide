@@ -353,7 +353,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
-			%obj.addhealth(-2);
+			%obj.addhealth(-2.5);
 			%obj.setdamageflash(0.25);
 
 			if(%obj.lastcry+10000 < getsimtime())
