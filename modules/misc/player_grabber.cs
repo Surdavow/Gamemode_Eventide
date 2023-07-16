@@ -13,11 +13,11 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	killermeleesound = "";
 	killermeleesoundamount = 0;	
 
-	killeridlesound = "";
-	killeridlesoundamount = 0;
+	killeridlesound = "grabber_breathe";
+	killeridlesoundamount = 1;
 
-	killerchasesound = "";
-	killerchasesoundamount = 0;	
+	killerchasesound = "grabber_breathe";
+	killerchasesoundamount = 1;	
 	
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";	
