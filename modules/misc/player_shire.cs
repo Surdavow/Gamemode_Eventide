@@ -28,6 +28,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	maxForwardSpeed = 6.93;
 	maxBackwardSpeed = 3.96;
 	maxSideSpeed = 5.94;
+	jumpForce = 0;
 };
 
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)

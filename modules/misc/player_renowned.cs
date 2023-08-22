@@ -18,6 +18,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	renderFirstPerson = false;
 	firstpersononly = true;
 	showenergybar = true;
+	jumpForce = 0;
 
 	isKiller = true;
 	killerraisearms = false;

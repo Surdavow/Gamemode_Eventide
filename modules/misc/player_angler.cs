@@ -11,8 +11,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	rechargeRate = 0.215;
 	maxTools = 0;
 	maxWeapons = 0;
-	jumpForce = 10 * 75;
-	jumpDelay = 32;
+	jumpForce = 0;
 	maxForwardSpeed = 5.95;
 	maxBackwardSpeed = 3.4;
 	maxSideSpeed = 5.1;

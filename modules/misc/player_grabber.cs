@@ -31,6 +31,7 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	maxSideSpeed = 5.46;
 	cameramaxdist = 3;
 	maxfreelookangle = 2.5;
+	jumpForce = 0;
 };
 
 datablock PlayerData(PlayerGrabberNoJump : PlayerGrabber) 

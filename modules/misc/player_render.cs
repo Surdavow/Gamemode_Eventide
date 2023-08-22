@@ -33,6 +33,7 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	maxForwardSpeed = 4;
 	maxBackwardSpeed = 2;
 	maxSideSpeed = 3;
+	jumpForce = 0;
 };
 
 function PlayerRender::onTrigger(%this, %obj, %trig, %press) 

@@ -47,6 +47,7 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	maxBackwardCrouchSpeed = 3.91;
 	maxSideCrouchSpeed = 5.87;
 	crouchBoundingBox = PlayerStandardArmor.boundingBox;
+	jumpForce = 0;
 };
 
 function PlayerSkullWolf::onNewDatablock(%this,%obj)

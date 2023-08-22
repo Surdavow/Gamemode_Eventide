@@ -38,6 +38,7 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	maxfreelookangle = 2.5;
 	boundingBox = "4.8 4.8 10.1";
 	crouchBoundingBox = "4.8 4.8 3.8";
+	jumpForce = 0;
 };
 
 function PlayerPuppetMaster::onNewDatablock(%this,%obj)
