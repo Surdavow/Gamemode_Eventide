@@ -20,7 +20,7 @@ function KillerSpawnMessage(%obj)
 
 function Player::KillerMelee(%obj,%datablock,%radius)
 {	
-	if(!%obj.isInvisible && %obj.lastclawed+500 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
+	if(!%obj.isInvisible && %obj.lastclawed+750 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
 		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
@@ -126,7 +126,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 						%hit.damage(%obj, %hit.getWorldBoxCenter(), 25*getWord(%obj.getScale(),2), $DamageType::Default);
 						%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
 
-						%obj.setTempSpeed(0.65);
+						%obj.setTempSpeed(0.55);
 						%obj.schedule(1000,setTempSpeed,1);
 					}
 				}				
