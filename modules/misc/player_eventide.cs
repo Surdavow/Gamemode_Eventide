@@ -12,7 +12,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	uniformCompatible = true;
 	isEventideModel = true;
 	showEnergyBar = false;
-	firstpersononly = true;
+	firstpersononly = false;
 	canJet = false;
 	renderFirstPerson = false;
 
@@ -353,7 +353,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
-			%obj.addhealth(-1.25);
+			%obj.addhealth(-2.5);
 			%obj.setdamageflash(0.25);
 
 			if(%obj.lastcry+10000 < getsimtime())
