@@ -1,5 +1,4 @@
 $ShopInstrumentList = "GuitarImage BanjoImage HarmonicaImage ViolinImage KeytarImage FluteImage ElectricGuitarImage ElectricBassImage";
-$ShopHatList = "ArmorHelmetImage CapHatImage ConstructionHelmetImage DetectiveHatImage FancyHatImage FedoraHatImage HoodieImage JasonMaskImage NewHoodieImage";
 $ShopEffectList = "HeartStatusImage StinkyStatusImage ConfettiStatusImage ElectricStatusImage SparkleStatusImage FireStatusImage NeonFlameStatusImage";
 $ShopTitleList = "Title Color Bitmap Font";
 
@@ -9,16 +8,14 @@ new ScriptObject(EventideShopMainMenu)
     isCenterprintMenu = 1;
     menuName = "Eventide Shop";
 
-    menuOption[0] = "Hats";
-    menuFunction[0] = "openOptionShop";
-    menuOption[1] = "Effects";
-    menuFunction[1] = "openOptionShop";    
-    menuOption[2] = "Custom Title";
+    menuOption[0] = "Effects";
+    menuFunction[0] = "openOptionShop";    
+    menuOption[1] = "Custom Title";
+    menuFunction[1] = "openOptionShop";
+    menuOption[2] = "Instruments";
     menuFunction[2] = "openOptionShop";
-    menuOption[3] = "Instruments";
-    menuFunction[3] = "openOptionShop";
-    menuOption[4] = "Exit";
-    menuFunction[4] = "exitCenterprintMenu";    
+    menuOption[3] = "Exit";
+    menuFunction[3] = "exitCenterprintMenu";    
 
     justify = "<just:right>";
     menuOptionCount = 5;
@@ -46,10 +43,9 @@ function openOptionShop(%client,%menu,%option)
 
     switch(%option)
     {
-        case 0: %type = "EventideHatShopMenu";
-        case 1: %type = "EventideEffectsShopMenu";
-        case 2: %type = "EventideTitlesShopMenu";
-        case 3: %type = "EventideInstrumentsShopMenu";
+        case 0: %type = "EventideEffectsShopMenu";
+        case 1: %type = "EventideTitlesShopMenu";
+        case 2: %type = "EventideInstrumentsShopMenu";
     }
     %client.startCenterprintMenu(%type);
 }
@@ -317,62 +313,4 @@ function servercmdeffect(%client,%effect)
     messageClient(%client, '', "<tab:280>\c6None");
     %effectbot.unmountImage(0);    
     %client.effect = 0;
-}
-
-if(isObject(EventideHatShopMenu)) EventideHatShopMenu.delete();
-new ScriptObject(EventideHatShopMenu)
-{
-    menuName = "Eventide Shop - Hats";
-    isCenterprintMenu = true;
-    justify = "<just:right>";
-    menuOptionCount = getWordCount($ShopHatList)+1;
-};
-
-for(%i = 0; %i <= getWordCount($ShopHatList); %i++) 
-{    
-    EventideHatShopMenu.menuOption[%i] = strreplace(getWord($ShopHatList,%i),"Image","") @ " - 50 Points";
-    EventideHatShopMenu.menuFunction[%i] = "BuyHat";
-}
-
-EventideHatShopMenu.menuOption[getWordCount($ShopHatList)] = "Return";
-EventideHatShopMenu.menuFunction[getWordCount($ShopHatList)] = "returnToMainShopMenu";
-
-function BuyHat(%client,%menu,%option)
-{
-    %client.exitCenterprintMenu();
-    if(%client.hasHat[%option]) return commandToClient(%client, 'messageboxOK', "Error", "You already have this! Check your hat with /hat");
-    else if(%client.score >= 50)
-    {
-        %client.incScore(-50);
-        %client.hasHat[%option] = true;
-        commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased this hat! Check your hat with /hat");
-    }
-    else return commandToClient(%client, 'messageboxOK', "Error", "Not enough points!");
-}
-
-function serverCmdHat(%client,%hat)
-{    
-    if(!isObject(%client) || !isObject(%client.player)) return;
-    if(strlwr(%hat) $= "none") 
-    {
-        %client.player.mountImage($hat[%client.hat] @ "image",2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));
-        %client.customhat = "";
-        return;
-    }
-    
-    for(%i = 0; %i <= getWordCount($ShopHatList); %i++)
-    if(strlwr(%hat) $= strreplace(strlwr(getWord($ShopHatList,%i)),"image","") && %client.hasHat[%i]) 
-    {
-        %client.player.mountImage(getWord($ShopHatList,%i),2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));            
-        %client.customhat = getWord($ShopHatList,%i);
-        return;
-    }
-
-    messageClient(%client, '', "<tab:280>\c6Your Hats List");
-    messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
-    for(%i = 0; %i <= getWordCount($ShopHatList); %i++) if(%client.hasHat[%i]) 
-    messageClient(%client, '', "<tab:280>\c6" @ strreplace(getWord($ShopHatList,%i),"Image",""));
-    messageClient(%client, '', "<tab:280>\c6None");
-    %client.player.mountImage($hat[%client.hat] @ "image",2,1,addTaggedString(luacall(getcolorname,%client.hatColor)));
-    %client.customhat = "";
 }
