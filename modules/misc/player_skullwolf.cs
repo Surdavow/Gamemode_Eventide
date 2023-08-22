@@ -1,11 +1,20 @@
 datablock TSShapeConstructor(SkullwolfDTS) 
 {
 	baseShape = "./models/skullwolf.dts";
-	sequence0 = "./models/skullwolf.dsq";
-	sequence1 = "./models/skullwolfroot2.dsq crouch";
-	sequence2 = "./models/skullwolfroot2.dsq crouchRun";
-	sequence3 = "./models/skullwolfroot2.dsq crouchBack";
-	sequence4 = "./models/skullwolfroot2.dsq crouchSide";
+	sequence0 = "./models/skullwolf_root.dsq root";
+	sequence1 = "./models/skullwolf_run.dsq run";
+	sequence2 = "./models/skullwolf_run.dsq walk";
+	sequence3 = "./models/skullwolf_back.dsq back";
+	sequence4 = "./models/skullwolf_side.dsq side";
+	sequence5 = "./models/skullwolf_look.dsq look";
+	sequence6 = "./models/skullwolf_jump.dsq jump";
+	sequence7 = "./models/skullwolf_jump.dsq standjump";
+	sequence8 = "./models/skullwolf_fall.dsq fall";
+	sequence9 = "./models/skullwolf_land.dsq land";
+	sequence10 = "./models/skullwolf_talk.dsq talk";
+	sequence11 = "./models/skullwolf_death1.dsq death1";
+	sequence12 = "./models/skullwolf_plant.dsq plant";
+	sequence13 = "./models/skullwolf_activate2.dsq activate2";
 };
 
 datablock PlayerData(PlayerSkullWolf : PlayerRenowned) 
