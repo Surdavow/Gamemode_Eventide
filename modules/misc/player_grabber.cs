@@ -191,12 +191,20 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	%obj.setHeadUp(0);
 	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
 
-	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
-	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
-	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
-	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
-	if (%obj.bloody["chest_front"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_front");
-	if (%obj.bloody["chest_back"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_back");
+	if(%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
+	if(%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
+	if(%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
+	if(%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
+	if(%obj.bloody["chest_front"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_front");
+	if(%obj.bloody["chest_back"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_back");
+	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("lhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");	
 
 	%obj.setDecalName("classicshirt");
 	%shirtColor = "0.28 0.21 0.12 1";
