@@ -103,6 +103,24 @@ datablock ShapeBaseImageData(gem4Image : gem1Image)
     colorShiftColor = gem4Item.colorShiftColor;	
 };
 
+datablock ItemData(gem5Item : gem1Item)
+{
+	shapeFile = "./models/gem5.dts";
+	uiName = "Gem Variant 5";
+	doColorShift = true;
+	colorShiftColor = "0.25 0.25 0.6 1";
+	image = gem5Image;
+};
+
+datablock ShapeBaseImageData(gem5Image : gem1Image)
+{
+    shapeFile = "./models/gem5.dts";
+    item = gem5Item;
+	staticShape = brickgem5StaticShape;
+    doColorShift = gem5Item.doColorShift;
+    colorShiftColor = gem5Item.colorShiftColor;	
+};
+
 datablock StaticShapeData(brickGem1StaticShape)
 {
 	isInvincible = true;
@@ -125,26 +143,32 @@ datablock StaticShapeData(brickGem4StaticShape : brickGem1StaticShape)
 	shapeFile = "./models/Gem4.dts";
 };
 
+datablock StaticShapeData(brickGem5StaticShape : brickGem1StaticShape)
+{
+	shapeFile = "./models/Gem5.dts";
+};
+
 function brickGem1StaticShape::onAdd(%this,%obj)
 {
 	Parent::onAdd(%this,%obj);
-	%obj.schedule(33,playaudio,3,%this.placementSound);
 }
 
 function brickGem2StaticShape::onAdd(%this,%obj)
 {
 	brickGem1StaticShape::onAdd(%this,%obj);
-	%obj.schedule(33,playaudio,3,%this.placementSound);
 }
 
 function brickGem3StaticShape::onAdd(%this,%obj)
 {
 	brickGem1StaticShape::onAdd(%this,%obj);
-	%obj.schedule(33,playaudio,3,%this.placementSound);
 }
 
 function brickGem4StaticShape::onAdd(%this,%obj)
 {
 	brickGem1StaticShape::onAdd(%this,%obj);
-	%obj.schedule(33,playaudio,3,%this.placementSound);
+}
+
+function brickGem5StaticShape::onAdd(%this,%obj)
+{
+	brickGem1StaticShape::onAdd(%this,%obj);
 }

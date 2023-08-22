@@ -19,7 +19,6 @@ datablock StaticShapeData(brickEventideRitualStaticShape)
 	candlePos2 = "0 3.5 0.375";
 	candlePos3 = "-3.25 1.1 0.375";
 	candlePos4 = "3.25 1.1 0.375";
-	candlePos5 = "";
 	bookPos = "0 0.65 0.1";
 	daggerPos = "0 -0.65 0.1";
 };
