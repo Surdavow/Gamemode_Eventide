@@ -29,24 +29,25 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                                 %rrl--;
                             }                      
 
-            case "item":    if(%itemcount++ < 6) switch(getRandom(1,4))
+            case "item":    if(%itemcount++ < 6) switch(getRandom(1,5))
                             {
                                 case 1: %brick.setItem("CRadioItem");
                                 case 2: %brick.setItem("ZombieMedpackItem");
                                 case 3: %brick.setItem("SodaItem");
                                 case 4: %brick.setItem("FlareItem");
+								case 5: %brick.setItem("ZombiePillsItem");
                             }
 
-            case "weapon":  if(%weaponcount++ < 6) switch(getRandom(1,8))
+            case "weapon":  if(%weaponcount++ < 6) switch(getRandom(1,6))
                             {
                                 case 1: %brick.setItem("sm_barStoolItem");
                                 case 2: %brick.setItem("sm_bottleItem");
                                 case 3: %brick.setItem("sm_chairItem");
-                                case 4: %brick.setItem("sm_foldingChairItem");
-                                case 5: %brick.setItem("sm_poolCueItem");
-                                case 6: %brick.setItem("bearTrapItem");
-                                case 7: %brick.setItem("sm_chairItem");                                
-                                case 8: %brick.setItem("FlareGunItem");
+                                case 4: %brick.setItem("sm_poolCueItem");
+                                case 5: %brick.setItem("sm_chairItem");                                
+                                case 6: %brick.setItem("FlareGunItem");
+								case 7: %brick.setItem("bearTrapItem");
+								case 8: %brick.setItem("sm_foldingChairItem");
                                 case 9: %brick.setItem("StunGun");
                             }
         }
