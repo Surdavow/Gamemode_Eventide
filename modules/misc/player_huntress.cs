@@ -31,7 +31,7 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	jumpForce = 0;
 };
 
-function PlayerShire::onTrigger(%this, %obj, %trig, %press) 
+function PlayerHuntress::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		

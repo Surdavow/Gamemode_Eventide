@@ -22,9 +22,15 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
+	
+	killeridlesound = "skinwalker_idle";
+	killeridlesoundamount = 1;
+	
+	killerchasesound = "skinwalker_idle";
+	killerchasesoundamount = 1;
 
-	killermeleesound = "";
-	killermeleesoundamount = 0;    
+	killermeleesound = "skinwalker_attack";
+	killermeleesoundamount = 1;    
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;    
