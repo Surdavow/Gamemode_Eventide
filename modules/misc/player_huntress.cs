@@ -23,8 +23,8 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	killerlight = "NoFlarePLight";
 
 	rechargeRate = 0.3;
-	maxTools = 0;
-	maxWeapons = 0;
+	maxTools = 1;
+	maxWeapons = 1;
 	maxForwardSpeed = 5.95;
 	maxBackwardSpeed = 3.4;
 	maxSideSpeed = 5.1;
@@ -50,7 +50,7 @@ function PlayerHuntress::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);	
 	%obj.setScale("1.2 1.2 1.2");
-	%obj.mountImage("meleeAxeImage",1);
+	//%obj.mountImage("meleeAxeImage",0);
 	KillerSpawnMessage(%obj);
 }
 
@@ -67,12 +67,12 @@ function PlayerHuntress::EventideAppearance(%this,%obj,%client)
 	%obj.unhideNode("rhand");
 	%obj.unhideNode("femchest");
 
-	%hoodieColor = "0.22 0.11 0.3 1";
+	%hoodieColor = "0.35 0 0.13 1";
 	%pantsColor = "0.075 0.075 0.075 1";
-	%skinColor = "1 1 1 1";
+	%skinColor = "0.83 0.73 0.66 1";
 
-	%obj.setFaceName("shire");
-	%obj.setDecalName("hoodie");
+	%obj.setFaceName("huntressface");
+	%obj.setDecalName("huntressdecal");
 	%obj.setNodeColor("rarm",%hoodieColor);
 	%obj.setNodeColor("larm",%hoodieColor);
 	%obj.setNodeColor("femchest",%hoodieColor);
@@ -82,7 +82,7 @@ function PlayerHuntress::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%skinColor);
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
-	%obj.mountImage("newhoodieimage",2,1,addTaggedString("darkpurple"));
+	//%obj.mountImage("newhoodieimage",2);
 }
 
 function PlayerHuntress::onDamage(%this, %obj, %delta)
