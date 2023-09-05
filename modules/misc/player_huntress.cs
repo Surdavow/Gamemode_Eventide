@@ -2,7 +2,7 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 {
 	uiName = "Huntress Player";
 
-	killerSpawnMessage = "A hooded figure channels a blinding wrath.";
+	killerSpawnMessage = "...";
 
 	killerChaseLvl1Music = "musicData_OUT_HuntressNear";
 	killerChaseLvl2Music = "musicData_OUT_HuntressChase";
@@ -10,11 +10,11 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	killeridlesound = "huntress_idle";
 	killeridlesoundamount = 9;
 
-	killerchasesound = "huntress_chase";
-	killerchasesoundamount = 4;
+	killerchasesound = "huntress_idle";
+	killerchasesoundamount = 9;
 
-	killermeleesound = "";
-	killermeleesoundamount = 0;	
+	killermeleesound = "huntress_attack";
+	killermeleesoundamount = 5;	
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
@@ -29,6 +29,7 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	maxBackwardSpeed = 3.4;
 	maxSideSpeed = 5.1;
 	jumpForce = 0;
+	PainSound = "huntress_pain";
 };
 
 function PlayerHuntress::onTrigger(%this, %obj, %trig, %press) 
@@ -48,7 +49,8 @@ function PlayerHuntress::onPeggFootstep(%this,%obj)
 
 function PlayerHuntress::onNewDatablock(%this,%obj)
 {
-	Parent::onNewDatablock(%this,%obj);	
+	Parent::onNewDatablock(%this,%obj);
+	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.2 1.2 1.2");
 	//%obj.mountImage("meleeAxeImage",0);
 	KillerSpawnMessage(%obj);
@@ -83,10 +85,4 @@ function PlayerHuntress::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
 	//%obj.mountImage("newhoodieimage",2);
-}
-
-function PlayerHuntress::onDamage(%this, %obj, %delta)
-{
-	Parent::onDamage(%this, %obj, %delta);
-	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"huntress_pain" @ getRandom(1, 4) @ "_sound");
 }
