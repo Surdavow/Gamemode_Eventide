@@ -51,7 +51,7 @@ function PlayerHuntress::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
-	%obj.setScale("1.2 1.2 1.2");
+	%obj.setScale("1.15 1.15 1.15");
 	//%obj.mountImage("meleeAxeImage",0);
 	KillerSpawnMessage(%obj);
 }
@@ -84,5 +84,11 @@ function PlayerHuntress::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%skinColor);
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
-	//%obj.mountImage("newhoodieimage",2);
+	%obj.mountImage("Huntressimage",2);
+}
+
+function PlayerHuntress::onDamage(%this, %obj, %delta)
+{
+	Parent::onDamage(%this, %obj, %delta);
+	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"huntress_pain" @ getRandom(1, 1) @ "_sound");
 }
