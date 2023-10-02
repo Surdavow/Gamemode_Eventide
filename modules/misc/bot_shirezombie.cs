@@ -2,7 +2,6 @@ datablock PlayerData(ShireZombieBot : EventidePlayer)
 {
 	uiName = "";
 	isKiller = true;
-	maxDamage = 1;
     uiName = "";
     maxDamage = 9999;
 };
