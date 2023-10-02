@@ -164,7 +164,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 					MissionCleanup.add(%p);
 					%obj.unmountImage(1);
 					%obj.playthread(2,"leftrecoil");
-					%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/2);
+					%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/1.5);
 
 					if(isObject(%obj.hookrope)) %obj.hookrope.delete();
 					else

@@ -101,37 +101,22 @@ package Player_Huntress
 
     function ShapeBase::pickup(%obj, %item)
 {
-
         if(%obj.getClassName() $= "Player")
 {
-
             if(%obj.getDataBlock().getName() $= "PlayerHuntress")
 {
-
                 return;
-
             }
-
         }
-
-
         parent::pickup(%obj, %item);
-
     }
-
-
     function Player::addItem(%player, %image, %client)
 {
-
         if(!$Player::PlayerHuntress::NoAddItem)
 {
-
             parent::addItem(%player, %image, %client);
-
         }
-
     }
-
 };
 
 $Player::NoItemsPickup::NoAddItem = 0;

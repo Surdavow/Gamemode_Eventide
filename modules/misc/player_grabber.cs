@@ -87,7 +87,7 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 				{					
 					if(%obj.ChokeAmount < 4)
 					{
-						if(isObject(%obj.victim) && %obj.victim.getState() !$= "Dead") %obj.victim.damage(%obj, %obj.getmuzzlePoint(1), 8, $DamageType::Default);
+						if(isObject(%obj.victim) && %obj.victim.getState() !$= "Dead") %obj.victim.damage(%obj, %obj.getmuzzlePoint(1), 16, $DamageType::Default);
 
 						%obj.lastChokeTime = getSimTime()+250;	
 						%obj.playthread(0,"plant");
