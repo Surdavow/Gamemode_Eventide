@@ -91,6 +91,12 @@ datablock ShapeBaseImageData(meleeAxeImage : meleeTantoImage)
    shapeFile = "./models/axe.dts";
 };
 
+datablock ShapeBaseImageData(meleeAxeLImage : meleeTantoImage)
+{
+   shapeFile = "./models/axe2.dts";
+   mountPoint = 1;
+};
+
 function meleeTantoImage::onFire(%this,%obj,%slot)
 {
 	return;

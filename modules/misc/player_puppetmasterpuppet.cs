@@ -7,6 +7,12 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 {
 	uiName = "";
 	shapeFile = PuppetMasterPuppetDTS.baseShape;
+	
+	killermeleesound = "puppetmasterpuppet_idle";
+	killermeleesoundamount = 1;
+	
+	killermeleehitsound = "melee_tanto";
+	killermeleehitsoundamount = 3;
 
 	maxTools = 0;
 	maxWeapons = 0;
@@ -16,6 +22,7 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 	maxBackwardSpeed = 7.46;
 	maxSideSpeed = 11.20;
 	maxDamage = 10;
+	jumpforce = 12 * 85;
 };
 
 function PuppetMasterPuppet::onNewDatablock(%this,%obj)

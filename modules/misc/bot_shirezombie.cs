@@ -32,7 +32,7 @@ function ShireZombieBot::onAdd(%this,%obj)
     %obj.setMoveSlowdown(0);
 	%this.applyAppearance(%obj,%obj.ghostclient);
     %this.onBotLoop(%obj);
-    //%obj.mountImage("GlowFaceZombieImage",0);
+    %obj.mountImage("GlowFaceZombieImage",2);
 	%obj.mountImage("ZombieBodyImage",1);    
 }
 

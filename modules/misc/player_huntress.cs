@@ -52,7 +52,7 @@ function PlayerHuntress::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.15 1.15 1.15");
-	//%obj.mountImage("meleeAxeImage",0);
+	%obj.mountImage("meleeAxeLImage",1);
 	KillerSpawnMessage(%obj);
 }
 

@@ -128,3 +128,29 @@ function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
         %obj.changeaudio = false;
     }
 }
+
+package Player_Skinwalker
+{
+
+    function ShapeBase::pickup(%obj, %item)
+{
+        if(%obj.getClassName() $= "Player")
+{
+            if(%obj.getDataBlock().getName() $= "PlayerSkinwalker")
+{
+                return;
+            }
+        }
+        parent::pickup(%obj, %item);
+    }
+    function Player::addItem(%player, %image, %client)
+{
+        if(!$Player::PlayerSkinwalker::NoAddItem)
+{
+            parent::addItem(%player, %image, %client);
+        }
+    }
+};
+
+$Player::NoItemsPickup::NoAddItem = 0;
+activatePackage(Player_Skinwalker);
