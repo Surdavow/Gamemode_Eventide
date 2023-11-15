@@ -90,7 +90,7 @@ datablock ItemData(gem4Item : gem1Item)
 	shapeFile = "./models/gem4.dts";
 	uiName = "Gem Variant 4";
 	doColorShift = true;
-	colorShiftColor = "0.6 0.25 0.25 1";
+	colorShiftColor = "1 0.83 0.51 1";
 	image = gem4Image;
 };
 
@@ -108,7 +108,7 @@ datablock ItemData(gem5Item : gem1Item)
 	shapeFile = "./models/gem5.dts";
 	uiName = "Gem Variant 5";
 	doColorShift = true;
-	colorShiftColor = "0.25 0.25 0.6 1";
+	colorShiftColor = "0.78 0.51 1 1";
 	image = gem5Image;
 };
 

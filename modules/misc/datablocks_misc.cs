@@ -1063,6 +1063,47 @@ datablock ParticleEmitterData(ZombieBodyEmitter) {
 	phiVariance			= 0.0;
 };
 
+datablock ParticleData(BleedParticle)
+{
+   dragCoefficient = 3;
+   gravityCoefficient = 0.0;
+   inheritedVelFactor = 1;
+   constantAcceleration = 0;
+   lifetimeMS         = 600;
+   lifetimeVarianceMS = 250;
+   textureName = "base/data/particles/cloud";
+   spinSpeed     = 0;
+   spinRandomMin = -20;
+   spinRandomMax = 20;
+   colors[0] = "0.6 0 0 1";
+   colors[1] = "0.5 0 0 1";
+   colors[2] = "0.4 0 0 0";
+   sizes[0] = 1.5;
+   sizes[1] = 0.3;
+   sizes[2] = 0.04;
+   times[1] = 0.5;
+   times[2] = 1;
+   useInvAlpha = true;
+};
+
+datablock ParticleEmitterData(BleedEmitter)
+{
+   ejectionPeriodMS = 50;
+   periodVarianceMS = 0;
+   ejectionVelocity = 4;
+   velocityVariance = 0;
+   ejectionOffset   = 0;
+   thetaMin = 0;
+   thetaMax = 180;
+   phiReferenceVel = 0;
+   phiVariance     = 360;
+   overrideAdvance = false;
+   lifetimeMS = 3500;
+   particles = "BleedParticle";
+
+   uiName = "";
+};
+
 datablock ExplosionData(DarkMExplosion)
 {
 	lifeTimeMS = 250;
@@ -1340,6 +1381,21 @@ datablock ShapeBaseImageData(ZombieBodyImage)
 	stateTimeoutValue[0]		= 1000;
 	stateTransitionOnTimeout[0]	= "Glow";
 	stateScript[0]				= "onGlow";
+};
+
+datablock ShapeBaseImageData(BleedImage) 
+{
+	shapeFile			= "base/data/shapes/empty.dts";
+	mountPoint			= 2;
+	offset = "-0.48 0 -0.6";
+	correctMuzzleVector	= false;
+	stateName[0]				= "Bleed";
+	stateEmitter[0]				= BleedEmitter;
+	stateEmitterTime[0]			= 1000;
+	stateWaitForTimeout[0]		= true;
+	stateTimeoutValue[0]		= 1000;
+	stateTransitionOnTimeout[0]	= "Bleed";
+	stateScript[0]				= "onBleed";
 };
 
 datablock fxLightData(NegativePlayerLight)

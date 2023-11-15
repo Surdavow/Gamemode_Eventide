@@ -147,7 +147,7 @@ function brickEventideRitual::onPlant(%this, %obj)
 	%obj.setRendering(0);
 	%obj.setColliding(0);
 	%obj.setRaycasting(1);
-	%obj.setemitter("laseremittera");
+	//%obj.setemitter("laseremittera");
 	%obj.setColor(17);
 
 	%obj.ritualshape = new StaticShape()
