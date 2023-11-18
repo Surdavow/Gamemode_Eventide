@@ -97,6 +97,12 @@ datablock ShapeBaseImageData(meleeAxeLImage : meleeTantoImage)
    mountPoint = 1;
 };
 
+datablock ShapeBaseImageData(ShovelImage : meleeTantoImage)
+{
+   shapeFile = "./models/Shovel.dts";
+   mountPoint = 1;
+};
+
 function meleeTantoImage::onFire(%this,%obj,%slot)
 {
 	return;

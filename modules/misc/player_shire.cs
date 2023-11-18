@@ -128,6 +128,7 @@ function PlayerShire::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);	
 	%obj.setScale("1.1 1.1 1.1");
 	%obj.mountImage("meleeAxeImage",0);
+	%obj.mountImage("newhoodieimage",3,2,addTaggedString("darkpurple"));
 	KillerSpawnMessage(%obj);
 }
 
@@ -159,7 +160,7 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%skinColor);
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
-	%obj.mountImage("newhoodieimage",2,1,addTaggedString("darkpurple"));
+	%obj.mountImage("newhoodieimage",3,2,addTaggedString("darkpurple"));
 }
 
 function PlayerShire::onDamage(%this, %obj, %delta)

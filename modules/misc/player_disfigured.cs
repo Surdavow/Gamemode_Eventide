@@ -7,14 +7,14 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	killerChaseLvl1Music = "musicData_OUT_DisfiguredNear";
 	killerChaseLvl2Music = "musicData_OUT_DisfiguredChase";
 
-	killeridlesound = "huntress_idle";
-	killeridlesoundamount = 9;
+	killeridlesound = "disfigured_idle";
+	killeridlesoundamount = 5;
 
-	killerchasesound = "huntress_idle";
-	killerchasesoundamount = 9;
+	killerchasesound = "disfigured_idle";
+	killerchasesoundamount = 5;
 
-	killermeleesound = "huntress_attack";
-	killermeleesoundamount = 5;	
+	killermeleesound = "disfigured_attack";
+	killermeleesoundamount = 3;	
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
@@ -23,13 +23,13 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	killerlight = "NoFlarePLight";
 
 	rechargeRate = 0.3;
-	maxTools = 1;
-	maxWeapons = 1;
-	maxForwardSpeed = 5.95;
-	maxBackwardSpeed = 3.4;
-	maxSideSpeed = 5.1;
+	runForce = "810";
+	maxTools = 0;
+	maxWeapons = 0;
+	maxForwardSpeed = 7.7;
+	maxBackwardSpeed = 4.4;
+	maxSideSpeed = 6.6;
 	jumpForce = 0;
-	PainSound = "huntress_pain";
 };
 
 function PlayerDisfigured::onTrigger(%this, %obj, %trig, %press) 
@@ -52,7 +52,8 @@ function PlayerDisfigured::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.15 1.15 1.15");
-	%obj.mountImage("smallBleedImage",1);
+	%obj.mountImage("BleedImage",1);
+	%obj.mountImage("FogImage",2);
 	KillerSpawnMessage(%obj);
 }
 
@@ -68,8 +69,8 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 	%obj.unhideNode("rhand");
 	%obj.unhideNode("femchest");
 
-	%dressColor = "0.50 0.38 0.27 1";
-	%skinColor = "0.7 1 0.63 1";
+	%dressColor = "0.2 0.2 0.2 1";
+	%skinColor = "0.63 0.71 1 1";
 	%bloodColor = "0.36 0.07 0.07 1";
 
 	%obj.setFaceName("disfiguredface");
@@ -78,8 +79,6 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("larmslim",%bloodColor);
 	%obj.setNodeColor("femchest",%dressColor);
 	%obj.setNodeColor("skirthip",%dressColor);
-	%obj.setNodeColor("skirttrimr",%dressColor);
-	%obj.setNodeColor("skirttriml",%dressColor);
 	%obj.setNodeColor("rhand",%skinColor);
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
@@ -90,5 +89,5 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 function PlayerDisfigured::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
-	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"huntress_pain" @ getRandom(1, 1) @ "_sound");
+	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"disfigured_pain" @ getRandom(1, 1) @ "_sound");
 }

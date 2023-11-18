@@ -48,6 +48,7 @@ function PlayerGrabber::onNewDatablock(%this,%obj)
 	else applyCharacterPrefs(%obj.client);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1.15 1.15 1.15");
+	%obj.mountImage("jasonmaskimage",2);
 	KillerSpawnMessage(%obj);
 
 	%obj.mountImage("meleeMacheteImage",0);
@@ -224,6 +225,15 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor((%client.rleg ? "rpeg" : "rshoe"),%pantsColor);
 	%obj.setNodeColor((%client.lleg ? "lpeg" : "lshoe"),%pantsColor);
 	%obj.setNodeColor((%client.lleg ? "lpeg" : "lshoe"),%pantsColor);
+	//Set blood colors.
+	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");
+	%obj.setNodeColor("lhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("rhand_blood", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_front", "0.7 0 0 1");
+	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
 	%obj.setHeadUp(0);
 }
 

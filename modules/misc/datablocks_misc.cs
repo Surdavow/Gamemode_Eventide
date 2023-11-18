@@ -1066,21 +1066,21 @@ datablock ParticleEmitterData(ZombieBodyEmitter) {
 datablock ParticleData(BleedParticle)
 {
    dragCoefficient = 3;
-   gravityCoefficient = 0.0;
-   inheritedVelFactor = 1;
+   gravityCoefficient = 0.5;
+   inheritedVelFactor = 0.3;
    constantAcceleration = 0;
-   lifetimeMS         = 600;
+   lifetimeMS         = 100;
    lifetimeVarianceMS = 250;
    textureName = "base/data/particles/cloud";
    spinSpeed     = 0;
    spinRandomMin = -20;
    spinRandomMax = 20;
    colors[0] = "0.6 0 0 1";
-   colors[1] = "0.5 0 0 1";
+   colors[1] = "0.5 0 0 0.3 ";
    colors[2] = "0.4 0 0 0";
-   sizes[0] = 1.5;
-   sizes[1] = 0.3;
-   sizes[2] = 0.04;
+   sizes[0] = 0.12;
+   sizes[1] = 0.4;
+   sizes[2] = 0.08;
    times[1] = 0.5;
    times[2] = 1;
    useInvAlpha = true;
@@ -1090,7 +1090,7 @@ datablock ParticleEmitterData(BleedEmitter)
 {
    ejectionPeriodMS = 50;
    periodVarianceMS = 0;
-   ejectionVelocity = 4;
+   ejectionVelocity = 1;
    velocityVariance = 0;
    ejectionOffset   = 0;
    thetaMin = 0;
@@ -1098,7 +1098,6 @@ datablock ParticleEmitterData(BleedEmitter)
    phiReferenceVel = 0;
    phiVariance     = 360;
    overrideAdvance = false;
-   lifetimeMS = 3500;
    particles = "BleedParticle";
 
    uiName = "";
@@ -1387,7 +1386,7 @@ datablock ShapeBaseImageData(BleedImage)
 {
 	shapeFile			= "base/data/shapes/empty.dts";
 	mountPoint			= 2;
-	offset = "-0.48 0 -0.6";
+	offset = "-0.5 0.05 -0.45";
 	correctMuzzleVector	= false;
 	stateName[0]				= "Bleed";
 	stateEmitter[0]				= BleedEmitter;
@@ -1396,6 +1395,21 @@ datablock ShapeBaseImageData(BleedImage)
 	stateTimeoutValue[0]		= 1000;
 	stateTransitionOnTimeout[0]	= "Bleed";
 	stateScript[0]				= "onBleed";
+};
+
+datablock ShapeBaseImageData(FogImage) 
+{
+	shapeFile			= "base/data/shapes/empty.dts";
+	mountPoint			= 2;
+	offset = "0 -0.5 -0.25";
+	correctMuzzleVector	= false;
+	stateName[0]				= "Fog";
+	stateEmitter[0]				= FogEmitter;
+	stateEmitterTime[0]			= 1000;
+	stateWaitForTimeout[0]		= true;
+	stateTimeoutValue[0]		= 1000;
+	stateTransitionOnTimeout[0]	= "Fog";
+	stateScript[0]				= "onFog";
 };
 
 datablock fxLightData(NegativePlayerLight)
