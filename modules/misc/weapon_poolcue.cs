@@ -158,7 +158,7 @@ function sm_poolCueImage::onFire(%this,%obj,%slot)
 		{
 			if(minigameCanDamage(%obj,%hit) == 1)
 			{
-				if(%obj.poolcuehit < 5) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
+				if(%obj.poolcuehit < 2) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
 				else
 				{
 					%hit.mountimage("sm_stunImage",2);

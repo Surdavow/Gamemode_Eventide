@@ -359,7 +359,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 			if(%obj.lastcry+10000 < getsimtime())
 			{
 				%obj.lastcry = getsimtime();
-				%obj.playaudio(0,"grabber_scream_sound");
+				%obj.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
 				%obj.playthread(3,"plant");
 			}
 		}

@@ -250,7 +250,7 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 		%col.killer = %obj;
 		%col.stunned = false;
 		%obj.mountObject(%col,8);
-		%col.playaudio(0,"grabber_scream_sound");
+		%col.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
 		%col.setarmthread("activate2");
 		PlayerGrabber.schedule(5000,"releaseVictim",%obj);
 
