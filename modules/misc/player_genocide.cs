@@ -46,8 +46,17 @@ function PlayerGenocide::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1 1 1");
-	%obj.mountImage("Genocideimage",1);
-	%obj.mountImage("ShovelImage",2);
+	%obj.mountImage("Genocideimage",2);
+
+	%randomitem[%i++] = "mine_IncendiaryImage";
+    %randomitem[%i++] = "CatARImage";
+    %randomitem[%i++] = "PeeingItemImage";
+    %randomitem[%i++] = "PetitionImage";
+    %randomitem[%i++] = "bookItem";
+    %randomitem[%i++] = "grenade_flashbangImage";
+    %randomitem[%i++] = "grenade_riotImage";
+	
+	%obj.mountImage(%randomitem[getRandom(1,%i)],2);
 	KillerSpawnMessage(%obj);
 }
 
