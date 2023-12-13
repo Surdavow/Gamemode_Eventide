@@ -17,17 +17,7 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                 
         if(%randomize) switch$(strreplace(strlwr(%brick.getname()),"_",""))
         {
-            case "ritual":  if(%rrl)
-                            {
-                                //Choose a random ritual from the list
-                                %randomnumber = getRandom(1,%rrl);
-                                %randomritual = %randomritual[%randomnumber];
-                                %brick.setItem(%randomritual);
-
-                                //Remove it from the list
-                                %randomritual[%randomnumber] = %randomritual[%rrl];
-                                %rrl--;
-                            }                      
+            case "ritual":  %randomritualbrick[%rrlb++] = %brick;                        
 
             case "item":    switch(getRandom(1,5))
                             {
@@ -52,6 +42,18 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                             }
         }
 
+        while(%rrl > 0)
+        {
+            //Choose a random ritual from the list
+            %randomnumber = getRandom(1,%rrl);
+            %randomritual = %randomritual[%randomnumber];
+
+            %randomritualbrick[getRandom(1,%rrlb)].setItem(%randomritual[%randomnumber]);                                                  
+
+            //Remove it from the list
+            %randomritual[%randomnumber] = %randomritual[%rrl];
+            %rrl--;
+        }  
 
         if(isObject(%brick.item)) %brick.setEmitter("SparkleGroundEmitter");
     }
