@@ -49,6 +49,7 @@ function PlayerPuppetMaster::onNewDatablock(%this,%obj)
 	%obj.setScale("1.15 1.15 1.15");
 	%obj.getDataBlock().EventideAppearance(%obj,%obj.client);
 	%obj.mountImage("meleePuppetMasterDaggerImage",0);
+	%obj.unHideNode("ALL");
 	KillerSpawnMessage(%obj);
 }
 
