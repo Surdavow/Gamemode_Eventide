@@ -116,6 +116,7 @@ function PlayerAngler::onNewDatablock(%this,%obj)
 	%obj.mountImage("AnglerHookImage",1);
 	%obj.schedule(1, setEnergyLevel, 0);
 	%obj.setScale("1.2 1.2 1.2");
+	%obj.unHideNode("ALL");
 	KillerSpawnMessage(%obj);
 }
 

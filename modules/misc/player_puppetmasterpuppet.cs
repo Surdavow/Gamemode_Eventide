@@ -29,6 +29,7 @@ function PuppetMasterPuppet::onNewDatablock(%this,%obj)
 {
 	%obj.setScale("0.6 0.6 0.6");
 	%this.EventideAppearance(%obj,ClientGroup.getObject(getRandom(0,ClientGroup.getCount()-1)));
+	%obj.unHideNode("ALL");
 }
 
 function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press) 
