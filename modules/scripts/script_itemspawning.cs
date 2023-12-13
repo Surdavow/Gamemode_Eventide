@@ -48,9 +48,9 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
     while(%rrl > 0)
     {
         //Choose a random ritual from the list
-        %randomnumber = getRandom(0,%rrl);
+        %randomnumber = getRandom(1,%rrl);
         %randomritual = %randomritual[%randomnumber];
-        %rrbrn = getRandom(0,%rrlb);
+        %rrbrn = getRandom(1,%rrlb);
 
         if(isObject(%randomritualbrick[%rrbrn])) 
         {
