@@ -17,7 +17,8 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                 
         if(%randomize) switch$(strreplace(strlwr(%brick.getname()),"_",""))
         {
-            case "ritual":  %randomritualbrick[%rrlb++] = %brick;                        
+            case "ritual":  %randomritualbrick[%rrlb++] = %brick;
+                            talk(%randomritualbrick[%rrlb]);
 
             case "item":    switch(getRandom(1,5))
                             {
