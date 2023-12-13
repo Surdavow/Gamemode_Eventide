@@ -56,8 +56,9 @@ function PlayerGenocide::onNewDatablock(%this,%obj)
     %randomitem[%i++] = "grenade_flashbangImage";
     %randomitem[%i++] = "grenade_riotImage";
 		
-	%obj.schedule(100,mountImage,%randomitem[getRandom(1,%i)],0);
-	%obj.schedule(100,playthread,1,"armReadyRight");
+	%obj.mountImage(%randomitem[getRandom(1,%i)],0);
+	
+	if(%obj.getmountedimage(0).armReady) %obj.playthread(1,"armReadyRight");
 	KillerSpawnMessage(%obj);
 }
 
