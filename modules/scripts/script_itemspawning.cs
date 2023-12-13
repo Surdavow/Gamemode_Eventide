@@ -48,11 +48,15 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
     while(%rrl > 0)
     {
         //Choose a random ritual from the list
-        %randomnumber = getRandom(1,%rrl);
+        %randomnumber = getRandom(0,%rrl);
         %randomritual = %randomritual[%randomnumber];
-        %rrbrn = getRandom(1,%rrlb);
+        %rrbrn = getRandom(0,%rrlb);
 
-        if(isObject(%randomritualbrick[%rrbrn])) %randomritualbrick[%rrbrn].setItem(%randomritual[%randomnumber]);                                                  
+        if(isObject(%randomritualbrick[%rrbrn])) 
+        {
+            %randomritualbrick[%rrbrn].setItem(%randomritual[%randomnumber]);                                                  
+            if(isObject(%randomritualbrick[%rrbrn].item)) %randomritualbrick[%rrbrn].setEmitter("SparkleGroundEmitter");
+        }
 
         //Remove it from the list
         %randomritual[%randomnumber] = %randomritual[%rrl];
