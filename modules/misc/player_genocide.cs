@@ -56,7 +56,7 @@ function PlayerGenocide::onNewDatablock(%this,%obj)
     %randomitem[%i++] = "grenade_flashbangImage";
     %randomitem[%i++] = "grenade_riotImage";
 	
-	%obj.mountImage(%randomitem[getRandom(1,%i)],2);
+	%obj.mountImage(%randomitem[getRandom(1,%i)],0);
 	KillerSpawnMessage(%obj);
 }
 
