@@ -1,6 +1,14 @@
 function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
 {	    
     if(!isObject(EventideItemSpawnSet) || !EventideItemSpawnSet.getCount()) return;
+
+    //Set a ritual list of items to reference later in the function
+    %rituals[%r++] = "candleItem";
+    %rituals[%r++] = "candleItem";
+    %rituals[%r++] = "candleItem";
+    %rituals[%r++] = "candleItem";
+    %rituals[%r++] = "bookItem";
+    %rituals[%r++] = "daggerItem";
         
     for(%g = 0; %g < EventideItemSpawnSet.getCount(); %g++) if(isObject(%brick = EventideItemSpawnSet.getObject(%g)))
     {
@@ -9,7 +17,13 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
                 
         if(%randomize) switch$(strreplace(strlwr(%brick.getname()),"_",""))
         {
-            case "ritual":  %randomritualbrick[%rrlb++] = %brick;
+            case "ritual":  if(%r && getRandom(0,1) == 1)
+                            {
+                                %randomritual = getRandom(1,%r);
+                                %brick.setItem(%rituals[%randomritual]);
+                                %rituals[%randomritual] = %rituals[%r];
+                                %r--;
+                            }
 
             case "item":    switch(getRandom(1,5))
                             {
@@ -32,35 +46,9 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
 								case 8: %brick.setItem("sm_foldingChairItem");
                                 case 9: %brick.setItem("StunGun");
                             }
-        }  
-
-        if(isObject(%brick.item)) %brick.setEmitter("SparkleGroundEmitter");
-    }
-
-    //Set a ritual list of items to reference later in the function
-    %randomritual[%rrl++] = "candleItem";
-    %randomritual[%rrl++] = "candleItem";
-    %randomritual[%rrl++] = "candleItem";
-    %randomritual[%rrl++] = "candleItem";
-    %randomritual[%rrl++] = "bookItem";
-    %randomritual[%rrl++] = "daggerItem";    
-
-    while(%rrl > 0)
-    {
-        //Choose a random ritual from the list
-        %randomnumber = getRandom(1,%rrl);
-        %randomritual = %randomritual[%randomnumber];
-        %rrbrn = getRandom(1,%rrlb);
-
-        if(isObject(%randomritualbrick[%rrbrn])) 
-        {
-            %randomritualbrick[%rrbrn].setItem(%randomritual[%randomnumber]);                                                  
-            if(isObject(%randomritualbrick[%rrbrn].item)) %randomritualbrick[%rrbrn].setEmitter("SparkleGroundEmitter");
         }
 
-        //Remove it from the list
-        %randomritual[%randomnumber] = %randomritual[%rrl];
-        %rrl--;
+        if(isObject(%brick.item)) %brick.setEmitter("SparkleGroundEmitter");
     }
 }
 
