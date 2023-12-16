@@ -171,6 +171,7 @@ function Player::onKillerLoop(%obj)
                     {
                         %victimclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl2Music);
                         %victimclient.musicChaseLevel = 2;
+						%scan.getdataBlock().TunnelVision(%scan,true);					
                     }
 
                     %victimclient.player.TimeSinceChased = getSimTime();
@@ -226,6 +227,7 @@ function Player::onKillerLoop(%obj)
                 {
                     %victimclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music);
                     %victimclient.musicChaseLevel = 1;
+					%scan.getdataBlock().TunnelVision(%scan,false);					
                 }
 
                 cancel(%victimclient.StopChaseMusic);

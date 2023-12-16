@@ -306,6 +306,42 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
 }
 
+function EventidePlayer::TunnelVision(%this,%obj,%bool)
+{
+	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+
+	if(!%obj.defaultTunnelFOV) %obj.defaultTunnelFOV = 90;
+
+	if(%bool) 
+	{		
+		if(%obj.tunnelvision <= 1)
+		{
+			%obj.tunnelvision = mClampF(%obj.tunnelvision+0.1,0,1);
+			commandToClient( %obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
+			%obj.client.setcontrolcamerafov(%obj.defaultTunnelFOV--);
+		}
+
+		if(%obj.tunnelvision >= 1) return;
+	}
+	else
+	{
+		if(%obj.tunnelvision > 0)
+		{
+			%obj.tunnelvision = mClampF(%obj.tunnelvision-0.1,0,1);
+			%obj.client.setcontrolcamerafov(%obj.defaultTunnelFOV++);
+			commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
+		}
+
+		if(%obj.tunnelvision <= 0)
+		{
+			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);		
+			return;
+		}
+	}
+
+	%obj.tunnelvisionsched = %this.schedule(50, TunnelVision, %obj, %bool);	
+}
+
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {			
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount <= 3)
@@ -380,7 +416,12 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
 	Parent::onDisabled(%this,%obj);
 
-	if(isObject(%client = %obj.client)) %obj.ghostclient = %client;
+	if(isObject(%client = %obj.client)) 
+	{
+		%obj.ghostclient = %client;
+		commandToClient(%client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+		%obj.client.setcontrolcamerafov(%obj.defaultTunnelFOV);
+	}
 	if(%obj.radioEquipped) serverPlay3d("radio_unmount_sound",%obj.getPosition());	
 	if(%obj.markedforRenderDeath)
 	{
