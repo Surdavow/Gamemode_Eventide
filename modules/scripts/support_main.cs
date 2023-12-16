@@ -106,6 +106,8 @@ package Eventide_MainPackage
 
 	function Player::Pickup(%obj,%item)
 	{		
+		//Skinwalker players should not be able to pickup items
+		if(%obj.isSkinwalker || %obj.getdataBlock().isKiller) return false;
 		%parent = Parent::Pickup(%obj,%item);
 
 		if(%parent == 1)
