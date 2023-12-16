@@ -194,7 +194,7 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			if(isObject(%obj.client)) %obj.client.centerprint("<color:FFFFFF><font:impact:40>You revived" SPC %victim.client.name,1);
 			if(isObject(%victim.client)) %victim.client.centerprint("<color:FFFFFF><font:impact:40>You were revived by" SPC %obj.client.name,1);
 			%victim.setHealth(50);
-			%victim.setDatablock("EventidePlayer");
+			%victim.setDatablock("EventidePlayer");			
 			%victim.playthread(0,"root");
 			return;
 		}					
@@ -309,14 +309,16 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {			
-	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33))
+	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount <= 3)
     {        
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
+		%obj.downedamount++;
         return;
     }
 
 	if(%obj.isSkinwalker) %obj.addhealth(%damage*5);	
+	if(%obj.downedamount && %obj.getdamageLevel() < 25) %obj.downedamount = 0;
 
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
