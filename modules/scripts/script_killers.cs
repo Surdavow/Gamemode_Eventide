@@ -226,10 +226,10 @@ function Player::onKillerLoop(%obj)
                 if(%victimclient.musicChaseLevel != 1)
                 {
                     %victimclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music);
-                    %victimclient.musicChaseLevel = 1;
-					%scan.getdataBlock().TunnelVision(%scan,false);					
+                    %victimclient.musicChaseLevel = 1;					
                 }
 
+				%scan.getdataBlock().TunnelVision(%scan,false);
                 cancel(%victimclient.StopChaseMusic);
                 %victimclient.StopChaseMusic = %victimclient.schedule(6000,StopChaseMusic);
             }
