@@ -310,7 +310,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
 
-	if(!%obj.defaultTunnelFOV) %obj.defaultTunnelFOV = 90;
+	if(!%obj.defaultTunnelFOV) %obj.defaultTunnelFOV = 110;
 
 	if(%bool) 
 	{		
