@@ -12,6 +12,46 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 
 package Eventide_MainPackage
 {
+	function ServerCmdDropTool(%client,%slot)
+	{
+		if(!isObject(getMinigameFromObject(%client))) return Parent::ServerCmdDropTool(%client, %slot);		
+
+		if(isObject(EventideShapeGroup) && EventideShapeGroup.getCount() >= $EventideRitualAmount) return Parent::ServerCmdDropTool(%client, %slot);
+	
+		if(isObject(%player = %client.Player) && isObject(%item = %player.tool[%slot]))
+		{
+			if(!%item.image.isRitual) return Parent::ServerCmdDropTool(%client, %slot);
+			if(!%item.canDrop || !%player.getDatablock().isEventideModel) return Parent::ServerCmdDropTool(%client, %slot);
+
+			%zScale = getWord (%player.getScale (), 2);
+			%muzzlepoint = VectorAdd (%player.getPosition (), "0 0" SPC 1.5 * %zScale);
+			%muzzlevector = %player.getEyeVector ();
+			%muzzlepoint = VectorAdd (%muzzlepoint, %muzzlevector);
+			%playerRot = rotFromTransform (%player.getTransform ());
+			%thrownItem = new Item ("")
+			{
+				dataBlock = %item;
+			};
+			%thrownItem.setScale (%player.getScale ());
+			MissionCleanup.add (%thrownItem);
+			%thrownItem.setTransform (%muzzlepoint @ " " @ %playerRot);
+			%thrownItem.setVelocity (VectorScale (%muzzlevector, 20 * %zScale));
+			%thrownItem.miniGame = %client.miniGame;
+			%thrownItem.bl_id = %client.getBLID ();
+			%thrownItem.setCollisionTimeout(%player);
+			if(!isObject(DroppedItemGroup))
+			{
+				new SimGroup(DroppedItemGroup);
+				missionCleanUp.add(DroppedItemGroup);
+			}
+			DroppedItemGroup.add(%thrownItem);				
+			if(%item.className $= "Weapon") %player.weaponCount -= 1;
+			
+			%player.tool[%slot] = 0;
+			messageClient (%client, 'MsgItemPickup', '', %slot, 0);			
+			if(isObject(%player.getMountedImage(%item.image.mountPoint))) %player.unmountImage (%item.image.mountPoint);			
+		}
+	}	
 
 	function Item::schedulePop (%obj)
 	{			
