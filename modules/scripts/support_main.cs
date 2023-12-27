@@ -13,8 +13,7 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 package Eventide_MainPackage
 {
 	function Item::schedulePop (%obj)
-	{			
-		talk("Item dropped test");
+	{
 		if(MiniGameGroup.getCount())
 		{			
 			if(!isObject(DroppedItemGroup))
@@ -25,7 +24,7 @@ package Eventide_MainPackage
 			DroppedItemGroup.add(%obj);
 			return;
 		}
-		Parent::schedulePop(%obj);
+		else return Parent::schedulePop(%obj);
 	}
 
 	function onMissionEnded(%this, %a, %b, %c, %d)
