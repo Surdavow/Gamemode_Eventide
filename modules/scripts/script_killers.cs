@@ -248,7 +248,7 @@ function Player::onKillerLoop(%obj)
         }
     }
 
-	if(%obj.lastKillerIdle+getRandom(4500,6000) < getSimTime())//Idle sounds are now in this function instead of a separate function
+	if(%obj.lastKillerIdle+getRandom(6000,8500) < getSimTime())//Idle sounds are now in this function instead of a separate function
 	{
 		%obj.lastKillerIdle = getSimTime();
 
