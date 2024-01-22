@@ -20,24 +20,18 @@ package Eventide_MainPackage
 
 	function ServerCmdDropTool (%client, %position)
 	{
-		trace(1);
 		Parent::ServerCmdDropTool(%client, %position);
-		trace(0);
 	}
 
 	function Item::schedulePop (%obj)
 	{		
-		if(MiniGameGroup.getCount())
+		if(!isObject(DroppedItemGroup))
 		{
-			if(!isObject(DroppedItemGroup))
-			{
-				new SimGroup(DroppedItemGroup);
-				missionCleanUp.add(DroppedItemGroup);
-			}
-			DroppedItemGroup.add(%obj);
-			return;
+			new SimGroup(DroppedItemGroup);
+			missionCleanUp.add(DroppedItemGroup);
 		}
-		else return Parent::schedulePop(%obj);
+		DroppedItemGroup.add(%obj);
+		return;
 	}
 
 	function onMissionEnded(%this, %a, %b, %c, %d)
