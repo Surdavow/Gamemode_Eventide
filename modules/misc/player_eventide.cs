@@ -57,8 +57,9 @@ function EventidePlayer::PulsingScreen(%this,%obj)
 		return;
 	} 
 
+	if(isObject(%obj.client)) %obj.client.play2D("survivor_heartbeat_sound");
 	%obj.setdamageflash(0.125);
-	%obj.PulsingScreen = %this.schedule(750,PulsingScreen,%obj);
+	%obj.PulsingScreen = %this.schedule(850,PulsingScreen,%obj);
 }
 
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
@@ -362,7 +363,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
 		%obj.downedamount++;
-		if(%obj.downedamount == 2) %this.PulsingScreen(%obj);		
+		if(%obj.downedamount >= 2) %this.PulsingScreen(%obj);		
         return;
     }
 
