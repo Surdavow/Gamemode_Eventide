@@ -154,7 +154,7 @@ function Player::PrepperizerEffect(%obj)
 	}
 	else %obj.setArmThread("look");
 
-	if(getRandom(1,5) == 1)
+	if(getRandom(1,10) == 1)
 	{
 		%obj.light = new fxLight ("")
 		{
@@ -222,6 +222,7 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 
 	if(%alpha == 0)
 	{
+		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);
 		%obj.setTempSpeed(2.5);
@@ -240,6 +241,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 
 	if(%alpha == 0) 
 	{
+		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 		%this.EventideAppearance(%obj,%obj.client);
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"render_appear_sound");
