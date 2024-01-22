@@ -161,17 +161,18 @@ function Player::onKillerLoop(%obj)
 		%killerclient = %obj.client;
 		%victimclient = %scan.client;
 
+		if(%this.getName() $= "PlayerRender") %this.onNearPlayer(%scan);
+
 		// Chase behavior
 		if (%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(), %scan.getMuzzlePoint(2), $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType, %obj)))
 		{
 			%killercansee = true;
 			%chasing = true;
-			%chaseLevel = %obj.isInvisible ? 1 : 2;
 
 			// Set chase music and timers
 			if (isObject(%victimclient))
 			{
-				%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[%chaseLevel], %chaseLevel);
+				%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[2],true);
 				%victimclient.player.TimeSinceChased = getSimTime();
 				cancel(%victimclient.StopChaseMusic);
 				%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
@@ -179,7 +180,7 @@ function Player::onKillerLoop(%obj)
 
 			if (isObject(%killerclient))
 			{
-				%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[%chaseLevel], %chaseLevel);
+				%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[2],true);
 				cancel(%killerclient.StopChaseMusic);
 				%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
 			}
@@ -208,7 +209,6 @@ function Player::onKillerLoop(%obj)
     if (%obj.lastKillerIdle + getRandom(6000, 8500) < getSimTime())
     {
         %obj.lastKillerIdle = getSimTime();
-        %killercansee = false;
 
         // Play sounds based on chase state
         if (%killercansee)

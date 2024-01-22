@@ -36,22 +36,39 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	jumpForce = 0;
 };
 
+function PlayerRender::onNearPlayer(%this,%obj,%scan)
+{
+	if(!isObject(%obj) || !isObject(%scan)) return;
+
+	if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
+	{
+		%obj.lastNearPlayer = getSimTime();
+		
+		%victimPos = %scan.getPosition();
+		missionCleanup.add(new projectile()
+		{
+			dataBlock        = "PrepperProjectile";
+			initialVelocity  = 0;
+			initialPosition  = vectorAdd(%victimPos, getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
+		});
+	}				
+}
+
+function PlayerRender::onImpact(%this, %obj, %col, %vec, %force)
+{
+	if(%force > %this.minImpactSpeed) %obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");	
+}
+
 function PlayerRender::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
 	if(%press) switch(%trig)
 	{
-		case 0:	%p = new projectile()
-				{
-					dataBlock = "PrepperProjectile";
-					initialposition = VectorSub(VectorAdd(%obj.getEyePoint(),VectorScale(%obj.getEyeVector(),10)),"0 0 1.5");
-				};
-				MissionCleanup.add(%p);
-				%p.explode();
+		case 0:	//Attack				
 				
-				
-		case 4: if(!%obj.isInvisible)
+		case 4: //Invisibility
+				if(!%obj.isInvisible)
 				{ 					
 					if(!isEventPending(%obj.disappearsched)) 
 					{
@@ -143,14 +160,16 @@ function Player::PrepperizerEffect(%obj)
 	if(getRandom(1,4) == 1) %obj.setnodecolor("ALL","0 0 0 0.1");
 	else %obj.setnodecolor("ALL","0 0 0 1");
 
-	if(getRandom(1,4) == 1) 
+	if(getRandom(1,10) == 1) 
 	{
-		switch(getRandom(1,2))
+		switch(getRandom(1,5))
 		{
 			case 1: %obj.setArmThread("death1");
 			case 2: %obj.setArmThread("sit");
 			case 3: %obj.setArmThread("crouch");
-		}				
+			case 4: %obj.setArmThread("standjump");			
+			case 5: %obj.setArmThread("talk");			
+		}
 	}
 	else %obj.setArmThread("look");
 
