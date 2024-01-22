@@ -329,8 +329,9 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
     if(isObject(%client.EventidemusicEmitter))
 	{
     	%client.EventidemusicEmitter.delete();
+		talk(%ischasing);
 		
-		if(isObject(%client.player))		
+		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")		
 		switch(%ischasing) 
 		{
 			case true: %client.player.getdataBlock().TunnelVision(%client.player,true);
