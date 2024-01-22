@@ -51,7 +51,11 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 
 function EventidePlayer::PulsingScreen(%this,%obj)
 {
-	if(!isObject(%obj) || %obj.getclassname() !$= "Player" || %obj.getState() $= "Dead" || %obj.downedamount != 2) return;
+	if((!isObject(%obj) || %obj.getclassname() !$= "Player" || %obj.getState() $= "Dead") || %obj.downedamount != 2 || %obj.getdamageLevel() < 25)
+	{
+		if(isObject(%obj)) %obj.downedamount = 0;
+		return;
+	} 
 
 	%obj.setdamageflash(0.125);
 	%obj.PulsingScreen = %this.schedule(750,PulsingScreen,%obj);
