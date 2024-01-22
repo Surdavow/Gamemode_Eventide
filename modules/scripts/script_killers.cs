@@ -338,16 +338,18 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
     };
     MissionCleanup.add(%client.EventidemusicEmitter);
     %client.EventidemusicEmitter.scopeToClient(%client);
-
-	talk(%ischasing);
 		
-	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")		
-	%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);	
+	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
+	%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);
 }
 
 function GameConnection::StopChaseMusic(%client)
 {
     if(!isObject(%client)) return;
     if(isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();
+
+	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
+	%client.player.getdataBlock().TunnelVision(%client.player,false);
+
     %client.musicChaseLevel = 0;
 }
