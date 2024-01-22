@@ -324,20 +324,8 @@ function Player::KillerGhostLightCheck(%obj)
 
 function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
 {
-    if(!isObject(%client) || !isObject(%songname)) return;
-    
-    if(isObject(%client.EventidemusicEmitter))
-	{
-    	%client.EventidemusicEmitter.delete();
-		talk(%ischasing);
-		
-		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")		
-		switch(%ischasing) 
-		{
-			case true: %client.player.getdataBlock().TunnelVision(%client.player,true);
-			case false: %client.player.getdataBlock().TunnelVision(%client.player,false);
-		}		
-	}
+    if(!isObject(%client) || !isObject(%songname)) return;    
+    if(isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();					
 
     %client.EventidemusicEmitter = new AudioEmitter()
     {
@@ -350,6 +338,11 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
     };
     MissionCleanup.add(%client.EventidemusicEmitter);
     %client.EventidemusicEmitter.scopeToClient(%client);
+
+	talk(%ischasing);
+		
+	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")		
+	%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);	
 }
 
 function GameConnection::StopChaseMusic(%client)
