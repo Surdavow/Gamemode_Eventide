@@ -139,75 +139,76 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 function Player::onKillerLoop(%obj)
 {
     if (!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getDataBlock().isKiller || !isObject(getMinigamefromObject(%obj)))
-        return;
+		return;
 
     %this = %obj.getDataBlock();
+
+	// Container loop
+	for (%i = 0; %i < clientgroup.getCount(); %i++)
+	{
+		%nearbyplayer = clientgroup.getObject(%i).player;
+
+		if (!isObject(%nearbyplayer) || %nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname !$= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 40)
+			continue;
+
+		%scan = %nearbyplayer;
+
+		if (!isObject(getMinigamefromObject(%scan)) || %scan.getDataBlock().isKiller)
+			continue;
+
+		%line = vectorNormalize(vectorSub(%scan.getMuzzlePoint(2), %obj.getEyePoint()));
+		%dot = vectorDot(%obj.getEyeVector(), %line);
+		%killerclient = %obj.client;
+		%victimclient = %scan.client;
+
+		// Chase behavior
+		if (%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(), %scan.getMuzzlePoint(2), $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType, %obj)))
+		{
+			%killercansee = true;
+			%chasing = true;
+			%chaseLevel = %obj.isInvisible ? 1 : 2;
+
+			// Set chase music and timers
+			if (isObject(%victimclient))
+			{
+				%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[%chaseLevel], %chaseLevel);
+				%victimclient.player.TimeSinceChased = getSimTime();
+				cancel(%victimclient.StopChaseMusic);
+				%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
+			}
+
+			if (isObject(%killerclient))
+			{
+				%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[%chaseLevel], %chaseLevel);
+				cancel(%killerclient.StopChaseMusic);
+				%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
+			}
+		}
+		else
+		{
+			// Reset chase music and timers
+			if (isObject(%victimclient) && %victimclient.player.TimeSinceChased + 6000 < getSimTime())
+			{
+				%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[1], 1);
+				cancel(%victimclient.StopChaseMusic);
+				%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
+			}
+
+			if (isObject(%killerclient) && !%chasing)
+			{
+				%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[1], 1);
+				cancel(%killerclient.StopChaseMusic);
+				%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
+			}
+		}
+	}
+
 
     // Idle sounds
     if (%obj.lastKillerIdle + getRandom(6000, 8500) < getSimTime())
     {
         %obj.lastKillerIdle = getSimTime();
         %killercansee = false;
-
-        // Container loop
-        for (%i = 0; %i < clientgroup.getCount(); %i++)
-        {
-            %nearbyplayer = clientgroup.getObject(%i).player;
-
-            if (!isObject(%nearbyplayer) || %nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname !$= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 40)
-                continue;
-
-            %scan = %nearbyplayer;
-
-            if (!isObject(getMinigamefromObject(%scan)) || %scan.getDataBlock().isKiller)
-                continue;
-
-            %line = vectorNormalize(vectorSub(%scan.getMuzzlePoint(2), %obj.getEyePoint()));
-            %dot = vectorDot(%obj.getEyeVector(), %line);
-            %killerclient = %obj.client;
-            %victimclient = %scan.client;
-
-            // Chase behavior
-            if (%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(), %scan.getMuzzlePoint(2), $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType, %obj)))
-            {
-                %killercansee = true;
-                %chasing = true;
-                %chaseLevel = %obj.isInvisible ? 1 : 2;
-
-                // Set chase music and timers
-                if (isObject(%victimclient))
-                {
-                    %victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[%chaseLevel], %chaseLevel);
-                    %victimclient.player.TimeSinceChased = getSimTime();
-                    cancel(%victimclient.StopChaseMusic);
-                    %victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
-                }
-
-                if (isObject(%killerclient))
-                {
-                    %killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[%chaseLevel], %chaseLevel);
-                    cancel(%killerclient.StopChaseMusic);
-                    %killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
-                }
-            }
-            else
-            {
-                // Reset chase music and timers
-                if (isObject(%victimclient) && %victimclient.player.TimeSinceChased + 6000 < getSimTime())
-                {
-                    %victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[1], 1);
-                    cancel(%victimclient.StopChaseMusic);
-                    %victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
-                }
-
-                if (isObject(%killerclient) && !%chasing)
-                {
-                    %killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl[1], 1);
-                    cancel(%killerclient.StopChaseMusic);
-                    %killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
-                }
-            }
-        }
 
         // Play sounds based on chase state
         if (%killercansee)
