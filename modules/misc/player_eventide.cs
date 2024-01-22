@@ -15,6 +15,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	firstpersononly = false;
 	canJet = false;
 	renderFirstPerson = false;
+	defaultTunnelFOV = 100;
 
 	rechargeRate = 0.375;
 	maxTools = 3;
@@ -310,7 +311,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
 
-	if(!%obj.defaultTunnelFOV) %obj.defaultTunnelFOV = 110;
+	if(!%obj.TunnelFOV) %obj.TunnelFOV = %this.defaultTunnelFOV;
 
 	if(%bool) 
 	{		
@@ -318,7 +319,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		{
 			%obj.tunnelvision = mClampF(%obj.tunnelvision+0.1,0,1);
 			commandToClient( %obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
-			%obj.client.setcontrolcamerafov(%obj.defaultTunnelFOV--);
+			%obj.client.setcontrolcamerafov(mClampF(%obj.TunnelFOV--,50,%this.defaultTunnelFOV));
 		}
 
 		if(%obj.tunnelvision >= 1) return;
@@ -328,7 +329,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		if(%obj.tunnelvision > 0)
 		{
 			%obj.tunnelvision = mClampF(%obj.tunnelvision-0.1,0,1);
-			%obj.client.setcontrolcamerafov(%obj.defaultTunnelFOV++);
+			%obj.client.setcontrolcamerafov(mClampF(%obj.TunnelFOV++,50,%this.defaultTunnelFOV));
 			commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
 		}
 
@@ -420,7 +421,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	{
 		%obj.ghostclient = %client;
 		commandToClient(%client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
-		%obj.client.setcontrolcamerafov(%obj.defaultTunnelFOV);
+		%obj.client.setcontrolcamerafov(%this.defaultTunnelFOV);
 	}
 	if(%obj.radioEquipped) serverPlay3d("radio_unmount_sound",%obj.getPosition());	
 	if(%obj.markedforRenderDeath)
