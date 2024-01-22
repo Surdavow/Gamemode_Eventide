@@ -224,7 +224,7 @@ function Player::onKillerLoop(%obj)
             {
                 if(%victimclient.musicChaseLevel != 1)
                 {
-                    %victimclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music);
+                    %victimclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music,true);
                     %victimclient.musicChaseLevel = 1;					
                 }
 								
@@ -236,7 +236,7 @@ function Player::onKillerLoop(%obj)
             {
                 if(%killerclient.musicChaseLevel != 1)
                 {
-                    %killerclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music);
+                    %killerclient.SetChaseMusic(%obj.getdataBlock().killerChaseLvl1Music,false);
                     %killerclient.musicChaseLevel = 1;
                 }
 
@@ -330,11 +330,12 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
 	{
     	%client.EventidemusicEmitter.delete();
 		
-		if(isObject(%client.player) && %client.player.getdataBlock() $= "EventidePlayer")
+		if(isObject(%client.player))		
+		switch(%ischasing) 
 		{
-			if(%ischasing) %client.player.getdataBlock().TunnelVision(%scan,true);
-			else %client.player.getdataBlock().TunnelVision(%scan,false);
-		}
+			case true: %client.player.getdataBlock().TunnelVision(%client.player,true);
+			case false: %client.player.getdataBlock().TunnelVision(%client.player,false);
+		}		
 	}
 
     %client.EventidemusicEmitter = new AudioEmitter()
