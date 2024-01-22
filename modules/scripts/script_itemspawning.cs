@@ -2,33 +2,39 @@ function MiniGameSO::randomizeEventideItems(%minigame)
 {	    
     if(!isObject(EventideItemSpawnSet) || !EventideItemSpawnSet.getCount()) return;
 
-    $rsg = new Scriptgroup("RitualScriptGroup");
-    $rsg.add(new ScriptObject() { item = "candleitem"; });
-    $rsg.add(new ScriptObject() { item = "candleitem"; });
-    $rsg.add(new ScriptObject() { item = "candleitem"; });
-    $rsg.add(new ScriptObject() { item = "candleitem"; });
-    $rsg.add(new ScriptObject() { item = "bookItem"; });
-    $rsg.add(new ScriptObject() { item = "daggerItem"; });
+    %rsg = new ScriptGroup();
+    %rbs = new SimSet();
+    %rsg.add(new ScriptObject("script_candleitem"));
+    %rsg.add(new ScriptObject("script_candleitem"));
+    %rsg.add(new ScriptObject("script_candleitem"));
+    %rsg.add(new ScriptObject("script_candleitem"));
+    %rsg.add(new ScriptObject("script_bookItem"));
+    %rsg.add(new ScriptObject("script_daggerItem"));
         
+    //Main function to spawn items, clear effects and prepare ritual brick for the next condition check
     for(%g = 0; %g < EventideItemSpawnSet.getCount(); %g++) if(isObject(%brick = EventideItemSpawnSet.getObject(%g)))
     {
         %brick.setItem("none");
         %brick.setEmitter("none");
-                
-        switch$(strreplace(strlwr(%brick.getname()),"_",""))
-        {
-            case "ritual":  %ritualbricklist[%rbl++] = %brick;
 
-            case "item":    switch(getRandom(1,5))
+        switch$(strlwr(%brick.getname()))
+        {
+            case "_ritual": //This main loop only iterates through one brick at a time which causes problems if we try to randomize ritual spawns, only add it to the simset for the next loop
+                            %rbs.add(%brick);
+
+            case "_item":   //Add a weight of 10 so there's a lesser chance these items don't spawn
+                            switch(getRandom(1,10))
                             {
                                 case 1: %brick.setItem("CRadioItem");
                                 case 2: %brick.setItem("ZombieMedpackItem");
                                 case 3: %brick.setItem("SodaItem");
                                 case 4: %brick.setItem("FlareItem");
 								case 5: %brick.setItem("ZombiePillsItem");
+                                default:
                             }
 
-            case "weapon":  switch(getRandom(1,7))
+            case "_weapon": //Same for weapons, but different number of course
+                            switch(getRandom(1,27))
                             {
                                 case 1: %brick.setItem("sm_barStoolItem");
                                 case 2: %brick.setItem("sm_bottleItem");
@@ -39,36 +45,32 @@ function MiniGameSO::randomizeEventideItems(%minigame)
 								case 7: %brick.setItem("mine_bearItem");
 								case 8: %brick.setItem("sm_foldingChairItem");
                                 case 9: %brick.setItem("StunGun");
+                                default:
                             }
             default:                        
         }
 
         if(isObject(%brick.item)) %brick.setEmitter("SparkleGroundEmitter");
     }
+    
+    // Get a random ritual and brick, and set the item of the brick to the ritual, then delete the script object and remove the brick from the set
+    while(%rsg.getCount()) 
+    {                 
+        //If the ritual brick set fails to meet the amount of rital script group, stop the loop
+        if(!%rbs.getCount()) break;     
+        
+        %randomritual = %rsg.getObject(getRandom(0,%rsg.getCount()-1));
+        %randomritualbrick = %rbs.getObject(getRandom(0,%rbs.getCount()-1));
+        %randomritualitem = strreplace(%randomritual.getName(),"script_","");        
+        %randomritualbrick.setItem(%randomritualitem);
 
-    if(isObject($rsg))
-    {
-        while($rsg.getCount()) 
-        {                                                            
-            %randomritual = $rsg.getObject(getRandom(0,$rsg.getCount()-1));
-            
-        %randomritualitem = %randomritual.item;            
-        %ritualbrickrandomcount = getRandom(1, %rbl);
-        %ritualbrick = %ritualbricklist[%ritualbrickrandomcount];
-        %ritualbrick.setItem(%randomritualitem);
         %randomritual.delete();
+        %rbs.remove(%randomritualbrick);
+    }
 
-        // Remove the chosen ritual brick from the list
-        for (%i = %ritualbrickrandomcount; %i < %rbl; %i++) 
-        {
-            %ritualbricklist[%i] = %ritualbricklist[%i + 1];
-        }
-
-        %rbl--;
-
-        }
-        $rsg.delete();
-    }    
+     // Always clean up ScriptGroup and SimSet, so adding them to the mission cleanup won't be necessary
+    %rsg.delete();
+    %rbs.delete();
 }
 
 datablock fxDTSBrickData (brickEventideItemSpawnData:brick1x1fData)
@@ -86,9 +88,10 @@ function brickEventideItemSpawnData::onPlant(%data,%obj)
 	%obj.setcolliding(0);
 	%obj.setraycasting(0);
 
+    //Always check if the simset exists first, and to add it to the mission clean up for later if necessary
     if(!isObject(EventideItemSpawnSet))
     {
-        new SimSet(EventideItemSpawnSet);
+        new SimSet("EventideItemSpawnSet");
         missionCleanup.add(EventideItemSpawnSet);
     }
     EventideItemSpawnSet.add(%obj);
