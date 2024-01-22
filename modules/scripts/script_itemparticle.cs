@@ -1,19 +1,4 @@
-$ItemEmitterDatablock = "playerTeleportEmitterB"; // put the emitter datablock name here, inside the quotes
-// for reference: \$itemEmitterDatablock = %hit.emitter.emitter
-
-package ItemEmitterEffects
-{
-	function ItemData::onAdd(%this, %obj) // triggered every time an item is created
-	{
-		// checks for if the item is spawned from a spawn brick (ie repeat pickup) or is static (ie doesn't have gravity/fall)
-		if (!isObject(%obj.spawnBrick) && !%obj.static) 
-		{
-			itemEmitterLoop(%obj); // starts the loop to create and move the emitterNode 
-		}
-		return parent::onAdd(%this, %obj);
-	}
-};
-activatePackage(ItemEmitterEffects);
+$ItemEmitterDatablock = "playerTeleportEmitterB";
 
 function itemEmitterLoop(%obj, %emitterNode)
 {

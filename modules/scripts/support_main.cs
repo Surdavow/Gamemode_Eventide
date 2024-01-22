@@ -12,10 +12,23 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 
 package Eventide_MainPackage
 {
-	function Item::schedulePop (%obj)
+	function ItemData::onAdd(%this, %obj)
 	{
+		if (!isObject(%obj.spawnBrick) && !%obj.static) itemEmitterLoop(%obj);		
+		return parent::onAdd(%this, %obj);
+	}
+
+	function ServerCmdDropTool (%client, %position)
+	{
+		trace(1);
+		Parent::ServerCmdDropTool(%client, %position);
+		trace(0);
+	}
+
+	function Item::schedulePop (%obj)
+	{		
 		if(MiniGameGroup.getCount())
-		{			
+		{
 			if(!isObject(DroppedItemGroup))
 			{
 				new SimGroup(DroppedItemGroup);
