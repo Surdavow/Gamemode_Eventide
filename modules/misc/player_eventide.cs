@@ -92,7 +92,7 @@ function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
 		else %force = %force*2.5;
 	}
 	
-	Parent::onImpact(%this, %obj, %col, %vec, %force);	
+	Parent::onImpact(%this, %obj, %col, %vec, mCeil(%force));	
 }
 
 function EventidePlayer_BreakFreePrint(%client,%amount)
