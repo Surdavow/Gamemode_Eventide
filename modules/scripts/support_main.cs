@@ -18,11 +18,6 @@ package Eventide_MainPackage
 		return parent::onAdd(%this, %obj);
 	}
 
-	function ServerCmdDropTool (%client, %position)
-	{
-		Parent::ServerCmdDropTool(%client, %position);
-	}
-
 	function Item::schedulePop (%obj)
 	{		
 		if(MiniGameGroup.getCount())
