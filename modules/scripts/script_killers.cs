@@ -332,7 +332,7 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
 		
 		if(isObject(%client.player) && %client.player.getdataBlock() $= "EventidePlayer")
 		{
-			if(if(%ischasing)) %client.player.getdataBlock().TunnelVision(%scan,true);
+			if(%ischasing) %client.player.getdataBlock().TunnelVision(%scan,true);
 			else %client.player.getdataBlock().TunnelVision(%scan,false);
 		}
 	}
