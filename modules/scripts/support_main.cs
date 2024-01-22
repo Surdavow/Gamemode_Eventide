@@ -14,7 +14,7 @@ package Eventide_MainPackage
 {
 	function ItemData::onAdd(%this, %obj)
 	{
-		if (!isObject(%obj.spawnBrick) && !%obj.static) itemEmitterLoop(%obj);		
+		if (!%obj.static) itemEmitterLoop(%obj);		
 		return parent::onAdd(%this, %obj);
 	}
 
@@ -25,13 +25,16 @@ package Eventide_MainPackage
 
 	function Item::schedulePop (%obj)
 	{		
-		if(!isObject(DroppedItemGroup))
+		if(MiniGameGroup.getCount())
 		{
-			new SimGroup(DroppedItemGroup);
-			missionCleanUp.add(DroppedItemGroup);
+			if(!isObject(DroppedItemGroup))
+			{
+				new SimGroup(DroppedItemGroup);
+				missionCleanUp.add(DroppedItemGroup);
+			}
+			DroppedItemGroup.add(%obj);
+			return;
 		}
-		DroppedItemGroup.add(%obj);
-		return;
 	}
 
 	function onMissionEnded(%this, %a, %b, %c, %d)

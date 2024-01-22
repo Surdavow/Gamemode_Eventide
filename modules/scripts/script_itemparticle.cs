@@ -2,16 +2,12 @@ $ItemEmitterDatablock = "playerTeleportEmitterB";
 
 function itemEmitterLoop(%obj, %emitterNode)
 {
-	// failsafe: deletes the emitter when the item is gone
 	if (!isObject(%obj))
 	{
-		if (isObject(%emitterNode))
-		{
-			%emitterNode.delete();
-		}
+		if (isObject(%emitterNode)) %emitterNode.delete();		
 		return;
 	}
-	// failsafe 2: can't stack looping function calls multiple times on the same item
+
 	cancel(%obj.itemEmitterLoopSchedule);
 
 	if (!isObject(%emitterNode))
