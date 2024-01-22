@@ -1,5 +1,16 @@
 $ItemEmitterDatablock = "playerTeleportEmitterB";
 
+function cleanUpParticles()
+{
+	for (%i = 0; %i < MissionCleanup.getCount(); %i++) 
+	{
+		if(isObject(%obj = MissionCleanup.getObject(%i)))
+		{
+			if(%obj.getClassName() $= "ParticleEmitterNode")
+		}		
+	}
+}
+
 function itemEmitterLoop(%obj, %emitterNode)
 {
 	if (!isObject(%obj))
