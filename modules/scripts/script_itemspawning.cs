@@ -1,35 +1,23 @@
-function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
+function MiniGameSO::randomizeEventideItems(%minigame)
 {	    
     if(!isObject(EventideItemSpawnSet) || !EventideItemSpawnSet.getCount()) return;
 
-    $ritualscriptgroup = new Scriptgroup("Ritualscriptgroup");
-    
-    $ritualscriptgroup.add(new ScriptObject() { item = "candleitem"; });
-    $ritualscriptgroup.add(new ScriptObject() { item = "candleitem"; });
-    $ritualscriptgroup.add(new ScriptObject() { item = "candleitem"; });
-    $ritualscriptgroup.add(new ScriptObject() { item = "candleitem"; });
-    $ritualscriptgroup.add(new ScriptObject() { item = "bookItem"; });
-    $ritualscriptgroup.add(new ScriptObject() { item = "daggerItem"; });
+    $rsg = new Scriptgroup("RitualScriptGroup");
+    $rsg.add(new ScriptObject() { item = "candleitem"; });
+    $rsg.add(new ScriptObject() { item = "candleitem"; });
+    $rsg.add(new ScriptObject() { item = "candleitem"; });
+    $rsg.add(new ScriptObject() { item = "candleitem"; });
+    $rsg.add(new ScriptObject() { item = "bookItem"; });
+    $rsg.add(new ScriptObject() { item = "daggerItem"; });
         
     for(%g = 0; %g < EventideItemSpawnSet.getCount(); %g++) if(isObject(%brick = EventideItemSpawnSet.getObject(%g)))
     {
         %brick.setItem("none");
         %brick.setEmitter("none");
                 
-        if(%randomize) switch$(strreplace(strlwr(%brick.getname()),"_",""))
+        switch$(strreplace(strlwr(%brick.getname()),"_",""))
         {
-            case "ritual":  if(%r)
-                            {
-                                if(getRandom(0,1) == 1)
-                                {
-                                    %randomritual = $ritualscriptgroup.getObject(getRandom(0,$ritualscriptgroup.getCount()-1));
-                                    %randomritualitem = %randomritual.item;
-                                    %brick.setItem(%randomritual);
-                                    %randomritual.delete();
-                                }
-                                %r--;
-                            }
-                            else if(isObject($ritualscriptgroup)) $ritualscriptgroup.delete();
+            case "ritual":  %ritualbricklist[%rbl++] = %brick;
 
             case "item":    switch(getRandom(1,5))
                             {
@@ -57,6 +45,30 @@ function MiniGameSO::randomizeEventideItems(%minigame,%randomize)
 
         if(isObject(%brick.item)) %brick.setEmitter("SparkleGroundEmitter");
     }
+
+    if(isObject($rsg))
+    {
+        while($rsg.getCount()) 
+        {                                                            
+            %randomritual = $rsg.getObject(getRandom(0,$rsg.getCount()-1));
+            
+        %randomritualitem = %randomritual.item;            
+        %ritualbrickrandomcount = getRandom(1, %rbl);
+        %ritualbrick = %ritualbricklist[%ritualbrickrandomcount];
+        %ritualbrick.setItem(%randomritualitem);
+        %randomritual.delete();
+
+        // Remove the chosen ritual brick from the list
+        for (%i = %ritualbrickrandomcount; %i < %rbl; %i++) 
+        {
+            %ritualbricklist[%i] = %ritualbricklist[%i + 1];
+        }
+
+        %rbl--;
+
+        }
+        $rsg.delete();
+    }    
 }
 
 datablock fxDTSBrickData (brickEventideItemSpawnData:brick1x1fData)
