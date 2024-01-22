@@ -49,6 +49,14 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	uiName = "";
 };
 
+function EventidePlayer::PulsingScreen(%this,%obj)
+{
+	if(!isObject(%obj) || %obj.getclassname() !$= "Player" || %obj.getState() $= "Dead" || %obj.downedamount != 2) return;
+
+	%obj.setdamageflash(0.125);
+	%obj.PulsingScreen = %this.schedule(750,PulsingScreen,%obj);
+}
+
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
 function EventidePlayer::GazeLoop(%this,%obj)
 {		
@@ -350,6 +358,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
 		%obj.downedamount++;
+		if(%obj.downedamount == 2) %this.PulsingScreen(%obj);		
         return;
     }
 
