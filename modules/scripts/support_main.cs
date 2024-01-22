@@ -20,7 +20,7 @@ package Eventide_MainPackage
 
 	function Item::schedulePop (%obj)
 	{		
-		if(MiniGameGroup.getCount())
+		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSRG) && Slayer_MiniGameHandlerSRG.getCount()))
 		{
 			if(!isObject(DroppedItemGroup))
 			{
