@@ -356,8 +356,5 @@ function GameConnection::StopChaseMusic(%client)
 {
     if(!isObject(%client)) return;
     if(isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();
-	if(isObject(%client.player) && %client.player.getdataBlock() $= "EventidePlayer")
-	%client.player.getdataBlock().TunnelVision(%client.player,false);
-
     %client.musicChaseLevel = 0;
 }
