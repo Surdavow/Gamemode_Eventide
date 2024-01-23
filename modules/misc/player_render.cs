@@ -47,7 +47,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 		
 	if(%press) switch(%trig)
 	{
-		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= %this.maxEnergy/4)
+		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= %this.maxEnergy/2)
 				{
 					%startpos = %obj.getMuzzlePoint(0);
 					%endpos = %obj.getMuzzleVector(0);	
@@ -55,7 +55,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 
 					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType))
 					{
-						%obj.setEnergyLevel(%obj.getEnergyLevel()-25);
+						%obj.setEnergyLevel(%obj.getEnergyLevel()-50);
 						%obj.playaudio(0,"render_pain_sound");
 						%obj.playaudio(2,"renowned_charged_sound");
 						serverPlay3D("renowned_charged_sound",%hit.getPosition());						
@@ -229,7 +229,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 				{				
 					%closeness = 8/(VectorDist(%obj.getPosition(),%player.getPosition())*0.25);
 
-					if(%player.stunned) %player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15)/5, $DamageType::Default);
+					if(%player.stunned) %player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15)/10, $DamageType::Default);
 					else %player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
 					
 					%player.markedforRenderDeath = true;
