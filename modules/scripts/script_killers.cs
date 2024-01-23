@@ -88,19 +88,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 													{
 														if(%hit.getDamagePercent() > 0.5)
 														{
-															%obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");	
-															%obj.playthread(3,"plant");
-															%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);
-															%hit.spawnExplosion("goryExplosionProjectile",%hit.getScale());
-
-															if(isObject(%hit.client)) 
-															{
-																%hit.client.setControlObject(%hit.client.camera);
-																%hit.client.camera.setMode("Corpse",%hit);
-																%hit.client.setdead(1);
-															}
-
-															%hit.schedule(50,delete);
+															%obj.getdataBlock().eatVictim(%obj,%hit);
 															return;
 														}
 														else 
