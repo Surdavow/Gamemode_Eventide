@@ -60,12 +60,10 @@ function PlayerDisfigured::onNewDatablock(%this,%obj)
 function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 {
 	%obj.hideNode("ALL");	
-	%obj.unhideNode("skirthip");
+	%obj.unhideNode("skirt");
 	%obj.unhideNode("headskin");
 	%obj.unhideNode("larmslim");
 	%obj.unhideNode("rarm");
-	%obj.unhideNode("skirttrimr");
-	%obj.unhideNode("skirttriml");
 	%obj.unhideNode("rhand");
 	%obj.unhideNode("femchest");
 
@@ -78,7 +76,7 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rarm",%skinColor);
 	%obj.setNodeColor("larmslim",%bloodColor);
 	%obj.setNodeColor("femchest",%dressColor);
-	%obj.setNodeColor("skirthip",%dressColor);
+	%obj.setNodeColor("skirt",%dressColor);
 	%obj.setNodeColor("rhand",%skinColor);
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
