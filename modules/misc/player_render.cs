@@ -186,7 +186,6 @@ function PlayerRender::Prepperizer(%this,%obj)
 			%line = vectorNormalize(vectorSub(%obj.getPosition(),%player.getEyePoint()));
 			%dot = vectorDot(%player.getEyeVector(), %line);
 			%obscure = containerRayCast(%player.getEyePoint(),%obj.getPosition(),$TypeMasks::FxBrickObjectType, %obj);
-			talk("test");
 			
 			if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
 			{
