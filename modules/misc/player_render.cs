@@ -40,20 +40,19 @@ function PlayerRender::onNearPlayer(%this,%obj,%scan)
 {
 	if(!isObject(%obj) || !isObject(%scan)) return;
 
-	//if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
-	//{
-//
-	//}	
-
-	//%obj.lastNearPlayer = getSimTime();
-		
-	%victimPos = %scan.getPosition();
-	missionCleanup.add(new projectile()
+	if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
 	{
-		dataBlock        = "PrepperProjectile";
-		initialVelocity  = 0;
-		initialPosition  = vectorAdd(%victimPos, getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
-	});			
+		%obj.lastNearPlayer = getSimTime();
+		%victimPos = %scan.getPosition();
+		missionCleanup.add(new projectile()
+		{
+			dataBlock        = "PrepperProjectile";
+			initialVelocity  = 0;
+			initialPosition  = vectorAdd(%victimPos, getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
+		});			
+	}	
+		
+	
 }
 
 function PlayerRender::onImpact(%this, %obj, %col, %vec, %force)
@@ -196,12 +195,14 @@ function PlayerRender::Prepperizer(%this,%obj)
 
 	if(%obj.lastSearch < getSimTime())
 	{
-		%obj.lastSearch = getSimTime()+100;
+		%obj.lastSearch = getSimTime()+100;		
 		
 		if(isObject(ClientGroup)) for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i)))
 		if(isObject(%player = %client.player))
 		{
 			if(%player == %obj) continue;
+
+			%this.onNearPlayer(%obj,%player);
 
 			%line = vectorNormalize(vectorSub(%obj.getPosition(),%player.getEyePoint()));
 			%dot = vectorDot(%player.getEyeVector(), %line);
