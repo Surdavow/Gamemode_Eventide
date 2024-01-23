@@ -1472,10 +1472,3 @@ datablock fxLightData(NoFlareBLight : NoFlareGLight)
 	uiName = "No Flare Blue";
 	color = "0.1 0.1 1";
 };
-
-%hatpngpath = "./models/hats/*.png";
-for(%hatpngfile = findFirstFile(%hatpngpath); %hatpngfile !$= ""; %hatpngfile = findNextFile(%hatpngpath)) eval("addExtraResource(\""@ %hatpngfile @ "\");");
-
-%hatimagepath = "./models/hats/*.dts";
-for(%hatimagefile = findFirstFile(%hatimagepath); %hatimagefile !$= ""; %hatimagefile = findNextFile(%hatimagepath)) 
-eval("datablock shapeBaseImageData(" @ strreplace(fileName(%hatimagefile),".dts","") @ "image) { shapefile = \"" @ %hatimagefile @ "\"; mountPoint = 5; offset = \"0 0 0\"; eyeOffset = \"0 0 10\"; doColorShift = false; className = \"WeaponImage\"; armReady = false; };");

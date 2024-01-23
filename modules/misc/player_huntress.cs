@@ -52,7 +52,6 @@ function PlayerHuntress::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.15 1.15 1.15");
-	%obj.mountImage("Huntressimage",1);
 	%obj.mountImage("meleeAxeLImage",2);
 	KillerSpawnMessage(%obj);
 }
@@ -90,7 +89,8 @@ function PlayerHuntress::EventideAppearance(%this,%obj,%client)
 	%obj.unhideNode("Rhand_blood");
 	%obj.unhideNode("lshoe_blood");
 	%obj.unhideNode("rshoe_blood");
-	%obj.mountImage("Huntressimage",1);
+	%obj.unHideNode("huntress");
+	%obj.setNodeColor("huntress","0.1 0.1 0.1 1");
 	
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");

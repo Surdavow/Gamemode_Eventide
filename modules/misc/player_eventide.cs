@@ -247,27 +247,29 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 		%obj.unHideNode($secondPack[%funcclient.secondPack]);
 		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
 	}
-	
-	switch$(%client.hat)
+
+	if(%client.hat)
 	{
-		case 1: if(%client.accent)
-				{
-					%obj.mountImage("helmetimage",2,1,addTaggedString(getColorName(%funcclient.hatColor)));	
-					%obj.currentHat = "helmet";
-				}		
-				else
-				{
-					%obj.mountImage("hoodieimage",2,1,addTaggedString(getColorName(%funcclient.hatColor)));	
-					%obj.currentHat = "hoodie";
-				}
-		default: %obj.mountImage($hat[%funcclient.hat] @ "image",2,1,addTaggedString(getColorName(%funcclient.hatColor)));
-	}	
+		%hatName = $hat[%client.hat];
+		%client.hatString = %hatName;
+
+		if(%client.hat == 1)
+		{
+			if(%client.accent) %newhat = "helmet";
+			else %newhat = "hoodie2";
+			%obj.unHideNode(%newhat);
+			%obj.setNodeColor(%newhat,%client.hatColor);
+		}
+		else
+		{
+			%obj.unHideNode(%hatName);
+			%obj.setNodeColor(%hatName,%client.hatColor);
+		}			
+	}
 	
 	if(%funcclient.hip)
 	{
-		%obj.unHideNode("skirthip");
-		%obj.unHideNode("skirttrimleft");
-		%obj.unHideNode("skirttrimright");
+		%obj.unHideNode("skirt");
 	}
 	else
 	{
@@ -293,7 +295,7 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("chest",%funcclient.chestColor);
 	%obj.setNodeColor("femChest",%funcclient.chestColor);
 	%obj.setNodeColor("pants",%funcclient.hipColor);
-	%obj.setNodeColor("skirthip",%funcclient.hipColor);	
+	%obj.setNodeColor("skirt",%funcclient.hipColor);	
 	%obj.setNodeColor("rarm",%funcclient.rarmColor);
 	%obj.setNodeColor("larm",%funcclient.larmColor);
 	%obj.setNodeColor("rarmSlim",%funcclient.rarmColor);
@@ -306,8 +308,6 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("lshoe",%funcclient.llegColor);
 	%obj.setNodeColor("rpeg",%funcclient.rlegColor);
 	%obj.setNodeColor("lpeg",%funcclient.llegColor);
-	%obj.setNodeColor("skirttrimright",%funcclient.rlegColor);
-	%obj.setNodeColor("skirttrimleft",%funcclient.llegColor);
 
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");

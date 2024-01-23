@@ -48,7 +48,6 @@ function PlayerGrabber::onNewDatablock(%this,%obj)
 	else applyCharacterPrefs(%obj.client);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1.15 1.15 1.15");
-	%obj.mountImage("jasonmaskimage",2);
 	KillerSpawnMessage(%obj);
 
 	%obj.mountImage("meleeMacheteImage",0);
@@ -174,20 +173,11 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	{
 		%obj.unHideNode($secondPack[%funcclient.secondPack]);
 		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
-	}
-	
-	if(%funcclient.hip)
-	{
-		%obj.unHideNode("skirthip");
-		%obj.unHideNode("skirttrimleft");
-		%obj.unHideNode("skirttrimright");
-	}
-	else
-	{
-		%obj.unHideNode("pants");
-		%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
-		%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));
-	}
+	}	
+		
+	%obj.unHideNode("pants");
+	%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
+	%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));	
 
 	%obj.setHeadUp(0);
 	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
@@ -234,6 +224,8 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
 	%obj.setNodeColor("femchest_blood_front", "0.7 0 0 1");
 	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
+	%obj.unHideNode("jasonmask");
+	%obj.setNodeColor("jasonmask","1 1 1 1");
 	%obj.setHeadUp(0);
 }
 

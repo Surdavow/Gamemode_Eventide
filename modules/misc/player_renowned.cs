@@ -73,20 +73,11 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	{
 		%obj.unHideNode($secondPack[%funcclient.secondPack]);
 		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
-	}
+	}	
 	
-	if(%funcclient.hip)
-	{
-		%obj.unHideNode("skirthip");
-		%obj.unHideNode("skirttrimleft");
-		%obj.unHideNode("skirttrimright");
-	}
-	else
-	{
-		%obj.unHideNode("pants");
-		%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
-		%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));
-	}
+	%obj.unHideNode("pants");
+	%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
+	%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));
 
 	%obj.setHeadUp(0);
 	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
@@ -151,6 +142,9 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.unHideNode("lshoe");
 	%obj.mountImage("renownedeyesimage",2);
 	%obj.setHeadUp(0);
+
+	%obj.unHideNode("renownedeyes");
+	//%obj.setNodeColor("renownedeyes","1 1 1 1");
 }
 
 function PlayerRenowned::onTrigger(%this, %obj, %trig, %press) 

@@ -160,7 +160,9 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%skinColor);
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
-	%obj.mountImage("newhoodieimage",3,2,addTaggedString("darkpurple"));
+	%obj.unHideNode("hoodie1");
+	%obj.setNodeColor("hoodie1",%hoodieColor);
+
 }
 
 function PlayerShire::onDamage(%this, %obj, %delta)
