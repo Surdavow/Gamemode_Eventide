@@ -161,7 +161,7 @@ function Player::onKillerLoop(%obj)
 		%killerclient = %obj.client;
 		%victimclient = %scan.client;
 
-		if(%this.getName() $= "PlayerRender" && VectorDist(%scan.getPosition(), %obj.getPosition()) < 15) %this.onNearPlayer(%scan);
+		if(%this.getName() $= "PlayerRender" && VectorDist(%scan.getPosition(), %obj.getPosition()) < 15) %this.onNearPlayer(%obj,%scan);
 
 		// Chase behavior
 		if (%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(), %scan.getMuzzlePoint(2), $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType, %obj)) && !%obj.isInvisible)
