@@ -76,7 +76,9 @@ function PlayerSkinwalker::EventideAppearance(%this,%obj,%client)
 
     %obj.unHideNode("ALL");
 
-    %obj.setFaceName(%clientappearance.faceName);
+    %obj.unHideNode($hat[$clientappearance.hat]);
+    %obj.setNodeColor($hat[$clientappearance.hat],%client.hatColor);
+	%obj.setFaceName(%clientappearance.faceName);
 	%obj.setDecalName(%clientappearance.decalName);
 	%obj.setNodeColor("head",%clientappearance.headColor);	
 	%obj.setNodeColor("chestskinwalker",%clientappearance.chestColor);
