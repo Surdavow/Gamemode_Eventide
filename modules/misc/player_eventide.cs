@@ -254,7 +254,7 @@ function EventidePlayer::EventideAppearance(%this,%obj,%funcclient)
 		if(%funcclient.hat == 1)
 		{
 			if(%funcclient.accent) %newhat = "helmet";
-			else %newhat = "hoodie2";
+			else %newhat = "hoodie1";
 			%obj.unHideNode(%newhat);
 			%obj.setNodeColor(%newhat,%funcclient.hatColor);
 		}

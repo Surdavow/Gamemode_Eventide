@@ -160,8 +160,8 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%skinColor);
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
-	%obj.unHideNode("hoodie1");
-	%obj.setNodeColor("hoodie1",%hoodieColor);
+	%obj.unHideNode("hoodie2");
+	%obj.setNodeColor("hoodie2",%hoodieColor);
 
 }
 

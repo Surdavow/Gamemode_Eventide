@@ -1056,7 +1056,7 @@ datablock ParticleEmitterData(GlowFaceEmitter) {
 	periodVarianceMS	= 0;
 	ejectionVelocity	= 0.0;
 	velocityVariance	= 0.0;
-	ejectionOffset		= 0.4;
+	ejectionOffset		= 0.0;
 	thetaMin			= 0.0;
 	thetaMax			= 0.0;
 	phiReferenceVel		= 0.0;
