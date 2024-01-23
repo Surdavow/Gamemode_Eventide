@@ -191,7 +191,7 @@ function Player::PrepperizerEffect(%obj)
 
 function PlayerRender::Prepperizer(%this,%obj)
 {
-	if(!isObject(%obj) || %obj.isInvisible || %obj.getdataBlock() != %this) return;
+	if(!isObject(%obj) || %obj.getdataBlock() != %this) return;
 
 	if(%obj.lastSearch < getSimTime())
 	{
@@ -200,27 +200,28 @@ function PlayerRender::Prepperizer(%this,%obj)
 		if(isObject(ClientGroup)) for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i)))
 		if(isObject(%player = %client.player))
 		{
-			if(%player == %obj) continue;
-
-			%this.onNearPlayer(%obj,%player);
+			if(%player == %obj) continue;			
 
 			%line = vectorNormalize(vectorSub(%obj.getPosition(),%player.getEyePoint()));
 			%dot = vectorDot(%player.getEyeVector(), %line);
 			%obscure = containerRayCast(%player.getEyePoint(),%obj.getPosition(),$TypeMasks::FxBrickObjectType, %obj);
-			
-			if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
-			{				
-				%closeness = 8/(VectorDist(%obj.getPosition(),%player.getPosition())*0.25);
-				%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
-				%player.markedforRenderDeath = true;
-				%client.play2d("render_blind_sound");
-				%player.setWhiteOut((%closeness/10)+%player.getdamagepercent()*0.25);
+			%this.onNearPlayer(%obj,%player);
+
+			if(!%obj.isInvisible)
+			{			
+				if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
+				{				
+					%closeness = 8/(VectorDist(%obj.getPosition(),%player.getPosition())*0.25);
+					%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
+					%player.markedforRenderDeath = true;
+					%client.play2d("render_blind_sound");
+					%player.setWhiteOut((%closeness/10)+%player.getdamagepercent()*0.25);
+				}
 			}
 		}		
 	}
 
-	%obj.PrepperizerEffect();
-	
+	%obj.PrepperizerEffect();	
 	cancel(%obj.Prepperizer);
 	%obj.Prepperizer = %this.schedule(33,Prepperizer,%obj);
 }
