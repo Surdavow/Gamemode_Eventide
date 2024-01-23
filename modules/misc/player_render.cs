@@ -47,13 +47,13 @@ function PlayerRender::onNearPlayer(%this,%obj,%scan)
 
 	//%obj.lastNearPlayer = getSimTime();
 		
-		%victimPos = %scan.getPosition();
-		missionCleanup.add(new projectile()
-		{
-			dataBlock        = "PrepperProjectile";
-			initialVelocity  = 0;
-			initialPosition  = vectorAdd(%victimPos, getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
-		});			
+	%victimPos = %scan.getPosition();
+	missionCleanup.add(new projectile()
+	{
+		dataBlock        = "PrepperProjectile";
+		initialVelocity  = 0;
+		initialPosition  = vectorAdd(%victimPos, getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
+	});			
 }
 
 function PlayerRender::onImpact(%this, %obj, %col, %vec, %force)
