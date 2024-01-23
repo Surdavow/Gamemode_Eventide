@@ -1,20 +1,21 @@
 datablock TSShapeConstructor(SkullwolfDTS) 
 {
 	baseShape = "./models/skullwolf.dts";
-	sequence0 = "./models/skullwolf_root.dsq root";
-	sequence1 = "./models/skullwolf_run.dsq run";
-	sequence2 = "./models/skullwolf_run.dsq walk";
-	sequence3 = "./models/skullwolf_back.dsq back";
-	sequence4 = "./models/skullwolf_side.dsq side";
-	sequence5 = "./models/skullwolf_look.dsq look";
-	sequence6 = "./models/skullwolf_jump.dsq jump";
-	sequence7 = "./models/skullwolf_jump.dsq standjump";
-	sequence8 = "./models/skullwolf_fall.dsq fall";
-	sequence9 = "./models/skullwolf_land.dsq land";
-	sequence10 = "./models/skullwolf_talk.dsq talk";
-	sequence11 = "./models/skullwolf_death1.dsq death1";
-	sequence12 = "./models/skullwolf_plant.dsq plant";
-	sequence13 = "./models/skullwolf_activate2.dsq activate2";
+	sequence0 = "./models/default.dsq";
+	//sequence0 = "./models/skullwolf_root.dsq root";
+	//sequence1 = "./models/skullwolf_run.dsq run";
+	//sequence2 = "./models/skullwolf_run.dsq walk";
+	//sequence3 = "./models/skullwolf_back.dsq back";
+	//sequence4 = "./models/skullwolf_side.dsq side";
+	//sequence5 = "./models/skullwolf_look.dsq look";
+	//sequence6 = "./models/skullwolf_jump.dsq jump";
+	//sequence7 = "./models/skullwolf_jump.dsq standjump";
+	//sequence8 = "./models/skullwolf_fall.dsq fall";
+	//sequence9 = "./models/skullwolf_land.dsq land";
+	//sequence10 = "./models/skullwolf_talk.dsq talk";
+	//sequence11 = "./models/skullwolf_death1.dsq death1";
+	//sequence12 = "./models/skullwolf_plant.dsq plant";
+	//sequence13 = "./models/skullwolf_activate2.dsq activate2";
 };
 
 datablock PlayerData(PlayerSkullWolf : PlayerRenowned) 
@@ -160,7 +161,7 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 {
 	%furcolor = "0.05 0.05 0.05 1";
-	%obj.setnodecolor("head",%furcolor);		
+	%obj.setnodecolor("skullhead",%furcolor);		
 	%obj.setnodecolor("rarm",%furcolor);
 	%obj.setnodecolor("larm",%furcolor);
 	%obj.setnodecolor("rhand",%furcolor);
