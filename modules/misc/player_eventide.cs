@@ -205,6 +205,7 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			if(isObject(%obj.client)) %obj.client.centerprint("<color:FFFFFF><font:impact:40>You revived" SPC %victim.client.name,1);
 			if(isObject(%victim.client)) %victim.client.centerprint("<color:FFFFFF><font:impact:40>You were revived by" SPC %obj.client.name,1);
 			%victim.setHealth(10);
+			if(%obj.downedamount >= 2) %victim.getdataBlock().PulsingScreen(%obj);
 			%victim.setDatablock("EventidePlayer");			
 			%victim.playthread(0,"root");
 			return;
@@ -364,8 +365,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
     {        
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
-		%obj.downedamount++;
-		if(%obj.downedamount >= 2) %this.PulsingScreen(%obj);		
+		%obj.downedamount++;		
         return;
     }
 
