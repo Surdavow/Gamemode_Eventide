@@ -320,6 +320,11 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
 }
 
+function EventidePlayerDowned::EventideAppearance(%this,%obj,%client)
+{
+	EventidePlayer::EventideAppearance(%this,%obj,%client);
+}
+
 function EventidePlayer::TunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
