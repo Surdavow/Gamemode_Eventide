@@ -47,7 +47,21 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 		
 	if(%press) switch(%trig)
 	{
-		case 0:	//Attack				
+		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= %this.maxEnergy/4)
+				{
+					%startpos = %obj.getMuzzlePoint(0);
+					%endpos = %obj.getMuzzleVector(0);	
+					%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,50)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+
+					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType))
+					{
+						%obj.setEnergyLevel(%obj.getEnergyLevel()-25);
+						%obj.playaudio(0,"render_pain_sound");
+						%obj.playaudio(2,"renowned_charged_sound");
+						serverPlay3D("renowned_charged_sound",%hit.getPosition());						
+						%hit.mountImage("sm_stunImage",2);
+					}
+				}
 				
 		case 4: //Invisibility
 				if(!%obj.isInvisible)
@@ -176,6 +190,15 @@ function PlayerRender::Prepperizer(%this,%obj)
 
 	if(%obj.lastSearch < getSimTime())
 	{
+		if(!isEventPending(%obj.disappearsched) && %obj.stunned) 
+		{
+			%this.disappear(%obj,1);
+			%obj.setEnergylevel(0);
+			cancel(%obj.Prepperizer);
+			%obj.playaudio(0,"render_death_sound");
+			return;
+		}
+
 		%obj.lastSearch = getSimTime()+100;		
 		
 		if(isObject(ClientGroup)) for(%i = 0; %i < ClientGroup.getCount(); %i++) if(isObject(%client = ClientGroup.getObject(%i)))
@@ -197,20 +220,29 @@ function PlayerRender::Prepperizer(%this,%obj)
 					dataBlock        = "PrepperProjectile";
 					initialVelocity  = 0;
 					initialPosition  = vectorAdd(%player.getPosition(), getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
-				});			
-			}	
+				});
+			}			
 
 			if(!%obj.isInvisible)
 			{			
 				if(!isObject(%obscure) && %dot > 0.5 && minigameCanDamage(%obj,%player) == 1 && !%player.getDataBlock().isDowned)
 				{				
 					%closeness = 8/(VectorDist(%obj.getPosition(),%player.getPosition())*0.25);
-					%player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
+
+					if(%player.stunned) %player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15)/5, $DamageType::Default);
+					else %player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
+					
 					%player.markedforRenderDeath = true;
 					%client.play2d("render_blind_sound");
 					%player.setWhiteOut((%closeness/10)+%player.getdamagepercent()*0.25);
 				}
-			}
+
+				if(%player.getdamagepercent() >= 0.75 && %obj.lastlaughtime < getSimTime())
+				{
+					%obj.lastlaughtime = getSimTime()+5000;
+					%obj.playaudio(0,"render_laugh_sound");
+				}				
+			}		
 		}		
 	}
 
@@ -237,6 +269,7 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 
 	if(%alpha == 0)
 	{
+		%obj.unmountImage(2);
 		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 		%obj.HideNode("ALL");
 		%obj.stopaudio(0);

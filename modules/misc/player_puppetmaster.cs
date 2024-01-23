@@ -47,7 +47,6 @@ function PlayerPuppetMaster::onNewDatablock(%this,%obj)
 
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1.15 1.15 1.15");
-	%obj.getDataBlock().EventideAppearance(%obj,%obj.client);
 	%obj.mountImage("meleePuppetMasterDaggerImage",0);
 	%obj.unHideNode("ALL");
 	KillerSpawnMessage(%obj);
@@ -95,6 +94,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 function PlayerPuppetMaster::onPeggFootstep(%this,%obj)
 {
 	serverplay3d("puppetmaster_walking" @ getRandom(1,4) @ "_sound", %obj.getHackPosition());
+	%obj.spawnExplosion("singleBoneProjectile","1 1 1");
 }
 
 function PlayerPuppetMaster::onDamage(%this,%obj,%delta)

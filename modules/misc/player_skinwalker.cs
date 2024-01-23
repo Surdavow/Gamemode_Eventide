@@ -57,7 +57,6 @@ function PlayerSkinwalker::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);    	
 	%obj.setScale("1.2 1.2 1.2");
-    %obj.getDataBlock().EventideAppearance(%obj,%obj.client);
 
     %obj.stopaudio(0);
     %obj.playthread(0,"roar");

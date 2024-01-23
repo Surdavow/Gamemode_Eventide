@@ -129,6 +129,55 @@ if(isFile(%decalfilepath = "./models/decal.ifl"))//Decals
 	addExtraResource(findFirstFile(%decalfilepath));
 }
 
+datablock DebrisData(singleBoneDebris)
+{
+   emitters = "";
+
+	shapeFile = "./models/bone.dts";
+	lifetime = 1000;
+	spinSpeed			= 2000.0;
+	minSpinSpeed = -100.0;
+	maxSpinSpeed = 100.0;
+	elasticity = 0.5;
+	friction = 0.4;
+	numBounces = 2;
+	staticOnMaxBounce = true;
+	snapOnMaxBounce = false;
+	fade = true;
+
+	gravModifier = 1;
+};
+
+datablock ExplosionData(singleBoneExplosion)
+{
+	soundProfile		= "";
+   	explosionShape = "";
+	lifeTimeMS = 10;
+	debris = singleBoneDebris;
+	debrisNum = 1;
+	debrisNumVariance = 1;
+	debrisPhiMin = 0;
+	debrisPhiMax = 360;
+	debrisThetaMin = 0;
+	debrisThetaMax = 180;
+	debrisVelocity = 8;
+	debrisVelocityVariance = 6;
+	particleEmitter = "";
+
+	faceViewer     = true;
+	explosionScale = "1 1 1";
+};
+
+datablock ProjectileData(singleBoneProjectile)
+{
+	uiname							= "";
+	lifetime						= 10;
+	fadeDelay						= 10;
+	explodeondeath						= true;
+	explosion						= singleBoneExplosion;
+
+};
+
 datablock DebrisData(sm_woodFragDebris)
 {
 	shapeFile 			= "./models/wood_fragment.dts";
@@ -208,6 +257,33 @@ datablock ShapeBaseImageData(sm_stunImage)
 	stateTimeoutValue[2]		= 0.01;
 	stateTransitionOnTimeout[2]	= "FireA";
 };
+
+function sm_stunImage::onMount(%this,%obj)
+{
+	%obj.schedule(5000,unmountImage,2);
+	%obj.setactionthread("sit",1);
+	%obj.stunned = 1;
+
+	switch$(%obj.getclassName())
+	{
+		case "Player": %obj.client.setControlObject(%obj.client.camera);
+						%obj.client.camera.setMode("Corpse",%obj);
+		case "AIPlayer": %obj.stopholeloop();
+	}
+}
+
+function sm_stunImage::onunMount(%this,%obj)
+{
+	%obj.stunned = 0;
+	%obj.playThread(3,"undo");
+	%obj.setactionthread("root",1);
+	switch$(%obj.getclassName())
+	{
+		case "Player": 	%obj.client.setControlObject(%obj);
+						%obj.client.camera.setMode("Observer");
+		case "AIPlayer": %obj.startholeloop();
+	}
+}
 
 datablock ParticleData(ConfettiParticle1)
 {
