@@ -23,7 +23,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
                             %rbs.add(%brick);
 
             case "_item":   //Add a weight of 10 so there's a lesser chance these items don't spawn
-                            switch(getRandom(1,10))
+                            switch(getRandom(1,8))
                             {
                                 case 1: %brick.setItem("CRadioItem");
                                 case 2: %brick.setItem("ZombieMedpackItem");
