@@ -22,8 +22,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
             case "_ritual": //This main loop only iterates through one brick at a time which causes problems if we try to randomize ritual spawns, only add it to the simset for the next loop
                             %rbs.add(%brick);
 
-            case "_item":   //Add a weight of 10 so there's a lesser chance these items don't spawn
-                            switch(getRandom(1,8))
+            case "_item":   switch(getRandom(1,8))
                             {
                                 case 1: %brick.setItem("CRadioItem");
                                 case 2: %brick.setItem("ZombieMedpackItem");
@@ -33,8 +32,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
                                 default:
                             }
 
-            case "_weapon": //Same for weapons, but different number of course
-                            switch(getRandom(1,27))
+            case "_weapon": switch(getRandom(1,27))
                             {
                                 case 1: %brick.setItem("sm_barStoolItem");
                                 case 2: %brick.setItem("sm_bottleItem");
