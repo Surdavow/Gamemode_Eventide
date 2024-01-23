@@ -207,7 +207,7 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			%victim.setHealth(10);			
 			%victim.setDatablock("EventidePlayer");			
 			%victim.playthread(0,"root");
-			%victim.getdataBlock().PulsingScreen(%victim);
+			if(%victim.downedamount >= 2) %victim.getdataBlock().PulsingScreen(%victim);
 			return;
 		}					
 	}
