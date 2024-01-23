@@ -40,9 +40,12 @@ function PlayerRender::onNearPlayer(%this,%obj,%scan)
 {
 	if(!isObject(%obj) || !isObject(%scan)) return;
 
-	if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
-	{
-		%obj.lastNearPlayer = getSimTime();
+	//if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
+	//{
+//
+	//}	
+
+	//%obj.lastNearPlayer = getSimTime();
 		
 		%victimPos = %scan.getPosition();
 		missionCleanup.add(new projectile()
@@ -50,8 +53,7 @@ function PlayerRender::onNearPlayer(%this,%obj,%scan)
 			dataBlock        = "PrepperProjectile";
 			initialVelocity  = 0;
 			initialPosition  = vectorAdd(%victimPos, getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
-		});
-	}				
+		});			
 }
 
 function PlayerRender::onImpact(%this, %obj, %col, %vec, %force)
