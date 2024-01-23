@@ -52,10 +52,7 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 function EventidePlayer::PulsingScreen(%this,%obj)
 {
 	if((!isObject(%obj) || %obj.getclassname() !$= "Player" || %obj.getState() $= "Dead") || %obj.downedamount < 2 || %obj.getdamageLevel() < 25)
-	{
-		if(isObject(%obj)) %obj.downedamount = 0;
-		return;
-	} 
+	return;	
 
 	if(isObject(%obj.client)) %obj.client.play2D("survivor_heartbeat_sound");
 	%obj.setdamageflash(0.125);
