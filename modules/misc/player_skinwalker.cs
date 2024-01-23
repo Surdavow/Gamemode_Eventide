@@ -75,27 +75,6 @@ function PlayerSkinwalker::EventideAppearance(%this,%obj,%client)
     else %clientappearance = %client;
 
     %obj.unHideNode("ALL");
-
-    %obj.unHideNode($hat[$clientappearance.hat]);
-	if(%clientappearance.hat)
-	{
-		%hatName = $hat[%clientappearance.hat];
-		%clientappearance.hatString = %hatName;
-
-		if(%clientappearance.hat == 1)
-		{
-			if(%clientappearance.accent) %newhat = "helmet";
-			else %newhat = "hoodie2";
-			%obj.unHideNode(%newhat);
-			%obj.setNodeColor(%newhat,%clientappearance.hatColor);
-		}
-		else
-		{
-			%obj.unHideNode(%hatName);
-			%obj.setNodeColor(%hatName,%clientappearance.hatColor);
-		}			
-	}
-
     %obj.setNodeColor($hat[$clientappearance.hat],%client.hatColor);
 	%obj.setFaceName(%clientappearance.faceName);
 	%obj.setDecalName(%clientappearance.decalName);
