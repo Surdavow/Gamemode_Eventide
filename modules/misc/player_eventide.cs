@@ -62,7 +62,7 @@ function EventidePlayer::PulsingScreen(%this,%obj)
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
 function EventidePlayer::GazeLoop(%this,%obj)
 {		
-	if(!isObject(%obj) || !isObject(%client = %obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock() != %this || !isObject(%minigame = getMinigamefromObject(%obj)))
+	if(!isObject(%obj) || !isObject(%funcclient = %obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock() != %this || !isObject(%minigame = getMinigamefromObject(%obj)))
 	return;
 
 	cancel(%obj.GazeLoop);
@@ -75,7 +75,7 @@ function EventidePlayer::GazeLoop(%this,%obj)
 		{
 			$InputTarget_Self = %hit;
 			$InputTarget_Player = %obj;
-			$InputTarget_Client = %client;
+			$InputTarget_Client = %funcclient;
 			$InputTarget_Minigame = %minigame;
 			%hit.processInputEvent("onGaze", %gazer);
 		}
@@ -105,15 +105,15 @@ function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
 	Parent::onImpact(%this, %obj, %col, %vec, mCeil(%force));	
 }
 
-function EventidePlayer_BreakFreePrint(%client,%amount)
+function EventidePlayer_BreakFreePrint(%funcclient,%amount)
 {
-    if(!isobject(%client)) return;
+    if(!isobject(%funcclient)) return;
 	
 	%addsymbol = "";
     %symbol = "|";
 	for(%i = 0; %i < %amount; %i++) %addsymbol = %addsymbol @ %symbol;
 
-    %client.centerprint("<color:FFFFFF><font:impact:40> Control yourself! <br><color:00e100>" @ %addsymbol,1);
+    %funcclient.centerprint("<color:FFFFFF><font:impact:40> Control yourself! <br><color:00e100>" @ %addsymbol,1);
 }
 
 function EventidePlayer::onActivate(%this,%obj)
@@ -175,15 +175,15 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 	else if(isObject(%obj.isSaving)) %this.SaveVictim(%obj,%obj.isSaving,0);
 }
 
-function EventidePlayer_SaveCounterPrint(%client,%amount)
+function EventidePlayer_SaveCounterPrint(%funcclient,%amount)
 {
-    if(!isobject(%client)) return;
+    if(!isobject(%funcclient)) return;
 	
 	%addsymbol = "";
     %symbol = "|";
 	for(%i = 0; %i < %amount; %i++) %addsymbol = %addsymbol @ %symbol;
 
-    %client.centerprint("<color:FFFFFF><font:impact:40> Get up! <br><color:00e100>" @ %addsymbol,1);
+    %funcclient.centerprint("<color:FFFFFF><font:impact:40> Get up! <br><color:00e100>" @ %addsymbol,1);
 }
 
 function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
@@ -222,10 +222,10 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 	}	
 }
 
-function EventidePlayer::EventideAppearance(%this,%obj,%client)
+function EventidePlayer::EventideAppearance(%this,%obj,%funcclient)
 {
 	if(%obj.isSkinwalker && isObject(%obj.victimreplicatedclient)) %funcclient = %obj.victimreplicatedclient;
-    else %funcclient = %client;	
+    else %funcclient = %funcclient;	
 	
 	%obj.hideNode("ALL");
 	%obj.unHideNode((%funcclient.chest ? "femChest" : "chest"));	
@@ -246,22 +246,22 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
 	}
 
-	if(%client.hat)
+	if(%funcclient.hat)
 	{
-		%hatName = $hat[%client.hat];
-		%client.hatString = %hatName;
+		%hatName = $hat[%funcclient.hat];
+		%funcclient.hatString = %hatName;
 
-		if(%client.hat == 1)
+		if(%funcclient.hat == 1)
 		{
-			if(%client.accent) %newhat = "helmet";
+			if(%funcclient.accent) %newhat = "helmet";
 			else %newhat = "hoodie2";
 			%obj.unHideNode(%newhat);
-			%obj.setNodeColor(%newhat,%client.hatColor);
+			%obj.setNodeColor(%newhat,%funcclient.hatColor);
 		}
 		else
 		{
 			%obj.unHideNode(%hatName);
-			%obj.setNodeColor(%hatName,%client.hatColor);
+			%obj.setNodeColor(%hatName,%funcclient.hatColor);
 		}			
 	}
 	
@@ -318,9 +318,9 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
 }
 
-function EventidePlayerDowned::EventideAppearance(%this,%obj,%client)
+function EventidePlayerDowned::EventideAppearance(%this,%obj,%funcclient)
 {
-	EventidePlayer::EventideAppearance(%this,%obj,%client);
+	EventidePlayer::EventideAppearance(%this,%obj,%funcclient);
 }
 
 function EventidePlayer::TunnelVision(%this,%obj,%bool)
@@ -433,10 +433,10 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
 	Parent::onDisabled(%this,%obj);
 
-	if(isObject(%client = %obj.client)) 
+	if(isObject(%funcclient = %obj.client)) 
 	{
-		%obj.ghostclient = %client;
-		commandToClient(%client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+		%obj.ghostclient = %funcclient;
+		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
 		%obj.client.setcontrolcamerafov(%this.defaultTunnelFOV);
 	}
 	if(%obj.radioEquipped) serverPlay3d("radio_unmount_sound",%obj.getPosition());	
@@ -448,7 +448,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 
 	if(isObject(%minigame = getMinigamefromObject(%obj)))
 	{
-		if(isObject(%client))
+		if(isObject(%funcclient))
 		for(%i=0;%i<%obj.getDatablock().maxTools;%i++) if(isObject(%item = %obj.tool[%i]) && %item.image.isRitual)
 		{						
 			%pos = %obj.getPosition();
@@ -466,7 +466,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			};
 			%itemVec = %vec;
 			%itemVec = vectorAdd(%itemVec,getRandom(-8,8) SPC getRandom(-8,8) SPC 10);
-			%item.BL_ID = %client.BL_ID;
+			%item.BL_ID = %funcclient.BL_ID;
 			%item.minigame = %minigame;
 			%item.spawnBrick = -1;
 			%item.setVelocity(%itemVec);						
