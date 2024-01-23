@@ -190,6 +190,8 @@ function PlayerRender::Prepperizer(%this,%obj)
 			if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
 			{
 				%obj.lastNearPlayer = getSimTime();
+				
+				if(VectorDist(%obj.getPosition(),%player.getPosition()) < 25)
 				missionCleanup.add(new projectile()
 				{
 					dataBlock        = "PrepperProjectile";
