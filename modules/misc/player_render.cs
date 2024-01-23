@@ -224,7 +224,6 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 
 	if(%alpha == 1)
 	{
-		cancel(%obj.Prepperizer);
 		%obj.setShapeName ("", 8564862);
 		%obj.setArmThread("look");
 		%obj.stopaudio(3);
