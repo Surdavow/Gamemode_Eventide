@@ -36,25 +36,6 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	jumpForce = 0;
 };
 
-function PlayerRender::onNearPlayer(%this,%obj,%scan)
-{
-	if(!isObject(%obj) || !isObject(%scan)) return;
-
-	if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
-	{
-		%obj.lastNearPlayer = getSimTime();
-		%victimPos = %scan.getPosition();
-		missionCleanup.add(new projectile()
-		{
-			dataBlock        = "PrepperProjectile";
-			initialVelocity  = 0;
-			initialPosition  = vectorAdd(%victimPos, getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
-		});			
-	}	
-		
-	
-}
-
 function PlayerRender::onImpact(%this, %obj, %col, %vec, %force)
 {
 	if(%force > %this.minImpactSpeed) %obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");	
@@ -205,7 +186,17 @@ function PlayerRender::Prepperizer(%this,%obj)
 			%line = vectorNormalize(vectorSub(%obj.getPosition(),%player.getEyePoint()));
 			%dot = vectorDot(%player.getEyeVector(), %line);
 			%obscure = containerRayCast(%player.getEyePoint(),%obj.getPosition(),$TypeMasks::FxBrickObjectType, %obj);
-			%this.onNearPlayer(%obj,%player);
+			
+			if(%obj.lastNearPlayer + getRandom(5000, 10000) < getSimTime())
+			{
+				%obj.lastNearPlayer = getSimTime();
+				missionCleanup.add(new projectile()
+				{
+					dataBlock        = "PrepperProjectile";
+					initialVelocity  = 0;
+					initialPosition  = vectorAdd(%player.getPosition(), getRandom(-5,5) SPC getRandom(-5,5) SPC getRandom(0,5));
+				});			
+			}	
 
 			if(!%obj.isInvisible)
 			{			
