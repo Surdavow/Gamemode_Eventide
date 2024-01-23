@@ -84,14 +84,9 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 function PlayerSkullWolf::eatVictim(%this,%obj,%victim)
 {
 	if(!isObject(%obj) || !isObject(%victim) || %obj.getState() $= "Dead")
-
-	if(isObject(%victim.client)) 
-	{
-		%victim.client.setControlObject(%victim.client.camera);
-		%victim.client.camera.setMode("Corpse",%victim);
-		%victim.client.setdead(1);
-	}
-
+	return;
+	
+	%victim.mountimage("sm_stunimage",2);
 	%obj.mountobject(%victim,9);
 	%obj.playthread(1,"eat");
 	%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);		

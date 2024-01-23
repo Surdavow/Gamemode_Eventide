@@ -46,7 +46,6 @@ function PlayerGenocide::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1 1 1");
-	%obj.mountImage("Genocideimage",2);
 
 	%randomitem[%i++] = "mine_IncendiaryImage";
     %randomitem[%i++] = "CatARImage";
@@ -56,8 +55,7 @@ function PlayerGenocide::onNewDatablock(%this,%obj)
     %randomitem[%i++] = "grenade_flashbangImage";
     %randomitem[%i++] = "grenade_riotImage";
 		
-	%obj.mountImage(%randomitem[getRandom(1,%i)],0);
-	
+	%obj.mountImage(%randomitem[getRandom(1,%i)],0);	
 	if(%obj.getmountedimage(0).armReady) %obj.playthread(1,"armReadyRight");
 	KillerSpawnMessage(%obj);
 }
@@ -96,7 +94,7 @@ function PlayerGenocide::EventideAppearance(%this,%obj,%client)
 	%obj.unhideNode("Rhand_blood");
 	%obj.unhideNode("lshoe_blood");
 	%obj.unhideNode("rshoe_blood");
-	%obj.mountImage("Genocideimage",1);
+	%obj.unhideNode("postal");
 	
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
