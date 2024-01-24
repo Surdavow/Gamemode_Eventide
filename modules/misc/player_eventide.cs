@@ -204,7 +204,7 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			%obj.savevictimcounter = 0;
 			if(isObject(%obj.client)) %obj.client.centerprint("<color:FFFFFF><font:impact:40>You revived" SPC %victim.client.name,1);
 			if(isObject(%victim.client)) %victim.client.centerprint("<color:FFFFFF><font:impact:40>You were revived by" SPC %obj.client.name,1);
-			%victim.setHealth(10);			
+			%victim.setHealth(100);			
 			%victim.setDatablock("EventidePlayer");			
 			%victim.playthread(0,"root");
 			if(%victim.downedamount >= 2) %victim.getdataBlock().PulsingScreen(%victim);
@@ -369,10 +369,15 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
         return;
     }
 
-	if(%obj.isSkinwalker) %obj.addhealth(%damage*5);	
-	if(%obj.downedamount && %obj.getdamageLevel() < 25) %obj.downedamount = 0;
-
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
+
+	if(%obj.isSkinwalker) 
+	{
+		%victim.setHealth(%this.maxDamage);
+		%obj.playaudio(0,"skinwalker_pain_sound");
+	}	
+
+	if(%obj.downedamount && %obj.getdamageLevel() < 25) %obj.downedamount = 0;	
 
 	if(%damage >= %this.maxDamage*2 && %obj.getState() $= "Dead" && %damageType != $DamageType::Suicide) 
 	{
