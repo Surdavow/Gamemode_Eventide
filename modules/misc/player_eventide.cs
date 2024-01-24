@@ -15,7 +15,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	firstpersononly = false;
 	canJet = false;
 	renderFirstPerson = false;
-	defaultTunnelFOV = 100;
+	defaultTunnelFOV = 110;
 
 	rechargeRate = 0.375;
 	maxTools = 3;

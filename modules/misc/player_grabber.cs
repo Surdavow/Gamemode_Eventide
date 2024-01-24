@@ -244,7 +244,7 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 		%obj.mountObject(%col,8);
 		%col.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
 		%col.setarmthread("activate2");
-		PlayerGrabber.schedule(5000,"releaseVictim",%obj);
+		PlayerGrabber.schedule(4500,"releaseVictim",%obj);
 
 		switch$(%col.getClassName())
 		{

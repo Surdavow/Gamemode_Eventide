@@ -32,7 +32,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
                                 default:
                             }
 
-            case "_weapon": switch(getRandom(1,27))
+            case "_weapon": switch(getRandom(1,24))
                             {
                                 case 1: %brick.setItem("sm_barStoolItem");
                                 case 2: %brick.setItem("sm_bottleItem");
@@ -41,7 +41,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
                                 case 5: %brick.setItem("sm_chairItem");                                
                                 case 6: %brick.setItem("FlareGunItem");
 								case 7: %brick.setItem("mine_bearItem");
-								case 8: %brick.setItem("sm_foldingChairItem");
+								case 8: %brick.setItem("grenade_flashbangItem");
                                 case 9: %brick.setItem("StunGun");
                                 default:
                             }
