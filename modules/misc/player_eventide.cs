@@ -373,7 +373,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 
 	if(%obj.isSkinwalker) 
 	{
-		%victim.setHealth(%this.maxDamage);
+		%obj.setHealth(%this.maxDamage);
 		%obj.playaudio(0,"skinwalker_pain_sound");
 	}	
 
