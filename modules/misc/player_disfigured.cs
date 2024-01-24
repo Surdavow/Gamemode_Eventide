@@ -52,8 +52,8 @@ function PlayerDisfigured::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.15 1.15 1.15");
-	%obj.mountImage("BleedImage",1);
-	%obj.mountImage("FogImage",2);
+	%obj.mountImage("BleedImage",0);
+	%obj.mountImage("FogImage",1);
 	KillerSpawnMessage(%obj);
 }
 
@@ -67,9 +67,9 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 	%obj.unhideNode("rhand");
 	%obj.unhideNode("femchest");
 
-	%dressColor = "0.2 0.2 0.2 1";
-	%skinColor = "0.63 0.71 1 1";
-	%bloodColor = "0.36 0.07 0.07 1";
+	%dressColor = "0.2 0.2 0.2 0.6";
+	%skinColor = "0.63 0.71 1 0.6";
+	%bloodColor = "0.36 0.07 0.07 0.6";
 
 	%obj.setFaceName("disfiguredface");
 	%obj.setDecalName("disfigureddecal");
@@ -80,6 +80,7 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%skinColor);
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
+	%obj.startFade(0, 0, true);
 	//%obj.unhideNode("femchest_blood_front");
 	//%obj.unhideNode("Rhand_blood");
 }
