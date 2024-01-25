@@ -53,7 +53,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					%endpos = %obj.getMuzzleVector(0);	
 					%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,50)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
 
-					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType))
+					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
 					{
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-50);
 						%obj.playaudio(0,"render_pain_sound");
