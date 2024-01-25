@@ -300,7 +300,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 	if(%alpha == 1) 
 	{
-		%obj.setTempSpeed(0.1);
+		%obj.setTempSpeed(0.5);
 		%this.EventideAppearance(%obj);
 		%this.Prepperizer(%obj);
 		%obj.setmaxforwardspeed(1);
