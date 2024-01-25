@@ -229,7 +229,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 				{				
 					%closeness = 8/(VectorDist(%obj.getPosition(),%player.getPosition())*0.25);
 
-					if(%player.stunned) %player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15)/10, $DamageType::Default);
+					if(%player.stunned) %player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15)/20, $DamageType::Default);
 					else %player.damage(%obj,%player.getWorldBoxCenter(), mClampF(%closeness,1,15), $DamageType::Default);
 					
 					%player.markedforRenderDeath = true;
