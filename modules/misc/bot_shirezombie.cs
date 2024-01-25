@@ -56,7 +56,7 @@ function ShireZombieBot::onBotLoop(%this,%obj)
 
 		for(%i = 0; %i < clientgroup.getCount(); %i++)
 		{
-			if(isObject(%nearbyplayer = clientgroup.getObject(%i).player) && minigameCanDamge(%obj,%nearbyplayer))
+			if(isObject(%nearbyplayer = clientgroup.getObject(%i).player) && minigameCanDamage(%obj,%nearbyplayer))
 			{
 				if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 50 || %nearbyplayer.getdataBlock().isKiller) 
 				continue;
