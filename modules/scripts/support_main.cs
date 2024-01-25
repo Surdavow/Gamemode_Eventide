@@ -14,13 +14,7 @@ package Eventide_MainPackage
 {
 	function ItemData::onAdd(%this, %obj)
 	{
-		if (!%obj.static) itemEmitterLoop(%obj);		
-		return parent::onAdd(%this, %obj);
-	}
-
-	function Item::schedulePop (%obj)
-	{		
-		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount()))
+		if(!%obj.static && (MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount())))
 		{
 			if(!isObject(DroppedItemGroup))
 			{
@@ -28,8 +22,17 @@ package Eventide_MainPackage
 				missionCleanUp.add(DroppedItemGroup);
 			}
 			DroppedItemGroup.add(%obj);
-			return;
 		}
+
+		if (!%obj.static) itemEmitterLoop(%obj);		
+		return parent::onAdd(%this, %obj);
+	}
+
+	function Item::schedulePop (%obj)
+	{		
+		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount()))
+		return;
+		else return Parent::schedulePop(%obj);		
 	}
 
 	function onMissionEnded(%this, %a, %b, %c, %d)
