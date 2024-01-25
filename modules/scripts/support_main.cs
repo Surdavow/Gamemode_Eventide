@@ -13,23 +13,26 @@ function onObjectCollisionTest(%obj, %col)//This function is part of the ObjectC
 package Eventide_MainPackage
 {
 	function ItemData::onAdd(%this, %obj)
-	{
-		if(!%obj.static && (MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount())))
-		{
-			if(!isObject(DroppedItemGroup))
-			{
-				new SimGroup(DroppedItemGroup);
-				missionCleanUp.add(DroppedItemGroup);
-			}
-			DroppedItemGroup.add(%obj);
-		}
-
-		if (!%obj.static) itemEmitterLoop(%obj);		
-		return parent::onAdd(%this, %obj);
+	{				
+		if (!%obj.static) itemEmitterLoop(%obj);
+		parent::onAdd(%this,%obj);
 	}
 
+	function ItemData::onRemove(%this, %obj)
+	{				
+		if (isObject(%obj.emitter)) %obj.emitter.delete();
+		parent::onRemove(%this,%obj);
+	}	
+
 	function Item::schedulePop (%obj)
-	{		
+	{
+		if(!isObject(DroppedItemGroup))
+		{
+			new SimGroup(DroppedItemGroup);
+			missionCleanUp.add(DroppedItemGroup);
+		}
+		DroppedItemGroup.add(%obj);
+
 		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount()))
 		return;
 		else return Parent::schedulePop(%obj);		
