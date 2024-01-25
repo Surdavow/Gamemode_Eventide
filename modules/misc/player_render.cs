@@ -293,7 +293,6 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 		%this.EventideAppearance(%obj,%obj.client);
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"render_appear_sound");
-		%obj.setmaxforwardspeed(%this.maxForwardSpeed);
 	}
 
 	%alpha = mClampF(%alpha+0.15,0,1);		
@@ -303,7 +302,6 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 		%obj.setTempSpeed(1);
 		%this.EventideAppearance(%obj);
 		%this.Prepperizer(%obj);
-		%obj.setmaxforwardspeed(1);
 		return;
 	}
 
