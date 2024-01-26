@@ -61,6 +61,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
         %randomritualbrick = %rbs.getObject(getRandom(0,%rbs.getCount()-1));
         %randomritualitem = strreplace(%randomritual.getName(),"script_","");        
         %randomritualbrick.setItem(%randomritualitem);
+		%randomritualbrick.setEmitter("SparkleGroundEmitter");
 
         %randomritual.delete();
         %rbs.remove(%randomritualbrick);

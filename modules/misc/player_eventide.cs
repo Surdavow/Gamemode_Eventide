@@ -20,7 +20,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	rechargeRate = 0.375;
 	maxTools = 3;
 	maxWeapons = 3;
-	jumpForce = 10 * 85;
+	jumpForce = 0;
 	
 	cameramaxdist = 2;
     cameraVerticalOffset = 1;

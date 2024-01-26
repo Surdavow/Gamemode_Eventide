@@ -27,7 +27,7 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";
 
-	rechargeRate = 0.3;
+	rechargeRate = 0.25;
 	maxTools = 0;
 	maxWeapons = 0;
 	maxForwardSpeed = 4;
@@ -47,7 +47,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 		
 	if(%press) switch(%trig)
 	{
-		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= %this.maxEnergy/2)
+		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= %this.maxEnergy)
 				{
 					%startpos = %obj.getMuzzlePoint(0);
 					%endpos = %obj.getMuzzleVector(0);	
@@ -55,7 +55,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 
 					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
 					{
-						%obj.setEnergyLevel(%obj.getEnergyLevel()-50);
+						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
 						%obj.playaudio(0,"render_pain_sound");
 						%obj.playaudio(2,"renowned_charged_sound");
 						serverPlay3D("renowned_charged_sound",%hit.getPosition());						
@@ -77,7 +77,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 				{
 					cancel(%obj.reappearsched);
 					%this.reappear(%obj,0);
-					if(!isEventPending(reappearsched)) %obj.setEnergylevel(0);										
+					if(!isEventPending(reappearsched)) %obj.setEnergylevel(66);										
 				}
 	}	
 }
