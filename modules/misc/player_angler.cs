@@ -23,8 +23,8 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	killerraisearms = false;
 	killerlight = "NoFlareBLight";	
 
-	killerChaseLvl1Music = "musicData_Eventide_LowAction";
-	killerChaseLvl2Music = "musicData_Eventide_HighActionA";
+	killerChaseLvl1Music = "musicData_OUT_AnglerNear";
+	killerChaseLvl2Music = "musicData_OUT_AnglerChase";
 
 	killeridlesound = "angler_idle";
 	killeridlesoundamount = 7;
