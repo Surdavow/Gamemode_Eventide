@@ -180,7 +180,7 @@ function Player::onKillerLoop(%obj)
 		}
 		else
 		{
-			if (isObject(%victimclient) && %victimclient.player.TimeSinceChased + 6000 < getSimTime())
+			if (isObject(%victimclient))
 			{
 				if(%nearbyplayer.chaseLevel != 1)
 				{
