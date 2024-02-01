@@ -113,13 +113,49 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
 						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
 						%hit.damage(%obj, %hit.getWorldBoxCenter(), 50*getWord(%obj.getScale(),2), $DamageType::Default);
-						%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
-						if(%datablock.killerHitProjectile !$= "") %hit.spawnExplosion(%datablock.killerHitProjectile,%obj.getScale());						
+						
+						// %hit.spawnExplosion(pushBroomProjectile,"2 2 2");
+
+						if(%datablock.killerHitProjectile !$= "")
+						{
+							%effect = new Projectile()
+							{
+								dataBlock = %datablock.killerHitProjectile;
+								initialPosition = %hit.getWorldBoxCenter();
+								initialVelocity = %line;
+								scale = %obj.getScale();
+								sourceObject = %obj;
+							};
+							
+							MissionCleanup.add(%effect);
+							%effect.explode();
+						}
 
 						%obj.setTempSpeed(0.5);
 						%obj.schedule(2000,setTempSpeed,1);
 					}
-				}				
+				}
+				else
+				{
+					// Ray is obscured by something, spawn clank particle.
+					%wallPosition = getWords(%obscure, 1, 3);
+					%wallNormal = getWords(%obscure, 4, 6);
+					
+					if(%datablock.killerObscureProjectile !$= "")
+					{
+						%effect = new Projectile()
+						{
+							dataBlock = %datablock.killerObscureProjectile;
+							initialPosition = %wallPosition;
+							initialVelocity = %wallNormal;
+							scale = %obj.getScale();
+							sourceObject = %obj;
+						};
+						
+						MissionCleanup.add(%effect);
+						%effect.explode();
+					}
+				}
 			}
 			
 		}
@@ -314,4 +350,37 @@ function GameConnection::StopChaseMusic(%client)
 	%client.player.getdataBlock().TunnelVision(%client.player,false);
 
     %client.player.chaseLevel = 0;
+    %client.musicChaseLevel = 0;
+}
+
+/// @param	this	player
+/// @param	skin	string
+/// @param	offset	3-element position
+/// @param	angle	3-element euler rotation (in degrees)
+/// @param	scale	3-element vector
+function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
+{
+	%shape = new StaticShape()
+	{
+		dataBlock = KillerTrailShape;
+		scale = %scale;
+	};
+	
+	if(isObject(%shape))
+	{
+		MissionCleanup.add(%shape);
+		
+		%shape.setSkinName(%skin);
+		
+		%rotation = relativeVectorToRotation(%this.getLookVector(), %this.getUpVector());
+		%clamped = mClampF(firstWord(%rotation), -89.9, 89.9) SPC restWords(%rotation);
+		
+		%local = %this.getPosition() SPC %clamped;
+		%combined = %offset SPC eulerToQuat(%angle);
+		%actual = matrixMultiply(%local, %combined);
+		
+		%shape.setTransform(%actual);
+		%shape.schedule(0, playThread, 0, "rotate");
+		%shape.schedule(1000, delete);
+	}
 }
