@@ -3,7 +3,10 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	uiName = "Grabber Player";
 
 	killerSpawnMessage = "The masked man arrives with silence and dread.";
-	killerHitProjectile = KillerHitProjectile;
+	
+	// Weapon: Machete
+	killerHitProjectile = KillerRoughHitProjectile;
+	killerObscureProjectile = KillerMacheteClankProjectile;
 
 	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
 	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
@@ -72,7 +75,10 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 	if(%bool && %obj.getState() !$= "Dead")
 	switch(%triggerNum)
 	{
-		case 0: %obj.KillerMelee(%this,4.5);
+		case 0:
+				%obj.KillerMelee(%this,4.5);
+				%obj.spawnKillerTrail("ragged", "0.3 1.4 0.7", "0 -67 0", "4 4 2");
+				
 		case 4: if(!isObject(%obj.victim))
 				{
 					if(!%obj.isCrouched() && %obj.getEnergyLevel() >= %this.maxEnergy && getWord(%obj.getVelocity(),2) == 0)

@@ -26,7 +26,9 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	killermeleehitsound = "skullwolf_hit";
 	killermeleehitsoundamount = 3;
 
-	killerHitProjectile = SkullwolfHitProjectile;
+	// Weapon: Claws
+	killerHitProjectile = KillerRoughHitProjectile;
+	// killerObscureProjectile = ;
 	
 	killerraisearms = true;
 	killerlight = NoFlareRLight;
@@ -151,7 +153,10 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 	if(%bool)
 	switch(%triggerNum)
 	{
-		case 0: %obj.KillerMelee(%this,4.25);
+		case 0:
+				%obj.KillerMelee(%this,4.25);
+				%obj.spawnKillerTrail("baseClaw", "0.3 1.4 0.7", "0 45 0", "4 4 3");
+			
 		case 4: if(!%obj.isInvisible)
 				{		
 					if(%obj.getEnergyLevel() == %this.maxEnergy && !isEventPending(%obj.disappearsched)) 

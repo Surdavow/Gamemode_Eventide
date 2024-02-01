@@ -8,7 +8,9 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	uiName = "Puppet Master Player";
     shapeFile = PuppetMasterDTS.baseShape;
 	
-	killerHitProjectile = KillerHitProjectile;
+	// Weapon: Katana
+	killerHitProjectile = KillerSharpHitProjectile;
+	killerObscureProjectile = KillerKatanaClankProjectile;
 
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";	
@@ -60,7 +62,10 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 	
 	if(%bool) switch(%triggerNum)
 	{
-		case 0: %obj.KillerMelee(%this,4.25);
+		case 0:
+				%obj.KillerMelee(%this,4.25);
+				%obj.spawnKillerTrail("base", "0.3 1.4 0.7", "0 -67 0", "4 4 1");
+				
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{
 					if(!isObject(PuppetGroup)) new SimGroup(PuppetGroup);

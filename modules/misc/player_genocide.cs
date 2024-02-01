@@ -2,6 +2,7 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 {
 	uiName = "Genocide Player";
 
+	// Weapon: Shovel...?
 	killerSpawnMessage = "...";
 	killerHitProjectile = KillerHitProjectile;
 

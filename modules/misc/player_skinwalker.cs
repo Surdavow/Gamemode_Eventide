@@ -19,7 +19,10 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	renderFirstPerson = false;
 
 	killerSpawnMessage = "Blockheads are the warmest place to hide.";
-	killerHitProjectile = KillerHitProjectile;
+	
+	// Weapon: Claws
+	killerHitProjectile = KillerRoughHitProjectile;
+	// killerObscureProjectile = ;
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
@@ -96,7 +99,10 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 	
 	if(%press) switch(%trig)
 	{
-		case 0:	%obj.KillerMelee(%this,4);
+		case 0:
+				%obj.KillerMelee(%this,4);
+				%obj.spawnKillerTrail("raggedClaw", "0.3 1.4 0.7", "0 45 0", "4 4 3");
+			
 		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule)) 
                 %this.monstertransform(%obj,false);
 	}

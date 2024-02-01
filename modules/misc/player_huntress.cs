@@ -3,7 +3,10 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	uiName = "Huntress Player";
 
 	killerSpawnMessage = "...";
-	killerHitProjectile = KillerHitProjectile;
+	
+	// Weapon: Axe
+	killerHitProjectile = KillerSharpHitProjectile;
+	killerObscureProjectile = KillerAxeClankProjectile;
 
 	killerChaseLvl1Music = "musicData_OUT_HuntressNear";
 	killerChaseLvl2Music = "musicData_OUT_HuntressChase";
@@ -39,7 +42,12 @@ function PlayerHuntress::onTrigger(%this, %obj, %trig, %press)
 		
 	switch(%trig)
 	{
-		case 0: if(%press) %obj.KillerMelee(%this,4.5);
+		case 0:
+				if(%press)
+				{
+					%obj.KillerMelee(%this,4.5);
+					%obj.spawnKillerTrail("base", "0.3 1.4 0.7", "0 -67 0", "4 4 2");
+				}
 	}
 }
 

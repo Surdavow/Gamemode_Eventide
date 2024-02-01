@@ -3,7 +3,10 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	uiName = "Renowned Player";	
 
 	killerSpawnMessage = "A droll of the mind arrives with death in close pursuit.";
-	killerHitProjectile = KillerHitProjectile;
+	
+	// Weapon: Katana
+	killerHitProjectile = KillerSharpHitProjectile;
+	killerObscureProjectile = KillerKatanaClankProjectile;
 
 	rechargeRate = 0.26;
 	maxDamage = 9999;
@@ -152,7 +155,11 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 	
-	if(%trig == 0 && %press) %obj.KillerMelee(%this,4);
+	if(%trig == 0 && %press)
+	{
+		%obj.KillerMelee(%this,4);
+		%obj.spawnKillerTrail("base", "0.3 1.4 0.7", "0 -67 0", "4 4 1.5");
+	}		
 	
 	if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
 	{
