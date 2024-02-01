@@ -50,10 +50,10 @@ datablock ParticleEmitterData(SkullwolfHitEmitter)
 	periodVarianceMS = 0;	
 	ejectionVelocity = -5;
 	velocityVariance = 0;	
-	ejectionOffset = 1;
+	ejectionOffset = 0;
 	
 	thetaMin = 160;
-	thetaMax = 180;
+	thetaMax = 178;
 	
 	phiReferenceVel = 0;
 	phiVariance = 360;
