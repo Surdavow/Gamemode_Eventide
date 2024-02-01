@@ -311,5 +311,5 @@ function GameConnection::StopChaseMusic(%client)
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
 	%client.player.getdataBlock().TunnelVision(%client.player,false);
 
-    %client.musicChaseLevel = 0;
+    %client.player.chaseLevel = 0;
 }
