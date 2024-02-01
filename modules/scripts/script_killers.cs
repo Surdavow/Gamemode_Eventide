@@ -70,6 +70,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 																%hit.schedule(2250,kill);
 																%hit.setarmthread("activate2");
 																%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
+																%hit.schedule(2295,kill);        
 																%hit.schedule(2300,delete);        
 																%obj.schedule(2250,playthread,1,"root");
 																%obj.schedule(2250,playthread,2,"root");
