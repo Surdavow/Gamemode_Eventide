@@ -373,9 +373,9 @@ function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
 		%shape.setSkinName(%skin);
 		
 		%rotation = relativeVectorToRotation(%this.getLookVector(), %this.getUpVector());
-		%clamped = mClampF(firstWord(%rotation), -89.9, 89.9) SPC restWords(%rotation);
+		%clamped = mClampF(firstWord(%rotation), -45, 45) SPC restWords(%rotation);
 		
-		%local = %this.getPosition() SPC %clamped;
+		%local = %this.getHackPosition() SPC %clamped;
 		%combined = %offset SPC eulerToQuat(%angle);
 		%actual = matrixMultiply(%local, %combined);
 		

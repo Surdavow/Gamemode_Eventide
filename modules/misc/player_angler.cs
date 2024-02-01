@@ -155,7 +155,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 	{
 		case 0:
 				%obj.KillerMelee(%this,4);
-				%obj.spawnKillerTrail("ragged", "0 0 1.5", "0 0 0", "4 4 2");
+				%obj.spawnKillerTrail("ragged", "0.3 1.4 0.7", "0 0 0", "4 4 2");
 			
 		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy/2)
 				{
