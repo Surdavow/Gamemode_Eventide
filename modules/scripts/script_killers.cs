@@ -152,7 +152,7 @@ function Player::onKillerLoop(%obj)
 		if (%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(), %nearbyplayer.getMuzzlePoint(2), $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType, %obj)) && !%obj.isInvisible)
 		{			
 			%obj.isChasing = true;
-						
+
 			// Set chase music and timers					
 			if (isObject(%victimclient))
 			{				
@@ -200,6 +200,7 @@ function Player::onKillerLoop(%obj)
 				cancel(%killerclient.StopChaseMusic);
 				%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
 			}
+			%obj.isChasing = false;
 		}
 	}
 
