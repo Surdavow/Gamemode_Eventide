@@ -47,7 +47,7 @@ function CRadioImage::onMount(%this,%obj,%slot)
 	%obj.radioEquipped = true;
 	%obj.stopAudio(3);
 	%obj.playaudio(3,"radio_change_sound");
-	%obj.client.centerPrint("\c4Radio is now enabled, use team chat to broadcast on the radio channel to other survivors.",4);
+	%obj.client.centerPrint("\c4Radio is now enabled, use team chat to broadcast to other survivors.",4);
 
 	if(isObject(%obj.client))
 	{
