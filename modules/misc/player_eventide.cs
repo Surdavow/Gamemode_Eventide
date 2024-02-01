@@ -477,7 +477,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	if(isObject(%minigame = getMinigamefromObject(%obj)))
 	{
 		if(isObject(%funcclient))
-		for(%i=0;%i<%obj.getDatablock().maxTools;%i++) if(isObject(%item = %obj.tool[%i]) && %item.image.isRitual)
+		for(%i=0;%i<%obj.getDatablock().maxTools;%i++) if(isObject(%item = %obj.tool[%i]))
 		{						
 			%pos = %obj.getPosition();
 			%posX = getWord(%pos,0);
