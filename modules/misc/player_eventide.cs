@@ -476,6 +476,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 
 	if(isObject(%minigame = getMinigamefromObject(%obj)))
 	{
+		%obj.unmountimage(0);
+		%obj.unmountimage(1);
 		if(isObject(%funcclient))
 		for(%i=0;%i<%obj.getDatablock().maxTools;%i++) if(isObject(%item = %obj.tool[%i]))
 		{						
