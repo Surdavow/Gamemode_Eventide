@@ -520,5 +520,5 @@ function EventidePlayer::onRemove(%this,%obj)
 
 function EventidePlayerDowned::onRemove(%this,%obj)
 {	
-	Parent::onRemove(%this,%obj);3
+	Parent::onRemove(%this,%obj);
 }
