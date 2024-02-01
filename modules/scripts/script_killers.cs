@@ -45,94 +45,97 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 
 				if(minigameCanDamage(%obj,%hit) == 1)
-				if(!isObject(%obscure) && %dot > 0.65)						
+				if(!isObject(%obscure))						
 				{
-					if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
+					if(%dot > 0.65)
 					{
-						switch$(%obj.getdataBlock().getName())
+						if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
 						{
-							case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
+							switch$(%obj.getdataBlock().getName())
+							{
+								case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
+															{
+																if(%hit.getDamagePercent() > 0.5)
+																{
+																	if(isObject(%hit.client)) 
+																	{
+																		%obj.stunned = true;
+																		%hit.client.setControlObject(%hit.client.camera);
+																		%hit.client.camera.setMode("Corpse",%hit);
+																	}
+																	%obj.victim = %hit;
+																	%obj.victimreplicatedclient = %hit.client;																
+																	%obj.playthread(1,"eat");
+																	%obj.playthread(2,"talk");
+																	%obj.playaudio(1,"skinwalker_grab_sound");
+																	%obj.mountobject(%hit,6);
+																	%hit.schedule(2250,kill);
+																	%hit.setarmthread("activate2");
+																	%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
+																	%hit.schedule(2295,kill);        
+																	%hit.schedule(2300,delete);        
+																	%obj.schedule(2250,playthread,1,"root");
+																	%obj.schedule(2250,playthread,2,"root");
+																	%obj.schedule(2250,setField,victim,0);
+																	%this.schedule(2250,EventideAppearance,%obj,%obj.client);
+																	return;
+																}
+																else 
+																{
+																	%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
+																	continue;
+																}
+															}
+
+								case "PlayerSkullwolf":	if(%hit.getdataBlock().isDowned)
 														{
 															if(%hit.getDamagePercent() > 0.5)
 															{
-																if(isObject(%hit.client)) 
-																{
-																	%obj.stunned = true;
-																	%hit.client.setControlObject(%hit.client.camera);
-																	%hit.client.camera.setMode("Corpse",%hit);
-																}
-																%obj.victim = %hit;
-																%obj.victimreplicatedclient = %hit.client;																
-																%obj.playthread(1,"eat");
-																%obj.playthread(2,"talk");
-																%obj.playaudio(1,"skinwalker_grab_sound");
-																%obj.mountobject(%hit,6);
-																%hit.schedule(2250,kill);
-																%hit.setarmthread("activate2");
-																%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
-																%hit.schedule(2295,kill);        
-																%hit.schedule(2300,delete);        
-																%obj.schedule(2250,playthread,1,"root");
-																%obj.schedule(2250,playthread,2,"root");
-																%obj.schedule(2250,setField,victim,0);
-																%this.schedule(2250,EventideAppearance,%obj,%obj.client);
+																%obj.getdataBlock().eatVictim(%obj,%hit);
 																return;
 															}
 															else 
 															{
 																%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
 																continue;
-															}
+															}														
 														}
-
-							case "PlayerSkullwolf":	if(%hit.getdataBlock().isDowned)
-													{
-														if(%hit.getDamagePercent() > 0.5)
-														{
-															%obj.getdataBlock().eatVictim(%obj,%hit);
-															return;
-														}
-														else 
-														{
-															%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
-															continue;
-														}														
-													}
-						}
-						
-						if(isObject(%obj.hookrope)) %obj.hookrope.delete();
-
-						if(%hit.getdataBlock().isDowned) continue;
-						
-						if(%datablock.killermeleehitsound !$= "")
-						{
-							%obj.stopaudio(3);
-							%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
-						}						
-
-						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
-						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
-						%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);
-						
-						// %hit.spawnExplosion(pushBroomProjectile,"2 2 2");
-
-						if(%datablock.killerHitProjectile !$= "")
-						{
-							%effect = new Projectile()
-							{
-								dataBlock = %datablock.killerHitProjectile;
-								initialPosition = %hit.getHackPosition();
-								initialVelocity = vectorNormalize(vectorSub(%hit.getHackPosition(), %obj.getEyePoint()));
-								scale = %obj.getScale();
-								sourceObject = %obj;
-							};
+							}
 							
-							MissionCleanup.add(%effect);
-							%effect.explode();
-						}
+							if(isObject(%obj.hookrope)) %obj.hookrope.delete();
 
-						%obj.setTempSpeed(0.5);
-						%obj.schedule(2000,setTempSpeed,1);
+							if(%hit.getdataBlock().isDowned) continue;
+							
+							if(%datablock.killermeleehitsound !$= "")
+							{
+								%obj.stopaudio(3);
+								%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
+							}						
+
+							%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
+							%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
+							%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);
+							
+							// %hit.spawnExplosion(pushBroomProjectile,"2 2 2");
+
+							if(%datablock.killerHitProjectile !$= "")
+							{
+								%effect = new Projectile()
+								{
+									dataBlock = %datablock.killerHitProjectile;
+									initialPosition = %hit.getHackPosition();
+									initialVelocity = vectorNormalize(vectorSub(%hit.getHackPosition(), %obj.getEyePoint()));
+									scale = %obj.getScale();
+									sourceObject = %obj;
+								};
+								
+								MissionCleanup.add(%effect);
+								%effect.explode();
+							}
+
+							%obj.setTempSpeed(0.5);
+							%obj.schedule(2000,setTempSpeed,1);
+						}
 					}
 				}
 				else
