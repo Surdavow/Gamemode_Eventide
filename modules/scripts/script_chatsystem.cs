@@ -99,16 +99,20 @@ function ChatMod_LocalChat(%client, %message)
 
 	for(%i=0; %i<clientGroup.getCount(); %i++)
 	{
-		if(isObject(%targetClient=clientGroup.getObject(%i)) && isObject(%targetClient.player))
+		if(isObject(%targetClient=clientGroup.getObject(%i)))
 		{
-			%playerdistance = vectorDist(%client.player.getTransform(),%targetClient.player.getTransform());
-			%localchatdistance = (%isWhisper ? ($Pref::Server::ChatMod::lChatDistance*$Pref::Server::ChatMod::lchatWhisperMultiplier) : %localchatdistance) || (%isYell ? ($Pref::Server::ChatMod::lChatDistance*$Pref::Server::ChatMod::lchatShoutMultiplier) : $Pref::Server::ChatMod::lchatDistance);
-			%diff = $Pref::Server::ChatMod::lchatSizeMax - $Pref::Server::ChatMod::lchatSizeMin;
-			%size = mFloor(((%localchatdistance-%playerdistance) / %localchatdistance * %diff)) + $Pref::Server::ChatMod::lchatSizeMin;			
-			
-			if(%playerdistance < %localchatdistance)
-			if(!$Pref::Server::ChatMod::lchatSizeModEnabled) chatMessageClientRP(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message);
-			else chatMessageClientRPSize(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message, %size); 
+			if(isObject(%targetClient.player))
+			{
+				%playerdistance = vectorDist(%client.player.getTransform(),%targetClient.player.getTransform());
+				%localchatdistance = (%isWhisper ? ($Pref::Server::ChatMod::lChatDistance*$Pref::Server::ChatMod::lchatWhisperMultiplier) : %localchatdistance) || (%isYell ? ($Pref::Server::ChatMod::lChatDistance*$Pref::Server::ChatMod::lchatShoutMultiplier) : $Pref::Server::ChatMod::lchatDistance);
+				%diff = $Pref::Server::ChatMod::lchatSizeMax - $Pref::Server::ChatMod::lchatSizeMin;
+				%size = mFloor(((%localchatdistance-%playerdistance) / %localchatdistance * %diff)) + $Pref::Server::ChatMod::lchatSizeMin;			
+
+				if(%playerdistance < %localchatdistance)
+				if(!$Pref::Server::ChatMod::lchatSizeModEnabled) chatMessageClientRP(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message);
+				else chatMessageClientRPSize(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message, %size);
+			}
+			else chatMessageClientRP(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message);
 		}
 	}
 }
