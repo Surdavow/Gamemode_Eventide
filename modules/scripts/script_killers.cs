@@ -380,7 +380,7 @@ function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
 		%actual = matrixMultiply(%local, %combined);
 		
 		%shape.setTransform(%actual);
-		%shape.schedule(0, playThread, 0, "rotate");
+		%shape.playThread(0, "rotate");
 		%shape.schedule(1000, delete);
 	}
 }
