@@ -166,7 +166,7 @@ function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
 
 	if(getSubStr(%message, 0, 1) $= ".") %message = strreplace(%message, getSubStr(%message, 0, 1), "");	
 
-	%pre = "\c4[Channel "@ (%client.player.RadioChannel+1) @"]";	
+	%pre = "\c4[Radio]";	
 
 	if(!%client.player.radioID) %client.player.radioID = getRandom(100, 10000);
 	%name = getSubStr(%tempclient.name, 0, 1) @ "." @ %client.player.radioID;	
@@ -175,7 +175,7 @@ function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
 	for(%i = 0; %i < clientGroup.getCount(); %i++)
 	{
 		if(isObject(%target = clientGroup.getObject(%i)) && isObject(%target.player))
-		if(%target.player.RadioChannel == %client.player.RadioChannel && %target.player.radioEquipped) 
+		if(%target.player.radioEquipped) 
 		{
 			if(%isTeamMessage && isObject(Slayer) && %client.getTeam() $= %target.getTeam())
 			{
