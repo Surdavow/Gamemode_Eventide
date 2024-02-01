@@ -31,6 +31,12 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 			%obj.playaudio(0,%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound");		
 		}		
 
+		if(%datablock.killerweaponsound !$= "")
+		{
+			%obj.stopaudio(1);
+			%obj.playaudio(1,%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound");		
+		}	
+
 		for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(
 		{
 			if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))

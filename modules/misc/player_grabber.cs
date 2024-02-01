@@ -15,7 +15,10 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	killermeleehitsoundamount = 3;
 
 	killermeleesound = "";
-	killermeleesoundamount = 0;	
+	killermeleesoundamount = 0;
+	
+	killerweaponsound = "grabber_weapon";
+	killerweaponsoundamount = 5;	
 
 	killeridlesound = "grabber_breathe";
 	killeridlesoundamount = 1;

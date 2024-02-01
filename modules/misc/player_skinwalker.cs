@@ -108,6 +108,11 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 	}
 }
 
+function PlayerSkinwalker::onPeggFootstep(%this,%obj)
+{
+	serverplay3d("skinwalker_walking" @ getRandom(1,5) @ "_sound", %obj.getHackPosition());
+}
+
 function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
 {
     if(!isObject(%obj)) return;

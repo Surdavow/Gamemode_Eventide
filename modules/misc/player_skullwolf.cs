@@ -22,6 +22,9 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 
 	killermeleesound = "skullwolf_melee";
 	killermeleesoundamount = 7;
+	
+	killerweaponsound = "skullwolf_weapon";
+	killerweaponsoundamount = 6;	
 
 	killermeleehitsound = "skullwolf_hit";
 	killermeleehitsoundamount = 3;

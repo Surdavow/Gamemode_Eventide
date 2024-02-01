@@ -39,6 +39,9 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 
 	killermeleesound = "renowned_melee";
 	killermeleesoundamount = 3;
+	
+	killerweaponsound = "renowned_weapon";
+	killerweaponsoundamount = 5;	
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;

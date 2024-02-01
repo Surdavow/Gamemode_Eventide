@@ -19,6 +19,9 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 
 	killermeleesound = "";
 	killermeleesoundamount = 0;	
+	
+	killerweaponsound = "shire_weapon";
+	killerweaponsoundamount = 5;	
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
