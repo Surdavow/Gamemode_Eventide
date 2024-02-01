@@ -112,7 +112,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
 						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
-						%hit.damage(%obj, %hit.getWorldBoxCenter(), 50*getWord(%obj.getScale(),2), $DamageType::Default);
+						%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);
 						
 						// %hit.spawnExplosion(pushBroomProjectile,"2 2 2");
 
@@ -373,7 +373,7 @@ function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
 		%shape.setSkinName(%skin);
 		
 		%rotation = relativeVectorToRotation(%this.getLookVector(), %this.getUpVector());
-		%clamped = mClampF(firstWord(%rotation), -45, 45) SPC restWords(%rotation);
+		%clamped = mClampF(firstWord(%rotation), -89.9, 89.9) SPC restWords(%rotation);
 		
 		%local = %this.getHackPosition() SPC %clamped;
 		%combined = %offset SPC eulerToQuat(%angle);
