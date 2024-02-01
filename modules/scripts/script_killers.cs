@@ -20,10 +20,12 @@ function KillerSpawnMessage(%obj)
 
 function Player::KillerMelee(%obj,%datablock,%radius)
 {	
-	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/16)
+	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
 		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
+		%obj.playthread(2,"activate2");
+		%obj.addenergy(-12.5);
 		
 		if(%datablock.killermeleesound !$= "")
 		{

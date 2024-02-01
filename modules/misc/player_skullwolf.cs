@@ -148,7 +148,7 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 	if(%bool)
 	switch(%triggerNum)
 	{
-		case 0: %obj.KillerMelee(%this,3.5);
+		case 0: %obj.KillerMelee(%this,4.25);
 		case 4: if(!%obj.isInvisible)
 				{		
 					if(%obj.getEnergyLevel() == %this.maxEnergy && !isEventPending(%obj.disappearsched)) 
@@ -167,6 +167,7 @@ function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 	if(!isObject(%obj)) return;
 	
 	%furcolor = "0.05 0.05 0.05 1";
+	%obj.startFade(0, 0, true);
 	%obj.setnodecolor("skullhead",%furcolor);		
 	%obj.setnodecolor("rarm",%furcolor);
 	%obj.setnodecolor("larm",%furcolor);

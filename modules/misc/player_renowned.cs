@@ -151,7 +151,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 	
-	if(%trig == 0 && %press) %obj.KillerMelee(%this,3.5);
+	if(%trig == 0 && %press) %obj.KillerMelee(%this,4);
 	
 	if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
 	{

@@ -151,7 +151,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 	
 	if(%press) switch(%trig)
 	{
-		case 0:	%obj.KillerMelee(%this,3.5);
+		case 0:	%obj.KillerMelee(%this,4);
 		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy/2)
 				{
 					%p = new projectile()
