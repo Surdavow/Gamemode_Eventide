@@ -44,6 +44,14 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 	}
 }
 
+function PuppetMasterPuppet::onDisabled(%this,%obj)
+{
+	Parent::onDisabled(%this,%obj);
+	
+	%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
+	%obj.schedule(1,delete);
+}
+
 function PuppetMasterPuppet::EventideAppearance(%this,%obj,%client)
 {
 	%obj.hideNode("ALL");
