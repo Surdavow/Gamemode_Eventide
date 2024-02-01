@@ -438,11 +438,34 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
 	Parent::onDisabled(%this,%obj);
 
-	if(isObject(%funcclient = %obj.client)) 
+	if(isObject(%funcclient = %obj.client))
 	{
 		%obj.ghostclient = %funcclient;
 		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
 		%obj.client.setcontrolcamerafov(%this.defaultTunnelFOV);
+
+		if(%obj.markedForShireZombify && isObject(%funcclient.minigame))
+		{
+			%bot = new AIPlayer()
+			{
+				dataBlock = "ShireZombieBot";
+				minigame = %obj.ghostClient.minigame;
+				ghostclient = %obj.ghostclient;
+			};
+
+			%bot.setTransform(%obj.getTransform());
+			%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
+
+			if(!isObject(Shire_BotGroup))
+			{
+    			new SimGroup(Shire_BotGroup);
+    			missionCleanup.add(Shire_BotGroup);
+				Shire_BotGroup.add(%bot);
+			}
+			else if(!Shire_BotGroup.isMember(%bot)) Shire_BotGroup.add(%bot);
+
+			%obj.schedule(1,delete);
+		}		
 	}
 	if(%obj.radioEquipped) serverPlay3d("radio_unmount_sound",%obj.getPosition());	
 	if(%obj.markedforRenderDeath)
@@ -497,26 +520,5 @@ function EventidePlayer::onRemove(%this,%obj)
 
 function EventidePlayerDowned::onRemove(%this,%obj)
 {	
-	Parent::onRemove(%this,%obj);
-
-	if(%obj.markedForShireZombify && isObject(%obj.ghostclient) && isObject(%obj.ghostClient.minigame))
-	{
-		%bot = new AIPlayer()
-		{
-			dataBlock = "ShireZombieBot";
-			minigame = %obj.ghostClient.minigame;
-			ghostclient = %obj.ghostclient;
-		};
-
-		%bot.setTransform(%obj.getTransform());
-		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
-
-		if(!isObject(Shire_BotGroup))
-		{
-    		new SimGroup(Shire_BotGroup);
-    		missionCleanup.add(Shire_BotGroup);
-			Shire_BotGroup.add(%bot);
-		}
-		else if(!Shire_BotGroup.isMember(%bot)) Shire_BotGroup.add(%bot);
-	}
+	Parent::onRemove(%this,%obj);3
 }
