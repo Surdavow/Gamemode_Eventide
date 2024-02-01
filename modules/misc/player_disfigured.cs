@@ -3,6 +3,7 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	uiName = "Disfigured Player";
 
 	killerSpawnMessage = "...";
+	killerHitProjectile = KillerHitProjectile;
 
 	killerChaseLvl1Music = "musicData_OUT_DisfiguredNear";
 	killerChaseLvl2Music = "musicData_OUT_DisfiguredChase";

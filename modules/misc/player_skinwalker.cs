@@ -18,7 +18,8 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 
 	renderFirstPerson = false;
 
-	killerSpawnMessage = "Humans are the warmest place to hide.";
+	killerSpawnMessage = "Blockheads are the warmest place to hide.";
+	killerHitProjectile = KillerHitProjectile;
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";

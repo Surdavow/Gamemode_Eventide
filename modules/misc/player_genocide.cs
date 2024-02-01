@@ -3,6 +3,7 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 	uiName = "Genocide Player";
 
 	killerSpawnMessage = "...";
+	killerHitProjectile = KillerHitProjectile;
 
 	killerChaseLvl1Music = "musicData_OUT_GenocideNear";
 	killerChaseLvl2Music = "musicData_OUT_GenocideChase";

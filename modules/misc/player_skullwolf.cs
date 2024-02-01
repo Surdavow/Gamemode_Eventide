@@ -24,10 +24,12 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	killermeleesoundamount = 7;
 
 	killermeleehitsound = "skullwolf_hit";
-	killermeleehitsoundamount = 3;		
+	killermeleehitsoundamount = 3;
+
+	killerHitProjectile = SkullwolfHitProjectile;
 	
 	killerraisearms = true;
-	killerlight = "NoFlareRLight";
+	killerlight = NoFlareRLight;
 
 	renderFirstPerson = false;
 

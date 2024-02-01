@@ -3,6 +3,7 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	uiName = "Huntress Player";
 
 	killerSpawnMessage = "...";
+	killerHitProjectile = KillerHitProjectile;
 
 	killerChaseLvl1Music = "musicData_OUT_HuntressNear";
 	killerChaseLvl2Music = "musicData_OUT_HuntressChase";

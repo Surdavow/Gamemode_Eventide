@@ -7,6 +7,8 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 {
 	uiName = "Puppet Master Player";
     shapeFile = PuppetMasterDTS.baseShape;
+	
+	killerHitProjectile = KillerHitProjectile;
 
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";	

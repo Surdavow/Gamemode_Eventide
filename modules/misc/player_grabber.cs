@@ -3,6 +3,7 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	uiName = "Grabber Player";
 
 	killerSpawnMessage = "The masked man arrives with silence and dread.";
+	killerHitProjectile = KillerHitProjectile;
 
 	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
 	killerChaseLvl2Music = "musicData_OUT_GrabberChase";

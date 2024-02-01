@@ -3,6 +3,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	uiName = "Renowned Player";	
 
 	killerSpawnMessage = "A droll of the mind arrives with death in close pursuit.";
+	killerHitProjectile = KillerHitProjectile;
 
 	rechargeRate = 0.26;
 	maxDamage = 9999;

@@ -18,7 +18,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
 
-	renderFirstPerson = false;
+	killerHitProjectile = KillerHitProjectile;
 
 	killerraisearms = false;
 	killerlight = "NoFlareBLight";	

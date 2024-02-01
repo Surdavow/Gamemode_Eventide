@@ -3,6 +3,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	uiName = "Shire Player";
 
 	killerSpawnMessage = "A hooded figure channels a blinding wrath.";
+	killerHitProjectile = KillerHitProjectile;
 
 	killerChaseLvl1Music = "musicData_OUT_ShireNear";
 	killerChaseLvl2Music = "musicData_OUT_ShireChase";

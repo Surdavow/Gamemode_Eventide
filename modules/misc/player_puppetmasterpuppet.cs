@@ -7,6 +7,8 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 {
 	uiName = "";
 	shapeFile = PuppetMasterPuppetDTS.baseShape;
+
+	killerHitProjectile = KillerHitProjectile;
 	
 	killermeleesound = "puppetmasterpuppet_idle";
 	killermeleesoundamount = 1;

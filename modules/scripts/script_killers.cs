@@ -24,8 +24,6 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 	{
 		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
-		%obj.playthread(2,"activate2");
-		%obj.addenergy(-12.5);
 		
 		if(%datablock.killermeleesound !$= "")
 		{
@@ -115,6 +113,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
 						%hit.damage(%obj, %hit.getWorldBoxCenter(), 50*getWord(%obj.getScale(),2), $DamageType::Default);
 						%hit.spawnExplosion(pushBroomProjectile,"2 2 2");
+						if(%datablock.killerHitProjectile !$= "") %hit.spawnExplosion(%datablock.killerHitProjectile,%obj.getScale());						
 
 						%obj.setTempSpeed(0.5);
 						%obj.schedule(2000,setTempSpeed,1);
