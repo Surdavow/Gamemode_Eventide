@@ -120,6 +120,7 @@ package Eventide_MainPackage
 			chatMessageClientRP(%targetClient, "", "\c7[DEAD] "@ %client.name, "", %message);
 		}		
 		%client.lastMessageSent = %message;		
+		echo(%client.name @ ": " @ getSubStr(%message, 1, strlen(%message)));
 	}
 
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
