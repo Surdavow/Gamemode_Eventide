@@ -190,7 +190,7 @@ function Player::onKillerLoop(%obj)
 				%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
 			}
 
-			if (isObject(%killerclient))
+			if (isObject(%killerclient) && !%obj.isChasing)
 			{
 				if(%obj.chaseLevel != 1)
 				{
