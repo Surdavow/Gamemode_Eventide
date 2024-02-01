@@ -121,8 +121,8 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 							%effect = new Projectile()
 							{
 								dataBlock = %datablock.killerHitProjectile;
-								initialPosition = %hit.getWorldBoxCenter();
-								initialVelocity = %line;
+								initialPosition = %hit.getHackPosition();
+								initialVelocity = vectorNormalize(vectorSub(%hit.getHackPosition(), %obj.getEyePoint()));
 								scale = %obj.getScale();
 								sourceObject = %obj;
 							};
