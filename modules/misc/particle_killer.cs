@@ -13,9 +13,9 @@ datablock ParticleData(SkullwolfHitParticle)
 	colors[1]	= "1 0.7 0.6 1";
 	colors[2]	= "1 0.3 0.2 0";
 
-	sizes[0]	= 2;
-	sizes[1]	= 2;
-	sizes[2]	= 2;
+	sizes[0]	= 2.5;
+	sizes[1]	= 2.5;
+	sizes[2]	= 2.5;
 	
 	times[0]	= 0;
 	times[1]	= 0.5;
@@ -48,7 +48,7 @@ datablock ParticleEmitterData(SkullwolfHitEmitter)
 	
 	ejectionPeriodMS = 76;
 	periodVarianceMS = 0;	
-	ejectionVelocity = -14;
+	ejectionVelocity = -5;
 	velocityVariance = 0;	
 	ejectionOffset = 3;
 	
@@ -64,7 +64,7 @@ datablock ExplosionData(SkullwolfHitExplosion)
 {	
 	particleEmitter = SkullwolfHitEmitter;
 	particleDensity = 1;
-	particleRadius = 2.5;
+	particleRadius = 0;
 
 	lifeTimeMS = 150;	
 	shakeCamera = false;
