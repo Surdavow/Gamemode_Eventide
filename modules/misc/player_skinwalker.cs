@@ -21,7 +21,7 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	killerSpawnMessage = "Blockheads are the warmest place to hide.";
 	
 	// Weapon: Claws
-	killerHitProjectile = KillerRoughHitProjectile;
+	HitProjectile = KillerRoughHitProjectile;
 	hitobscureprojectile = "";
 	
 	meleetrailskin = "raggedClaw";
