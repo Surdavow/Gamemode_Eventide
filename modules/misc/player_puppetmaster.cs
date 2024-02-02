@@ -57,14 +57,12 @@ function PlayerPuppetMaster::onNewDatablock(%this,%obj)
 }
 
 function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
-{	
-	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
-	
+{		
 	if(%bool) switch(%triggerNum)
 	{
-		case 0:
-				%obj.KillerMelee(%this,4.25);
+		case 0:	%obj.KillerMelee(%this,4.25);
 				%obj.spawnKillerTrail("base", "0.3 1.4 0.7", "0 -67 0", "4 4 1");
+				return;
 				
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{
@@ -96,6 +94,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 
 		default:
 	}
+	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
 }
 
 function PlayerPuppetMaster::onPeggFootstep(%this,%obj)

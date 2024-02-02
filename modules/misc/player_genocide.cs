@@ -34,13 +34,13 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 };
 
 function PlayerGenocide::onTrigger(%this, %obj, %trig, %press) 
-{
-	Parent::onTrigger(%this, %obj, %trig, %press);
-		
-	switch(%trig)
+{		
+	if(%press) switch(%trig)
 	{
-		case 0: if(%press) %obj.KillerMelee(%this,4);
+		case 0: %obj.KillerMelee(%this,4);
+				return;
 	}
+	Parent::onTrigger(%this, %obj, %trig, %press);
 }
 
 function PlayerGenocide::onNewDatablock(%this,%obj)

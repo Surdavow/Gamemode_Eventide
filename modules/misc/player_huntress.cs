@@ -37,18 +37,14 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 };
 
 function PlayerHuntress::onTrigger(%this, %obj, %trig, %press) 
-{
-	Parent::onTrigger(%this, %obj, %trig, %press);
-		
-	switch(%trig)
+{			
+	if(%press) switch(%trig)
 	{
-		case 0:
-				if(%press)
-				{
-					%obj.KillerMelee(%this,4.5);
-					%obj.spawnKillerTrail("base", "0.3 1.4 0.7", "0 -67 0", "4 4 2");
-				}
+		case 0: %obj.KillerMelee(%this,4.5);
+				%obj.spawnKillerTrail("base", "0.3 1.4 0.7", "0 -67 0", "4 4 2");
+				return;
 	}
+	Parent::onTrigger(%this, %obj, %trig, %press);	
 }
 
 function PlayerHuntress::onPeggFootstep(%this,%obj)

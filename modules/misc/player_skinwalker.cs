@@ -97,18 +97,17 @@ function PlayerSkinwalker::EventideAppearance(%this,%obj,%client)
 }
 
 function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press) 
-{
-	Parent::onTrigger(%this, %obj, %trig, %press);
-	
+{		
 	if(%press) switch(%trig)
 	{
-		case 0:
-				%obj.KillerMelee(%this,4);
+		case 0: %obj.KillerMelee(%this,4);
 				%obj.spawnKillerTrail("raggedClaw", "0.3 1.4 0.7", "0 45 0", "4 4 3");
+				return;
 			
 		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule)) 
                 %this.monstertransform(%obj,false);
 	}
+	Parent::onTrigger(%this, %obj, %trig, %press);	
 }
 
 function PlayerSkinwalker::onPeggFootstep(%this,%obj)
