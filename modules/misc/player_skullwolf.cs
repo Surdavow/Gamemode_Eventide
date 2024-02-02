@@ -30,8 +30,11 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	killermeleehitsoundamount = 3;
 
 	// Weapon: Claws
-	killerHitProjectile = KillerRoughHitProjectile;
-	// killerObscureProjectile = ;
+	killerhitprojectile = KillerRoughHitProjectile;
+	meleetrailskin = "baseClaw";
+	meleetrailoffset "0.3 1.4 0.7"; 	
+	meleetrailangle = "0 45 0";
+	meleetrailscale = "4 4 3";
 	
 	killerraisearms = true;
 	killerlight = NoFlareRLight;
@@ -105,8 +108,6 @@ function PlayerSkullWolf::eatVictim(%this,%obj,%victim)
 	%victim.schedule(705,delete);
 }
 
-
-
 function PlayerSkullWolf::onPeggFootstep(%this,%obj)
 {
 	serverplay3d("skullwolf_walking" @ getRandom(1,6) @ "_sound", %obj.getHackPosition());
@@ -151,12 +152,9 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 
 function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 {		
-	if(%bool)
-	switch(%triggerNum)
+	if(%bool) switch(%triggerNum)
 	{
-		case 0:
-				%obj.KillerMelee(%this,4.25);
-				%obj.spawnKillerTrail("baseClaw", "0.3 1.4 0.7", "0 45 0", "4 4 3");
+		case 0: %obj.KillerMelee(%this,4.25);				
 				return;
 			
 		case 4: if(!%obj.isInvisible)

@@ -25,11 +25,16 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
 		
+		if(%datablock.meleetrailskin !$= "")
+		{
+			%obj.spawnKillerTrail(%datablock.meleetrailskin,%datablock.meleetrailoffset,%datablock.meleetrailangle,%datablock.meleetrailscale);
+		}
+
 		if(%datablock.killermeleesound !$= "")
 		{
 			%obj.stopaudio(0);
 			%obj.playaudio(0,%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound");		
-		}		
+		}
 
 		if(%datablock.killerweaponsound !$= "")
 		{
@@ -122,11 +127,11 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 						
 						// %hit.spawnExplosion(pushBroomProjectile,"2 2 2");
 
-						if(%datablock.killerHitProjectile !$= "")
+						if(%datablock.killerhitprojectile !$= "")
 						{
 							%effect = new Projectile()
 							{
-								dataBlock = %datablock.killerHitProjectile;
+								dataBlock = %datablock.killerhitprojectile;
 								initialPosition = %hit.getHackPosition();
 								initialVelocity = vectorNormalize(vectorSub(%hit.getHackPosition(), %obj.getEyePoint()));
 								scale = %obj.getScale();
