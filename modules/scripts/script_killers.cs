@@ -29,11 +29,11 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		if(%datablock.killermeleesound !$= "") serverPlay3D(%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound",%obj.getWorldBoxCenter());				
 		if(%datablock.killerweaponsound !$= "")serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
 
-		initContainerRadiusSearch(%obj.getposition(), %radius, $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType | $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType);		
+		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType | $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType);		
 		while(%hit = containerSearchNext())
 		{
-			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
+			%obscure = containerRayCast(%obj.getMuzzlePoint(0),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			%dot = vectorDot(%obj.getMuzzleVector(0),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
 
 			if(%hit == %obj) continue;
 
