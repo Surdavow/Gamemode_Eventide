@@ -15,10 +15,10 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killeridlesoundamount = 9;
 
 	killerchasesound = "shire_chase";
-	killerchasesoundamount = 4;
+	killerchasesoundamount = 5;
 
-	killermeleesound = "";
-	killermeleesoundamount = 0;	
+	killermeleesound = "shire_melee";
+	killermeleesoundamount = 3;	
 	
 	killerweaponsound = "shire_weapon";
 	killerweaponsoundamount = 5;	

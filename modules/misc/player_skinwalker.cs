@@ -36,6 +36,9 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	killermeleesound = "skinwalker_chase";
 	killermeleesoundamount = 3;    
 
+	killerweaponsound = "skinwalker_weapon";
+	killerweaponsoundamount = 4;	
+
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;    
 
