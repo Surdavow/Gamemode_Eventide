@@ -103,7 +103,8 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 function PlayerPuppetMaster::onPeggFootstep(%this,%obj)
 {
 	serverplay3d("puppetmaster_walking" @ getRandom(1,4) @ "_sound", %obj.getHackPosition());
-	%obj.spawnExplosion("singleBoneProjectile","1 1 1");
+
+	if(getRandom(1,5) == 5) %obj.spawnExplosion("singleBoneProjectile","1 1 1");
 }
 
 function PlayerPuppetMaster::onDamage(%this,%obj,%delta)
