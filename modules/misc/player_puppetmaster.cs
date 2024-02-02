@@ -13,7 +13,7 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	hitobscureprojectile = KillerKatanaClankProjectile;	
 	meleetrailskin = "base";
 	meleetrailoffset = "0.3 1.4 0.7"; 	
-	meleetrailangle = "0 -67 0";
+	meleetrailangle = "0 -90 0";
 	meleetrailscale = "4 4 2";		
 
 	killerraisearms = false;
