@@ -32,10 +32,10 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType | $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType);		
 		while(%hit = containerSearchNext())
 		{
-			%obscure = containerRayCast(%obj.getMuzzlePoint(0),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			%dot = vectorDot(%obj.getMuzzleVector(0),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
+			if(%hit == %obj || vectorDist(%obj.getposition(),%hit.getposition()) > %radius) continue;
 
-			if(%hit == %obj) continue;
+			%obscure = containerRayCast(%obj.getMuzzlePoint(0),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			%dot = vectorDot(%obj.getMuzzleVector(0),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));			
 
 			if(isObject(%obscure))
 			{
@@ -54,7 +54,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				continue;
 			}
 
-			if(%dot < 0.5 || vectorDist(%obj.getposition(),%hit.getposition()) > %radius) continue;
+			if(%dot < 0.5) continue;
 
 			if(minigameCanDamage(%obj,%hit) == true)								
 			{
