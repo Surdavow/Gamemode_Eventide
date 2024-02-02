@@ -127,11 +127,11 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 						
 						// %hit.spawnExplosion(pushBroomProjectile,"2 2 2");
 
-						if(%datablock.projectile !$= "")
+						if(%datablock.hitprojectile !$= "")
 						{
 							%effect = new Projectile()
 							{
-								dataBlock = %datablock.killerhitprojectile;
+								dataBlock = %datablock.hitprojectile;
 								initialPosition = %hit.getHackPosition();
 								initialVelocity = vectorNormalize(vectorSub(%hit.getHackPosition(), %obj.getEyePoint()));
 								scale = %obj.getScale();
