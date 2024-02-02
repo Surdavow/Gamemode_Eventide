@@ -25,140 +25,14 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		%obj.lastclawed = getSimTime();							
 		%obj.playthread(2,"activate2");
 		
-		if(%datablock.meleetrailskin !$= "")
-		{
-			%obj.spawnKillerTrail(%datablock.meleetrailskin,%datablock.meleetrailoffset,%datablock.meleetrailangle,%datablock.meleetrailscale);
-		}
-
+		if(%datablock.meleetrailskin !$= "") %obj.spawnKillerTrail(%datablock.meleetrailskin,%datablock.meleetrailoffset,%datablock.meleetrailangle,%datablock.meleetrailscale);		
 		if(%datablock.killermeleesound !$= "") serverPlay3D(%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound",%obj.getWorldBoxCenter());				
-
 		if(%datablock.killerweaponsound !$= "")serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
 
-		for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(
+		%search = initContainerRadiusSearch(%obj.getposition(), %radius, $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType | $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType);		
+		while(%search == containerSearchNext())
 		{
-			if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
-			{
-				if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > %radius) 
-				continue;
-
-				%hit = %nearbyplayer;
-
-				%line = vectorNormalize(vectorSub(%hit.getPosition(),%obj.getEyePoint()));
-				%dot = vectorDot(%obj.getEyeVector(), %line);
-				%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-
-				if(minigameCanDamage(%obj,%hit) == 1)
-				if(!isObject(%obscure) && %dot > 0.65)						
-				{
-					if(vectorDist(%obj.getposition(),%hit.getposition()) < %radius)
-					{
-						switch$(%obj.getdataBlock().getName())
-						{
-							case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
-														{
-															if(%hit.getDamagePercent() > 0.5)
-															{
-																if(isObject(%hit.client)) 
-																{
-																	%obj.stunned = true;
-																	%hit.client.setControlObject(%hit.client.camera);
-																	%hit.client.camera.setMode("Corpse",%hit);
-																}
-																%obj.victim = %hit;
-																%obj.victimreplicatedclient = %hit.client;																
-																%obj.playthread(1,"eat");
-																%obj.playthread(2,"talk");
-																%obj.playaudio(1,"skinwalker_grab_sound");
-																%obj.mountobject(%hit,6);
-																%hit.schedule(2250,kill);
-																%hit.setarmthread("activate2");
-																%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
-																%hit.schedule(2295,kill);        
-																%hit.schedule(2300,delete);        
-																%obj.schedule(2250,playthread,1,"root");
-																%obj.schedule(2250,playthread,2,"root");
-																%obj.schedule(2250,setField,victim,0);
-																%this.schedule(2250,EventideAppearance,%obj,%obj.client);
-																return;
-															}
-															else 
-															{
-																%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
-																continue;
-															}
-														}
-
-							case "PlayerSkullwolf":	if(%hit.getdataBlock().isDowned)
-													{
-														if(%hit.getDamagePercent() > 0.5)
-														{
-															%obj.getdataBlock().eatVictim(%obj,%hit);
-															return;
-														}
-														else 
-														{
-															%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
-															continue;
-														}														
-													}
-						}
-						
-						if(isObject(%obj.hookrope)) %obj.hookrope.delete();
-
-						if(%hit.getdataBlock().isDowned) continue;
-						
-						if(%datablock.killermeleehitsound !$= "")
-						{
-							%obj.stopaudio(3);
-							%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
-						}						
-
-						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
-						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
-						%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);					
-
-						if(%datablock.hitprojectile !$= "")
-						{
-							%effect = new Projectile()
-							{
-								dataBlock = %datablock.hitprojectile;
-								initialPosition = %hit.getHackPosition();
-								initialVelocity = vectorNormalize(vectorSub(%hit.getHackPosition(), %obj.getEyePoint()));
-								scale = %obj.getScale();
-								sourceObject = %obj;
-							};
-							
-							MissionCleanup.add(%effect);
-							%effect.explode();
-						}
-
-						%obj.setTempSpeed(0.5);
-						%obj.schedule(2000,setTempSpeed,1);
-					}
-				}
-				else
-				{
-					// Ray is obscured by something, spawn clank particle.
-					%wallPosition = getWords(%obscure, 1, 3);
-					%wallNormal = getWords(%obscure, 4, 6);
-					
-					if(%datablock.hitobscureprojectile !$= "")
-					{
-						%effect = new Projectile()
-						{
-							dataBlock = %datablock.hitobscureprojectile;
-							initialPosition = %wallPosition;
-							initialVelocity = %wallNormal;
-							scale = %obj.getScale();
-							sourceObject = %obj;
-						};
-						
-						MissionCleanup.add(%effect);
-						%effect.explode();
-					}
-				}
-			}
-			
+			talk("test");
 		}
 	}
 }
