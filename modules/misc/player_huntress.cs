@@ -115,29 +115,3 @@ function PlayerHuntress::onDamage(%this, %obj, %delta)
 	Parent::onDamage(%this, %obj, %delta);
 	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"huntress_pain" @ getRandom(1, 1) @ "_sound");
 }
-
-package Player_Huntress
-{
-
-    function ShapeBase::pickup(%obj, %item)
-{
-        if(%obj.getClassName() $= "Player")
-{
-            if(%obj.getDataBlock().getName() $= "PlayerHuntress")
-{
-                return;
-            }
-        }
-        parent::pickup(%obj, %item);
-    }
-    function Player::addItem(%player, %image, %client)
-{
-        if(!$Player::PlayerHuntress::NoAddItem)
-{
-            parent::addItem(%player, %image, %client);
-        }
-    }
-};
-
-$Player::NoItemsPickup::NoAddItem = 0;
-activatePackage(Player_Huntress);
