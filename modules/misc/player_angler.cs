@@ -23,7 +23,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	hitobscureprojectile = KillerMacheteClankProjectile;
 	meleetrailskin = "ragged";
 	meleetrailoffset = "0.3 1.4 0.7"; 	
-	meleetrailangle = "0 0 0";
+	meleetrailangle = "0 -180 0";
 	meleetrailscale = "4 4 2";
 
 	killerraisearms = false;
