@@ -10,8 +10,7 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	
 	// Weapon: Katana
 	hitprojectile = KillerSharpHitProjectile;
-	hitobscureprojectile = KillerKatanaClankProjectile;
-	
+	hitobscureprojectile = KillerKatanaClankProjectile;	
 	meleetrailskin = "base";
 	meleetrailoffset = "0.3 1.4 0.7"; 	
 	meleetrailangle = "0 -67 0";
@@ -66,7 +65,6 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 	if(%bool) switch(%triggerNum)
 	{
 		case 0:	%obj.KillerMelee(%this,4.25);
-				%obj.spawnKillerTrail("base", "0.3 1.4 0.7", "0 -67 0", "4 4 1");
 				return;
 				
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
