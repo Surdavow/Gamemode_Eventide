@@ -150,15 +150,14 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 }
 
 function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
-{	
-	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
-	
+{		
 	if(%bool)
 	switch(%triggerNum)
 	{
 		case 0:
 				%obj.KillerMelee(%this,4.25);
 				%obj.spawnKillerTrail("baseClaw", "0.3 1.4 0.7", "0 45 0", "4 4 3");
+				return;
 			
 		case 4: if(!%obj.isInvisible)
 				{		
@@ -171,6 +170,7 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 					%this.reappear(%obj,0);
 				}
 	}
+	Parent::onTrigger(%this,%obj,%triggerNum,%bool);	
 }
 
 function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
