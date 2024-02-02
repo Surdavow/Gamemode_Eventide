@@ -378,6 +378,7 @@ datablock ExplosionData(KillerRoughHitExplosion : KillerSharpHitExplosion)
 	//------------//
 
 	emitter[0] = KillerBloodSplatterEmitter;
+	emitter[1] = KillerBloodDropletEmitter;
 };
 datablock ProjectileData(KillerRoughHitProjectile : KillerSharpHitProjectile)
 {
@@ -616,6 +617,8 @@ datablock ExplosionData(KillerAxeClankExplosion)
 	emitter[0] = KillerAxeClankDustEmitter;
 	emitter[1] = KillerAxeClankSprayEmitter;
 	emitter[2] = KillerAxeClankChunkEmitter;
+	emitter[3] = KillerBloodSprayEmitter;
+	emitter[4] = KillerBloodDropletEmitter;
 	
 	//-------------//
 	// Properties: //
@@ -810,6 +813,8 @@ datablock ExplosionData(KillerMacheteClankExplosion)
 	emitter[0] = KillerMacheteClankSprayEmitter;
 	emitter[1] = KillerMacheteClankChunkEmitter;
 	emitter[2] = KillerMacheteClankSparkEmitter;
+	emitter[3] = KillerBloodSprayEmitter;
+	emitter[4] = KillerBloodDropletEmitter;
 	
 	//-------------//
 	// Properties: //
@@ -943,6 +948,8 @@ datablock ExplosionData(KillerKatanaClankExplosion)
 	emitter[0] = KillerKatanaClankSprayEmitter;
 	emitter[1] = KillerKatanaClankChunkEmitter;
 	emitter[2] = KillerMacheteClankSparkEmitter;
+	emitter[3] = KillerBloodSprayEmitter;
+	emitter[4] = KillerBloodDropletEmitter;
 	
 	//-------------//
 	// Properties: //
