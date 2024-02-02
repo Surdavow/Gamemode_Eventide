@@ -148,14 +148,13 @@ function PlayerAngler::onImpact(%this, %obj, %col, %vec, %force)
 }
 
 function PlayerAngler::onTrigger(%this, %obj, %trig, %press) 
-{
-	Parent::onTrigger(%this, %obj, %trig, %press);
-	
+{		
 	if(%press) switch(%trig)
 	{
 		case 0:
 				%obj.KillerMelee(%this,4);
 				%obj.spawnKillerTrail("ragged", "0.3 1.4 0.7", "0 0 0", "4 4 2");
+				return;
 			
 		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy/2)
 				{
@@ -186,7 +185,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 					}								
 				}
 	}
-	
+	Parent::onTrigger(%this, %obj, %trig, %press);	
 }
 
 function PlayerAngler::onPeggFootstep(%this,%obj)
