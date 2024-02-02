@@ -54,10 +54,10 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				continue;
 			}
 
-			if(%dot < 0.5 || ContainerSearchCurrRadiusDist() > 4) continue;
+			if(%dot < 0.5 || vectorDist(%obj.getposition(),%hit.getposition()) > %radius) continue;
 
 			if(minigameCanDamage(%obj,%hit) == true)								
-			{										
+			{
 				switch$(%obj.getdataBlock().getName())
 				{
 					case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
