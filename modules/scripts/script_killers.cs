@@ -35,11 +35,11 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
 
-			if(%hit == %obj || ContainerSearchCurrRadiusDist() > %radius || %dot < 0.6) continue;
+			if(%hit == %obj) continue;
 
 			if(isObject(%obscure))
 			{
-				if(%dataBlock.hitobscureprojectile !$= "")
+				if(%dataBlock.hitobscureprojectile !$= "" && %dot > 0.75)
 				{
 					%c = new Projectile()
 					{
@@ -53,6 +53,8 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				}
 				continue;
 			}
+
+			if(%dot < 0.5) continue;
 		}
 	}
 }
