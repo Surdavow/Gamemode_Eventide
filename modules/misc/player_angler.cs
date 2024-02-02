@@ -40,6 +40,9 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 
 	killermeleesound = "angler_melee";
 	killermeleesoundamount = 3;
+	
+	killerweaponsound = "angler_weapon";
+	killerweaponsoundamount = 5;
 
 	killermeleehitsound = "skullwolf_hit";
 	killermeleehitsoundamount = 3;	

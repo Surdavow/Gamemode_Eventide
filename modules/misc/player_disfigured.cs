@@ -22,7 +22,10 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	killerchasesoundamount = 5;
 
 	killermeleesound = "disfigured_attack";
-	killermeleesoundamount = 3;	
+	killermeleesoundamount = 3;
+	
+	killerweaponsound = "disfigured_weapon";
+	killerweaponsoundamount = 4;	
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
