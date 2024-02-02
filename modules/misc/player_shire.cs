@@ -5,8 +5,13 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerSpawnMessage = "A hooded figure channels a blinding wrath.";
 	
 	// Weapon: Axe
-	killerHitProjectile = KillerSharpHitProjectile;
-	killerObscureProjectile = KillerAxeClankProjectile;
+	hitprojectile = KillerSharpHitProjectile;
+	hitobscureprojectile = KillerAxeClankProjectile;
+	
+	meleetrailskin = "base";
+	meleetrailoffset = "0.3 1.4 0.7"; 	
+	meleetrailangle = "0 -67 0";
+	meleetrailscale = "4 4 2";	
 
 	killerChaseLvl1Music = "musicData_OUT_ShireNear";
 	killerChaseLvl2Music = "musicData_OUT_ShireChase";
@@ -75,12 +80,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 		
 	switch(%trig)
 	{
-		case 0:
-				if(%press)
-				{
-					%obj.KillerMelee(%this,4.5);
-					%obj.spawnKillerTrail("base", "0.3 1.4 0.7", "0 -67 0", "4 4 2");
-				}
+		case 0: if(%press) %obj.KillerMelee(%this,4.5);
 
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				if(%press)

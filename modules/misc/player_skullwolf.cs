@@ -31,6 +31,7 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 
 	// Weapon: Claws
 	hitprojectile = KillerRoughHitProjectile;
+	hitobscureprojectile = "";
 	meleetrailskin = "baseClaw";
 	meleetrailoffset = "0.3 1.4 0.7"; 	
 	meleetrailangle = "0 45 0";

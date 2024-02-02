@@ -123,9 +123,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
 						%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
-						%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);
-						
-						// %hit.spawnExplosion(pushBroomProjectile,"2 2 2");
+						%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);					
 
 						if(%datablock.hitprojectile !$= "")
 						{
@@ -152,11 +150,11 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 					%wallPosition = getWords(%obscure, 1, 3);
 					%wallNormal = getWords(%obscure, 4, 6);
 					
-					if(%datablock.killerObscureProjectile !$= "")
+					if(%datablock.hitobscureprojectile !$= "")
 					{
 						%effect = new Projectile()
 						{
-							dataBlock = %datablock.killerObscureProjectile;
+							dataBlock = %datablock.hitobscureprojectile;
 							initialPosition = %wallPosition;
 							initialVelocity = %wallNormal;
 							scale = %obj.getScale();

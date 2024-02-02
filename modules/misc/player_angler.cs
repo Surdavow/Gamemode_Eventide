@@ -19,8 +19,12 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	crouchBoundingBox = "4.5 4.5 3.6";
 
 	// Weapon: Hook
-	killerHitProjectile = KillerRoughHitProjectile;
-	killerObscureProjectile = KillerMacheteClankProjectile;
+	hitprojectile = KillerRoughHitProjectile;
+	hitobscureprojectile = KillerMacheteClankProjectile;
+	meleetrailskin = "ragged";
+	meleetrailoffset = "0.3 1.4 0.7"; 	
+	meleetrailangle = "0 0 0";
+	meleetrailscale = "4 4 2";
 
 	killerraisearms = false;
 	killerlight = "NoFlareBLight";	
@@ -151,9 +155,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 {		
 	if(%press) switch(%trig)
 	{
-		case 0:
-				%obj.KillerMelee(%this,4);
-				%obj.spawnKillerTrail("ragged", "0.3 1.4 0.7", "0 0 0", "4 4 2");
+		case 0: %obj.KillerMelee(%this,4);				
 				return;
 			
 		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy/2)

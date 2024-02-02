@@ -4,7 +4,12 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 
 	// Weapon: Shovel...?
 	killerSpawnMessage = "...";
-	killerHitProjectile = KillerHitProjectile;
+	hitprojectile = KillerRoughHitProjectile;
+	hitobscureprojectile = "";
+	meleetrailskin = "base";
+	meleetrailoffset = "0.3 1.4 0.7"; 	
+	meleetrailangle = "0 45 0";
+	meleetrailscale = "4 4 3";
 
 	killerChaseLvl1Music = "musicData_OUT_GenocideNear";
 	killerChaseLvl2Music = "musicData_OUT_GenocideChase";

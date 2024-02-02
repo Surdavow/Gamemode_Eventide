@@ -5,8 +5,12 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	killerSpawnMessage = "...";
 	
 	// Weapon: Claws
-	killerHitProjectile = KillerRoughHitProjectile;
-	// killerObscureProjectile = ;
+	hitprojectile = KillerRoughHitProjectile;
+	hitobscureprojectile = "";
+	meleetrailskin = "roughClaws";
+	meleetrailoffset = "0.3 1.4 0.7"; 	
+	meleetrailangle = "0 45 0";
+	meleetrailscale = "4 4 2";
 
 	killerChaseLvl1Music = "musicData_OUT_DisfiguredNear";
 	killerChaseLvl2Music = "musicData_OUT_DisfiguredChase";
@@ -42,12 +46,7 @@ function PlayerDisfigured::onTrigger(%this, %obj, %trig, %press)
 		
 	switch(%trig)
 	{
-		case 0:
-				if(%press)
-				{
-					%obj.KillerMelee(%this,4);
-					%obj.spawnKillerTrail("roughClaws", "0.3 1.4 0.7", "0 45 0", "4 4 2");
-				}	
+		case 0: if(%press) %obj.KillerMelee(%this,4);
 	}
 }
 

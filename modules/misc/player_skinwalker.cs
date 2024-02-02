@@ -22,7 +22,12 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	
 	// Weapon: Claws
 	killerHitProjectile = KillerRoughHitProjectile;
-	// killerObscureProjectile = ;
+	hitobscureprojectile = "";
+	
+	meleetrailskin = "raggedClaw";
+	meleetrailoffset = "0.3 1.4 0.7"; 	
+	meleetrailangle = "0 45 0";
+	meleetrailscale = "4 4 3";	
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
@@ -100,8 +105,7 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 {		
 	if(%press) switch(%trig)
 	{
-		case 0: %obj.KillerMelee(%this,4);
-				%obj.spawnKillerTrail("raggedClaw", "0.3 1.4 0.7", "0 45 0", "4 4 3");
+		case 0: %obj.KillerMelee(%this,4);				
 				return;
 			
 		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule)) 

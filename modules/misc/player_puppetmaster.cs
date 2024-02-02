@@ -9,8 +9,13 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
     shapeFile = PuppetMasterDTS.baseShape;
 	
 	// Weapon: Katana
-	killerHitProjectile = KillerSharpHitProjectile;
-	killerObscureProjectile = KillerKatanaClankProjectile;
+	hitprojectile = KillerSharpHitProjectile;
+	hitobscureprojectile = KillerKatanaClankProjectile;
+	
+	meleetrailskin = "base";
+	meleetrailoffset = "0.3 1.4 0.7"; 	
+	meleetrailangle = "0 -67 0";
+	meleetrailscale = "4 4 2";		
 
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";	
