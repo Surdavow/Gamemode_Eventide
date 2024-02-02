@@ -127,7 +127,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 						
 						// %hit.spawnExplosion(pushBroomProjectile,"2 2 2");
 
-						if(%datablock.killerhitprojectile !$= "")
+						if(%datablock.projectile !$= "")
 						{
 							%effect = new Projectile()
 							{

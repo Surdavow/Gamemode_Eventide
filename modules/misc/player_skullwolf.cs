@@ -30,9 +30,9 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	killermeleehitsoundamount = 3;
 
 	// Weapon: Claws
-	killerhitprojectile = KillerRoughHitProjectile;
+	hitprojectile = KillerRoughHitProjectile;
 	meleetrailskin = "baseClaw";
-	meleetrailoffset "0.3 1.4 0.7"; 	
+	meleetrailoffset = "0.3 1.4 0.7"; 	
 	meleetrailangle = "0 45 0";
 	meleetrailscale = "4 4 3";
 	
