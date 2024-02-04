@@ -20,6 +20,7 @@ function KillerSpawnMessage(%obj)
 
 function Player::KillerMelee(%obj,%datablock,%radius)
 {	
+	trace(1);
 	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
 		%obj.lastclawed = getSimTime();							
@@ -32,33 +33,32 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
 		while(%hit = containerSearchNext())
 		{
-			if(%hit == %obj || %hit == %obj.effectbot) continue;
+			if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius) continue;
 
-			//%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			//%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));				
-//
-			//if(isObject(%obscure))
-			//{								
-			//	if(%dataBlock.hitobscureprojectile !$= "" && %dot > 0.85 && isObject(%obscure))
-			//	{
-			//		%c = new Projectile()
-			//		{
-			//			dataBlock = %datablock.hitobscureprojectile;
-			//			initialPosition = posfromraycast(%obscure);
-			//			sourceObject = %obj;
-			//			client = %obj.client;
-			//		};
-			//		MissionCleanup.add(%c);
-			//		%c.explode();
-			//	}
-			//	return;
-			//}
+			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));				
 
-			//if(%dot < 0.5) continue;			
+			if(isObject(%obscure))
+			{								
+				if(%dataBlock.hitobscureprojectile !$= "" && %dot > 0.85 && isObject(%obscure))
+				{
+					%c = new Projectile()
+					{
+						dataBlock = %datablock.hitobscureprojectile;
+						initialPosition = posfromraycast(%obscure);
+						sourceObject = %obj;
+						client = %obj.client;
+					};
+					MissionCleanup.add(%c);
+					%c.explode();
+				}
+				return;
+			}
+
+			if(%dot < 0.6) continue;			
 
 			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
 			{
-				talk(%hit);
 				switch$(%obj.getdataBlock().getName())
 				{
 					case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
@@ -144,6 +144,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 			}			
 		}
 	}
+	trace(0);
 }
 
 function Player::onKillerLoop(%obj)
