@@ -20,7 +20,6 @@ function KillerSpawnMessage(%obj)
 
 function Player::KillerMelee(%obj,%datablock,%radius)
 {	
-	trace(1);
 	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
 		%obj.lastclawed = getSimTime();							
@@ -57,7 +56,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 			if(%dot < 0.6) continue;			
 
-			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
+			if((%hit.getType() && $TypeMasks::PlayerObjectType))								
 			{
 				switch$(%obj.getdataBlock().getName())
 				{
@@ -144,7 +143,6 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 			}			
 		}
 	}
-	trace(0);
 }
 
 function Player::onKillerLoop(%obj)
