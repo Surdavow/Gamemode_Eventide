@@ -56,7 +56,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 			if(%dot < 0.6) continue;			
 
-			if((%hit.getType() && $TypeMasks::PlayerObjectType))								
+			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
 			{
 				switch$(%obj.getdataBlock().getName())
 				{
