@@ -34,27 +34,25 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		{
 			if(%hit == %obj || %hit == %obj.effectbot) continue;
 
-			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));				
-
-			if(isObject(%obscure))
-			{								
-				if(%dataBlock.hitobscureprojectile !$= "" && %dot > 0.85 && isObject(%obscure))
-				{
-					%c = new Projectile()
-					{
-						dataBlock = %datablock.hitobscureprojectile;
-						initialPosition = posfromraycast(%obscure);
-						sourceObject = %obj;
-						client = %obj.client;
-					};
-					MissionCleanup.add(%c);
-					%c.explode();
-				}
-				return;
-			}
-
-			//talk(%hit.getClassName() SPC %dot);
+			//%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			//%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));				
+//
+			//if(isObject(%obscure))
+			//{								
+			//	if(%dataBlock.hitobscureprojectile !$= "" && %dot > 0.85 && isObject(%obscure))
+			//	{
+			//		%c = new Projectile()
+			//		{
+			//			dataBlock = %datablock.hitobscureprojectile;
+			//			initialPosition = posfromraycast(%obscure);
+			//			sourceObject = %obj;
+			//			client = %obj.client;
+			//		};
+			//		MissionCleanup.add(%c);
+			//		%c.explode();
+			//	}
+			//	return;
+			//}
 
 			//if(%dot < 0.5) continue;			
 
