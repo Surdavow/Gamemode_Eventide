@@ -29,13 +29,15 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		if(%datablock.killermeleesound !$= "") serverPlay3D(%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound",%obj.getWorldBoxCenter());				
 		if(%datablock.killerweaponsound !$= "")serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
 
-		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType);		
+		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
 		while(%hit = containerSearchNext())
 		{
 			if(%hit == %obj || %hit == %obj.effectbot || vectorDist(%obj.getEyePoint(),%hit.getWorldBoxCenter()) > %radius) continue;
 
 			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getEyePoint(),%obj.getWorldBoxCenter())));						
+			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));
+
+			talk(%hit.getClassName());			
 
 			if(isObject(%obscure))
 			{								
@@ -54,9 +56,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				return;
 			}
 
-			if(%dot < 0.5) continue;
-
-			talk(%hit);
+			if(%dot < 0.5) continue;			
 
 			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
 			{
