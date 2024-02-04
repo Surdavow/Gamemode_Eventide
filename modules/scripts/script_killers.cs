@@ -54,9 +54,9 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				return;
 			}
 
-			talk(%hit.getClassName() SPC %dot);
+			//talk(%hit.getClassName() SPC %dot);
 
-			if(%dot < 0.5) continue;			
+			//if(%dot < 0.5) continue;			
 
 			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
 			{
