@@ -32,12 +32,10 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
 		while(%hit = containerSearchNext())
 		{
-			if(%hit == %obj || %hit == %obj.effectbot) continue;
+			if(%hit == %obj || %hit == %obj.effectbot || vectorDist(%obj.getEyePoint(),%hit.getWorldBoxCenter()) > %radius) continue;
 
 			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));
-
-			talk(%hit.getClassName());			
+			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));				
 
 			if(isObject(%obscure))
 			{								
@@ -55,6 +53,8 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				}
 				return;
 			}
+
+			talk(%hit.getClassName() SPC %dot);
 
 			if(%dot < 0.5) continue;			
 
