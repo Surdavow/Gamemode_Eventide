@@ -58,6 +58,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
 			{
+				talk(%hit);
 				switch$(%obj.getdataBlock().getName())
 				{
 					case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
