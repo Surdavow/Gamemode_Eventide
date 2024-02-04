@@ -32,14 +32,14 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType | $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType);		
 		while(%hit = containerSearchNext())
 		{
-			if(%hit == %obj || vectorDist(%obj.getposition(),%hit.getposition()) > %radius) continue;
+			if(%hit == %obj || %hit == %obj.effectbot || vectorDist(%obj.getposition(),%hit.getposition()) > %radius) continue;
 
-			%obscure = containerRayCast(%obj.getMuzzlePoint(0),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-			%dot = vectorDot(%obj.getMuzzleVector(0),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));			
+			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));						
 
 			if(isObject(%obscure))
-			{
-				if(%dataBlock.hitobscureprojectile !$= "" && %dot > 0.75)
+			{								
+				if(%dataBlock.hitobscureprojectile !$= "" && %dot > 0.85 && isObject(%obscure))
 				{
 					%c = new Projectile()
 					{
@@ -51,12 +51,14 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 					MissionCleanup.add(%c);
 					%c.explode();
 				}
-				continue;
+				return;
 			}
 
 			if(%dot < 0.5) continue;
 
-			if(minigameCanDamage(%obj,%hit) == true)								
+			talk(%hit);
+
+			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
 			{
 				switch$(%obj.getdataBlock().getName())
 				{
