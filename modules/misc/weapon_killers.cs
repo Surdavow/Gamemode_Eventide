@@ -1,7 +1,7 @@
 datablock ShapeBaseImageData(meleeTantoImage)
 {
    	// Basic Item properties
-   	shapeFile = "./models/tanto.dts";
+   	shapeFile = "./models/Katana.dts";
    	emap = true;
    	mountPoint = 0;
    	offset = "0 0 0";
@@ -88,12 +88,12 @@ datablock ShapeBaseImageData(meleePuppetMasterDaggerImage : meleeTantoImage)
 
 datablock ShapeBaseImageData(meleeAxeImage : meleeTantoImage)
 {
-   shapeFile = "./models/axe.dts";
+   shapeFile = "./models/Huntress Axe Temp.dts";
 };
 
 datablock ShapeBaseImageData(meleeAxeLImage : meleeTantoImage)
 {
-   shapeFile = "./models/axe2.dts";
+   shapeFile = "./models/Huntress Axe Temp.dts";
    mountPoint = 1;
 };
 
