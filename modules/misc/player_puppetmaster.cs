@@ -1,6 +1,7 @@
 datablock TSShapeConstructor(PuppetMasterDTS) {
 	baseShape = "./models/puppetmaster.dts";
 	sequence0 = "./models/puppetmaster.dsq";
+	sequence1 = "./models/puppetmaster_melee.dsq";
 };
 
 datablock PlayerData(PlayerPuppetMaster : PlayerRenowned) 
@@ -13,7 +14,8 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	hitobscureprojectile = KillerKatanaClankProjectile;	
 	meleetrailskin = "base";
 	meleetrailoffset = "0.3 1.4 0.7"; 	
-	meleetrailangle = "0 -90 0";
+	meleetrailangle1 = "0 90 0";
+	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 2";		
 
 	killerraisearms = false;

@@ -2,6 +2,7 @@ datablock TSShapeConstructor(SkinwalkerDTS)
 {
     baseShape  = "./models/skinwalker.dts";
     sequence0  = "./models/skinwalker.dsq";
+    sequence1  = "./models/skinwalker_melee.dsq";
 };
 
 datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
@@ -26,7 +27,8 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	
 	meleetrailskin = "raggedClaw";
 	meleetrailoffset = "0.9 1.4 0.7"; 	
-	meleetrailangle = "0 -90 15";
+	meleetrailangle1 = "0 90 0";
+	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 3";	
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";

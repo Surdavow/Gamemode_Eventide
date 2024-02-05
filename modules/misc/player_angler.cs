@@ -1,6 +1,7 @@
 datablock TSShapeConstructor(AnglerDTS) {
 	baseShape = "./models/angler.dts";
 	sequence0 = "./models/angler.dsq";
+	sequence1 = "./models/angler_melee.dsq";
 };
 
 datablock PlayerData(PlayerAngler : PlayerRenowned) 
@@ -23,7 +24,8 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	hitobscureprojectile = KillerMacheteClankProjectile;
 	meleetrailskin = "ragged";
 	meleetrailoffset = "0.3 1.4 0.7"; 	
-	meleetrailangle = "0 -180 0";
+	meleetrailangle1 = "0 90 0";
+	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 2";
 
 	killerraisearms = false;

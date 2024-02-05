@@ -9,7 +9,8 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	hitobscureprojectile = "";
 	meleetrailskin = "ragged";
 	meleetrailoffset = "0.3 1.4 0.7"; 	
-	meleetrailangle = "0 90 0";
+	meleetrailangle1 = "0 90 0";
+	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 2";
 
 	killerChaseLvl1Music = "musicData_OUT_DisfiguredNear";

@@ -10,7 +10,8 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	
 	meleetrailskin = "base";
 	meleetrailoffset = "0.6 1.4 0.7"; 	
-	meleetrailangle = "0 -90 10";
+	meleetrailangle1 = "0 90 0";
+	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 2";	
 
 	killerChaseLvl1Music = "musicData_OUT_ShireNear";
