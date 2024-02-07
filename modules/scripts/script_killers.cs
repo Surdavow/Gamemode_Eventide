@@ -20,21 +20,25 @@ function KillerSpawnMessage(%obj)
 
 function Player::KillerMelee(%obj,%datablock,%radius)
 {	
-	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
+	if(!%obj.isInvisible && %obj.lastclawed+750 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
 		%obj.lastclawed = getSimTime();							
-		%meleeAnim = getRandom(1,2);
-		
+				
+		if(%datablock.shapeFile $= EventideplayerDts.baseShape) %meleeAnim = getRandom(1,4);
+		else %meleeAnim = getRandom(1,2);
+
 		switch(%meleeAnim)
 		{
 			case 1: %meleetrailangle = %datablock.meleetrailangle1;
 			case 2: %meleetrailangle = %datablock.meleetrailangle2;
+			case 3: %meleetrailangle = %datablock.meleetrailangle3;
+			case 4: %meleetrailangle = %datablock.meleetrailangle4;
 		}
-		%obj.playthread(2,"melee" @ %meleeAnim);
-		
+				
 		if(%datablock.meleetrailskin !$= "") %obj.spawnKillerTrail(%datablock.meleetrailskin,%datablock.meleetrailoffset,%meleetrailangle,%datablock.meleetrailscale);		
 		if(%datablock.killermeleesound !$= "") serverPlay3D(%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound",%obj.getWorldBoxCenter());				
 		if(%datablock.killerweaponsound !$= "")serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
+		%obj.playthread(2,"melee" @ %meleeAnim);
 
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
 		while(%hit = containerSearchNext())

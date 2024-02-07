@@ -11,6 +11,8 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	meleetrailoffset = "0.3 1.4 0.7"; 	
 	meleetrailangle1 = "0 90 0";
 	meleetrailangle2 = "0 -90 0";
+	meleetrailangle3 = "0 0 0";
+	meleetrailangle4 = "180 0 0";
 	meleetrailscale = "4 4 2";		
 
 	rechargeRate = 0.26;

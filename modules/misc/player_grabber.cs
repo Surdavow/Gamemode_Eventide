@@ -6,11 +6,7 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = KillerMacheteClankProjectile;
-	meleetrailskin = "ragged";
-	meleetrailoffset = "0.3 1.4 0.7"; 	
-	meleetrailangle1 = "0 90 0";
-	meleetrailangle2 = "0 -90 0";
-	meleetrailscale = "4 4 2";	
+	meleetrailskin = "ragged";	
 
 	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
 	killerChaseLvl2Music = "musicData_OUT_GrabberChase";

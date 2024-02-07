@@ -8,11 +8,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	hitprojectile = KillerSharpHitProjectile;
 	hitobscureprojectile = KillerAxeClankProjectile;
 	
-	meleetrailskin = "base";
-	meleetrailoffset = "0.6 1.4 0.7"; 	
-	meleetrailangle1 = "0 90 0";
-	meleetrailangle2 = "0 -90 0";
-	meleetrailscale = "4 4 2";	
+	meleetrailoffset = "0.6 1.4 0.7";
 
 	killerChaseLvl1Music = "musicData_OUT_ShireNear";
 	killerChaseLvl2Music = "musicData_OUT_ShireChase";

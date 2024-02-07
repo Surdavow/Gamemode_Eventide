@@ -9,10 +9,6 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	hitobscureprojectile = KillerAxeClankProjectile;
 	
 	meleetrailskin = "base";
-	meleetrailoffset = "0.3 1.4 0.7"; 	
-	meleetrailangle1 = "0 90 0";
-	meleetrailangle2 = "0 -90 0";
-	meleetrailscale = "4 4 2";	
 
 	killerChaseLvl1Music = "musicData_OUT_HuntressNear";
 	killerChaseLvl2Music = "musicData_OUT_HuntressChase";
