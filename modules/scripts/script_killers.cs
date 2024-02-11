@@ -20,7 +20,7 @@ function KillerSpawnMessage(%obj)
 
 function Player::KillerMelee(%obj,%datablock,%radius)
 {	
-	if(!%obj.isInvisible && %obj.lastclawed+750 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
+	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
 		%obj.lastclawed = getSimTime();	
 		%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);						
@@ -149,8 +149,8 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 					%effect.explode();
 				}
 
-				%obj.setTempSpeed(0.5);
-				%obj.schedule(2000,setTempSpeed,1);					
+				%obj.setTempSpeed(0.5);	
+				%obj.schedule(2000,setTempSpeed,1);
 			}			
 		}
 	}
