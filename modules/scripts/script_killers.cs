@@ -22,7 +22,8 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 {	
 	if(!%obj.isInvisible && %obj.lastclawed+750 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
 	{
-		%obj.lastclawed = getSimTime();							
+		%obj.lastclawed = getSimTime();	
+		%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);						
 				
 		if(%datablock.shapeFile $= EventideplayerDts.baseShape) %meleeAnim = getRandom(1,4);
 		else %meleeAnim = getRandom(1,2);
@@ -129,8 +130,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 					%obj.stopaudio(3);
 					%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
 				}						
-
-				%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);
+				
 				%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
 				%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);					
 
