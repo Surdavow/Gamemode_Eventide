@@ -40,8 +40,8 @@ function MiniGameSO::randomizeEventideItems(%minigame)
                                 case 4: %brick.setItem("sm_poolCueItem");
                                 case 5: %brick.setItem("sm_chairItem");                                
                                 case 6: %brick.setItem("FlareGunItem");
-								case 7: %brick.setItem("mine_bearItem");
-								case 8: %brick.setItem("grenade_flashbangItem");
+								case 7: %brick.setItem("None");
+								case 8: %brick.setItem("DCamera");
                                 case 9: %brick.setItem("StunGun");
                                 default:
                             }

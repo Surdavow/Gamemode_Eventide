@@ -11,7 +11,7 @@ datablock ItemData(DCamera)
 	friction = 0.6;
 	emap = false;
 	
-	uiName = "DCamera";
+	uiName = "Camera";
 	iconName = "";
 	doColorShift = false;
 	
@@ -34,21 +34,57 @@ datablock ShapeBaseImageData(DCameraImage)
 	armReady = true;
 	doColorShift = false;
 	
-	stateName[0]					= "Activate";
-	//stateSound[0]					= weaponSwitchSound;
-	stateTimeoutValue[0]			= 0.15;
-	stateSequence[0]				= "Ready";
-	stateTransitionOnTimeout[0]		= "Ready";
+	stateName[0]                     = "Equip";
+    stateTimeoutValue[0]             = 0;
+    stateTransitionOnTriggerDown[0] = "Initiate";
+    stateSound[0]					= weaponSwitchSound;
 
-	stateName[1]					= "Ready";
-	stateAllowImageChange[1]		= true; //false?
-	stateScript[1]					= "onReady";
-	stateTransitionOnTriggerDown[1]	= "Use";
-	
-	stateName[2]					= "Use";
-	stateScript[2]					= "onUse";
-	stateTransitionOnTriggerUp[2]	= "Ready";
+    stateName[1]                = "Initiate";    
+    stateTimeoutValue[1]        = 0;
+    stateTransitionOnTimeout[1] = "Wait";
+    stateScript[1]              = "onInitiate";
+
+    stateName[2]                = "Wait";    
+    stateTimeoutValue[2]        = 0.1;
+    stateTransitionOnTimeout[2] = "Detonate";
+
+    stateName[3]                = "Detonate";    
+    stateTimeoutValue[3]        = 0;
+    stateScript[3]              = "onDetonate";
 };
+
+function DCameraImage::onInitiate(%this, %obj, %slot)
+{
+    %obj.playthread(2,"shiftRight");
+}
+
+function DCameraImage::onDetonate(%this, %obj, %slot)
+{
+	serverPlay3D("camera_flash_sound",%obj.getPosition());
+
+    for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
+	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
+
+    if(isObject(%obj.client))
+    {
+        %obj.tool[%itemslot] = 0;
+        messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
+    }
+    if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);     
+
+    for(%i = 0; %i < clientgroup.getCount(); %i++)//Can't use container radius search anymore :(
+    {        
+        if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
+        {    
+            if(%nearbyplayer.getClassName() !$= "Player" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 15) 
+            continue;         
+
+            if(%nearbyplayer == %obj) continue;
+
+            if(%nearbyplayer.getDataBlock().isKiller) %nearbyplayer.setwhiteout(15);                        
+        }
+    }      
+}
 
 function DCameraImage::onMount(%this,%obj,%slot)
 {
@@ -61,3 +97,4 @@ function DCameraImage::onUnMount(%this,%obj,%slot)
 	%pl = %obj;
 	%pl.playThread(0,"root");
 }
+

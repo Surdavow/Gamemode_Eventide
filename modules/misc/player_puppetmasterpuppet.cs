@@ -25,7 +25,7 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 	maxBackwardSpeed = 7.46;
 	maxSideSpeed = 11.20;
 	maxDamage = 10;
-	jumpforce = 12 * 85;
+	jumpforce = 0;
 };
 
 function PuppetMasterPuppet::onNewDatablock(%this,%obj)
