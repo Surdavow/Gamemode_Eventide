@@ -1,9 +1,9 @@
-datablock ItemData(Camera)
+datablock ItemData(DCamera)
 {
 	//category = "Item"; //Weapon?
 	//className = "Item"; //Weapon?
 	
-	shapeFile = "./models/Camera/Camera.dts";
+	shapeFile = "./models/DCamera/DCamera.dts";
 	rotate = false;
 	mass = 1;
 	density = 0.2;
@@ -11,17 +11,17 @@ datablock ItemData(Camera)
 	friction = 0.6;
 	emap = false;
 	
-	uiName = "Camera";
+	uiName = "DCamera";
 	iconName = "";
 	doColorShift = false;
 	
-	image = CameraImage;
+	image = DCameraImage;
 	canDrop = true;
 };
 
-datablock ShapeBaseImageData(CameraImage)
+datablock ShapeBaseImageData(DCameraImage)
 {
-	shapeFile = "./models/Camera/Camera.dts";
+	shapeFile = "./models/DCamera/DCamera.dts";
 	emap = false;
 	mountPoint = 0;
 	offset = "0.0 0.0 0.0";
@@ -29,7 +29,7 @@ datablock ShapeBaseImageData(CameraImage)
 	rotation = eulerToMatrix("0 0 0");
 	
 	className = "WeaponImage";
-	item = Camera;
+	item = DCamera;
 	
 	armReady = true;
 	doColorShift = false;
@@ -50,13 +50,13 @@ datablock ShapeBaseImageData(CameraImage)
 	stateTransitionOnTriggerUp[2]	= "Ready";
 };
 
-function CameraImage::onMount(%this,%obj,%slot)
+function DCameraImage::onMount(%this,%obj,%slot)
 {
 	%pl = %obj;
 	%pl.playThread(0,"armReady");
 }
 
-function CameraImage::onUnMount(%this,%obj,%slot)
+function DCameraImage::onUnMount(%this,%obj,%slot)
 {
 	%pl = %obj;
 	%pl.playThread(0,"root");
