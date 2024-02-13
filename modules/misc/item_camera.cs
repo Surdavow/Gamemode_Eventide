@@ -19,6 +19,29 @@ datablock ItemData(DCamera)
 	canDrop = true;
 };
 
+datablock ExplosionData(DCameraExplosion)
+{
+   explosionShape = "Add-Ons/Weapon_Rocket_Launcher/explosionSphere1.dts";
+   lifeTimeMS = 150;
+
+   explosionScale = "1 1 1";
+
+   // Dynamic light
+   lightStartRadius = 0;
+   lightEndRadius = 1;
+   lightStartColor = "1 1 1";
+   lightEndColor = "0 0 0";
+
+   //impulse
+   impulseRadius = 0;
+   impulseForce = 0;
+
+   damageRadius = 0;
+   radiusDamage = 0;
+
+   uiName = "DCamera";
+};
+
 datablock ShapeBaseImageData(DCameraImage)
 {
 	shapeFile = "./models/DCamera/DCamera.dts";
@@ -49,6 +72,7 @@ datablock ShapeBaseImageData(DCameraImage)
     stateTransitionOnTimeout[2] = "Detonate";
 
     stateName[3]                = "Detonate";    
+	stateExplosion[3]			= DCameraExplosion;
     stateTimeoutValue[3]        = 0;
     stateScript[3]              = "onDetonate";
 };

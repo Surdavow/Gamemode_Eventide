@@ -208,7 +208,7 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			%victim.setHealth(25);			
 			%victim.setDatablock("EventidePlayer");			
 			%victim.playthread(0,"root");
-			if(%victim.downedamount >= 2) %victim.getdataBlock().PulsingScreen(%victim);
+			if(%victim.downedamount >= 1) %victim.getdataBlock().PulsingScreen(%victim);
 			return;
 		}					
 	}
@@ -362,7 +362,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {			
-	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 2)
+	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
     {        
         %obj.setDatablock("EventidePlayerDowned");
         %obj.setHealth(100);
