@@ -71,7 +71,14 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 {
 	if(!isObject(%obj) || isEventPending(%obj.reappearsched)) return;
 
-	if(%alpha == 1) %obj.playaudio(1,"skullwolf_cloak_sound");
+	if(%alpha == 1)
+	{
+		%obj.playaudio(1,"skullwolf_cloak_sound");
+		if(isObject(%obj.light))
+		{
+			%obj.light.delete();
+		}
+	}
 	
 	%alpha = mClampF(%alpha-0.025,0,1);
 
@@ -146,6 +153,17 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 	{
 		%obj.setTempSpeed(1);
 		%obj.unHideNode("ALL");
+		if(!isObject(%obj.light))
+		{
+			%obj.light = new fxLight ("")
+			{
+				dataBlock = %obj.getDataBlock().killerlight;
+			};
+			MissionCleanup.add (%obj.light);
+			%obj.light.setTransform(%obj.getTransform ());
+			%obj.light.attachToObject(%obj);
+			%obj.light.Player = %obj;
+		}
 		return;
 	}
 
