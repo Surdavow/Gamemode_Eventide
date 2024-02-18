@@ -30,7 +30,7 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 
 function PuppetMasterPuppet::onNewDatablock(%this,%obj)
 {
-	%obj.setScale("0.6 0.6 0.6");
+	%obj.setScale("0.65 0.65 0.65");
 	%this.EventideAppearance(%obj,ClientGroup.getObject(getRandom(0,ClientGroup.getCount()-1)));
 }
 
