@@ -46,26 +46,26 @@ AddDamageType("BrokenBottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/ico
 AddDamageType("Chair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_chair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_chair> %1',1,1);
 AddDamageType("FoldingChair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_foldingChair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_foldingChair> %1',1,1);
 
-addExtraResource("./icons/hicolor_blind.png");
-addExtraResource("./icons/hicolor_consume.png");
-addExtraResource("./icons/hicolor_grab.png");
-addExtraResource("./icons/hicolor_headache.png");
-addExtraResource("./icons/hicolor_meathook.png");
-addExtraResource("./icons/hicolor_puppet.png");
-addExtraResource("./icons/hicolor_puppetcontrol.png");
-addExtraResource("./icons/hicolor_skinwalker_disguise.png");
-addExtraResource("./icons/hicolor_skinwalker_reveal.png");
-addExtraResource("./icons/hicolor_vanish.png");
-addExtraResource("./icons/locolor_blind.png");
-addExtraResource("./icons/locolor_consume.png");
-addExtraResource("./icons/locolor_grab.png");
-addExtraResource("./icons/locolor_headache.png");
-addExtraResource("./icons/locolor_meathook.png");
-addExtraResource("./icons/locolor_puppet.png");
-addExtraResource("./icons/locolor_puppetcontrol.png");
-addExtraResource("./icons/locolor_skinwalker_disguise.png");
-addExtraResource("./icons/locolor_skinwalker_reveal.png");
-addExtraResource("./icons/locolor_vanish.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_blind.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_consume.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_grab.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_headache.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_meathook.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_puppet.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_puppetcontrol.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_skinwalker_disguise.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_skinwalker_reveal.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_vanish.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_blind.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_consume.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_grab.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_headache.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_meathook.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_puppet.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_puppetcontrol.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_skinwalker_disguise.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_skinwalker_reveal.png");
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_vanish.png");
 
 if(isFile(%faceiflpath = "./models/face.ifl"))//Faces
 {
