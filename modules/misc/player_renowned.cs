@@ -31,6 +31,9 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	showenergybar = true;
 	jumpForce = 0;
 
+	rightclickicon = "color_headache";
+	leftclickicon = "color_meathook";
+
 	isKiller = true;
 	killerraisearms = false;
 	killerlight = "NoFlareYLight";	

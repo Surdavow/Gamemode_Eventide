@@ -28,6 +28,9 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	killerraisearms = false;
 	killerlight = "NoFlarePLight";
 
+	rightclickicon = "";
+	leftclickicon = "color_consume";
+
 	rechargeRate = 0.3;
 	maxTools = 1;
 	maxWeapons = 1;

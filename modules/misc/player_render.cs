@@ -27,6 +27,9 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	killerraisearms = false;
 	killerlight = "NoFlareRLight";
 
+	rightclickicon = "color_vanish";
+	leftclickicon = "";
+
 	rechargeRate = 0.25;
 	maxTools = 0;
 	maxWeapons = 0;

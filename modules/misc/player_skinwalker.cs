@@ -18,7 +18,6 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	killerlight = "NoFlareRLight";
 
 	renderFirstPerson = false;
-
 	killerSpawnMessage = "Blockheads are the warmest place to hide.";
 	
 	// Weapon: Claws
@@ -30,6 +29,9 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	meleetrailangle1 = "0 90 0";
 	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 3";	
+
+	rightclickicon = "color_consume";
+	leftclickicon = "color_meathook";
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";

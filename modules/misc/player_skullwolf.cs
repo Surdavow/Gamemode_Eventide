@@ -29,6 +29,9 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	killermeleehitsound = "skullwolf_hit";
 	killermeleehitsoundamount = 3;
 
+	rightclickicon = "color_vanish";
+	leftclickicon = "color_consume";
+
 	// Weapon: Claws
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = KillerKatanaClankProjectile;
@@ -75,9 +78,8 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	{
 		%obj.playaudio(1,"skullwolf_cloak_sound");
 		if(isObject(%obj.light))
-		{
-			%obj.light.delete();
-		}
+		%obj.light.delete();
+		
 	}
 	
 	%alpha = mClampF(%alpha-0.025,0,1);
@@ -174,7 +176,8 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 {		
 	if(%bool) switch(%triggerNum)
 	{
-		case 0: %obj.KillerMelee(%this,4.25);				
+		case 0: if(%obj.getEnergyLevel() >= 25)
+				%obj.KillerMelee(%this,4.5);
 				return;
 			
 		case 4: if(!%obj.isInvisible)

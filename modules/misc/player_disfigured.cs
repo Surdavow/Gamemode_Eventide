@@ -30,6 +30,9 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	killerraisearms = false;
 	killerlight = "NoFlarePLight";
 
+	rightclickicon = "color_grab";
+	leftclickicon = "color_meathook";	
+
 	rechargeRate = 0.3;
 	runForce = "810";
 	maxTools = 0;

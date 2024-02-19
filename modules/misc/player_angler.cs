@@ -27,6 +27,9 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	meleetrailangle1 = "0 90 0";
 	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 2";
+	
+	rightclickicon = "color_meathook";
+	leftclickicon = "color_meathook";
 
 	killerraisearms = false;
 	killerlight = "NoFlareBLight";	
