@@ -161,56 +161,58 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.setHeadUp(0);
 
 	%obj.unHideNode("renownedeyes");
-	//%obj.setNodeColor("renownedeyes","1 1 1 1");
 }
 
 function PlayerRenowned::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 	
-	if(%trig == 0 && %press) %obj.KillerMelee(%this,4);			
-	
-	if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
+	switch(%trig)
 	{
-		if(%press)
-		{
-			%obj.playthread(2,"armReadyLeft");
-			%obj.casttime = getSimTime();
-			%obj.channelcasthand = %obj.schedule(500, setNodeColor, lHand, "0.8 0.8 0.5 1");
-			%obj.channelcasthandimage = %obj.schedule(500,mountImage,"RenownedCastImage",2);
-		}
-		else
-		{
-			%obj.unmountImage(2);
-			cancel(%obj.channelcasthand);
-			cancel(%obj.channelcasthandimage);
-			%this.EventideAppearance(%obj,%obj.client);
-	
-			if(%obj.casttime+500 < getSimTime())
-			{								
-				%start = %obj.getEyePoint();
-				%end = VectorAdd(%start,VectorScale(%obj.getEyeVector(),getWord(%obj.getScale(),2)*40));
-				%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::ItemObjectType;
-				%search = containerRayCast (%start, %end, %mask, %obj);
+		case 0: if(%press && %obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);
 
-				if(isObject(%search) && minigameCanDamage(%obj,%search))
+		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{
-					%obj.client.setControlObject(%search);
-					%obj.returnObserveSchedule = %obj.schedule(4000,ClearRenownedEffect);
+					if(%press)
+					{
+						%obj.playthread(2,"armReadyLeft");
+						%obj.casttime = getSimTime();
+						%obj.channelcasthand = %obj.schedule(500, setNodeColor, lHand, "0.8 0.8 0.5 1");
+						%obj.channelcasthandimage = %obj.schedule(500,mountImage,"RenownedCastImage",2);
+					}
+					else
+					{
+						%obj.unmountImage(2);
+						cancel(%obj.channelcasthand);
+						cancel(%obj.channelcasthandimage);
+						%this.EventideAppearance(%obj,%obj.client);
 
-					%search.client.centerprint("<color:FFFFFF><font:Impact:40>You are being controlled, press E to break free!",2);
-					%search.Possesser = %obj;
-					%search.isPossessed = true;
-					%obj.setEnergyLevel(0);
-					%obj.playthread(2,"leftrecoil");
-					%search.mountImage("RenownedPossessedImage",3);
-					%search.schedule(4000,ClearRenownedEffect);
+						if(%obj.casttime+500 < getSimTime())
+						{								
+							%start = %obj.getEyePoint();
+							%end = VectorAdd(%start,VectorScale(%obj.getEyeVector(),getWord(%obj.getScale(),2)*40));
+							%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::ItemObjectType;
+							%search = containerRayCast (%start, %end, %mask, %obj);
+
+							if(isObject(%search) && minigameCanDamage(%obj,%search))
+							{
+								%obj.client.setControlObject(%search);
+								%obj.returnObserveSchedule = %obj.schedule(4000,ClearRenownedEffect);
+
+								%search.client.centerprint("<color:FFFFFF><font:Impact:40>You are being controlled, press E to break free!",2);
+								%search.Possesser = %obj;
+								%search.isPossessed = true;
+								%obj.setEnergyLevel(0);
+								%obj.playthread(2,"leftrecoil");
+								%search.mountImage("RenownedPossessedImage",3);
+								%search.schedule(4000,ClearRenownedEffect);
+							}
+							else %obj.setEnergyLevel(%obj.getEnergyLevel()-50);
+						}		
+					}
 				}
-				else %obj.setEnergyLevel(%obj.getEnergyLevel()-50);
-			}		
-		}
-	}
-	else if(%press && %obj.getEnergyLevel() < 20) %obj.playthread(0,"undo");
+				else if(%press && %obj.getEnergyLevel() < 20) %obj.playthread(0,"undo");
+	}	
 }
 
 function Player::ClearRenownedEffect(%obj)

@@ -35,6 +35,9 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
+
+	rightclickicon = "color_puppet";
+	leftclickicon = "color_meathook";
 	
 	showEnergyBar = true;
 	renderFirstPerson = false;
@@ -66,8 +69,8 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 {		
 	if(%bool) switch(%triggerNum)
 	{
-		case 0:	%obj.KillerMelee(%this,4.25);
-				return;
+		case 0:	if(%obj.getEnergyLevel() >= 25)
+				%obj.KillerMelee(%this,4.25);
 				
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{

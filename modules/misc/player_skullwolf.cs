@@ -178,7 +178,6 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 	{
 		case 0: if(%obj.getEnergyLevel() >= 25)
 				%obj.KillerMelee(%this,4.5);
-				return;
 			
 		case 4: if(!%obj.isInvisible)
 				{		

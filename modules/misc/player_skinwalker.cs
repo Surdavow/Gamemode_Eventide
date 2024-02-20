@@ -109,7 +109,7 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 {		
 	if(%press) switch(%trig)
 	{
-		case 0: %obj.KillerMelee(%this,4);				
+		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);				
 				return;
 			
 		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule)) 

@@ -41,7 +41,7 @@ function PlayerGenocide::onTrigger(%this, %obj, %trig, %press)
 {		
 	if(%press) switch(%trig)
 	{
-		case 0: %obj.KillerMelee(%this,4);
+		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);
 				return;
 	}
 	Parent::onTrigger(%this, %obj, %trig, %press);

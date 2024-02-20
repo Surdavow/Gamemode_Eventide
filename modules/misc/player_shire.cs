@@ -10,7 +10,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	
 	meleetrailoffset = "0.6 1.4 0.7";
 
-	rightclickicon = "hicolor_blind";
+	rightclickicon = "color_blind";
 	leftclickicon = "color_meathook";
 
 	killerChaseLvl1Music = "musicData_OUT_ShireNear";
@@ -80,7 +80,8 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 		
 	switch(%trig)
 	{
-		case 0: if(%press) %obj.KillerMelee(%this,4.5);
+		case 0: if(%obj.getEnergyLevel() >= 25 && %press) 
+				%obj.KillerMelee(%this,4.5);
 
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				if(%press)

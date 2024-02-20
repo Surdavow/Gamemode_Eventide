@@ -81,9 +81,8 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 	if(%bool && %obj.getState() !$= "Dead")
 	switch(%triggerNum)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25)
-				%obj.KillerMelee(%this,4.5);	
-				
+		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4.5);
+						
 		case 4: if(!isObject(%obj.victim))
 				{
 					if(!%obj.isCrouched() && %obj.getEnergyLevel() >= %this.maxEnergy && getWord(%obj.getVelocity(),2) == 0)
