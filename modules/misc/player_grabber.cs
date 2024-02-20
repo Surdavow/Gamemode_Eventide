@@ -29,7 +29,7 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	killerlight = "NoFlareRLight";
 
 	rightclickicon = "color_grab";
-	leftclickicon = "color_meathook";
+	leftclickicon = "color_melee";
 
 	firstpersononly = false;
 	rechargeRate = 0.65;
