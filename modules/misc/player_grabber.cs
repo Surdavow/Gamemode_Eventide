@@ -26,7 +26,6 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	killerchasesound = "grabber_breathe";
 	killerchasesoundamount = 1;	
 	
-	killerraisearms = false;
 	killerlight = "NoFlareRLight";
 
 	rightclickicon = "color_grab";

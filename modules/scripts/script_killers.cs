@@ -271,18 +271,24 @@ function Player::onKillerLoop(%obj)
             }
         }
     }
-	
-	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
-	%energylevel = %obj.getEnergyLevel();
-	%leftclickstatus = (%energylevel >= 25) ? "hi" : "lo";
-	%rightclickstatus = (%energylevel >= %this.maxEnergy) ? "hi" : "lo";
-	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
-	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %this.rightclickicon @ ">" : "";
-	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
-	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";
 
+	// Bottom print gui
 	if (isObject(%client = %obj.client))
-	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon,1);	
+	{
+    	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
+    	%energylevel = %obj.getEnergyLevel();
+
+    	%leftclickstatus = (%energylevel >= 25) ? "hi" : "lo";
+    	%rightclickstatus = (%energylevel >= %this.maxEnergy) ? "hi" : "lo";
+	
+    	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
+    	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %this.rightclickicon @ ">" : "";
+	
+    	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+    	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";
+
+    	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
+	}
 
     cancel(%obj.onKillerLoop); // Prevent duplicate processes
     %obj.onKillerLoop = %obj.schedule(500, onKillerLoop);

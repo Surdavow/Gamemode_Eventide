@@ -25,7 +25,6 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 	killermeleehitsound = "genocide_hit";
 	killermeleehitsoundamount = 3;
 	
-	killerraisearms = false;
 	killerlight = "NoFlarePLight";
 
 	rechargeRate = 0.3;

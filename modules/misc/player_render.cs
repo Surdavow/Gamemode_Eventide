@@ -24,7 +24,6 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	killermeleehitsound = "";
 	killermeleehitsoundamount = 3;
 	
-	killerraisearms = false;
 	killerlight = "NoFlareRLight";
 
 	rightclickicon = "color_vanish";

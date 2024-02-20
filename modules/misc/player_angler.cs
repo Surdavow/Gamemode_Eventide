@@ -30,8 +30,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	
 	rightclickicon = "color_meathook";
 	leftclickicon = "color_meathook";
-
-	killerraisearms = false;
+	
 	killerlight = "NoFlareBLight";	
 
 	killerChaseLvl1Music = "musicData_OUT_AnglerNear";

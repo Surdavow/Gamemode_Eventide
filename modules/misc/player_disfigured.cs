@@ -27,7 +27,6 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
 	
-	killerraisearms = false;
 	killerlight = "NoFlarePLight";
 
 	rightclickicon = "color_grab";

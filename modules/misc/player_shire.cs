@@ -31,7 +31,6 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
 	
-	killerraisearms = false;
 	killerlight = "NoFlarePLight";
 
 	rechargeRate = 0.3;

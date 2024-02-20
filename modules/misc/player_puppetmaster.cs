@@ -18,7 +18,6 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 2";		
 
-	killerraisearms = false;
 	killerlight = "NoFlareRLight";	
 
 	killerChaseLvl1Music = "musicData_OUT_PuppetMasterNear";

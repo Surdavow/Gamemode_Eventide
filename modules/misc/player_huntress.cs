@@ -25,7 +25,6 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
 	
-	killerraisearms = false;
 	killerlight = "NoFlarePLight";
 
 	rightclickicon = "";
