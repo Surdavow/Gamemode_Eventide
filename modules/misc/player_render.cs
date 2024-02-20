@@ -127,53 +127,58 @@ function PlayerRender::onRemove(%this,%obj)
 
 function Player::PrepperizerEffect(%obj)
 {	
-	if(!isObject(%obj) || %obj.isInvisible) return;
+	if (!isObject(%obj) || %obj.isInvisible) return;
 
-	%obj.setScale(getRandom(70,110)*0.01 SPC getRandom(70,110)*0.01 SPC getRandom(100,110)*0.01);
+	// Set random scale
+	%scaleX = getRandom(70, 110) * 0.01;
+	%scaleY = getRandom(70, 110) * 0.01;
+	%scaleZ = getRandom(100, 110) * 0.01;
+	%obj.setScale(%scaleX SPC %scaleY SPC %scaleZ);
 
-	if(getRandom(1,10) == 1) %obj.setShapeName (getRandom(1,999999), 8564862);
-	else %obj.setShapeName ("", 8564862);
-	
-	if(getRandom(1,10) == 1) %obj.setfacename("smiley");
-	else %obj.setfacename("asciiTerror");
+	// Set random shape name
+	if (getRandom(1, 10) == 1) %obj.setShapeName(getRandom(1, 999999), 8564862);
+	else %obj.setShapeName("", 8564862);
 
-	if(getRandom(1,10) == 1) %obj.hideNode("headskin");
-	else %obj.unhidenode("headskin");
+	// Set random face name
+	%faceName = getRandom(1, 10) == 1 ? "smiley" : "asciiTerror";
+	%obj.setFaceName(%faceName);
 
-	if(getRandom(1,10) == 1) %obj.hideNode("chest");
-	else %obj.unhidenode("chest");	
+	// Define node names
+	%nodeNames = "headskin chest rhand lhand rshoe lshoe";
 
-	if(getRandom(1,10) == 1) %obj.hideNode("rhand");
-	else %obj.unhidenode("rhand");	
-
-	if(getRandom(1,10) == 1) %obj.hideNode("lhand");
-	else %obj.unhidenode("lhand");
-
-	if(getRandom(1,10) == 1) %obj.hideNode("rshoe");
-	else %obj.unhidenode("rshoe");	
-
-	if(getRandom(1,10) == 1) %obj.hideNode("lshoe");
-	else %obj.unhidenode("lshoe");		
-
-	if(getRandom(1,4) == 1) %obj.setnodecolor("ALL","0 0 0 0.1");
-	else %obj.setnodecolor("ALL","0 0 0 1");
-
-	if(getRandom(1,10) == 1) 
+	// Randomly hide/unhide nodes
+	for (%i = 0; %i < getFieldCount(%nodeNames); %i++)
 	{
-		switch(getRandom(1,5))
+		%nodeName = getField(%nodeNames, %i);
+		%hide = getRandom(1, 10) == 1 ? true : false;
+		%color = getRandom(1, 4) == 1 ? "0 0 0 0.1" : "0 0 0 1";
+		%obj.setNodeColor(%nodeNmae, %color);
+		if (%hide) %obj.hideNode(%nodeName);
+		else %obj.unhideNode(%nodeName);
+	}
+
+	// Set random arm thread
+	if (getRandom(1, 10) == 1)
+	{
+		%thread = "";
+		switch (getRandom(1, 5))
 		{
-			case 1: %obj.setArmThread("death1");
-			case 2: %obj.setArmThread("sit");
-			case 3: %obj.setArmThread("crouch");
-			case 4: %obj.setArmThread("standjump");			
-			case 5: %obj.setArmThread("talk");			
+			case 1: %thread = "death1";
+			case 2: %thread = "sit";
+			case 3: %thread = "crouch";
+			case 4: %thread = "standjump";			
+			case 5: %thread = "talk";
 		}
+		%obj.setArmThread(%thread);
 	}
 	else %obj.setArmThread("look");
 
-	if(getRandom(1,10) == 1)
+	// Handle light effects
+	if (isObject(%obj.light)) %obj.light.delete();
+	
+	if (getRandom(1, 10) == 1)
 	{
-		%obj.light = new fxLight ("")
+		%obj.light = new fxLight("")
 		{
 			dataBlock = "NegativePlayerLight";
 			source = %obj;
@@ -181,9 +186,8 @@ function Player::PrepperizerEffect(%obj)
 		MissionCleanup.add(%obj.light);
 		%obj.light.setTransform(%obj.getTransform());
 		%obj.light.attachToObject(%obj);
-		%obj.light.schedule(1000,delete);
+		%obj.light.schedule(1000, delete);
 	}
-	else if(isObject(%obj.light)) %obj.light.delete();
 }
 
 function PlayerRender::Prepperizer(%this,%obj)

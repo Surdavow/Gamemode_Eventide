@@ -144,14 +144,17 @@ function GameConnection::Escape(%client)
 {
 	if(!isObject(%minigame = getMinigameFromObject(%client))) return %client.centerprint("This only works in minigames!",1);
 	if(strlwr(%client.slyrTeam.name) !$= "survivors") return %client.centerprint("Only survivors can escape the map!",1);
-
-	%client.escaped = true;
 	
-	for(%i = 0; %i < %client.slyrTeam.numMembers; %i++)
-	{
-		if(isObject(%members = %client.slyrTeam.member[%i]) && isObject(%members.player) && %members.escaped) %escaped++;
-		if(isObject(%members = %client.slyrTeam.member[%i]) && isObject(%members.player)) %living++;
-	}
+	%client.escaped = true;
+
+	// Iterate through each member of the survivor's team
+	for (%i = 0; %i < %client.slyrTeam.numMembers; %i++)	
+    	if (isObject(%member = %client.slyrTeam.member[%i]))
+    	{
+		// Assign variables for living and escaped players, although escaped players technically are dead too in the following lines
+		if (isObject(%member.player)) %living++;
+		if (%member.escaped) %escaped++;
+    	}
 	
 	%client.player.delete();
 	%client.camera.setMode("Spectator",%client);
