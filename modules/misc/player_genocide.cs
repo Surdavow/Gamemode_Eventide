@@ -26,6 +26,8 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 	killermeleehitsoundamount = 3;
 	
 	killerlight = "NoFlarePLight";
+	
+	leftclickicon = "color_melee";
 
 	rechargeRate = 0.3;
 	maxTools = 1;

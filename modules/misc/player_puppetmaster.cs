@@ -36,7 +36,7 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	killermeleehitsoundamount = 3;
 
 	rightclickicon = "color_puppet";
-	leftclickicon = "color_meathook";
+	leftclickicon = "color_melee";
 	
 	showEnergyBar = true;
 	renderFirstPerson = false;

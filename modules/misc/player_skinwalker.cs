@@ -30,8 +30,8 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	meleetrailangle2 = "0 -90 0";
 	meleetrailscale = "4 4 3";	
 
-	rightclickicon = "color_consume";
-	leftclickicon = "color_meathook";
+	rightclickicon = "color_skinwalker_reveal";
+	leftclickicon = "color_consume";
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";

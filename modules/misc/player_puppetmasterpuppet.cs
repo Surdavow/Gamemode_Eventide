@@ -26,11 +26,13 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 	maxSideSpeed = 11.20;
 	maxDamage = 10;
 	jumpforce = 0;
+	showenergybar = false;
 };
 
 function PuppetMasterPuppet::onNewDatablock(%this,%obj)
 {
 	%obj.setScale("0.65 0.65 0.65");
+	%obj.schedule(1,setEnergyLevel,100);
 	%this.EventideAppearance(%obj,ClientGroup.getObject(getRandom(0,ClientGroup.getCount()-1)));
 }
 

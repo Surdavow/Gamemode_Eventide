@@ -32,7 +32,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	jumpForce = 0;
 
 	rightclickicon = "color_headache";
-	leftclickicon = "color_meathook";
+	leftclickicon = "color_melee";
 
 	isKiller = true;
 	killerraisearms = false;

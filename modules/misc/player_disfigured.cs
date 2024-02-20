@@ -30,7 +30,7 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	killerlight = "NoFlarePLight";
 
 	rightclickicon = "color_grab";
-	leftclickicon = "color_meathook";	
+	leftclickicon = "color_melee";	
 
 	rechargeRate = 0.3;
 	runForce = "810";

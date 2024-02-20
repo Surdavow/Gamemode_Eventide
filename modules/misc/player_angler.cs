@@ -9,7 +9,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	uiName = "Angler Player";
 	shapeFile = AnglerDTS.baseShape;
 
-	rechargeRate = 0.215;
+	rechargeRate = 0.315;
 	maxTools = 0;
 	maxWeapons = 0;
 	jumpForce = 0;
@@ -29,7 +29,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	meleetrailscale = "4 4 2";
 	
 	rightclickicon = "color_meathook";
-	leftclickicon = "color_meathook";
+	leftclickicon = "color_melee";
 	
 	killerlight = "NoFlareBLight";	
 
@@ -165,7 +165,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);				
 				return;
 			
-		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy/2)
+		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy/1)
 				{
 					%p = new projectile()
 					{
@@ -178,7 +178,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 					MissionCleanup.add(%p);
 					%obj.unmountImage(1);
 					%obj.playthread(2,"leftrecoil");
-					%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/1.5);
+					%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/1);
 
 					if(isObject(%obj.hookrope)) %obj.hookrope.delete();
 					else

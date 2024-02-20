@@ -11,7 +11,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	meleetrailoffset = "0.6 1.4 0.7";
 
 	rightclickicon = "color_blind";
-	leftclickicon = "color_meathook";
+	leftclickicon = "color_melee";
 
 	killerChaseLvl1Music = "musicData_OUT_ShireNear";
 	killerChaseLvl2Music = "musicData_OUT_ShireChase";

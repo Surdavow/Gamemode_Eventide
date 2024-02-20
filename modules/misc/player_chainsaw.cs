@@ -27,6 +27,8 @@ datablock PlayerData(PlayerChainsaw : PlayerRenowned)
 	
 	killerraisearms = false;
 	killerlight = "NoFlarePLight";
+	
+	leftclickicon = "color_melee";
 
 	rechargeRate = 0.3;
 	maxTools = 1;
