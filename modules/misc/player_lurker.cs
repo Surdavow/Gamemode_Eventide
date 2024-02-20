@@ -9,8 +9,8 @@ datablock PlayerData(PlayerLurker : PlayerRenowned)
 	hitobscureprojectile = "";
 	meleetrailskin = "ragged";
 
-	killerChaseLvl1Music = "musicData_OUT_DisfiguredNear";
-	killerChaseLvl2Music = "musicData_OUT_DisfiguredChase";
+	killerChaseLvl1Music = "musicData_OUT_LurkerNear";
+	killerChaseLvl2Music = "musicData_OUT_LurkerChase";
 
 	killeridlesound = "";
 	killeridlesoundamount = 5;
@@ -21,7 +21,7 @@ datablock PlayerData(PlayerLurker : PlayerRenowned)
 	killermeleesound = "";
 	killermeleesoundamount = 3;
 	
-	killerweaponsound = "";
+	killerweaponsound = "lurker_weapon";
 	killerweaponsoundamount = 4;	
 
 	killermeleehitsound = "melee_tanto";
@@ -60,7 +60,7 @@ function PlayerLurker::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
-	%obj.setScale("1.15 1.15 1.15");
+	%obj.setScale("0.9 0.9 1.2");
 	%obj.isInvisible = false;
 }
 

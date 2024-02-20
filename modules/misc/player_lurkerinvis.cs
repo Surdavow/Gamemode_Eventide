@@ -25,9 +25,9 @@ datablock PlayerData(PlayerLurkerInvis : PlayerRenowned)
 	rechargeRate = 0.3;
 	maxTools = 1;
 	maxWeapons = 1;
-	maxForwardSpeed = 5.95;
-	maxBackwardSpeed = 3.4;
-	maxSideSpeed = 5.1;
+	maxForwardSpeed = 8.9;
+	maxBackwardSpeed = 5.1;
+	maxSideSpeed = 7.7;
 	jumpForce = 0;
 	
 	uiName = "LurkerInvis Player";
@@ -41,7 +41,7 @@ function PlayerLurkerInvis::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);
 	%obj.isInvisible = true;	
-	%obj.setScale("1.15 1.15 1.15");
+	%obj.setScale("0.9 0.9 1.2");
 }
 
 function PlayerLurkerInvis::EventideAppearance(%this,%obj,%client)
