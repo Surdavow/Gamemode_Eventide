@@ -1,21 +1,19 @@
 function KillerSpawnMessage(%obj)
 {
-	if(!isObject(%obj) || !isObject(%minigame = getMiniGameFromObject(%obj))) return;
-
-	if(%obj.firstMessageSpawn) return;
-	%obj.firstMessageSpawn = true;
+	if(!isObject(%obj) || !isObject(%minigame = getMiniGameFromObject(%obj)) || %obj.firstMessageSpawn) return;
 	
-	%random = getRandom(1,4);
-	switch(%random)
+	switch(getRandom(1,4))
 	{
 		case 1: %message = "The hunter has arrived.";
 		case 2: %message = "Ready yourselves, the hunter has arrived.";
-		case 3: %message = "Prepare yourselves, it is coming...";
+		case 3: %message = "Prepare yourselves, it is coming.";
 		case 4: %message = %obj.getdataBlock().killerSpawnMessage;
 	}
 
 	%minigame.chatmsgall("<font:Impact:30>\c0" @ %message);
 	for(%i = 0; %i < %minigame.numMembers; %i++) if(isObject(%member = %minigame.member[%i])) %member.play2D("render_wind_sound");	
+
+	%obj.firstMessageSpawn = true;
 }
 
 function Player::KillerMelee(%obj,%datablock,%radius)
@@ -192,6 +190,7 @@ function Player::onKillerLoop(%obj)
 					%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,true);
 					%nearbyplayer.chaseLevel = 2;
 				}
+
 				%victimclient.player.TimeSinceChased = getSimTime();
 				cancel(%victimclient.StopChaseMusic);
 				%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
@@ -204,6 +203,7 @@ function Player::onKillerLoop(%obj)
 					%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,false);
 					%obj.chaseLevel = 2;
 				}
+
 				cancel(%killerclient.StopChaseMusic);
 				%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
 			}							
@@ -217,6 +217,7 @@ function Player::onKillerLoop(%obj)
 					%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music,false);
 					%nearbyplayer.chaseLevel = 1;
 				}
+
 				cancel(%victimclient.StopChaseMusic);
 				%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
 			}
@@ -228,6 +229,7 @@ function Player::onKillerLoop(%obj)
 					%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music,false);
 					%obj.chaseLevel = 1;
 				}
+
 				cancel(%killerclient.StopChaseMusic);
 				%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
 			}
