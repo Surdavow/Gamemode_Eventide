@@ -18,10 +18,10 @@ function KillerSpawnMessage(%obj)
 
 function Player::KillerMelee(%obj,%datablock,%radius)
 {	
-	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %this.maxEnergy/8)
+	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %dataBlock.maxEnergy/8)
 	{
 		%obj.lastclawed = getSimTime();	
-		%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/8);						
+		%obj.setEnergyLevel(%obj.getEnergyLevel()-%dataBlock.maxEnergy/4);						
 				
 		if(%datablock.shapeFile $= EventideplayerDts.baseShape) %meleeAnim = getRandom(1,4);
 		else %meleeAnim = getRandom(1,2);
@@ -94,28 +94,17 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 														%obj.schedule(2250,playthread,1,"root");
 														%obj.schedule(2250,playthread,2,"root");
 														%obj.schedule(2250,setField,victim,0);
-														%this.schedule(2250,EventideAppearance,%obj,%obj.client);
+														%datablock.schedule(2250,EventideAppearance,%obj,%obj.client);
 														return;
 													}
-													else 
-													{
-														%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
-														continue;
-													}
+													else continue;
+													
 												}
 
-					case "PlayerSkullwolf":	if(%hit.getdataBlock().isDowned)
+					case "PlayerSkullwolf":	if(%hit.getDamagePercent() > 0.5 && %hit.getdataBlock().isDowned)
 											{
-												if(%hit.getDamagePercent() > 0.5)
-												{
-													%obj.getdataBlock().eatVictim(%obj,%hit);
-													return;
-												}
-												else 
-												{
-													%obj.client.centerPrint("<font:Impact:30>\c3Your victim needs to be below 50% health first!<br>Victim Health:" SPC %hit.getdataBlock().maxDamage-%hit.getDamageLevel(),4);
-													continue;
-												}														
+												%obj.getdataBlock().eatVictim(%obj,%hit);
+												return;
 											}
 				}
 					
@@ -275,30 +264,16 @@ function Player::onKillerLoop(%obj)
     }
 
 	// Bottom print gui
-	if (isObject(%client = %obj.client))
-	{
-    	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
-    	%energylevel = %obj.getEnergyLevel();
-
-		// Some dynamic varirables
-    	%leftclickstatus = (%energylevel >= 25 && %this.iconCondition()) ? "hi" : "lo";
-    	%rightclickstatus = (%energylevel >= %this.maxEnergy && %this.iconCondition()) ? "hi" : "lo";
-    	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
-    	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
-	
-		// Regular icons
-    	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
-    	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %this.rightclickicon @ ">" : "";
-
-		// Change them to special if they exist
-		%leftclickicon = (%this.leftclickspecialicon !$= "" %this.iconCondition(%obj,"left")) ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickspecialicon @ ">" : %leftclickicon;
-    	%rightclickicon = (%this.rightclickspecialicon !$= "" %this.iconCondition(%obj,"right")) ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %this.rightclickspecialicon @ ">" : %rightclickicon;
-
-    	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
-	}
+	if (isObject(%client = %obj.client)) 
+	%this.bottomprintgui(%obj,%client);
 
     cancel(%obj.onKillerLoop); // Prevent duplicate processes
     %obj.onKillerLoop = %obj.schedule(500, onKillerLoop);
+}
+
+function Armor::bottomprintgui(%this,%obj,%client)
+{	
+
 }
 
 function Player::KillerGhostLightCheck(%obj)

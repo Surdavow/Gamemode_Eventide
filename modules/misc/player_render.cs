@@ -28,6 +28,8 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 
 	rightclickicon = "color_vanish";
 	leftclickicon = "color_headache";
+	rightclickspecialicon = "";
+	leftclickspecialicon = "";
 
 	rechargeRate = 0.25;
 	maxTools = 0;
@@ -43,13 +45,31 @@ function PlayerRender::onImpact(%this, %obj, %col, %vec, %force)
 	if(%force > %this.minImpactSpeed) %obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");	
 }
 
+function PlayerRender::bottomprintgui(%this,%obj,%client)
+{	
+	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
+	%energylevel = %obj.getEnergyLevel();
+
+	// Some dynamic varirables
+	%leftclickstatus = (%obj.getEnergyLevel() >= 50) ? "hi" : "lo";
+	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
+	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
+
+	// Regular icons
+	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
+	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
+
+	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
+}
+
 function PlayerRender::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
 	if(%press) switch(%trig)
 	{
-		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= %this.maxEnergy)
+		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= 50)
 				{
 					%startpos = %obj.getMuzzlePoint(0);
 					%endpos = %obj.getMuzzleVector(0);	
@@ -57,7 +77,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 
 					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
 					{
-						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
+						%obj.setEnergyLevel(%obj.getEnergyLevel()-50);
 						%obj.playaudio(0,"render_pain_sound");
 						%obj.playaudio(2,"renowned_charged_sound");
 						serverPlay3D("renowned_charged_sound",%hit.getPosition());						

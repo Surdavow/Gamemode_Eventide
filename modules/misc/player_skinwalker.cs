@@ -31,7 +31,9 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	meleetrailscale = "4 4 3";	
 
 	rightclickicon = "color_skinwalker_reveal";
-	leftclickicon = "color_consume";
+	leftclickicon = "color_melee";
+	rightclickspecialicon = "";
+	leftclickspecialicon = "color_consume";
 	
 	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
 	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
@@ -68,6 +70,31 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	maxWeapons = 0;
 	maxTools = 0;	
 };
+
+function PlayerSkinwalker::bottomprintgui(%this,%obj,%client)
+{	
+	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
+	%energylevel = %obj.getEnergyLevel();
+
+	// Some dynamic varirables
+	%leftclickstatus = (%obj.getEnergyLevel() >= 25) ? "hi" : "lo";
+	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
+	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
+
+	// Regular icons
+	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
+	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
+
+	// Change them to special if they exist
+	if(%obj.getEnergyLevel() >= 25 && %this.leftclickspecialicon !$= "" && isObject(%obj.gazing) && %obj.gazing.getdataBlock().isDowned)
+	{		
+		%leftclickstatus = (%obj.gazing.getDamagePercent() > 0.5) ? "hi" : "lo";
+		%leftclickicon = "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickspecialicon @ ">";
+	}
+
+	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
+}
 
 function PlayerSkinwalker::onNewDatablock(%this,%obj)
 {
