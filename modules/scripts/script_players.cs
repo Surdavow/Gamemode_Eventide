@@ -55,6 +55,7 @@ function Armor::GazeLoop(%this,%obj)
 	%end = vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(),$Pref::Server::GazeRange));
 	%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType;
 	%hit = containerRayCast (%eye, %end, %mask, %obj);
+	%obj.canSeePlayer = false;
 	
 	if (isObject(%hit))
 	{
@@ -67,14 +68,17 @@ function Armor::GazeLoop(%this,%obj)
 			%hit.processInputEvent("onGaze", %gazer);
 		}
 
-		if(%hit.getType() & $TypeMasks::PlayerObjectType) 
-		if(%this.isKiller) %obj.canSeePlayer = true;
-	}	
-	else %obj.canSeePlayer = false;
+		if(%hit.getType() & $TypeMasks::PlayerObjectType)  %obj.canSeePlayer = true;
+	}
 
 	// Cancel and reschedule the loop to avoid any overlapping schedules
 	cancel(%obj.GazeLoop);
 	%obj.GazeLoop = %this.schedule(33,GazeLoop,%obj);	
+}
+
+function Armor::iconCondition(%this,%obj,%side)
+{
+	return true;
 }
 
 function Armor::EventideAppearance(%this,%obj,%client)

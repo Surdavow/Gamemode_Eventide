@@ -280,14 +280,19 @@ function Player::onKillerLoop(%obj)
     	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
     	%energylevel = %obj.getEnergyLevel();
 
-    	%leftclickstatus = (%energylevel >= 25) ? "hi" : "lo";
-    	%rightclickstatus = (%energylevel >= %this.maxEnergy && %obj.canSeePlayer) ? "hi" : "lo";
+		// Some dynamic varirables
+    	%leftclickstatus = (%energylevel >= 25 && %this.iconCondition()) ? "hi" : "lo";
+    	%rightclickstatus = (%energylevel >= %this.maxEnergy && %this.iconCondition()) ? "hi" : "lo";
+    	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+    	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
 	
+		// Regular icons
     	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
     	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %this.rightclickicon @ ">" : "";
-	
-    	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
-    	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";
+
+		// Change them to special if they exist
+		%leftclickicon = (%this.leftclickspecialicon !$= "" %this.iconCondition(%obj,"left")) ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickspecialicon @ ">" : %leftclickicon;
+    	%rightclickicon = (%this.rightclickspecialicon !$= "" %this.iconCondition(%obj,"right")) ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %this.rightclickspecialicon @ ">" : %rightclickicon;
 
     	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
 	}
