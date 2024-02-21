@@ -33,6 +33,8 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 
 	rightclickicon = "color_headache";
 	leftclickicon = "color_melee";
+	specialicon = "color_headache";
+	specialiconbutton = "right";
 
 	isKiller = true;
 	killerraisearms = false;

@@ -48,20 +48,23 @@ function Player::SetTempSpeed(%obj,%slowdowndivider)
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
 function Armor::GazeLoop(%this,%obj)
 {		
-	if(!isObject(%obj) || !isObject(%client = %obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock() != %this || !isObject(%minigame = getMinigamefromObject(%obj)))
-	return;
-
-	if($Pref::Server::GazeEnabled)
+	// Some conditions to return early if one is met
+	if (!$Pref::Server::GazeEnabled || !isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj))) return;
+	
+	%hit = firstWord(containerRaycast(%obj.getEyePoint(),vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange)),%obj));
+	
+	if (isObject(%hit))
+	switch$ (%hit.getClassName())
 	{
-		%hit = firstWord(containerRaycast(%obj.getEyePoint(),vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange)),,%obj));
-		if(isObject(%hit))
-		{
-			$InputTarget_Self = %hit;
-			$InputTarget_Player = %obj;
-			$InputTarget_Client = %client;
-			$InputTarget_Minigame = %minigame;
-			%hit.processInputEvent("onGaze", %gazer);
-		}
+		case "fxDtsBrick": 	$InputTarget_Self = %hit;
+							$InputTarget_Player = %obj;
+							$InputTarget_Client = (isObject(%client = %obj.client) ? %client : 0);
+							$InputTarget_Minigame = %minigame;
+							%hit.processInputEvent("onGaze", %gazer);
+
+		case "Player": %obj.enableSpecialIcon = (%this.isKiller && %this.specialicon !$= "" ? true : false);
+
+		case "AIPlayer": %obj.enableSpecialIcon = (%this.isKiller && %this.specialicon !$= "" ? true : false);
 	}
 
 	// Cancel and reschedule the loop to avoid any overlapping schedules
