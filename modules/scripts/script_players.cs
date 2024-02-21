@@ -45,6 +45,30 @@ function Player::SetTempSpeed(%obj,%slowdowndivider)
   	%obj.setMaxUnderwaterSideSpeed(%datablock.MaxUnderwaterForwardSpeed*%slowdowndivider);	
 }
 
+registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
+function Armor::GazeLoop(%this,%obj)
+{		
+	if(!isObject(%obj) || !isObject(%client = %obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock() != %this || !isObject(%minigame = getMinigamefromObject(%obj)))
+	return;
+
+	if($Pref::Server::GazeEnabled)
+	{
+		%hit = firstWord(containerRaycast(%obj.getEyePoint(),vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange)),,%obj));
+		if(isObject(%hit))
+		{
+			$InputTarget_Self = %hit;
+			$InputTarget_Player = %obj;
+			$InputTarget_Client = %client;
+			$InputTarget_Minigame = %minigame;
+			%hit.processInputEvent("onGaze", %gazer);
+		}
+	}
+
+	// Cancel and reschedule the loop to avoid any overlapping schedules
+	cancel(%obj.GazeLoop);
+	%obj.GazeLoop = %this.schedule(33,GazeLoop,%obj);	
+}
+
 function Armor::EventideAppearance(%this,%obj,%client)
 {
 	%obj.hideNode("ALL");

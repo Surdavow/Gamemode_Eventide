@@ -24,8 +24,6 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	jumpForce = 0;
 	
 	cameramaxdist = 2.25;
-    //cameraVerticalOffset = 1;
-    //cameraHorizontalOffset = 0.75;
     cameratilt = 0.1;
 	maxfreelookangle = 2.5;
 
@@ -60,35 +58,11 @@ function EventidePlayer::PulsingScreen(%this,%obj)
 	%obj.PulsingScreen = %this.schedule(850,PulsingScreen,%obj);
 }
 
-registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
-function EventidePlayer::GazeLoop(%this,%obj)
-{		
-	if(!isObject(%obj) || !isObject(%funcclient = %obj.client) || %obj.getState() $= "Dead" || %obj.getdataBlock() != %this || !isObject(%minigame = getMinigamefromObject(%obj)))
-	return;
-
-	cancel(%obj.GazeLoop);
-	%obj.GazeLoop = %this.schedule(33,GazeLoop,%obj);
-
-	if($Pref::Server::GazeEnabled)
-	{
-		%hit = firstWord(containerRaycast(%obj.getEyePoint(),vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange)),$TypeMasks::FxBrickObjectType,%obj));
-		if(isObject(%hit))
-		{
-			$InputTarget_Self = %hit;
-			$InputTarget_Player = %obj;
-			$InputTarget_Client = %funcclient;
-			$InputTarget_Minigame = %minigame;
-			%hit.processInputEvent("onGaze", %gazer);
-		}
-	}
-}
-
 function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
-	%this.GazeLoop(%obj);
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)

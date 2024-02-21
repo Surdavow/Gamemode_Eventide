@@ -203,6 +203,8 @@ package Eventide_MainPackage
 	{		
 		Parent::onNewDatablock(%this,%obj);
 
+		%this.GazeLoop(%obj);
+
 		if(%this.isKiller) 
 		{
 			%obj.onKillerLoop();		
