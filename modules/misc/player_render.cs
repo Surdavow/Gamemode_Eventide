@@ -27,7 +27,7 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	killerlight = "NoFlareRLight";
 
 	rightclickicon = "color_vanish";
-	leftclickicon = "";
+	leftclickicon = "color_headache";
 
 	rechargeRate = 0.25;
 	maxTools = 0;
@@ -143,19 +143,19 @@ function Player::PrepperizerEffect(%obj)
 	%faceName = getRandom(1, 10) == 1 ? "smiley" : "asciiTerror";
 	%obj.setFaceName(%faceName);
 
-	// Define node names
-	%nodeNames = "headskin chest rhand lhand rshoe lshoe";
-
-	// Randomly hide/unhide nodes
-	for (%i = 0; %i < getFieldCount(%nodeNames); %i++)
-	{
-		%nodeName = getField(%nodeNames, %i);
-		%hide = getRandom(1, 10) == 1 ? true : false;
-		%color = getRandom(1, 4) == 1 ? "0 0 0 0.1" : "0 0 0 1";
-		%obj.setNodeColor(%nodeNmae, %color);
-		if (%hide) %obj.hideNode(%nodeName);
-		else %obj.unhideNode(%nodeName);
-	}
+	//// Define node names
+	//%nodeNames = "headskin chest rhand lhand rshoe lshoe";
+//
+	//// Randomly hide/unhide nodes
+	//for (%i = 0; %i < getFieldCount(%nodeNames); %i++)
+	//{
+	//	%nodeName = getField(%nodeNames, %i);
+	//	%hide = getRandom(1, 10) == 1 ? true : false;
+	//	%color = getRandom(1, 4) == 1 ? "0 0 0 0.1" : "0 0 0 1";
+	//	%obj.setNodeColor(%nodeNmae, %color);
+	//	if (%hide) %obj.hideNode(%nodeName);
+	//	else %obj.unhideNode(%nodeName);
+	//}
 
 	// Set random arm thread
 	if (getRandom(1, 10) == 1)

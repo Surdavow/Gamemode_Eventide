@@ -281,7 +281,7 @@ function Player::onKillerLoop(%obj)
     	%energylevel = %obj.getEnergyLevel();
 
     	%leftclickstatus = (%energylevel >= 25) ? "hi" : "lo";
-    	%rightclickstatus = (%energylevel >= %this.maxEnergy) ? "hi" : "lo";
+    	%rightclickstatus = (%energylevel >= %this.maxEnergy && %obj.canSeePlayer) ? "hi" : "lo";
 	
     	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
     	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %this.rightclickicon @ ">" : "";

@@ -50,22 +50,27 @@ function Armor::GazeLoop(%this,%obj)
 {		
 	// Some conditions to return early if one is met
 	if (!$Pref::Server::GazeEnabled || !isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj))) return;
-	
-	%hit = firstWord(containerRaycast(%obj.getEyePoint(),vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(), $Pref::Server::GazeRange)),%obj));
+
+	%eye = %obj.getEyePoint();
+	%end = vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(),$Pref::Server::GazeRange));
+	%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType;
+	%hit = containerRayCast (%eye, %end, %mask, %obj);
 	
 	if (isObject(%hit))
-	switch$ (%hit.getClassName())
 	{
-		case "fxDtsBrick": 	$InputTarget_Self = %hit;
-							$InputTarget_Player = %obj;
-							$InputTarget_Client = (isObject(%client = %obj.client) ? %client : 0);
-							$InputTarget_Minigame = %minigame;
-							%hit.processInputEvent("onGaze", %gazer);
+		if(%hit.getType() & $TypeMasks::FxBrickObjectType)
+		{
+			$InputTarget_Self = %hit;
+			$InputTarget_Player = %obj;
+			$InputTarget_Client = (isObject(%client = %obj.client) ? %client : 0);
+			$InputTarget_Minigame = %minigame;
+			%hit.processInputEvent("onGaze", %gazer);
+		}
 
-		case "Player": %obj.enableSpecialIcon = (%this.isKiller && %this.specialicon !$= "" ? true : false);
-
-		case "AIPlayer": %obj.enableSpecialIcon = (%this.isKiller && %this.specialicon !$= "" ? true : false);
-	}
+		if(%hit.getType() & $TypeMasks::PlayerObjectType) 
+		if(%this.isKiller) %obj.canSeePlayer = true;
+	}	
+	else %obj.canSeePlayer = false;
 
 	// Cancel and reschedule the loop to avoid any overlapping schedules
 	cancel(%obj.GazeLoop);
