@@ -57,12 +57,12 @@ function PlayerGenocide::onNewDatablock(%this,%obj)
 	%obj.setScale("1 1 1");
 
 //	%randomitem[%i++] = "mine_IncendiaryImage";
-//    %randomitem[%i++] = "CatARImage";
-//    %randomitem[%i++] = "PeeingItemImage";
-//    %randomitem[%i++] = "PetitionImage";
-//    %randomitem[%i++] = "bookItem";
-//    %randomitem[%i++] = "grenade_flashbangImage";
-//    %randomitem[%i++] = "grenade_riotImage";
+//  %randomitem[%i++] = "CatARImage";
+//  %randomitem[%i++] = "PeeingItemImage";
+//  %randomitem[%i++] = "PetitionImage";
+//  %randomitem[%i++] = "bookItem";
+//  %randomitem[%i++] = "grenade_flashbangImage";
+//  %randomitem[%i++] = "grenade_riotImage";
 		
 //	%obj.mountImage(%randomitem[getRandom(1,%i)],0);	
 //	if(%obj.getmountedimage(0).armReady) %obj.playthread(1,"armReadyRight");

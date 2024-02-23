@@ -4,24 +4,18 @@ datablock PlayerData(PlayerChainsaw : PlayerRenowned)
 
 	killerSpawnMessage = "...";
 	
-	// Weapon: Axe
-	//hitprojectile = KillerSharpHitProjectile;
-	//hitobscureprojectile = KillerAxeClankProjectile;
-	
-	//meleetrailskin = "base";
+	hitprojectile = "";
+	hitobscureprojectile = "";	
+	meleetrailskin = "";
 
 	killerChaseLvl1Music = "musicData_OUT_PoacherNear";
 	killerChaseLvl2Music = "musicData_OUT_PoacherChase";
-
 	killeridlesound = "chainsaw_idle";
 	killeridlesoundamount = 0;
-
 	killerchasesound = "chainsaw_idle";
 	killerchasesoundamount = 0;
-
 	killermeleesound = "chainsaw_attack";
 	killermeleesoundamount = 0;	
-
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
 	
@@ -29,6 +23,7 @@ datablock PlayerData(PlayerChainsaw : PlayerRenowned)
 	killerlight = "NoFlarePLight";
 	
 	leftclickicon = "color_melee";
+	rightclickicon = "";
 
 	rechargeRate = 0.3;
 	maxTools = 1;

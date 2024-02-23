@@ -123,24 +123,6 @@ datablock ShapeBaseImageData(AnglerHookImage)
     stateSound[0]               = "angler_chainReturn_sound";
 };
 
-function PlayerAngler::bottomprintgui(%this,%obj,%client)
-{	
-	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
-	%energylevel = %obj.getEnergyLevel();
-
-	// Some dynamic varirables
-	%leftclickstatus = (%obj.getEnergyLevel() >= 50) ? "hi" : "lo";
-	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
-	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
-	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
-
-	// Regular icons
-	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
-	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
-
-	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
-}
-
 function PlayerAngler::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);

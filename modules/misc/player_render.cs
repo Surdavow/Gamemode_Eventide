@@ -51,7 +51,7 @@ function PlayerRender::bottomprintgui(%this,%obj,%client)
 	%energylevel = %obj.getEnergyLevel();
 
 	// Some dynamic varirables
-	%leftclickstatus = (%obj.getEnergyLevel() >= 50) ? "hi" : "lo";
+	%leftclickstatus = (%obj.getEnergyLevel() >= 50 && isObject(%obj.gazing)) ? "hi" : "lo";
 	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
 	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
 	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
