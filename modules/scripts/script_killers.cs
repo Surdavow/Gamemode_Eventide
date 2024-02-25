@@ -21,7 +21,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 	if(!%obj.isInvisible && %obj.lastclawed+1250 < getSimTime() && %obj.getEnergyLevel() >= %dataBlock.maxEnergy/8)
 	{
 		%obj.lastclawed = getSimTime();	
-		%obj.setEnergyLevel(%obj.getEnergyLevel()-%dataBlock.maxEnergy/4);						
+		%obj.setEnergyLevel(%obj.getEnergyLevel()-%dataBlock.maxEnergy/6);						
 				
 		if(%datablock.shapeFile $= EventideplayerDts.baseShape) %meleeAnim = getRandom(1,4);
 		else %meleeAnim = getRandom(1,2);
