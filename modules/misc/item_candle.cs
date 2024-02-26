@@ -9,7 +9,7 @@ datablock fxLightData(CandleLight)
 
 	FlareOn			= true;
     FlareBitmap = "./models/candleLightFlare";
-    FlareColor = "0.25 0.2 0";
+    FlareColor = "0.375 0.3 0";
 	AnimColor		= false;
 	AnimBrightness	= true;
 	AnimOffsets		= true;
@@ -18,8 +18,8 @@ datablock fxLightData(CandleLight)
 	LinkFlareSize	= true;
 	MinColor		= "1 1 0";
 	MaxColor		= "0 0 1";
-	MinBrightness	= 0.0;
-	MaxBrightness	= 5.0;
+	MinBrightness	= 1.0;
+	MaxBrightness	= 6.0;
 	MinRadius		= 0.1;
 	MaxRadius		= 10;
 	StartOffset		= "0 0 0";
