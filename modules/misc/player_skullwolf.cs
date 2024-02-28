@@ -139,7 +139,7 @@ function PlayerSkullWolf::eatVictim(%this,%obj,%victim)
 	%obj.playthread(1,"eat");
 	%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);		
 
-	%obj.schedule(700,spawnExplosion,"goryExplosionProjectile",%obj.getScale());
+	%obj.schedule(700,spawnExplosion,"bloodDismemberProjectile",%obj.getScale());
 	%obj.schedule(700,playthread,3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
 	%obj.playaudio(0,"skullwolf_chase" @ getRandom(1,%this.killerchasesoundamount) @ "_sound");
 	%victim.schedule(695,kill);

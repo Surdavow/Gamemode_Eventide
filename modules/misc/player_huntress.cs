@@ -27,7 +27,7 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	
 	killerlight = "NoFlarePLight";
 
-	rightclickicon = "";
+	rightclickicon = "color_handaxe";
 	leftclickicon = "color_melee";
 
 	rechargeRate = 0.3;
