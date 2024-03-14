@@ -1138,16 +1138,16 @@ datablock ParticleData(ZombieBodyParticle)
 	constantAcceleration	= 0.0;
 	spinRandomMin			= 0.0;
 	spinRandomMax			= 0.0;
-	colors[0]				= "0.41 0.1 0.61 0.1";
-	colors[1]				= "0.41 0.1 0.61 0.0";
-	colors[2]				= "0.41 0.1 0.61 0.0";
+	colors[0]				= "0 0 0 0.4";
+	colors[1]				= "0 0 0 0.1";
+	colors[2]				= "0 0 0 0";
 	sizes[0]				= 2.6;
 	sizes[1]				= 2.6;
 	sizes[2]				= 2.6;
 	times[0]				= 0;
 	times[1]				= 0.5;
 	times[2]				= 1.0;
-	useInvAlpha				= false;
+	useInvAlpha				= true;
 };
 
 datablock ParticleEmitterData(ZombieBodyEmitter) {

@@ -11,13 +11,13 @@ function ShireZombieBot::applyAppearance(%this,%obj)
     Armor::EventideAppearance(%this,%obj,%obj.ghostclient);
 
     %ghostClient = %obj.ghostclient;
-	%zskin = "0.28 0.0 0.52 0.15";
+	%zskin = "0 0 0 1";
     %headColor = %zskin;
     %obj.setFaceName(%faceName);
 	%obj.HideNode("visor");
 	%obj.setNodeColor("ALL",%headColor);
-    %obj.setFaceName("hexZombie");     
-	%obj.startFade(0, 0, true);
+    %obj.setFaceName("hexZombie");
+	%obj.setDecalName("none"); 	
 }
 
 function ShireZombieBot::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
