@@ -485,7 +485,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		}		
 		
 		for(%i = 0; %i < %minigame.numMembers; %i++)
-		if(isObject(%member = %minigame.member[%i]) && !%obj.markedforRenderDeath) %member.play2D("fallen_survivor_sound");
+		if(isObject(%member = %minigame.member[%i]) && !%obj.markedforRenderDeath) %member.play2D("");
 		else %member.play2D("render_kill_sound");
 	}	
 }

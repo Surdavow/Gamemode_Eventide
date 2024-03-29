@@ -169,7 +169,7 @@ function sm_poolCueImage::onFire(%this,%obj,%slot)
 			}
 		}		
 
-		if(%obj.poolcuehit < 5)
+		if(%obj.poolcuehit < 2)
 		{
 			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
 			%p = new Projectile()
