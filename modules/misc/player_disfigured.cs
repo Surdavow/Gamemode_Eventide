@@ -9,8 +9,8 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	hitobscureprojectile = "";
 	meleetrailskin = "ragged";
 
-	killerChaseLvl1Music = "musicData_OUT_DisfiguredNear";
-	killerChaseLvl2Music = "musicData_OUT_DisfiguredChase";
+	killerChaseLvl1Music = "musicData_Eventide_DisfiguredNear";
+	killerChaseLvl2Music = "musicData_Eventide_DisfiguredChase";
 
 	killeridlesound = "disfigured_idle";
 	killeridlesoundamount = 5;

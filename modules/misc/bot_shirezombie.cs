@@ -4,6 +4,9 @@ datablock PlayerData(ShireZombieBot : EventidePlayer)
 	isKiller = true;
     uiName = "";
     maxDamage = 9999;
+	maxForwardSpeed = 5.95;
+	maxBackwardSpeed = 3.4;
+	maxSideSpeed = 5.1;
 };
 
 function ShireZombieBot::applyAppearance(%this,%obj)

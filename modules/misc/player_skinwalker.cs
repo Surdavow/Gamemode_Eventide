@@ -35,8 +35,8 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	rightclickspecialicon = "";
 	leftclickspecialicon = "color_consume";
 	
-	killerChaseLvl1Music = "musicData_OUT_SkinwalkerNear";
-	killerChaseLvl2Music = "musicData_OUT_SkinwalkerChase";
+	killerChaseLvl1Music = "musicData_Eventide_SkinwalkerNear";
+	killerChaseLvl2Music = "musicData_Eventide_SkinwalkerChase";
 	
 	killeridlesound = "skinwalker_idle";
 	killeridlesoundamount = 5;

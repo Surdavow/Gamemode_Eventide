@@ -40,17 +40,17 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	killerraisearms = false;
 	killerlight = "NoFlareYLight";	
 
-	killerChaseLvl1Music = "musicData_OUT_RenownedNear";
-	killerChaseLvl2Music = "musicData_OUT_RenownedChase";
+	killerChaseLvl1Music = "musicData_Eventide_RenownedNear";
+	killerChaseLvl2Music = "musicData_Eventide_RenownedChase";
 
 	killeridlesound = "renowned_idle";
-	killeridlesoundamount = 8;
+	killeridlesoundamount = 11;
 
 	killerchasesound = "renowned_chase";
-	killerchasesoundamount = 6;
+	killerchasesoundamount = 18;
 
 	killermeleesound = "renowned_melee";
-	killermeleesoundamount = 3;
+	killermeleesoundamount = 4;
 	
 	killerweaponsound = "renowned_weapon";
 	killerweaponsoundamount = 5;	
@@ -94,7 +94,7 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
     else %funcclient = %client;	
 	
 	%obj.hideNode("ALL");
-	%obj.unHideNode((%funcclient.chest ? "femChest" : "chest"));	
+	%obj.unHideNode("chest");
 	%obj.unHideNode((%funcclient.rhand ? "rhook" : "rhand"));
 	%obj.unHideNode((%funcclient.lhand ? "lhook" : "lhand"));
 	%obj.unHideNode((%funcclient.rarm ? "rarmSlim" : "rarm"));
@@ -251,4 +251,10 @@ function Player::ClearRenownedEffect(%obj)
 						%obj.client.camera.setMode("Observer");
 		case "AIPlayer": %obj.setControlObject(%obj);
 	}
+}
+
+function PlayerRenowned::onDamage(%this, %obj, %delta)
+{
+	Parent::onDamage(%this, %obj, %delta);
+	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"renowned_pain" @ getRandom(1, 4) @ "_sound");
 }

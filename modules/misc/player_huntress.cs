@@ -10,8 +10,8 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	
 	meleetrailskin = "base";
 
-	killerChaseLvl1Music = "musicData_OUT_HuntressNear";
-	killerChaseLvl2Music = "musicData_OUT_HuntressChase";
+	killerChaseLvl1Music = "musicData_Eventide_HuntressNear";
+	killerChaseLvl2Music = "musicData_Eventide_HuntressChase";
 
 	killeridlesound = "huntress_idle";
 	killeridlesoundamount = 9;

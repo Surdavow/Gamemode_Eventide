@@ -91,7 +91,7 @@ datablock ItemData(sm_poolCueItem)
 	canDrop 			= true;
 	
 	meleeRange			= 4.5;
-	meleeHealth			= 6;
+	meleeHealth			= 2;
 	meleeDamageHit		= 35;
 	meleeDamageBreak	= 35;
 	meleeDamageType 	= $DamageType::PoolCue;

@@ -8,8 +8,8 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	hitobscureprojectile = KillerMacheteClankProjectile;
 	meleetrailskin = "ragged";	
 
-	killerChaseLvl1Music = "musicData_OUT_GrabberNear";
-	killerChaseLvl2Music = "musicData_OUT_GrabberChase";
+	killerChaseLvl1Music = "musicData_Eventide_MaskedNear";
+	killerChaseLvl2Music = "musicData_Eventide_MaskedChase";
 	
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
@@ -167,9 +167,9 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
     else %funcclient = %client;	
 	
 	%obj.hideNode("ALL");
-	%obj.unHideNode((%funcclient.chest ? "femChest" : "chest"));	
-	%obj.unHideNode((%funcclient.rhand ? "rhook" : "rhand"));
-	%obj.unHideNode((%funcclient.lhand ? "lhook" : "lhand"));
+	%obj.unHideNode("chest");	
+	%obj.unHideNode("rhand");
+	%obj.unHideNode("lhand");
 	%obj.unHideNode((%funcclient.rarm ? "rarmSlim" : "rarm"));
 	%obj.unHideNode((%funcclient.larm ? "larmSlim" : "larm"));
 	%obj.unHideNode("headskin");
@@ -186,8 +186,8 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	}	
 		
 	%obj.unHideNode("pants");
-	%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
-	%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));	
+	%obj.unHideNode("rshoe");
+	%obj.unHideNode("lshoe");	
 
 	%obj.setHeadUp(0);
 	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
@@ -220,11 +220,10 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("Lhand",%skinColor);
 	%obj.setNodeColor((%client.rarm ? "rarmSlim" : "rarm"),%shirtColor);
 	%obj.setNodeColor((%client.larm ? "larmSlim" : "larm"),%shirtColor);
-	%obj.setNodeColor((%client.chest ? "femChest" : "chest"),%shirtColor);
+	%obj.setNodeColor("chest",%shirtColor);
 	%obj.setNodeColor("pants",%pantsColor);
-	%obj.setNodeColor((%client.rleg ? "rpeg" : "rshoe"),%pantsColor);
-	%obj.setNodeColor((%client.lleg ? "lpeg" : "lshoe"),%pantsColor);
-	%obj.setNodeColor((%client.lleg ? "lpeg" : "lshoe"),%pantsColor);
+	%obj.setNodeColor("rshoe",%pantsColor);
+	%obj.setNodeColor("lshoe",%pantsColor);
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
 	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");

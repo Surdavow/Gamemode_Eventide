@@ -1062,7 +1062,7 @@ datablock ParticleData(GlowFaceParticle) {
 	constantAcceleration	= 0.0;
 	spinRandomMin			= 0.0;
 	spinRandomMax			= 0.0;
-	colors[0]				= "1.0 1.0 1.0 1.0";
+	colors[0]				= "1 1 1 0.5";
 	colors[1]				= "0.1 0.1 0.1 0.1";
 	colors[2]				= "0.0 0.0 0.0 0.0";
 	sizes[0]				= 0.7;
@@ -1077,7 +1077,7 @@ datablock ParticleData(GlowFaceParticle) {
 datablock ParticleEmitterData(GlowFaceEmitter) {
 	uiName				= "Glow Face Emitter";
 	particles			= "GlowFaceParticle";
-	ejectionPeriodMS	= 10;
+	ejectionPeriodMS	= 1;
 	periodVarianceMS	= 0;
 	ejectionVelocity	= 0.0;
 	velocityVariance	= 0.0;
@@ -1100,7 +1100,7 @@ datablock ParticleData(GlowFaceZombieParticle)
 	constantAcceleration	= 0.0;
 	spinRandomMin			= 0.0;
 	spinRandomMax			= 0.0;
-	colors[0]				= "1.0 1.0 1.0 1.0";
+	colors[0]				= "1.0 1.0 1.0 0.5";
 	colors[1]				= "0.1 0.1 0.1 0.1";
 	colors[2]				= "0.0 0.0 0.0 0.0";
 	sizes[0]				= 0.7;
@@ -1115,7 +1115,7 @@ datablock ParticleData(GlowFaceZombieParticle)
 datablock ParticleEmitterData(GlowFaceZombieEmitter) {
 	uiName				= "";
 	particles			= "GlowFaceZombieParticle";
-	ejectionPeriodMS	= 10;
+	ejectionPeriodMS	= 1;
 	periodVarianceMS	= 0;
 	ejectionVelocity	= 0.0;
 	velocityVariance	= 0.0;
@@ -1437,13 +1437,14 @@ datablock ShapeBaseImageData(RenownedPossessedImage)
 	stateEmitterTime[0]        = 5000;
 	stateEmitterTime[0]        = 5;
 	stateTransitionOnTimeout[0]= "Wait";
-    stateSound[0]               = "renowned_Possessed_sound";
+    stateSound[0]               = "renowned_Possessed2_sound";
 };
 
 datablock ShapeBaseImageData(GlowFaceImage) 
 {
 	shapeFile			= "base/data/shapes/empty.dts";
 	mountPoint			= 5;
+	offset 				= "-0.09 -0.03 0.033";
 	correctMuzzleVector	= false;
 	stateName[0]				= "Glow";
 	stateEmitter[0]				= GlowFaceEmitter;

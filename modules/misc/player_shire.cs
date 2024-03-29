@@ -13,8 +13,8 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	rightclickicon = "color_blind";
 	leftclickicon = "color_melee";
 
-	killerChaseLvl1Music = "musicData_OUT_ShireNear";
-	killerChaseLvl2Music = "musicData_OUT_ShireChase";
+	killerChaseLvl1Music = "musicData_Eventide_HexNear";
+	killerChaseLvl2Music = "musicData_Eventide_HexChase";
 
 	killeridlesound = "shire_idle";
 	killeridlesoundamount = 9;
@@ -96,7 +96,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 					%obj.unmountImage(2);
 					cancel(%obj.channelcasthand);
 					cancel(%obj.channelcasthandimage);
-					%obj.setNodeColor(lHand, %obj.client.lhandcolor);
+					%obj.setNodeColor(lHand, "1 1 1 1");
 			
 					if(%obj.casttime+500 < getSimTime())
 					{
@@ -162,7 +162,7 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%skinColor = "1 1 1 1";
 
 	%obj.setFaceName("shire");
-	%obj.setDecalName("hoodie");
+	%obj.setDecalName("robe");
 	%obj.setNodeColor("rarm",%hoodieColor);
 	%obj.setNodeColor("larm",%hoodieColor);
 	%obj.setNodeColor("femchest",%hoodieColor);

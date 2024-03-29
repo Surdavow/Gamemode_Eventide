@@ -20,8 +20,8 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 
 	killerlight = "NoFlareRLight";	
 
-	killerChaseLvl1Music = "musicData_OUT_PuppetMasterNear";
-	killerChaseLvl2Music = "musicData_OUT_PuppetMasterChase";
+	killerChaseLvl1Music = "musicData_Eventide_PuppetMasterNear";
+	killerChaseLvl2Music = "musicData_Eventide_PuppetMasterChase";
 
 	killeridlesound = "puppetmaster_idle";
 	killeridlesoundamount = 3;

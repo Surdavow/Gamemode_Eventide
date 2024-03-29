@@ -11,8 +11,8 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 
 	killerSpawnMessage = "A fanged anomally of the forest has arrived.";
 
-	killerchaselvl1music = "musicData_OUT_SkullWolfNear";
-	killerchaselvl2music = "musicData_OUT_SkullWolfChase";
+	killerchaselvl1music = "musicData_Eventide_FiendNear";
+	killerchaselvl2music = "musicData_Eventide_FiendChase";
 
 	killeridlesound = "skullwolf_idle";
 	killeridlesoundamount = 12;
