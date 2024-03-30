@@ -12,8 +12,8 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	killerChaseLvl1Music = "";
 	killerChaseLvl2Music = "";
 
-	killeridlesound = "";
-	killeridlesoundamount = 9;
+	killeridlesound = "render_idle";
+	killeridlesoundamount = 19;
 
 	killerchasesound = "";
 	killerchasesoundamount = 4;
@@ -332,4 +332,10 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	}
 
 	%obj.reappearsched = %this.schedule(33, reappear, %obj, %alpha);	
+}
+
+function PlayerRender::onDamage(%this, %obj, %delta)
+{
+	Parent::onDamage(%this, %obj, %delta);
+	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"render_hurt" @ getRandom(1, 4) @ "_sound");
 }
