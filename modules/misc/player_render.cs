@@ -79,12 +79,11 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					{
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
 						%obj.playaudio(0,"render_pain_sound");
-						%obj.playaudio(2,"renowned_charged_sound");
-						serverPlay3D("renowned_charged_sound",%hit.getPosition());						
+						%hit.playaudio(2,"render_turn");
+						%hit.mountImage("RenderTurnImage",3);
+						//serverPlay3D("renowned_charged_sound",%hit.getPosition());						
 						//%hit.mountImage("sm_stunImage",2);
-						%transform = %hit.getTransform();
-						%transform = setWord(%transform, 6, getWord(%transform, 6) + $pi);
-						%hit.setTransform(%transform);
+						loopTurn(%hit, getRandom(-1, 1));
 					}
 				}
 				
@@ -105,6 +104,26 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					if(!isEventPending(reappearsched)) %obj.setEnergylevel(66);										
 				}
 	}	
+}
+
+function loopTurn(%pl, %direction, %currTotal)
+{
+  cancel(%pl.loopTurnSchedule);
+  
+  %rotationChange = 0.04;
+  %currTotal += %rotationChange;
+
+  %transform = %pl.getTransform();
+  %currZDir = getWord(%transform, 5) >= 0 ? 1.0 : -1.0;
+  %transform = setWord(%transform, 6, getWord(%transform, 6) + %direction * %currZDir * %rotationChange);
+  %pl.setTransform(%transform);
+
+  if (%currTotal > 3.14159)
+	%pl.playaudio(2,render_turnComplete);
+	%hit.unmountImage("RenderTurnImage",3);
+    return;
+
+  %pl.loopTurnSchedule = schedule(50, %pl, loopTurn, %pl, %direction, %currTotal);
 }
 
 function PlayerRender::onNewDatablock(%this,%obj)
@@ -269,7 +288,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 				if(%player.getdamagepercent() >= 0.75 && %obj.lastlaughtime < getSimTime())
 				{
 					%obj.lastlaughtime = getSimTime()+5000;
-					%obj.playaudio(0,"render_laugh_sound");
+					%obj.playaudio(1,"render_laugh_sound");
 				}				
 			}		
 		}		
