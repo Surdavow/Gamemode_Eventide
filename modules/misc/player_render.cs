@@ -15,8 +15,8 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	killeridlesound = "render_idle";
 	killeridlesoundamount = 19;
 
-	killerchasesound = "";
-	killerchasesoundamount = 4;
+	killerchasesound = "render_idle";
+	killerchasesoundamount = 19;
 
 	killermeleesound = "";
 	killermeleesoundamount = 0;	
@@ -31,7 +31,7 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 	rightclickspecialicon = "";
 	leftclickspecialicon = "";
 
-	rechargeRate = 0.25;
+	rechargeRate = 0.3;
 	maxTools = 0;
 	maxWeapons = 0;
 	maxForwardSpeed = 4;
@@ -69,7 +69,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 		
 	if(%press) switch(%trig)
 	{
-		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= 50)
+		case 0:	if(!%obj.isInvisible && %obj.getEnergyLevel() >= 100)
 				{
 					%startpos = %obj.getMuzzlePoint(0);
 					%endpos = %obj.getMuzzleVector(0);	
@@ -77,11 +77,14 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 
 					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
 					{
-						%obj.setEnergyLevel(%obj.getEnergyLevel()-50);
+						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
 						%obj.playaudio(0,"render_pain_sound");
 						%obj.playaudio(2,"renowned_charged_sound");
 						serverPlay3D("renowned_charged_sound",%hit.getPosition());						
-						%hit.mountImage("sm_stunImage",2);
+						//%hit.mountImage("sm_stunImage",2);
+						%transform = %hit.getTransform();
+						%transform = setWord(%transform, 6, getWord(%transform, 6) + $pi);
+						%hit.setTransform(%transform);
 					}
 				}
 				
