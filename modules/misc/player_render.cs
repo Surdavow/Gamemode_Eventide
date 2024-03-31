@@ -79,10 +79,10 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					{
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
 						%obj.playaudio(0,"render_pain_sound");
-						%hit.playaudio(2,"render_turn");
 						%hit.mountImage("RenderTurnImage",3);
-						//serverPlay3D("renowned_charged_sound",%hit.getPosition());						
-						//%hit.mountImage("sm_stunImage",2);
+						%hit.playaudio(0,"render_turn_sound");
+						%hit.schedule(4950,playaudio,0,"render_turnComplete_sound");
+						%hit.schedule(4950,unMountImage,3);
 						loopTurn(%hit, getRandom(-1, 1));
 					}
 				}
@@ -119,8 +119,6 @@ function loopTurn(%pl, %direction, %currTotal)
   %pl.setTransform(%transform);
 
   if (%currTotal > 3.14159)
-	%pl.playaudio(2,render_turnComplete);
-	%hit.unmountImage("RenderTurnImage",3);
     return;
 
   %pl.loopTurnSchedule = schedule(50, %pl, loopTurn, %pl, %direction, %currTotal);
