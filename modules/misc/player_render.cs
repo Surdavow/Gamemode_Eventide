@@ -78,12 +78,12 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
 					{
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
-						%obj.playaudio(0,"render_pain_sound");
+						//%obj.playaudio(0,"render_pain_sound");
 						%hit.mountImage("RenderTurnImage",3);
 						%hit.playaudio(0,"render_turn_sound");
 						%hit.schedule(4950,playaudio,0,"render_turnComplete_sound");
 						%hit.schedule(4950,unMountImage,3);
-						loopTurn(%hit, getRandom(-1, 1));
+						loopTurn(%hit, getRandom(0, 1) * 2 - 1);
 					}
 				}
 				
