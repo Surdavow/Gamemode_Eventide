@@ -1512,6 +1512,21 @@ datablock ShapeBaseImageData(RenderTurnImage)
 	stateTransitionOnTimeout[0]= "Wait";
 };
 
+datablock ShapeBaseImageData(PrepperImage) 
+{
+	shapeFile			= "base/data/shapes/empty.dts";
+	mountPoint			= 5;
+	offset 				= "0 0 0";
+	correctMuzzleVector	= false;
+	stateName[0]				= "Glow";
+	stateEmitter[0]				= PrepperEmitter;
+	stateEmitterTime[0]			= 1000;
+	stateWaitForTimeout[0]		= true;
+	stateTimeoutValue[0]		= 1000;
+	stateTransitionOnTimeout[0]	= "Glow";
+	stateScript[0]				= "onGlow";
+};
+
 datablock ShapeBaseImageData(GlowFaceImage) 
 {
 	shapeFile			= "base/data/shapes/empty.dts";

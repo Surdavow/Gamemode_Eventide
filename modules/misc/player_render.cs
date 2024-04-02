@@ -157,6 +157,7 @@ function PlayerRender::EventideAppearance(%this,%obj)
 	%obj.setnodecolor("RHand", "0 0 0 1");
 	%obj.setdecalname("AAA-None");
 	%obj.setfacename("asciiTerror");
+	%obj.startFade(0, 0, true);
 }
 
 function PlayerRender::onRemove(%this,%obj)
@@ -335,10 +336,10 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 
 	if(%alpha == 0) 
 	{
-		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 		%this.EventideAppearance(%obj,%obj.client);
 		%obj.isInvisible = false;
 		%obj.playaudio(1,"render_appear_sound");
+		%obj.mountImage("PrepperImage",3);
 	}
 
 	%alpha = mClampF(%alpha+0.15,0,1);		
@@ -346,6 +347,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	if(%alpha == 1) 
 	{
 		%obj.setTempSpeed(1);
+		%obj.unMountImage(3);
 		%this.EventideAppearance(%obj);
 		%this.Prepperizer(%obj);
 		return;
