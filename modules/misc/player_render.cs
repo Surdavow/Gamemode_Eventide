@@ -337,7 +337,6 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	if(%alpha == 0) 
 	{
 		%this.EventideAppearance(%obj,%obj.client);
-		%obj.isInvisible = false;
 		%obj.playaudio(1,"render_appear_sound");
 		%obj.mountImage("PrepperImage",3);
 	}
@@ -347,6 +346,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	if(%alpha == 1) 
 	{
 		%obj.setTempSpeed(1);
+		%obj.isInvisible = false;
 		%obj.unMountImage(3);
 		%this.EventideAppearance(%obj);
 		%this.Prepperizer(%obj);
