@@ -80,6 +80,12 @@ datablock ShapeBaseImageData(meleeMacheteImage : meleeTantoImage)
    mountPoint = 0;
 };
 
+datablock ShapeBaseImageData(meleeKnifeImage : meleeTantoImage)
+{
+   shapeFile = "./models/knife.dts";
+   mountPoint = 0;
+};
+
 datablock ShapeBaseImageData(meleePuppetMasterDaggerImage : meleeTantoImage)
 {
    shapeFile = "./models/puppetmasterdagger.dts";

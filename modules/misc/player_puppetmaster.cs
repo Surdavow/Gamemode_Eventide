@@ -43,9 +43,10 @@ datablock PlayerData(PlayerPuppetMaster : PlayerRenowned)
 	rechargeRate = 0.3;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.74;
-	maxBackwardSpeed = 3.85;
-	maxSideSpeed = 5.78;
+	maxForwardSpeed = 6.25;
+	maxBackwardSpeed = 3.57;
+	maxSideSpeed = 5.36;
+	//+5% Speed
 	cameramaxdist = 3;
 	maxfreelookangle = 2.5;
 	boundingBox = "4.8 4.8 10.1";

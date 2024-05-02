@@ -83,6 +83,8 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 						%hit.playaudio(0,"render_turn_sound");
 						%hit.schedule(4950,playaudio,0,"render_turnComplete_sound");
 						%hit.schedule(4950,unMountImage,3);
+						%hit.setTempSpeed(0.333);
+						%hit.schedule(4950,setTempSpeed,1);
 						loopTurn(%hit, getRandom(0, 1) * 2 - 1);
 					}
 				}

@@ -61,9 +61,10 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	rechargeRate = 0.375;	
 	maxDamage = 9999;
 	jumpForce = 9;
-	maxForwardSpeed = 6.27;
-	maxBackwardSpeed = 3.58;
-	maxSideSpeed = 5.38;
+	maxForwardSpeed = 6.16;
+	maxBackwardSpeed = 3.52;
+	maxSideSpeed = 5.28;
+	//+10% Speed
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
 	maxItems   = 0;
@@ -106,7 +107,7 @@ function PlayerSkinwalker::onNewDatablock(%this,%obj)
     
     %obj.schedule(1,playaudio,0,"skinwalker_roar_sound");
     %obj.schedule(1, setEnergyLevel,0);    
-	for(%i = 0; %i < getRandom(1,2); %i++) %obj.schedule(50,spawnExplosion,"bloodDismemberProjectile",%obj.getScale());   
+	for(%i = 0; %i < getRandom(1,2); %i++) %obj.schedule(50,spawnExplosion,"goryExplosionProjectile",%obj.getScale());   
 
 	KillerSpawnMessage(%obj);
     %obj.isSkinwalker = true;

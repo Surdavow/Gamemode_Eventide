@@ -356,7 +356,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 
 	if(%damage >= %this.maxDamage*2 && %obj.getState() $= "Dead" && %damageType != $DamageType::Suicide) 
 	{
-		%obj.spawnExplosion("bloodDismemberProjectile",%obj.getScale());
+		%obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
 		%obj.schedule(1,delete);
 	}
 }

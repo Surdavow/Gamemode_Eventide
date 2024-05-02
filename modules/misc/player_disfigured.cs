@@ -33,7 +33,7 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	leftclickicon = "color_melee";	
 
 	rechargeRate = 0.3;
-	runForce = "810";
+	runForce = 810;
 	maxTools = 0;
 	maxWeapons = 0;
 	maxForwardSpeed = 7.7;
@@ -62,7 +62,7 @@ function PlayerDisfigured::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
-	%obj.setScale("1.15 1.15 1.15");
+	%obj.setScale("1.1 1.1 1.1");
 	%obj.mountImage("BleedImage",0);
 	%obj.mountImage("FogImage",1);
 	KillerSpawnMessage(%obj);

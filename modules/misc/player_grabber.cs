@@ -35,9 +35,10 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	rechargeRate = 0.65;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.37;
-	maxBackwardSpeed = 3.64;
-	maxSideSpeed = 5.46;
+	maxForwardSpeed = 6.55;
+	maxBackwardSpeed = 3.74;
+	maxSideSpeed = 5.61;
+	//+10% Speed
 	cameramaxdist = 3;
 	maxfreelookangle = 2.5;
 	jumpForce = 0;

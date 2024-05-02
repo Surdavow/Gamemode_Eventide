@@ -33,9 +33,10 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	rechargeRate = 0.3;
 	maxTools = 1;
 	maxWeapons = 1;
-	maxForwardSpeed = 5.95;
-	maxBackwardSpeed = 3.4;
-	maxSideSpeed = 5.1;
+	maxForwardSpeed = 6.25;
+	maxBackwardSpeed = 3.57;
+	maxSideSpeed = 5.36;
+	//+5% Speed
 	jumpForce = 0;
 	PainSound = "huntress_pain";
 };

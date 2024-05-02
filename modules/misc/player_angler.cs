@@ -9,13 +9,14 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	uiName = "Angler Player";
 	shapeFile = AnglerDTS.baseShape;
 
-	rechargeRate = 0.315;
+	rechargeRate = 0.33;
 	maxTools = 0;
 	maxWeapons = 0;
 	jumpForce = 0;
-	maxForwardSpeed = 5.95;
-	maxBackwardSpeed = 3.4;
-	maxSideSpeed = 5.1;
+	maxForwardSpeed = 5.6;
+	maxBackwardSpeed = 3.2;
+	maxSideSpeed = 4.8;
+	//+0% Speed
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
 

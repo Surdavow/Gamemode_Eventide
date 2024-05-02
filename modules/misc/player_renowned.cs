@@ -22,6 +22,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	maxForwardSpeed = 7.32;
 	maxBackwardSpeed = 4.18;
 	maxSideSpeed = 6.27;
+	//+10% Speed
 	useCustomPainEffects = true;
 	jumpSound = "";
 	PainSound		= "";

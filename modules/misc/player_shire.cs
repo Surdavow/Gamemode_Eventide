@@ -26,7 +26,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killermeleesoundamount = 3;	
 	
 	killerweaponsound = "shire_weapon";
-	killerweaponsoundamount = 5;	
+	killerweaponsoundamount = 5;
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
@@ -36,9 +36,10 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	rechargeRate = 0.3;
 	maxTools = 0;
 	maxWeapons = 0;
-	maxForwardSpeed = 6.93;
-	maxBackwardSpeed = 3.96;
-	maxSideSpeed = 5.94;
+	maxForwardSpeed = 6.55;
+	maxBackwardSpeed = 3.74;
+	maxSideSpeed = 5.61;
+	//+10% Speed
 	jumpForce = 0;
 };
 
@@ -138,7 +139,7 @@ function PlayerShire::onPeggFootstep(%this,%obj)
 function PlayerShire::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);	
-	%obj.setScale("1.1 1.1 1.1");
+	%obj.setScale("1.15 1.15 1.15");
 	%obj.mountImage("meleeAxeImage",0);
 	%obj.mountImage("newhoodieimage",3,2,addTaggedString("darkpurple"));
 	KillerSpawnMessage(%obj);

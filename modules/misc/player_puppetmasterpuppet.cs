@@ -21,9 +21,11 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 	maxWeapons = 0;
 	firstpersononly = true;
 	isKiller = true;
-	maxForwardSpeed = 13.06;
-	maxBackwardSpeed = 7.46;
-	maxSideSpeed = 11.20;
+	runForce = 5616;
+	maxForwardSpeed = 10.47;
+	maxBackwardSpeed = 5.98;
+	maxSideSpeed = 8.58;
+	//+15% Speed
 	maxDamage = 10;
 	jumpforce = 0;
 	showenergybar = false;
@@ -31,7 +33,7 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 
 function PuppetMasterPuppet::onNewDatablock(%this,%obj)
 {
-	%obj.setScale("0.65 0.65 0.65");
+	%obj.setScale("0.7 0.7 0.7");
 	%obj.schedule(1,setEnergyLevel,100);
 	%this.EventideAppearance(%obj,ClientGroup.getObject(getRandom(0,ClientGroup.getCount()-1)));
 }
