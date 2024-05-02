@@ -57,6 +57,12 @@ function PuppetMasterPuppet::onDisabled(%this,%obj)
 	%obj.schedule(1,delete);
 }
 
+function PuppetMasterPuppet::onRemove(%this,%obj)
+{
+	Parent::onRemove(%this,%obj);
+	
+}
+
 function PuppetMasterPuppet::EventideAppearance(%this,%obj,%client)
 {
 	%obj.hideNode("ALL");
