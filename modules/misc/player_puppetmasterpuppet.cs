@@ -42,10 +42,29 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 			
-	if(%press) switch(%trig)
+	switch(%trig)
 	{
-		case 0:	%obj.KillerMelee(%this,3.5);
-		case 4: //right click
+		case 0: %obj.KillerMelee(%this,3.5);
+		
+		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
+				if(%press)
+				{
+					%obj.casttime = getSimTime();
+					%obj.chargejumpsound = %obj.schedule(500,playaudio,1,"puppet_jumpCharge_sound");
+				}
+				else
+				{
+					cancel(%obj.chargejumpsound);
+					
+					if(%obj.casttime+500 < getSimTime())
+					{
+						%obj.setEnergyLevel(0);
+						%obj.playthread(3,"rightrecoil");
+						serverPlay3d("puppet_jump_sound", %obj.getEyePoint());
+						%obj.setVelocity(vectorscale(%obj.getForwardVector(),30));
+					}
+				}
+		default:
 	}
 }
 
