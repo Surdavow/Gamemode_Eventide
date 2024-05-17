@@ -72,7 +72,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				{
 					case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
 												{
-													if(%hit.getDamagePercent() > 0.5)
+													if(%hit.getDamagePercent() > 0.05)
 													{
 														if(isObject(%hit.client)) 
 														{
@@ -101,7 +101,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 													
 												}
 
-					case "PlayerSkullwolf":	if(%hit.getDamagePercent() > 0.5 && %hit.getdataBlock().isDowned)
+					case "PlayerSkullwolf":	if(%hit.getDamagePercent() > 0.25 && %hit.getdataBlock().isDowned)
 											{
 												%obj.getdataBlock().eatVictim(%obj,%hit);
 												return;
@@ -136,8 +136,8 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 					%effect.explode();
 				}
 
-				%obj.setTempSpeed(0.5);	
-				%obj.schedule(2000,setTempSpeed,1);
+				%obj.setTempSpeed(0.3);	
+				%obj.schedule(2500,setTempSpeed,1);
 			}			
 		}
 	}

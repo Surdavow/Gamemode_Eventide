@@ -32,7 +32,7 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	leftclickicon = "color_melee";
 
 	firstpersononly = false;
-	rechargeRate = 0.65;
+	rechargeRate = 0.5;
 	maxTools = 0;
 	maxWeapons = 0;
 	maxForwardSpeed = 6.55;

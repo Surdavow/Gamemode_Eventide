@@ -81,7 +81,7 @@ function PlayerSkullWolf::bottomprintgui(%this,%obj,%client)
 	// Change them to special if they exist
 	if(%obj.getEnergyLevel() >= 25 && %this.leftclickspecialicon !$= "" && isObject(%obj.gazing) && %obj.gazing.getdataBlock().isDowned)
 	{		
-		%leftclickstatus = (%obj.gazing.getDamagePercent() > 0.5) ? "hi" : "lo";
+		%leftclickstatus = (%obj.gazing.getDamagePercent() > 0.25) ? "hi" : "lo";
 		%leftclickicon = "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickspecialicon @ ">";
 	}
 

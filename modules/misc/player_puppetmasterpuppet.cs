@@ -50,13 +50,13 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 				if(%press)
 				{
 					%obj.casttime = getSimTime();
-					%obj.chargejumpsound = %obj.schedule(500,playaudio,1,"puppet_jumpCharge_sound");
+					%obj.chargejumpsound = %obj.schedule(1,playaudio,1,"puppet_jumpCharge_sound");
 				}
 				else
 				{
 					cancel(%obj.chargejumpsound);
 					
-					if(%obj.casttime+500 < getSimTime())
+					if(%obj.casttime+350 < getSimTime())
 					{
 						%obj.setEnergyLevel(0);
 						%obj.playthread(3,"rightrecoil");

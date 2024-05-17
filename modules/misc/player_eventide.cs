@@ -179,7 +179,7 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			%obj.savevictimcounter = 0;
 			if(isObject(%obj.client)) %obj.client.centerprint("<color:FFFFFF><font:impact:40>You revived" SPC %victim.client.name,1);
 			if(isObject(%victim.client)) %victim.client.centerprint("<color:FFFFFF><font:impact:40>You were revived by" SPC %obj.client.name,1);
-			%victim.setHealth(25);			
+			%victim.setHealth(99);			
 			%victim.setDatablock("EventidePlayer");			
 			%victim.playthread(0,"root");
 			if(%victim.downedamount >= 1) %victim.getdataBlock().PulsingScreen(%victim);
@@ -387,7 +387,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
-			%obj.addhealth(-2.5);
+			%obj.addhealth(-1);
 			%obj.setdamageflash(0.25);
 
 			if(%obj.lastcry+10000 < getsimtime())
@@ -470,7 +470,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 				position = %pos;
 			};
 			%itemVec = %vec;
-			%itemVec = vectorAdd(%itemVec,getRandom(-8,8) SPC getRandom(-8,8) SPC 10);
+			//%itemVec = vectorAdd(%itemVec,getRandom(-8,8) SPC getRandom(-8,8) SPC 10);
 			%item.BL_ID = %funcclient.BL_ID;
 			%item.minigame = %minigame;
 			%item.spawnBrick = -1;

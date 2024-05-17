@@ -3,7 +3,7 @@ datablock ItemData(StunGun)
 	category = "Weapon";
 	className = "Weapon";
 
-	shapeFile = "base/data/shapes/printGun.dts";
+	shapeFile = "./models/glitchgun.dts";
 	rotate = false;
 	mass = 1;
 	density = 0.2;
@@ -13,7 +13,7 @@ datablock ItemData(StunGun)
 
 	//gui stuff
 	uiName = "Stun Gun";
-	iconName = "base/client/ui/itemIcons/Printer";
+	iconName = "./icons/icon_glitchgun";
 	doColorShift = true;
 	colorShiftColor = "0.0 1.0 1.0 1.0";
 	image = StunGunImage;
@@ -22,7 +22,7 @@ datablock ItemData(StunGun)
 
 datablock ShapeBaseImageData(StunGunImage)
 {
-    shapeFile = "base/data/shapes/printGun.dts";
+    shapeFile = "./models/glitchgun.dts";
     emap = true;
     mountPoint = 0;
     offset = "0 0 0";
