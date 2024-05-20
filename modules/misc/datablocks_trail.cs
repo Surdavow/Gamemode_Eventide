@@ -14,6 +14,10 @@ addExtraResource(%root @ "/models/trails/ragged.trail.png");
 addExtraResource(%root @ "/models/trails/baseClaw.trail.png");
 addExtraResource(%root @ "/models/trails/raggedClaw.trail.png");
 
+// Killer other trails:
+
+addExtraResource(%root @ "/models/trails/magic.trail.png");
+
 datablock StaticShapeData(KillerTrailShape)
 {
 	shapeFile = "./models/trails/skinnableTrail.dts";
