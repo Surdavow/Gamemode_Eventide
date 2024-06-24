@@ -143,12 +143,9 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 	}
 }
 
-function Player::onKillerLoop(%obj)
+function Armor::onKillerLoop(%this,%obj)
 {
-    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj)))
-	return;
-
-    %this = %obj.getDataBlock();
+    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj))) return;	
 
 	// In case the player is not a killer, such as the skinwalker mimicking a player
 	if(%obj.getDataBlock().isKiller)
@@ -274,7 +271,7 @@ function Player::onKillerLoop(%obj)
 	%this.bottomprintgui(%obj,%client);
 
     cancel(%obj.onKillerLoop); // Prevent duplicate processes
-    %obj.onKillerLoop = %obj.schedule(500, onKillerLoop);
+    %obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
 }
 
 function Armor::bottomprintgui(%this,%obj,%client)

@@ -1,3 +1,66 @@
+package Eventide_Items
+{
+	function Player::Pickup(%obj,%item)
+	{		
+		//Skinwalker players should not be able to pickup items
+		if(%obj.isSkinwalker || %obj.getdataBlock().isKiller) return false;
+		%parent = Parent::Pickup(%obj,%item);
+
+		if(%parent == 1)
+		if(%obj.getDatablock().getName() $= "EventidePlayer" && isObject(getMinigameFromObject(%obj))) 
+		{
+			if(isObject(%brick = %item.spawnBrick)) %brick.setEmitter();
+			%item.delete();
+		}		
+	}	
+	
+	function ItemData::onAdd(%this, %obj)
+	{				
+		if (!%obj.static) itemEmitterLoop(%obj);
+		parent::onAdd(%this,%obj);
+	}
+
+	function ItemData::onRemove(%this, %obj)
+	{				
+		if (isObject(%obj.emitter)) %obj.emitter.delete();
+		parent::onRemove(%this,%obj);
+	}	
+
+	function Item::schedulePop (%obj)
+	{
+		if(!isObject(DroppedItemGroup))
+		{
+			new SimGroup(DroppedItemGroup);
+			missionCleanUp.add(DroppedItemGroup);
+		}
+		DroppedItemGroup.add(%obj);
+
+		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount()))
+		return;
+		else return Parent::schedulePop(%obj);		
+	}	
+
+	// Item ammo support
+	function serverCmdLight(%c)
+	{
+		%p = %c.player;
+		if(isObject(%p) && ItemAmmo_Unload(%p))
+		{
+			%p.setImageLoaded(0,ItemAmmo_HasAmmo(%p));
+			return "";
+		}
+		parent::serverCmdLight(%c);
+	}
+};
+
+// In case the package is already activated, deactivate it first before reactivating it
+if(isPackage(Eventide_Items)) deactivatePackage(Eventide_Items);
+activatePackage(Eventide_Items);
+
+//////////////////////
+// Item ammo functions
+//////////////////////
+
 function ItemAmmo_AmmoImage::onSelect(%data,%obj,%slot)
 {
 	%selected = %obj.ItemAmmo_Selected;
@@ -263,18 +326,3 @@ function ItemAmmo_Unload(%p)
 
 	return false;
 }
-
-package ItemAmmo
-{
-	function serverCmdLight(%c)
-	{
-		%p = %c.player;
-		if(isObject(%p) && ItemAmmo_Unload(%p))
-		{
-			%p.setImageLoaded(0,ItemAmmo_HasAmmo(%p));
-			return "";
-		}
-		parent::serverCmdLight(%c);
-	}
-};
-activatePackage("ItemAmmo");

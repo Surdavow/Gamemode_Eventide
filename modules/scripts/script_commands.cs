@@ -11,3 +11,9 @@ function serverCmdGetRitualCount(%client)
 	if(!%client.isAdmin || !isObject(EventideShapeGroup) || !EventideRitualSet.getCount()) return;
 	%client.chatmessage("\c2" @ EventideRitualSet.getCount() SPC "\c2ritual placements exist");
 }
+
+function serverCmdResetMinigame(%client)
+{
+	if(!%client.isAdmin && !isObject(%client.minigame)) return;
+	%client.minigame.reset();	
+}
