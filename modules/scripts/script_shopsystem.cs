@@ -8,8 +8,8 @@ new ScriptObject(EventideShopMainMenu)
     isCenterprintMenu = 1;
     menuName = "Eventide Shop";
 
-    menuOption[0] = "Effects";
-    menuFunction[0] = "openOptionShop";    
+     menuOption[0] = "Effects";
+    menuFunction[0] = "openOptionShop";
     menuOption[1] = "Custom Title";
     menuFunction[1] = "openOptionShop";
     menuOption[2] = "Instruments";

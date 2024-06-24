@@ -7,7 +7,7 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	// Weapon: Claws
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = "";
-	meleetrailskin = "ragged";
+	meleetrailskin = "magic";
 
 	killerChaseLvl1Music = "musicData_Eventide_DisfiguredNear";
 	killerChaseLvl2Music = "musicData_Eventide_DisfiguredChase";

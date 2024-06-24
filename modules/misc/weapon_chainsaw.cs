@@ -154,19 +154,6 @@ datablock ShapeBaseImageData(ChainsawImage)
    doColorShift = true;
    colorShiftColor = ChainsawItem.colorShiftColor;//"0.400 0.196 0 1.000";
 
-   TT_raycastEnabled = true;
-   TT_raycastWeaponRange = 5;
-   TT_raycastWeaponTargets = $TypeMasks::FxBrickObjectType |	//Targets the weapon can hit: Raycasting Bricks
-   				$TypeMasks::PlayerObjectType |	//AI/Players
-   				$TypeMasks::StaticObjectType |	//Static Shapes
-   				$TypeMasks::TerrainObjectType |	//Terrain
-   				$TypeMasks::VehicleObjectType;	//Vehicles
-   TT_raycastExplosionProjectile = hammerProjectile;
-//TT_raycastExplosionBrickSound = L4BMacheteHitSoundA;
-//TT_raycastExplosionPlayerSound = L4BMacheteHitSoundB;
-   TT_raycastDirectDamage = 15;
-   TT_raycastDirectDamageType = $DamageType::Chainsaw;
-
    //casing = " ";
 
    // Images have a state system which controls how the animations

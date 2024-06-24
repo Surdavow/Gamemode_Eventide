@@ -1,20 +1,20 @@
 datablock AudioDescription(AudioFSRun)
 {
-	volume = 0.75;
+	volume = 0.85;
 	isLooping = false;
 	is3D = 1;
-	ReferenceDistance = 5;
-	maxDistance = 25;
+	ReferenceDistance = 7;
+	maxDistance = 35;
 	type = $SimAudioType;
 };
 
 datablock AudioDescription(AudioFSWalk)
 {
-	volume = 0.5;
+	volume = 0.60;
 	isLooping = false;
 	is3D = 1;
-	ReferenceDistance = 2.5;
-	maxDistance = 25;
+	ReferenceDistance = 3.5;
+	maxDistance = 35;
 	type = $SimAudioType;
 };
 
