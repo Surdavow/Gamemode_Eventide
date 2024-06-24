@@ -181,7 +181,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 					MissionCleanup.add(%p);
 					%obj.unmountImage(1);
 					%obj.playthread(2,"leftrecoil");
-					%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/1);
+					%obj.setEnergyLevel(20);
 
 					if(isObject(%obj.hookrope)) %obj.hookrope.delete();
 					else
@@ -341,7 +341,7 @@ function AnglerHookProjectile::onCollision(%this,%proj,%col,%fade,%pos,%normal)
 		%obj.hookrope.end = %col;
 		%col.playaudio(3,"angler_hookCatch_sound");
 		%col.damage(%obj, %pos, 10, $DamageType::Default);
-		%obj.hookrope.schedule(5000,"delete");
+		%obj.hookrope.schedule(1750,"delete");
 		return;
 	}
 	else %obj.hookrope.delete();
