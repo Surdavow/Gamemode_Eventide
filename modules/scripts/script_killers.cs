@@ -269,7 +269,9 @@ function Player::onKillerLoop(%obj)
     	}
 	}
 
-	%this.bottomprintgui(%obj,%obj.client);
+	// Bottom print gui
+	if (isObject(%client = %obj.client)) 
+	%this.bottomprintgui(%obj,%client);
 
     cancel(%obj.onKillerLoop); // Prevent duplicate processes
     %obj.onKillerLoop = %obj.schedule(500, onKillerLoop);
@@ -282,18 +284,15 @@ function Armor::bottomprintgui(%this,%obj,%client)
 	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
 	%energylevel = %obj.getEnergyLevel();
 
-	if (%obj.leftclickicon $= "") %obj.leftclickicon = %this.leftclickicon;
-	if (%obj.rightclickicon $= "") %obj.rightclickicon = %this.rightclickicon;
-
 	// Some dynamic varirables
 	%leftclickstatus = (%obj.getEnergyLevel() >= 25) ? "hi" : "lo";
 	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
-	%leftclicktext = (%obj.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
-	%rightclicktext = (%obj.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
+	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
 
 	// Regular icons
-	%leftclickicon = (%obj.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %obj.leftclickicon @ ">" : "";
-	%rightclickicon = (%obj.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %obj.rightclickicon @ ">" : "";
+	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
+	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
 
 	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
 }

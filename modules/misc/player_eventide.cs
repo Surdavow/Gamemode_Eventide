@@ -10,6 +10,12 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	shapeFile = EventideplayerDts.baseShape;
 	uiName = "Eventide Player";
 
+	// To be used for a skinwalker mimick
+	rightclickicon = "color_skinwalker_reveal";
+	leftclickicon = "color_melee";
+	rightclickspecialicon = "";
+	leftclickspecialicon = "color_consume";	
+
 	uniformCompatible = true;
 	isEventideModel = true;
 	showEnergyBar = false;
