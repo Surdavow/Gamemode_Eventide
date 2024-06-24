@@ -171,31 +171,34 @@ function Player::onKillerLoop(%obj)
 		{			
 			%obj.isChasing = true;
 
-			// Set chase music and timers					
-			if (isObject(%victimclient))
-			{				
-				if(%nearbyplayer.chaseLevel != 2)
-				{
-					%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,true);
-					%nearbyplayer.chaseLevel = 2;
-				}
-
-				%victimclient.player.TimeSinceChased = getSimTime();
-				cancel(%victimclient.StopChaseMusic);
-				%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
-			}
-
-			if (isObject(%killerclient))
+			if($Pref::Server::Eventide::chaseMusicEnabled)
 			{
-				if(%obj.chaseLevel != 2)
-				{
-					%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,false);
-					%obj.chaseLevel = 2;
+				// Set chase music and timers					
+				if (isObject(%victimclient))
+				{				
+					if(%nearbyplayer.chaseLevel != 2)
+					{
+						%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,true);
+						%nearbyplayer.chaseLevel = 2;
+					}
+
+					%victimclient.player.TimeSinceChased = getSimTime();
+					cancel(%victimclient.StopChaseMusic);
+					%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
 				}
 
-				cancel(%killerclient.StopChaseMusic);
-				%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
-			}							
+				if (isObject(%killerclient))
+				{
+					if(%obj.chaseLevel != 2)
+					{
+						%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,false);
+						%obj.chaseLevel = 2;
+					}
+
+					cancel(%killerclient.StopChaseMusic);
+					%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
+				}
+			}						
 		}
 		else
 		{
