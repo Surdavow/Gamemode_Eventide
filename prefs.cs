@@ -27,7 +27,7 @@ if($RTB::Hooks::ServerControl)
 else
 {
 	if($Pref::Server::ChatMod::lchatEnabled $= "") $Pref::Server::ChatMod::lchatEnabled = 0;
-	if($Pref::Server::Eventide::chaseMusicEnabled $= "") $Pref::Server::Eventide::chaseMusicEnabled = 0;;
+	if($Pref::Server::Eventide::chaseMusicEnabled $= "") $Pref::Server::Eventide::chaseMusicEnabled = 0;
 	if($Pref::Server::ChatMod::lchatDistance $= "") $Pref::Server::ChatMod::lchatDistance = 30;
 	if($Pref::Server::ChatMod::lchatShoutMultiplier $= "") $Pref::Server::ChatMod::lchatShoutMultiplier = 2;
 	if($Pref::Server::ChatMod::lchatWhisperMultiplier $= "") $Pref::Server::ChatMod::lchatWhisperMultiplier = 0.5;
