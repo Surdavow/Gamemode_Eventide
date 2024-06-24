@@ -212,19 +212,19 @@ package Eventide_MainPackage
 			if(isObject(%client = %obj.client)) %this.schedule(500,EventideAppearance,%obj,%client);			
 		}
 
-		if(isObject(%client = %obj.client) && !isObject(%obj.effectbot))
-		{
-			%obj.effectbot = new Player() 
-    		{
-    	    	dataBlock = "EmptyBot";
-    		};
-			%obj.mountobject(%obj.effectbot,5);			
-			%obj.effectbot.mountImage(%client.effect,0);
-
-			%obj.effectbot.setNetFlag(6,true);
-			for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj)
-			%obj.effectbot.clearScopeToClient(%client);			
-		}
+		//if(isObject(%client = %obj.client) && !isObject(%obj.effectbot))
+		//{
+		//	%obj.effectbot = new Player() 
+    	//	{
+    	//    	dataBlock = "EmptyBot";
+    	//	};
+		//	%obj.mountobject(%obj.effectbot,5);			
+		//	%obj.effectbot.mountImage(%client.effect,0);
+//
+		//	%obj.effectbot.setNetFlag(6,true);
+		//	for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj)
+		//	%obj.effectbot.clearScopeToClient(%client);			
+		//}
 
 		if(%this != %obj.getDatablock() && %this.maxTools != %obj.client.lastMaxTools)
 		{
