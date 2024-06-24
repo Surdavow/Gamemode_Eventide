@@ -307,7 +307,6 @@ function Player::KillerGhostLightCheck(%obj)
 			MissionCleanup.add(%obj.light);
 			%obj.light.attachToObject(%obj);		
 			%obj.light.setNetFlag(6,true);
-			%obj.setNetFlag(6,true);
 
 			for(%i = 0; %i < clientgroup.getCount(); %i++) 
 			if(isObject(%client = clientgroup.getObject(%i))) 
