@@ -145,14 +145,17 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 function Player::onKillerLoop(%obj)
 {
-    if (!isObject(%obj) || %obj.getState() $= "Dead" || !%obj.getDataBlock().isKiller || !isObject(getMinigamefromObject(%obj)))
-		return;
+    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj)))
+	return;
 
     %this = %obj.getDataBlock();
 
-	// Container loop
-	for (%i = 0; %i < clientgroup.getCount(); %i++)
+	// In case the player is not a killer, such as the skinwalker mimicking a player
+	if(%obj.getDataBlock().isKiller)
 	{
+		// Container loop
+		for (%i = 0; %i < clientgroup.getCount(); %i++)
+		{
 		%nearbyplayer = clientgroup.getObject(%i).player;
 
 		if (!isObject(%nearbyplayer) || %nearbyplayer == %obj || %nearbyplayer.getClassName() !$= "Player" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 40)
@@ -227,12 +230,11 @@ function Player::onKillerLoop(%obj)
 			}
 			%obj.isChasing = false;
 		}
-	}
+		}
 
-
-    // Idle sounds
-    if (%obj.lastKillerIdle + getRandom(6000, 8500) < getSimTime())
-    {
+    	// Idle sounds
+    	if (%obj.lastKillerIdle + getRandom(6000, 8500) < getSimTime())
+    	{
         %obj.lastKillerIdle = getSimTime();
 
         // Play sounds based on chase state
@@ -264,11 +266,10 @@ function Player::onKillerLoop(%obj)
                 %obj.raiseArms = false;
             }
         }
-    }
+    	}
+	}
 
-	// Bottom print gui
-	if (isObject(%client = %obj.client)) 
-	%this.bottomprintgui(%obj,%client);
+	%this.bottomprintgui(%obj,%obj.client);
 
     cancel(%obj.onKillerLoop); // Prevent duplicate processes
     %obj.onKillerLoop = %obj.schedule(500, onKillerLoop);
@@ -276,18 +277,23 @@ function Player::onKillerLoop(%obj)
 
 function Armor::bottomprintgui(%this,%obj,%client)
 {	
+	if(!isObject(%obj) || !isObject(%client)) return;
+	
 	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
 	%energylevel = %obj.getEnergyLevel();
+
+	if (%obj.leftclickicon $= "") %obj.leftclickicon = %this.leftclickicon;
+	if (%obj.rightclickicon $= "") %obj.rightclickicon = %this.rightclickicon;
 
 	// Some dynamic varirables
 	%leftclickstatus = (%obj.getEnergyLevel() >= 25) ? "hi" : "lo";
 	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
-	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
-	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
+	%leftclicktext = (%obj.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+	%rightclicktext = (%obj.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
 
 	// Regular icons
-	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
-	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
+	%leftclickicon = (%obj.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %obj.leftclickicon @ ">" : "";
+	%rightclickicon = (%obj.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %obj.rightclickicon @ ">" : "";
 
 	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
 }
