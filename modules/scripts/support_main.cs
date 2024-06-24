@@ -209,7 +209,8 @@ package Eventide_MainPackage
 		{
 			%obj.onKillerLoop();		
 			if(isObject(%obj.getMountedImage(2))) %obj.unmountImage(2);
-			if(isObject(%client = %obj.client)) %this.schedule(500,EventideAppearance,%obj,%client);			
+			if(isObject(%client = %obj.client)) %this.schedule(500,EventideAppearance,%obj,%client);
+			%obj.KillerGhostLightCheck();
 		}
 
 		//if(isObject(%client = %obj.client) && !isObject(%obj.effectbot))
