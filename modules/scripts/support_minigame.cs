@@ -1,5 +1,20 @@
 package Eventide_Minigame
 {
+
+	function MiniGameSO::Reset(%obj, %client)
+	{
+		if ($Pref::Server::MapRotation::ResetCount > $Pref::Server::MapRotation::minreset) 
+		{
+			%msg = "<font:arial:26><color:FFFF00>Map Rotator\c6 -\c3" SPC $Pref::Server::MapRotation::minreset SPC "\c6rounds have passed, time to get a fresh map!";
+			nextMap(%msg);
+		}
+
+		if (ClientGroup.getCount() >= 0) 
+		$Pref::Server::MapRotation::ResetCount++;
+
+		Parent::Reset(%obj, %client);
+	}	
+
 	function Slayer_MiniGameSO::endRound(%this, %winner, %resetTime)
 	{
 		Parent::endRound(%this, %winner, %resetTime);

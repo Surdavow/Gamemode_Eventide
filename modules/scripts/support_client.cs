@@ -1,9 +1,18 @@
 package Eventide_GameConnection
 {
-	function GameConnection::onConnect(%client)
+
+	function gameConnection::spawnPlayer(%client)
 	{
-		parent::onConnect(%client);
+		Parent::spawnPlayer(%client);
+
+		if ($Pref::Server::MapRotation::MapChange) return;	
+		%client.hasVoted = false;
+	}
+
+	function gameConnection::autoAdminCheck(%client) 
+	{
 		schedule(100,0,Eventide_loadEventideStats,%client);
+		Parent::autoAdminCheck(%client);
 	}
 
 	function GameConnection::onClientEnterGame(%client)

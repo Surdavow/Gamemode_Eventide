@@ -11,6 +11,14 @@ if($RTB::Hooks::ServerControl)
 	RTB_registerPref("Local chat minimum size",	"Eventide - Chat Scaling","$Pref::server::ChatMod::lchatSizeMin",	"int 1 48","Gamemode_Eventide","12","0","0","ChatMod_lchatSize");
 	RTB_registerPref("Number of channels",	"Eventide - Radio","$Pref::Server::ChatMod::radioNumChannels","int 1 9","Gamemode_Eventide","1","0","0","ChatMod_resetRadioChannels");
 
+	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Script_NewMapRotation",false,false,false);
+	RTB_registerPref("Who can vote next map?","Eventide - Map Rotation","$Pref::Server::MapRotation::requiredVote","list Anyone 0 Admin 1 SuperAdmin 2 Host 3","Script_NewMapRotation",0,0,1);
+	RTB_registerPref("Minimum votes to load next map","Eventide - Map Rotation","$Pref::Server::MapRotation::votemin","int 1 20","Script_NewMapRotation",5,false,true);
+	RTB_registerPref("How many seconds before another cmd","Eventide - Map Rotation","$Pref::Server::MapRotation::cooldown","int 1 60","Script_NewMapRotation",10,false,true);
+	RTB_registerPref("Call next map","Eventide - Map Rotation","$Pref::Server::MapRotation::requiredNext","list Admin 1 SuperAdmin 2 Host 3","Script_NewMapRotation",0,0,1);
+	RTB_registerPref("Reload map list","Eventide - Map Rotation","$Pref::Server::MapRotation::requiredReload","list Admin 1 SuperAdmin 2 Host 3","Script_NewMapRotation",0,0,1);
+	RTB_registerPref("After how many rounds to load next?","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Script_NewMapRotation",5,false,true);	
+
 	RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
 	RTB_registerPref("Sight Range", "Eventide - Gaze", "$Pref::Server::GazeRange", "int 0 100", "Gamemode_Eventide", 20, 0, 0);
 
@@ -26,36 +34,43 @@ if($RTB::Hooks::ServerControl)
 }
 else
 {
-	if($Pref::Server::ChatMod::lchatEnabled $= "") $Pref::Server::ChatMod::lchatEnabled = 0;
-	if($Pref::Server::Eventide::chaseMusicEnabled $= "") $Pref::Server::Eventide::chaseMusicEnabled = 1;
-	if($Pref::Server::ChatMod::lchatDistance $= "") $Pref::Server::ChatMod::lchatDistance = 30;
-	if($Pref::Server::ChatMod::lchatShoutMultiplier $= "") $Pref::Server::ChatMod::lchatShoutMultiplier = 2;
-	if($Pref::Server::ChatMod::lchatWhisperMultiplier $= "") $Pref::Server::ChatMod::lchatWhisperMultiplier = 0.5;
-	if($Pref::Server::ChatMod::lchatGlobalChatLevel $= "") $Pref::Server::ChatMod::lchatGlobalChatLevel = 1;
-	if($Pref::Server::ChatMod::lchatSizeModEnabled $= "") $Pref::Server::ChatMod::lchatSizeModEnabled = 0;
-	if($Pref::Server::ChatMod::lchatSizeMax $= "") $Pref::Server::ChatMod::lchatSizeMax = 24;
-	if($Pref::Server::ChatMod::lchatSizeMin $= "") $Pref::server::ChatMod::lchatSizeMin = 12;
-	if($Pref::Server::ChatMod::radioNumChannels $= "") $Pref::Server::ChatMod::radioNumChannels = 1;
-	if($Pref::Server::GazeRange $= "") $Pref::Server::GazeRange = 20;
-	if($Pref::Server::GazeEnabled $= "") $Pref::Server::GazeEnabled = 1;
-	if($Pref::Server::PF::footstepsEnabled $= "") $Pref::Server::PF::footstepsEnabled = 1;
-	if($Pref::Server::PF::brickFXSounds::enabled $= "") $Pref::Server::PF::brickFXSounds::enabled = 1;
-	if($Pref::Server::PF::brickFXSounds::enabled $= "") $Pref::Server::PF::landingFX = 1;
-	if($Pref::Server::PF::minLandSpeed $= "") $Pref::Server::PF::minLandSpeed = 8.0;
-	if($Pref::Server::PF::runningMinSpeed $= "") $Pref::Server::PF::runningMinSpeed = 2.8;
-	if($Pref::Server::PF::waterSFX $= "") $Pref::Server::PF::waterSFX = 1;
-	if($Pref::Server::PF::defaultStep $= "") $Pref::Server::PF::defaultStep = 1;
-	if($Pref::Server::PF::terrainStep $= "") $Pref::Server::PF::terrainStep = 0;
-	if($Pref::Server::PF::vehicleStep $= "") $Pref::Server::PF::vehicleStep = 0;
+	if ($Pref::Server::ChatMod::lchatEnabled $= "") $Pref::Server::ChatMod::lchatEnabled = 0;
+	if ($Pref::Server::Eventide::chaseMusicEnabled $= "") $Pref::Server::Eventide::chaseMusicEnabled = 1;
+	if ($Pref::Server::ChatMod::lchatDistance $= "") $Pref::Server::ChatMod::lchatDistance = 30;
+	if ($Pref::Server::ChatMod::lchatShoutMultiplier $= "") $Pref::Server::ChatMod::lchatShoutMultiplier = 2;
+	if ($Pref::Server::ChatMod::lchatWhisperMultiplier $= "") $Pref::Server::ChatMod::lchatWhisperMultiplier = 0.5;
+	if ($Pref::Server::ChatMod::lchatGlobalChatLevel $= "") $Pref::Server::ChatMod::lchatGlobalChatLevel = 1;
+	if ($Pref::Server::ChatMod::lchatSizeModEnabled $= "") $Pref::Server::ChatMod::lchatSizeModEnabled = 0;
+	if ($Pref::Server::ChatMod::lchatSizeMax $= "") $Pref::Server::ChatMod::lchatSizeMax = 24;
+	if ($Pref::Server::ChatMod::lchatSizeMin $= "") $Pref::server::ChatMod::lchatSizeMin = 12;
+	if ($Pref::Server::ChatMod::radioNumChannels $= "") $Pref::Server::ChatMod::radioNumChannels = 1;
+	if ($Pref::Server::GazeRange $= "") $Pref::Server::GazeRange = 20;
+	if ($Pref::Server::GazeEnabled $= "") $Pref::Server::GazeEnabled = 1;
+	if ($Pref::Server::PF::footstepsEnabled $= "") $Pref::Server::PF::footstepsEnabled = 1;
+	if ($Pref::Server::PF::brickFXSounds::enabled $= "") $Pref::Server::PF::brickFXSounds::enabled = 1;
+	if ($Pref::Server::PF::brickFXSounds::enabled $= "") $Pref::Server::PF::landingFX = 1;
+	if ($Pref::Server::PF::minLandSpeed $= "") $Pref::Server::PF::minLandSpeed = 8.0;
+	if ($Pref::Server::PF::runningMinSpeed $= "") $Pref::Server::PF::runningMinSpeed = 2.8;
+	if ($Pref::Server::PF::waterSFX $= "") $Pref::Server::PF::waterSFX = 1;
+	if ($Pref::Server::PF::defaultStep $= "") $Pref::Server::PF::defaultStep = 1;
+	if ($Pref::Server::PF::terrainStep $= "") $Pref::Server::PF::terrainStep = 0;
+	if ($Pref::Server::PF::vehicleStep $= "") $Pref::Server::PF::vehicleStep = 0;
+	if ($Pref::Server::MapRotation::enabled $= "") $Pref::Server::MapRotation::enabled = true;
+	if ($Pref::Server::MapRotation::requiredVote $= "") $Pref::Server::MapRotation::requiredVote = 0;
+	if ($Pref::Server::MapRotation::requiredNext $= "") $Pref::Server::MapRotation::requiredNext = 2;
+	if ($Pref::Server::MapRotation::requiredReload $= "") $Pref::Server::MapRotation::requiredReload = 2;
+	if ($Pref::Server::MapRotation::votemin $= "") $Pref::Server::MapRotation::votemin = 5;
+	if ($Pref::Server::MapRotation::minreset $= "") $Pref::Server::MapRotation::minreset = 5;
+	if ($Pref::Server::MapRotation::cooldown $= "") $Pref::Server::MapRotation::cooldown = 10;	
 }
 
-if($Pref::Server::PF::brickFXsounds::pearlStep $= "") $Pref::Server::PF::pearlStep = 4;
-if($Pref::Server::PF::brickFXsounds::chromeStep $= "") $Pref::Server::PF::chromeStep = 4;
-if($Pref::Server::PF::brickFXsounds::glowStep $= "") $Pref::Server::PF::brickFXsounds::glowStep = 0;
-if($Pref::Server::PF::brickFXsounds::blinkStep $= "") $Pref::Server::PF::brickFXsounds::blinkStep = 0;
-if($Pref::Server::PF::brickFXsounds::swirlStep $= "") $Pref::Server::PF::brickFXsounds::swirlStep = 0;
-if($Pref::Server::PF::brickFXsounds::rainbowStep $= "") $Pref::Server::PF::brickFXsounds::rainbowStep = 0;
-if($Pref::Server::PF::brickFXsounds::unduloStep $= "") $Pref::Server::PF::unduloStep = 8;		
+if ($Pref::Server::PF::brickFXsounds::pearlStep $= "") $Pref::Server::PF::pearlStep = 4;
+if ($Pref::Server::PF::brickFXsounds::chromeStep $= "") $Pref::Server::PF::chromeStep = 4;
+if ($Pref::Server::PF::brickFXsounds::glowStep $= "") $Pref::Server::PF::brickFXsounds::glowStep = 0;
+if ($Pref::Server::PF::brickFXsounds::blinkStep $= "") $Pref::Server::PF::brickFXsounds::blinkStep = 0;
+if ($Pref::Server::PF::brickFXsounds::swirlStep $= "") $Pref::Server::PF::brickFXsounds::swirlStep = 0;
+if ($Pref::Server::PF::brickFXsounds::rainbowStep $= "") $Pref::Server::PF::brickFXsounds::rainbowStep = 0;
+if ($Pref::Server::PF::brickFXsounds::unduloStep $= "") $Pref::Server::PF::unduloStep = 8;		
 
 // Always set this to 0, don't want there to be problems when the server is initialized
 $Pref::Server::ChatMod::lchatEnabled = 0;

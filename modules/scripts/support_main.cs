@@ -18,6 +18,19 @@ package Eventide_MainPackage
 
 		Parent::getBrickGroupFromObject(%obj);
 	}
+
+	function ServerLoadSaveFile_End()
+	{
+		$Pref::Server::MapRotation::MapChange = false;
+
+		for(%a = 0; %a < ClientGroup.getCount(); %a++)
+		{
+			%client = ClientGroup.getObject(%a);
+			%client.spawnPlayer();
+		}
+
+		Parent::ServerLoadSaveFile_End();
+	}	
 };
 
 // In case the package is already activated, deactivate it first before reactivating it
