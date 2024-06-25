@@ -82,6 +82,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 						%puppet = new Player()
 						{
 							dataBlock = "PuppetMasterPuppet";
+							source = %obj;
 							minigame = getMiniGameFromObject(%obj);					
 						};
 						%obj.mountObject(%puppet,8);

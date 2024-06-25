@@ -78,8 +78,8 @@ function PuppetMasterPuppet::onDisabled(%this,%obj)
 
 function PuppetMasterPuppet::onRemove(%this,%obj)
 {
-	Parent::onRemove(%this,%obj);
-	
+	%obj.source.mountimage("sm_stunImage",2);
+	Parent::onRemove(%this,%obj);	
 }
 
 function PuppetMasterPuppet::EventideAppearance(%this,%obj,%client)
