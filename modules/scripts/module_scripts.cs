@@ -1,8 +1,22 @@
-%path = "./*.cs";
-for(%file = findFirstFile(%path); %file !$= ""; %file = findNextFile(%path))
-{
-	// Skip these files
-	if(strstr(strlwr(%file),"module_scripts") != -1) continue;
-
-	exec(%file);
-}
+exec("./script_chatsystem.cs");
+exec("./script_commands.cs");
+exec("./script_itemparticle.cs");
+exec("./script_itemspawning.cs");
+exec("./script_killers.cs");
+exec("./script_maprotation.cs");
+exec("./script_peggyfootsteps.cs");
+exec("./script_players.cs");
+exec("./script_saveloadstats.cs");
+exec("./script_shopsystem.cs");
+exec("./support_bricks.cs");
+exec("./support_centerprintmenusystem.cs");
+exec("./support_client.cs");
+exec("./support_datainstance.cs");
+exec("./support_extraresources.cs");
+exec("./support_items.cs");
+exec("./support_main.cs");
+exec("./support_minigame.cs");
+exec("./support_player.cs");
+exec("./support_statuseffect.cs");
+exec("./support_stringutilities.cs");
+exec("./support_vectorutilities.cs");

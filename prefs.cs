@@ -6,18 +6,12 @@ if($RTB::Hooks::ServerControl)
 	RTB_registerPref("Shout Distance Multiplier",	"Eventide","$Pref::Server::ChatMod::lchatShoutMultiplier",	"float 0 10","Gamemode_Eventide","2","0","0","");
 	RTB_registerPref("Whisper Distance Multiplier",	"Eventide","$Pref::Server::ChatMod::lchatWhisperMultiplier",	"float 0 1","Gamemode_Eventide",".5","0","0","");
 	RTB_registerPref("& Global Chat restriction",	"Eventide","$Pref::Server::ChatMod::lchatGlobalChatLevel",	"list Everyone 0 Admin 1 Super_Admin 2","Gamemode_Eventide","0","0","0","");
-	RTB_registerPref("Enable local chat scaling",	"Eventide - Chat Scaling","$Pref::Server::ChatMod::lchatSizeModEnabled",	"bool","Gamemode_Eventide","0","0","0","");
-	RTB_registerPref("Local chat maximum size",	"Eventide - Chat Scaling","$Pref::Server::ChatMod::lchatSizeMax",	"int 1 48","Gamemode_Eventide","24","0","0","ChatMod_lchatSize");
-	RTB_registerPref("Local chat minimum size",	"Eventide - Chat Scaling","$Pref::server::ChatMod::lchatSizeMin",	"int 1 48","Gamemode_Eventide","12","0","0","ChatMod_lchatSize");
-	RTB_registerPref("Number of channels",	"Eventide - Radio","$Pref::Server::ChatMod::radioNumChannels","int 1 9","Gamemode_Eventide","1","0","0","ChatMod_resetRadioChannels");
+	RTB_registerPref("Enable local chat scaling",	"Eventide - Chat","$Pref::Server::ChatMod::lchatSizeModEnabled",	"bool","Gamemode_Eventide","0","0","0","");
+	RTB_registerPref("Local chat maximum size",	"Eventide - Chat","$Pref::Server::ChatMod::lchatSizeMax",	"int 1 48","Gamemode_Eventide","24","0","0","Gamemode_Eventide");
+	RTB_registerPref("Local chat minimum size",	"Eventide - Chat","$Pref::server::ChatMod::lchatSizeMin",	"int 1 48","Gamemode_Eventide","12","0","0","Gamemode_Eventide");
 
-	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Script_NewMapRotation",false,false,false);
-	RTB_registerPref("Who can vote next map?","Eventide - Map Rotation","$Pref::Server::MapRotation::requiredVote","list Anyone 0 Admin 1 SuperAdmin 2 Host 3","Script_NewMapRotation",0,0,1);
-	RTB_registerPref("Minimum votes to load next map","Eventide - Map Rotation","$Pref::Server::MapRotation::votemin","int 1 20","Script_NewMapRotation",5,false,true);
-	RTB_registerPref("How many seconds before another cmd","Eventide - Map Rotation","$Pref::Server::MapRotation::cooldown","int 1 60","Script_NewMapRotation",10,false,true);
-	RTB_registerPref("Call next map","Eventide - Map Rotation","$Pref::Server::MapRotation::requiredNext","list Admin 1 SuperAdmin 2 Host 3","Script_NewMapRotation",0,0,1);
-	RTB_registerPref("Reload map list","Eventide - Map Rotation","$Pref::Server::MapRotation::requiredReload","list Admin 1 SuperAdmin 2 Host 3","Script_NewMapRotation",0,0,1);
-	RTB_registerPref("After how many rounds to load next?","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Script_NewMapRotation",5,false,true);	
+	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Gamemode_Eventide",false,false,false);
+	RTB_registerPref("After how many rounds to load next?","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Gamemode_Eventide",5,false,true);	
 
 	RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
 	RTB_registerPref("Sight Range", "Eventide - Gaze", "$Pref::Server::GazeRange", "int 0 100", "Gamemode_Eventide", 20, 0, 0);
@@ -56,12 +50,7 @@ else
 	if ($Pref::Server::PF::terrainStep $= "") $Pref::Server::PF::terrainStep = 0;
 	if ($Pref::Server::PF::vehicleStep $= "") $Pref::Server::PF::vehicleStep = 0;
 	if ($Pref::Server::MapRotation::enabled $= "") $Pref::Server::MapRotation::enabled = true;
-	if ($Pref::Server::MapRotation::requiredVote $= "") $Pref::Server::MapRotation::requiredVote = 0;
-	if ($Pref::Server::MapRotation::requiredNext $= "") $Pref::Server::MapRotation::requiredNext = 2;
-	if ($Pref::Server::MapRotation::requiredReload $= "") $Pref::Server::MapRotation::requiredReload = 2;
-	if ($Pref::Server::MapRotation::votemin $= "") $Pref::Server::MapRotation::votemin = 5;
 	if ($Pref::Server::MapRotation::minreset $= "") $Pref::Server::MapRotation::minreset = 5;
-	if ($Pref::Server::MapRotation::cooldown $= "") $Pref::Server::MapRotation::cooldown = 10;	
 }
 
 if ($Pref::Server::PF::brickFXsounds::pearlStep $= "") $Pref::Server::PF::pearlStep = 4;
