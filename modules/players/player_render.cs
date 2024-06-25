@@ -241,7 +241,7 @@ function PlayerRender::Prepperizer(%this,%obj)
 		{
 			if(%player == %obj) continue;			
 
-			%line = vectorNormalize(vectorSub(%obj.getPosition(),%player.getEyePoint()));
+			%line = vectorNormalize(vectorSub(%obj.getHackPosition(),%player.getEyePoint()));
 			%dot = vectorDot(%player.getEyeVector(), %line);
 			%obscure = containerRayCast(%player.getEyePoint(),%obj.getHackPosition(),$TypeMasks::FxBrickObjectType, %obj);
 			
