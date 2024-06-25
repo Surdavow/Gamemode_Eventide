@@ -39,127 +39,12 @@ while(%file !$= "")
 	%file = findNextFile(%pattern);
 }
 
-AddDamageType("PoolCue",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_poolCue> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_poolCue> %1',1,1);
-AddDamageType("BarStool",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_barStool> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_barStool> %1',1,1);
-AddDamageType("Bottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_bottle> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_bottle> %1',1,1);
-AddDamageType("BrokenBottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_bottle_broken> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_bottle_broken> %1',1,1);
-AddDamageType("Chair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_chair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_chair> %1',1,1);
-AddDamageType("FoldingChair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_foldingChair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/misc/icons/ci_foldingChair> %1',1,1);
-
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_blind.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_consume.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_grab.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_handaxe.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_headache.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_meathook.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_melee.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_puppet.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_puppetcontrol.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_skinwalker_disguise.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_skinwalker_reveal.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/hicolor_vanish.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_blind.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_consume.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_grab.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_handaxe.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_headache.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_meathook.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_melee.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_puppet.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_puppetcontrol.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_skinwalker_disguise.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_skinwalker_reveal.png");
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/misc/icons/locolor_vanish.png");
-
-if(isFile(%faceiflpath = "./models/face.ifl"))//Faces
-{
-	%write = new FileObject();
-	%write.openForWrite(findFirstFile(%faceiflpath));
-	%write.writeLine("base/data/shapes/player/faces/smiley.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyRedBeard2.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyRedBeard.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyPirate3.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyPirate2.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyPirate1.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyOld.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyFemale1.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyEvil2.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyEvil1.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyCreepy.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyBlonde.png");
-	%write.writeLine("Add-Ons/Face_Default/memeYaranika.png");
-	%write.writeLine("Add-Ons/Face_Default/memePBear.png");
-	%write.writeLine("Add-Ons/Face_Default/memeHappy.png");
-	%write.writeLine("Add-Ons/Face_Default/memeGrinMan.png");
-	%write.writeLine("Add-Ons/Face_Default/memeDesu.png");
-	%write.writeLine("Add-Ons/Face_Default/memeCats.png");
-	%write.writeLine("Add-Ons/Face_Default/memeBlockMongler.png");
-	%write.writeLine("Add-Ons/Face_Default/asciiTerror.png");
-	
-	%decalpath = "./models/faces/*.png";
-	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
-	{
-		addExtraResource(%decalfile);
-		%write.writeLine(%decalfile);
-	}
-
-	%write.close();
-	%write.delete();
-	addExtraResource(findFirstFile(%faceiflpath));
-}
-
-if(isFile(%decalfilepath = "./models/decal.ifl"))//Decals
-{
-	%write = new FileObject();
-	%write.openForWrite(findFirstFile(%decalfilepath));
-	%write.writeLine("base/data/shapes/players/decals/AAA-none.png");
-	%write.writeLine("Add-Ons/Decal_WORM/worm_engineer.png");
-	%write.writeLine("Add-Ons/Decal_WORM/worm-sweater.png");
-	%write.writeLine("Add-Ons/Decal_PlayerFitNE/zhwindnike.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/LinkTunic.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/Knight.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/HCZombie.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/DrKleiner.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/DKnight.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/Chef.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/Archer.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/Alyx.png");
-	%write.writeLine("Add-Ons/Decal_Hoodie/Hoodie.png");
-	%write.writeLine("Add-Ons/Decal_Default/Space-Old.png");
-	%write.writeLine("Add-Ons/Decal_Default/Space-New.png");
-	%write.writeLine("Add-Ons/Decal_Default/Space-Nasa.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Suit.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Prisoner.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Police.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Pilot.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-DareDevil.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Army.png");
-	%write.writeLine("Add-Ons/Decal_Default/Meme-Mongler.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-YARLY.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-Tunic.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-Rider.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-ORLY.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-Lion.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-Eagle.png");
-	
-	%decalpath = "./models/decals/*.png";
-	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
-	{
-		eval("addExtraResource(\""@ %decalfile @ "\");");
-		%write.writeLine(%decalfile);
-	}
-
-	%write.close();
-	%write.delete();
-	addExtraResource(findFirstFile(%decalfilepath));
-}
-
 datablock DebrisData(singleBoneDebris)
 {
    emitters = "";
 
 	shapeFile = "./models/bone.dts";
-	lifetime = 1000;
+	lifetime = 10;
 	spinSpeed			= 2000.0;
 	minSpinSpeed = -100.0;
 	maxSpinSpeed = 100.0;
@@ -1210,7 +1095,7 @@ datablock ParticleData(BleedParticle)
    inheritedVelFactor = 0.3;
    constantAcceleration = 0;
    lifetimeMS         = 100;
-   lifetimeVarianceMS = 250;
+   lifetimeVarianceMS = 50;
    textureName = "base/data/particles/cloud";
    spinSpeed     = 0;
    spinRandomMin = -20;

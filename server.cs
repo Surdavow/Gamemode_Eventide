@@ -7,3 +7,5 @@ else $isSlayerEnabled = true;
 exec("./prefs.cs");
 exec("./modules/scripts/module_scripts.cs");
 exec("./modules/misc/module_misc.cs");
+exec("./modules/items/module_items.cs");
+exec("./modules/players/module_players.cs");

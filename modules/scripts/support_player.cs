@@ -1,5 +1,22 @@
+$Player::NoItemsPickup::NoAddItem = 0;
+
 package Eventide_Player
 {
+
+	function ShapeBase::pickup(%obj, %item)
+	{
+        if(%obj.getClassName() $= "Player" && %obj.getDataBlock().getName() $= "PlayerSkinwalker")
+		return;                   
+        
+        Parent::pickup(%obj, %item);
+    }
+
+    function Player::addItem(%player, %image, %client)
+	{
+		if(!$Player::PlayerSkinwalker::NoAddItem)
+		Parent::addItem(%player, %image, %client);		
+    }
+
 	function ServerCmdTeamMessageSent(%client, %message)
 	{
 		if(!$Pref::Server::ChatMod::lchatEnabled)
@@ -145,14 +162,7 @@ package Eventide_Player
 		Parent::onNewDatablock(%this,%obj);
 
 		%this.GazeLoop(%obj);
-
-		if(%this.isKiller) 
-		{
-			%this.onKillerLoop();		
-			if(isObject(%obj.getMountedImage(2))) %obj.unmountImage(2);
-			if(isObject(%client = %obj.client)) %this.schedule(500,EventideAppearance,%obj,%client);
-			%obj.KillerGhostLightCheck();
-		}
+		%this.schedule(500,KillerCheck,%obj);
 
 		//if(isObject(%client = %obj.client) && !isObject(%obj.effectbot))
 		//{
@@ -162,7 +172,6 @@ package Eventide_Player
     	//	};
 		//	%obj.mountobject(%obj.effectbot,5);			
 		//	%obj.effectbot.mountImage(%client.effect,0);
-//
 		//	%obj.effectbot.setNetFlag(6,true);
 		//	for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj)
 		//	%obj.effectbot.clearScopeToClient(%client);			

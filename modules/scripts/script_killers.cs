@@ -143,6 +143,17 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 	}
 }
 
+function Armor::KillerCheck(%this,%obj)
+{	
+	if(%this.isKiller == true) 
+	{
+		%this.onKillerLoop(%obj);		
+		if(isObject(%obj.getMountedImage(2))) %obj.unmountImage(2);
+		if(isObject(%client = %obj.client)) %this.EventideAppearance(%obj,%client);
+		%obj.KillerGhostLightCheck();
+	}
+}
+
 function Armor::onKillerLoop(%this,%obj)
 {
     if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj))) return;	
@@ -276,16 +287,16 @@ function Armor::onKillerLoop(%this,%obj)
 
 function Armor::bottomprintgui(%this,%obj,%client)
 {	
-	if(!isObject(%obj) || !isObject(%client)) return;
+	if (!isObject(%obj) || !isObject(%client)) return;
 	
-	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
+	%iconpath = "Add-ons/Gamemode_Eventide/modules/players/icons/";
 	%energylevel = %obj.getEnergyLevel();
 
 	// Some dynamic varirables
 	%leftclickstatus = (%obj.getEnergyLevel() >= 25) ? "hi" : "lo";
 	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
 	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
-	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
+	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";	
 
 	// Regular icons
 	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";

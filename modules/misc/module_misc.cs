@@ -1,6 +1,4 @@
 exec("./datablocks_misc.cs");
-exec("./player_eventide.cs");
-exec("./player_renowned.cs");
 
 %path = "./*.cs";
 for(%file = findFirstFile(%path); %file !$= ""; %file = findNextFile(%path))
