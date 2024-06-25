@@ -13,17 +13,18 @@ if (!isFile("saves/EventideMapRotation/README.txt"))
 
 function BuildMapLists()
 {
-	%mapdir = "saves/EventideMapRotation/*.bls";
-	
+	%mapdir = "saves/EventideMapRotation/*.bls";	
 	$Pref::Server::MapRotation::numMap = 0;
 	
 	%file = findFirstFile(%mapdir);
+
 	while(%file !$= "")
 	{
 		$Pref::Server::MapRotation::map[$Pref::Server::MapRotation::numMap] = %file;
 		$Pref::Server::MapRotation::numMap++;
 		%file = findNextFile(%mapdir);
 	}
+
 	messageAll('', "\c3" @ ($Pref::Server::MapRotation::numMap+1) SPC "\c6maps loaded.");
 }
 
