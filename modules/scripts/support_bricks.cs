@@ -18,11 +18,6 @@ package Eventide_Bricks
 	   	Parent::onDeath(%data, %brick);
 		if(isObject(%brick.interactiveshape)) %brick.interactiveshape.delete();
 	}	
-	
-	function serverCmdUseTool(%client, %tool)
-	{		
-		if(!%client.player.victim) return parent::serverCmdUseTool(%client, %tool);
-	}
 };
 
 // In case the package is already activated, deactivate it first before reactivating it
