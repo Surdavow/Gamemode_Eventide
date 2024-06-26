@@ -154,6 +154,17 @@ function Armor::KillerCheck(%this,%obj)
 	}
 }
 
+// Function that activates if a killer is chasing or not chasing someone.
+// Params:
+// %this = datablock
+// %obj = object
+// %chasing = boolean
+
+function Armor::onKillerChase(%this,%obj,%chasing)
+{
+	//Hello world
+}
+
 function Armor::onKillerLoop(%this,%obj)
 {
     if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj))) return;	
@@ -164,80 +175,87 @@ function Armor::onKillerLoop(%this,%obj)
 		// Container loop
 		for (%i = 0; %i < clientgroup.getCount(); %i++)
 		{
-		%nearbyplayer = clientgroup.getObject(%i).player;
+			%nearbyplayer = clientgroup.getObject(%i).player;
 
-		if (!isObject(%nearbyplayer) || %nearbyplayer == %obj || %nearbyplayer.getClassName() !$= "Player" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 40)
-			continue;		
+			if (!isObject(%nearbyplayer) || %nearbyplayer == %obj || %nearbyplayer.getClassName() !$= "Player" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 40)
+				continue;		
 
-		if (!isObject(getMinigamefromObject(%nearbyplayer)) || %nearbyplayer.getDataBlock().isKiller)
-			continue;		
+			if (!isObject(getMinigamefromObject(%nearbyplayer)) || %nearbyplayer.getDataBlock().isKiller)
+				continue;		
 
-		%line = vectorNormalize(vectorSub(%nearbyplayer.getMuzzlePoint(2), %obj.getEyePoint()));
-		%dot = vectorDot(%obj.getEyeVector(), %line);
-		%killerclient = %obj.client;
-		%victimclient = %nearbyplayer.client;
+			%line = vectorNormalize(vectorSub(%nearbyplayer.getMuzzlePoint(2), %obj.getEyePoint()));
+			%dot = vectorDot(%obj.getEyeVector(), %line);
+			%killerclient = %obj.client;
+			%victimclient = %nearbyplayer.client;
 
-		// Chase behavior
-		if (%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(), %nearbyplayer.getMuzzlePoint(2), $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType, %obj)) && !%obj.isInvisible)
-		{			
-			%obj.isChasing = true;
+			// Chase behavior
+			if (%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(), %nearbyplayer.getMuzzlePoint(2), $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType, %obj)) && !%obj.isInvisible)
+			{			
+				%obj.isChasing = true;
+				%this.onKillerChase(%obj,true);
 
-			if($Pref::Server::Eventide::chaseMusicEnabled)
-			{
-				// Set chase music and timers					
-				if (isObject(%victimclient))
-				{				
-					if(%nearbyplayer.chaseLevel != 2)
-					{
-						%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,true);
-						%nearbyplayer.chaseLevel = 2;
+				if($Pref::Server::Eventide::chaseMusicEnabled)
+				{
+					// Set chase music and timers					
+					if (isObject(%victimclient))
+					{				
+						if(%nearbyplayer.chaseLevel != 2)
+						{
+							%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,true);
+							%nearbyplayer.chaseLevel = 2;
+						}
+
+						%victimclient.player.TimeSinceChased = getSimTime();
+						cancel(%victimclient.StopChaseMusic);
+						%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
 					}
 
-					%victimclient.player.TimeSinceChased = getSimTime();
+					if (isObject(%killerclient))
+					{
+						if(%obj.chaseLevel != 2)
+						{
+							%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,false);
+							%obj.chaseLevel = 2;
+						}
+
+						cancel(%killerclient.StopChaseMusic);
+						%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
+					}
+				}						
+			}
+			else
+			{
+				if (isObject(%victimclient) && %victimclient.player.TimeSinceChased + 6000 < getSimTime())
+				{
+					if(%nearbyplayer.chaseLevel != 1)
+					{
+						%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music,false);
+						%nearbyplayer.chaseLevel = 1;
+					}
+
 					cancel(%victimclient.StopChaseMusic);
 					%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
 				}
 
-				if (isObject(%killerclient))
+				if (!%obj.isChasing)
 				{
-					if(%obj.chaseLevel != 2)
+					%this.onKillerChase(%obj,false);
+
+					if(isObject(%killerclient))
 					{
-						%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,false);
-						%obj.chaseLevel = 2;
+						if (%obj.chaseLevel != 1)
+						{
+							%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music,false);
+							%obj.chaseLevel = 1;
+						}
+
+						cancel(%killerclient.StopChaseMusic);
+						%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
 					}
-
-					cancel(%killerclient.StopChaseMusic);
-					%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
-				}
-			}						
-		}
-		else
-		{
-			if (isObject(%victimclient) && %victimclient.player.TimeSinceChased + 6000 < getSimTime())
-			{
-				if(%nearbyplayer.chaseLevel != 1)
-				{
-					%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music,false);
-					%nearbyplayer.chaseLevel = 1;
 				}
 
-				cancel(%victimclient.StopChaseMusic);
-				%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
+				%obj.isChasing = false;
 			}
-
-			if (isObject(%killerclient) && !%obj.isChasing)
-			{
-				if(%obj.chaseLevel != 1)
-				{
-					%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music,false);
-					%obj.chaseLevel = 1;
-				}
-
-				cancel(%killerclient.StopChaseMusic);
-				%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
-			}
-			%obj.isChasing = false;
-		}
 		}
 
     	// Idle sounds

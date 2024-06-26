@@ -61,6 +61,17 @@ function PlayerNightmare::onTrigger(%this, %obj, %trig, %press)
 	}
 }
 
+function PlayerNightmare::onKillerChase(%this,%obj,%chasing)
+{
+	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+	
+	switch(%chasing)
+	{
+		case true: %obj.mountImage("ChainsawSawingImage",0);
+		case false: %obj.mountImage("ChainsawImage",0);
+	}
+}
+
 function PlayerNightmare::EventideAppearance(%this,%obj,%client)
 {
 	%obj.hideNode("ALL");	

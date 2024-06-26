@@ -1,3 +1,5 @@
+eval("chainsaw_sawing_sound.description = \"AudioDefaultLooping3D\";");
+
 datablock ParticleData(ChainsawRevParticle)
 {
 	dragCoefficient = 5;
@@ -89,64 +91,70 @@ datablock ShapeBaseImageData(ChainsawImage)
 	stateSound[0]					= "chainsaw_rev_sound";
 	
 	stateName[1]                    = "Ready";
-	stateTransitionOnTimeout[1]     = "Ready";
+	stateTransitionOnTimeout[1]     = "Loop";
 	stateTimeoutValue[1]            = 0.14;
 	stateEmitter[1]                = "ChainsawRev2Emitter";
 	stateEmitterTime[1]            = 0.14;
 	stateEmitterNode[1]            = "smokeNode";
-	stateSequence[1]				= "activate";
-	stateTransitionOnTriggerDown[1] = "Fire";
-	stateAllowImageChange[1]        = true;
-	stateSound[1]					= "chainsaw_rev_sound";
+	stateSound[1]					= "chainsaw_idle_sound";
 
-	stateName[2]                    = "Spinup";
-	stateAllowImageChange[2]        = false;
-	stateTransitionOnTimeout[2]     = "Fire";
-	stateTimeoutValue[2]            = 0.10;
-	stateWaitForTimeout[2]			= true;	
-	stateTransitionOnTriggerUp[2]   = "Ready";
-	stateSound[2]					= "chainsaw_saw";
-	stateSequenceOnTimeout[2]	= "Spin";
-	
-	stateName[3]                    = "Fire";
-	stateTransitionOnTimeout[3]     = "Fire";
-	stateTransitionOnTriggerUp[3]   = "Slow";
-	stateTimeoutValue[3]            = 0.05;
-	stateEmitter[3]                = ChainsawRevEmitter;
-	stateEmitterTime[3]            = 0.05;
-	stateEmitterNode[3]            = "smokeNode";
-	stateFire[3]                    = true;
-	stateAllowImageChange[3]        = false;
-	stateSequence[3]                = "Fire";
-	stateScript[3]                  = "onFire";
-	stateWaitForTimeout[3]			= false;
-	stateSound[3]					= "chainsaw_saw";
-
-	stateName[4] 					= "Smoke";
-	stateTimeoutValue[4]            = 0.01;
-	stateTransitionOnTimeout[4]     = "Check";
-
-	stateName[5]					= "Check";
-	stateTransitionOnTriggerDown[5] = "Fire";
-	
-	stateName[6]					= "Slow";
-	stateTransitionOnTriggerDown[6] = "Fire";
-	stateSound[6]					= "chainsaw_end_sound";
-	stateAllowImageChange[6]        = false;
-	stateTransitionOnTimeout[6]     = "Ready";
-	stateTimeoutValue[6]            = 0.20;
-	stateWaitForTimeout[6]			= true;
-
+	stateName[2]                    = "Loop";
+	stateTimeoutValue[2]            = 0.1;
+	stateTransitionOnTimeout[2]     = "Ready";
 };
 
-function ChainsawImage::onFire(%this, %obj, %slot)
+datablock ShapeBaseImageData(ChainsawSawingImage : ChainsawImage)
+{
+	stateName[0]                    = "Fire";
+	stateTransitionOnTimeout[0]     = "Fire";
+	stateTimeoutValue[0]            = 0.05;
+	stateEmitter[0]                 = "ChainsawRevEmitter";
+	stateEmitterTime[0]             = 0.05;
+	stateEmitterNode[0]             = "smokeNode";
+	stateFire[0]                    = true;
+	stateSequence[0]                = "Fire";
+	stateScript[0]                  = "onFire";
+
+	stateName[1]                    = "Smoke";
+	stateTimeoutValue[1]            = 0.01;
+	stateTransitionOnTimeout[1]     = "Check";
+
+	stateName[2]                    = "Check";
+	stateTimeoutValue[2]            = 0.05;
+	stateTransitionOnTimeout[2]     = "Fire";
+};
+
+function ChainsawSawingImage::onFire(%this, %obj, %slot)
 {
 	%obj.playThread(2, plant);
+	
+	if(!%obj.isSawing)
+	{
+		%obj.playAudio(1,"chainsaw_sawing_sound");
+		%obj.isSawing = true;
+	}	
 	Parent::onFire(%this, %obj, %slot);
 }
 
-function ChainsawImage::onMount(%this,%obj,%slot)
+function ChainsawSawingImage::onFire(%this, %obj, %slot)
 {
-	%obj.playThread(0, plant);
-	Parent::onMount(%this,%obj,%slot);
+	%obj.playThread(2, plant);
+	
+	if(!%obj.isSawing)
+	{
+		%obj.playAudio(1,"chainsaw_sawing_sound");
+		%obj.isSawing = true;
+	}	
+	Parent::onFire(%this, %obj, %slot);
+}
+
+function ChainsawSawingImage::onUnmount(%this, %obj, %slot)
+{	
+	if(%obj.isSawing) 
+	{
+		%obj.isSawing = false;
+		%obj.stopAudio(1);
+	}
+		
+	Parent::onFire(%this, %obj, %slot);
 }
