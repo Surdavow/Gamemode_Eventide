@@ -48,9 +48,11 @@ else
 	if ($Pref::Server::PF::waterSFX $= "") $Pref::Server::PF::waterSFX = 1;
 	if ($Pref::Server::PF::defaultStep $= "") $Pref::Server::PF::defaultStep = 1;
 	if ($Pref::Server::PF::terrainStep $= "") $Pref::Server::PF::terrainStep = 0;
-	if ($Pref::Server::PF::vehicleStep $= "") $Pref::Server::PF::vehicleStep = 0;
+	if ($Pref::Server::PF::vehicleStep $= "") $Pref::Server::PF::vehicleStep = 0;	
 	if ($Pref::Server::MapRotation::enabled $= "") $Pref::Server::MapRotation::enabled = true;
 	if ($Pref::Server::MapRotation::minreset $= "") $Pref::Server::MapRotation::minreset = 5;
+
+	$Pref::Server::MapRotation::cooldown = 10;
 }
 
 if ($Pref::Server::PF::brickFXsounds::pearlStep $= "") $Pref::Server::PF::pearlStep = 4;
