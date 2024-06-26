@@ -16,14 +16,18 @@ package Eventide_Minigame
 	{
         Parent::Reset(%minigame,%client);
 
-		if ($Pref::Server::MapRotation::ResetCount > $Pref::Server::MapRotation::minreset) 
+		if ($Pref::Server::MapRotation::ResetCount >= $Pref::Server::MapRotation::minreset) 
 		{
-			%msg = "<font:arial:26><color:FFFF00>Map Rotator\c6 -\c3" SPC $Pref::Server::MapRotation::minreset SPC "\c6rounds have passed, time to get a fresh map!";
-			nextMap(%msg);
+			for(%i=0;%i<%minigame.numMembers;%i++) if(isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
+			%client.play2d("item_get_sound");		 			
+		
+			nextMap("\c3" SPC $Pref::Server::MapRotation::minreset SPC "rounds have passed, loading the next map!");
 		}
 
 		if (ClientGroup.getCount() >= 0) 
 		$Pref::Server::MapRotation::ResetCount++;
+
+		%minigame.chatMsgAll("\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minreset);
 
 		Parent::Reset(%obj, %client);		
 

@@ -166,7 +166,7 @@ function brickEventideRitual::onPlant(%this, %obj)
 
 	%obj.ritualshape.position = %obj.getposition();
 
-	$EventideRitualAmount += 10	;
+	$EventideRitualAmount += 10;
 }
 
 function brickEventideRitual::onloadPlant(%this, %obj) 
