@@ -1,8 +1,18 @@
-exec("./datablocks_misc.cs");
+Here is the list that executes each of the files using `exec("./filenamehere.cs");` based on the provided image:
 
-%path = "./*.cs";
-for(%file = findFirstFile(%path); %file !$= ""; %file = findNextFile(%path))
-{
-    if(strstr(strlwr(%file),"datablocks_misc") != -1 || strstr(strlwr(%file),"player_eventide") != -1 || strstr(strlwr(%file),"player_renowned") != -1 || strstr(strlwr(%file),"module_misc") != -1) continue;
-	exec(%file);
-}
+```csharp
+exec("./brick_console.cs");
+exec("./brick_ritual.cs");
+exec("./datablocks_lights.cs");
+exec("./datablocks_misc.cs");
+exec("./datablocks_render.cs");
+exec("./datablocks_renowned.cs");
+exec("./datablocks_shopeffects.cs");
+exec("./datablocks_trail.cs");
+exec("./particle_killer.cs");
+exec("./particle_portal.cs");
+exec("./projectile_lightning.cs");
+exec("./datablocks_shire.cs");
+```
+
+This list covers all the files visible in the second provided image.
