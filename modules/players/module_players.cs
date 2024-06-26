@@ -23,7 +23,6 @@ while(%file !$= "")
 %iconpath = "./icons/*.png"; 
 for (%iconfile = findFirstFile(%iconpath); %iconfile !$= ""; %iconfile = findNextFile(%iconpath))
 {
-	echo(%iconfile);
 	addExtraResource(%iconfile);	
 }
 
