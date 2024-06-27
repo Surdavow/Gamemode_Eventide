@@ -67,7 +67,7 @@ function PlayerNightmare::onKillerChase(%this,%obj,%chasing)
 	
 	switch(%chasing)
 	{
-		case true: %obj.mountImage("ChainsawSawingImage",0);
+		case true: 	%obj.mountImage("ChainsawSawingImage",0);					
 		case false: %obj.mountImage("ChainsawImage",0);
 	}
 }

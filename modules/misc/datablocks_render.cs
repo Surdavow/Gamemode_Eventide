@@ -70,6 +70,27 @@ datablock ShapeBaseImageData(RenderTurnImage)
 	stateTransitionOnTimeout[0]= "Wait";
 };
 
+datablock ParticleEmitterData(PrepperEmitter)
+{
+   ejectionPeriodMS = 35;
+   periodVarianceMS = 0;
+   ejectionVelocity = 0.0;
+   ejectionOffset   = 1.8;
+   velocityVariance = 0.0;
+   thetaMin         = 0;
+   thetaMax         = 0;
+   phiReferenceVel  = 0;
+   phiVariance      = 0;
+   overrideAdvance = false;
+   lifeTimeMS = 100;
+   particles = "PrepperParticle";
+
+   doFalloff = true;
+
+   emitterNode = GenericEmitterNode;
+   pointEmitterNode = TenthEmitterNode;
+};
+
 datablock ShapeBaseImageData(PrepperImage) 
 {
 	shapeFile			= "base/data/shapes/empty.dts";
@@ -105,27 +126,6 @@ datablock ParticleData(PrepperParticle)
    times[0]      = 0;
    times[1]      = 0.5;
    times[2]      = 1.0;
-};
-
-datablock ParticleEmitterData(PrepperEmitter)
-{
-   ejectionPeriodMS = 35;
-   periodVarianceMS = 0;
-   ejectionVelocity = 0.0;
-   ejectionOffset   = 1.8;
-   velocityVariance = 0.0;
-   thetaMin         = 0;
-   thetaMax         = 0;
-   phiReferenceVel  = 0;
-   phiVariance      = 0;
-   overrideAdvance = false;
-   lifeTimeMS = 100;
-   particles = "PrepperParticle";
-
-   doFalloff = true;
-
-   emitterNode = GenericEmitterNode;
-   pointEmitterNode = TenthEmitterNode;
 };
 
 datablock ExplosionData(PrepperExplosion)

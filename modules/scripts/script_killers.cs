@@ -261,37 +261,37 @@ function Armor::onKillerLoop(%this,%obj)
     	// Idle sounds
     	if (%obj.lastKillerIdle + getRandom(6000, 8500) < getSimTime())
     	{
-        %obj.lastKillerIdle = getSimTime();
+        	%obj.lastKillerIdle = getSimTime();
 
-        // Play sounds based on chase state
-        if (%obj.isChasing)
-        {
-            if (!%obj.isInvisible && %this.killerChaseSound !$= "")
-            {
-                %obj.playThread(3, "plant");
-                %obj.playAudio(0, %this.killerChaseSound @ getRandom(1, %this.killerChaseSoundAmount) @ "_sound");
-            }
+        	// Play sounds based on chase state
+        	if (%obj.isChasing)
+        	{
+        	    if (!%obj.isInvisible && %this.killerChaseSound !$= "")
+        	    {
+        	        %obj.playThread(3, "plant");
+        	        %obj.playAudio(0, %this.killerChaseSound @ getRandom(1, %this.killerChaseSoundAmount) @ "_sound");
+        	    }
 
-            if (!%obj.raiseArms && %this.killerRaiseArms)
-            {
-                %obj.playThread(1, "armReadyBoth");
-                %obj.raiseArms = true;
-            }
-        }
-        else
-        {
-            if (!%obj.isInvisible && %this.killerIdleSound !$= "")
-            {
-                %obj.playThread(3, "plant");
-                %obj.playAudio(0, %this.killerIdleSound @ getRandom(1, %this.killerIdleSoundAmount) @ "_sound");
-            }
+        	    if (!%obj.raiseArms && %this.killerRaiseArms)
+        	    {
+        	        %obj.playThread(1, "armReadyBoth");
+        	        %obj.raiseArms = true;
+        	    }
+        	}
+        	else
+        	{
+        	    if (!%obj.isInvisible && %this.killerIdleSound !$= "")
+        	    {
+        	        %obj.playThread(3, "plant");
+        	        %obj.playAudio(0, %this.killerIdleSound @ getRandom(1, %this.killerIdleSoundAmount) @ "_sound");
+        	    }
 
-            if (%obj.raiseArms)
-            {
-                %obj.playThread(1, "root");
-                %obj.raiseArms = false;
-            }
-        }
+        	    if (%obj.raiseArms)
+        	    {
+        	        %obj.playThread(1, "root");
+        	        %obj.raiseArms = false;
+        	    }
+        	}
     	}
 	}
 

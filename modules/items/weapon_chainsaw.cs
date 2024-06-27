@@ -153,8 +153,16 @@ function ChainsawSawingImage::onUnmount(%this, %obj, %slot)
 	if(%obj.isSawing) 
 	{
 		%obj.isSawing = false;
+		%obj.playthread(1,"root");
 		%obj.stopAudio(1);
 	}
 		
-	Parent::onFire(%this, %obj, %slot);
+	Parent::onUnmount(%this, %obj, %slot);
+}
+
+function ChainsawSawingImage::onMount(%this, %obj, %slot)
+{	
+	%obj.playthread(1,"armReadyRight");
+		
+	Parent::onMount(%this, %obj, %slot);
 }
