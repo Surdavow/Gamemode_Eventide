@@ -126,7 +126,7 @@ datablock ShapeBaseImageData(ChainsawSawingImage : ChainsawImage)
 
 function ChainsawSawingImage::onFire(%this, %obj, %slot)
 {
-	%obj.playThread(2, plant);
+	%obj.playThread(3, plant);
 	
 	if(!%obj.isSawing)
 	{
