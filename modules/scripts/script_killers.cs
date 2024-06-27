@@ -167,21 +167,21 @@ function Armor::onKillerChase(%this,%obj,%chasing)
 
 function Armor::onKillerLoop(%this,%obj)
 {
-    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj))) return;	
+    // Return if the player does not exist or is dead, or if the player is not in a minigame
+	if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj))) return;	
 
 	// In case the player is not a killer, such as the skinwalker mimicking a player
 	if(%obj.getDataBlock().isKiller)
 	{
 		// Container loop
-		for (%i = 0; %i < clientgroup.getCount(); %i++)
+		initContainerRadiusSearch(%obj.getMuzzlePoint(0), 40, $TypeMasks::PlayerObjectType);		
+		while(%nearbyplayer = containerSearchNext())
 		{
-			%nearbyplayer = clientgroup.getObject(%i).player;
-
-			if (!isObject(%nearbyplayer) || %nearbyplayer == %obj || %nearbyplayer.getClassName() !$= "Player" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 40)
-				continue;		
+			if (%nearbyplayer == %obj || %nearbyplayer.getClassName() !$= "Player" || containerSearchCurrDist() > 40)
+			continue;		
 
 			if (!isObject(getMinigamefromObject(%nearbyplayer)) || %nearbyplayer.getDataBlock().isKiller)
-				continue;		
+			continue;		
 
 			%line = vectorNormalize(vectorSub(%nearbyplayer.getMuzzlePoint(2), %obj.getEyePoint()));
 			%dot = vectorDot(%obj.getEyeVector(), %line);
@@ -299,8 +299,9 @@ function Armor::onKillerLoop(%this,%obj)
 	if (isObject(%client = %obj.client)) 
 	%this.bottomprintgui(%obj,%client);
 
-    cancel(%obj.onKillerLoop); // Prevent duplicate processes
-    %obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
+	// Prevent duplicate processes from running
+    cancel(%obj.onKillerLoop);
+	%obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
 }
 
 function Armor::bottomprintgui(%this,%obj,%client)
@@ -329,36 +330,36 @@ function Player::KillerGhostLightCheck(%obj)
 	
 	if(!%obj.isInvisible)
 	{
-			%obj.light = new fxLight ("")
-			{
-				dataBlock = %obj.getdataBlock().killerlight;
-				source = %obj;
-			};
+		%obj.light = new fxLight ("")
+		{
+			dataBlock = %obj.getdataBlock().killerlight;
+			source = %obj;
+		};
 
-			if(!isObject(DroppedItemGroup))
+		if(!isObject(DroppedItemGroup))
+		{
+			new SimGroup(DroppedItemGroup);
+			missionCleanUp.add(DroppedItemGroup);
+		}
+		DroppedItemGroup.add(%obj.light);
+		
+		%obj.light.attachToObject(%obj);		
+		%obj.light.setNetFlag(6,true);
+
+		for(%i = 0; %i < clientgroup.getCount(); %i++) 
+		if(isObject(%client = clientgroup.getObject(%i))) 
+		{
+			if(%obj == %client.player)
 			{
-				new SimGroup(DroppedItemGroup);
-				missionCleanUp.add(DroppedItemGroup);
+				%obj.light.ScopeToClient(%client);
+				%obj.ScopeToClient(%client);
 			}
-			DroppedItemGroup.add(%obj.light);
-			
-			%obj.light.attachToObject(%obj);		
-			%obj.light.setNetFlag(6,true);
-
-			for(%i = 0; %i < clientgroup.getCount(); %i++) 
-			if(isObject(%client = clientgroup.getObject(%i))) 
+			else 
 			{
-				if(%obj == %client.player)
-				{
-					%obj.light.ScopeToClient(%client);
-					%obj.ScopeToClient(%client);
-				}
-				else 
-				{
-					%obj.light.clearScopeToClient(%client);
-					%obj.clearScopeToClient(%client);
-				}
-			}			
+				%obj.light.clearScopeToClient(%client);
+				%obj.clearScopeToClient(%client);
+			}
+		}			
 	}
 	else if(isObject(%obj.light)) %obj.light.delete();	
 }
