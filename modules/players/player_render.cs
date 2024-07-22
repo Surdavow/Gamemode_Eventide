@@ -28,8 +28,8 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 
 	rightclickicon = "color_vanish";
 	leftclickicon = "color_headache";
-	rightclickspecialicon = "";
-	leftclickspecialicon = "";
+	rightclickspecialicon = "color_vanish";
+	leftclickspecialicon = "color_headache";
 
 	rechargeRate = 0.3;
 	maxTools = 0;

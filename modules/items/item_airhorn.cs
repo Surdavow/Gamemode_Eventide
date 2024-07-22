@@ -1,10 +1,3 @@
-datablock AudioProfile(airhornShotSound)
-{
-   filename    = "./models/airhorn/airhornShot.wav";
-   description = AudioClose3d;
-   preload = true;
-};
-
 //muzzle flash effects
 datablock ParticleData(airhornFlashParticle)
 {
@@ -194,7 +187,7 @@ datablock ShapeBaseImageData(airhornImage)
 	stateEmitter[2]					= airhornFlashEmitter;
 	stateEmitterTime[2]				= 0.55;
 	stateEmitterNode[2]				= "muzzleNode";
-	stateSound[2]					= airhornShotSound;
+	stateSound[2]					= "airhornShot_sound";
 	stateEjectShell[2]       = true;
 
 	stateName[3] = "Smoke";
