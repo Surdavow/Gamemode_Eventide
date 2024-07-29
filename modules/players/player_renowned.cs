@@ -73,7 +73,7 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 
 function PlayerRenowned::bottomprintgui(%this,%obj,%client)
 {	
-	%iconpath = "Add-ons/Gamemode_Eventide/modules/misc/icons/";
+	%iconpath = "Add-ons/Gamemode_Eventide/modules/players/icons/";
 	%energylevel = %obj.getEnergyLevel();
 
 	// Some dynamic varirables
