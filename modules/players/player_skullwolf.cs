@@ -70,7 +70,7 @@ function PlayerSkullWolf::bottomprintgui(%this,%obj,%client)
 
 	// Some dynamic varirables
 	%leftclickstatus = (%obj.getEnergyLevel() >= 25) ? "hi" : "lo";
-	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
+	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy || %obj.isInvisible) ? "hi" : "lo";
 	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
 	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
 
