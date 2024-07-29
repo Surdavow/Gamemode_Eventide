@@ -51,8 +51,8 @@ function nextMap(%msg)
 
 	//clear all bricks 
 	// note: this function is deferred, so we'll have to set a callback to be triggered when it's done
-	BrickGroup_888888.chaindeletecallback = "LoadLevel(\"" @ %filename @ "\");";
-	BrickGroup_888888.chaindeleteall();	
+	BrickGroup_230349.chaindeletecallback = "LoadLevel(\"" @ %filename @ "\");";
+	BrickGroup_230349.chaindeleteall();	
 }
 
 function BuildMapLists()
