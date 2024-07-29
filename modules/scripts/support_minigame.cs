@@ -27,7 +27,7 @@ package Eventide_Minigame
 
 		//%minigame.chatMsgAll("\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minreset);
 
-		Parent::Reset(%obj, %client);		
+		Parent::Reset(%minigame, %client);		
 
 		if(strlwr(%minigame.title) $= "eventide")
 		{
