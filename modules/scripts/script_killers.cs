@@ -259,7 +259,7 @@ function Armor::onKillerLoop(%this,%obj)
 		}
 
     	// Idle sounds
-    	if (%obj.lastKillerIdle + getRandom(6000, 8500) < getSimTime())
+    	if (%obj.lastKillerIdle + getRandom(7000, 10000) < getSimTime())
     	{
         	%obj.lastKillerIdle = getSimTime();
 
