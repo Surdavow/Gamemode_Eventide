@@ -65,3 +65,4 @@ if ($Pref::Server::PF::brickFXsounds::unduloStep $= "") $Pref::Server::PF::undul
 
 // Always set this to 0, don't want there to be problems when the server is initialized
 $Pref::Server::ChatMod::lchatEnabled = 0;
+$iconspath = "Add-ons/Gamemode_Eventide/modules/players/icons/";

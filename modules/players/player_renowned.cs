@@ -73,7 +73,6 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 
 function PlayerRenowned::bottomprintgui(%this,%obj,%client)
 {	
-	%iconpath = "Add-ons/Gamemode_Eventide/modules/players/icons/";
 	%energylevel = %obj.getEnergyLevel();
 
 	// Some dynamic varirables
@@ -83,8 +82,8 @@ function PlayerRenowned::bottomprintgui(%this,%obj,%client)
 	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
 
 	// Regular icons
-	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
-	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
+	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ $iconspath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
+	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ $iconspath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
 
 	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
 }

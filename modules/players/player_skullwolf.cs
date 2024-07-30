@@ -65,7 +65,6 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 
 function PlayerSkullWolf::bottomprintgui(%this,%obj,%client)
 {	
-	%iconpath = "Add-ons/Gamemode_Eventide/modules/players/icons/";
 	%energylevel = %obj.getEnergyLevel();
 
 	// Some dynamic varirables
@@ -75,14 +74,14 @@ function PlayerSkullWolf::bottomprintgui(%this,%obj,%client)
 	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
 
 	// Regular icons
-	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
-	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ %iconpath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
+	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ $iconspath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
+	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ $iconspath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
 
 	// Change them to special if they exist
 	if(%obj.getEnergyLevel() >= 25 && %this.leftclickspecialicon !$= "" && isObject(%obj.gazing) && %obj.gazing.getdataBlock().isDowned)
 	{		
 		%leftclickstatus = (%obj.gazing.getDamagePercent() > 0.25) ? "hi" : "lo";
-		%leftclickicon = "<just:left><bitmap:" @ %iconpath @ %leftclickstatus @ %this.leftclickspecialicon @ ">";
+		%leftclickicon = "<just:left><bitmap:" @ $iconspath @ %leftclickstatus @ %this.leftclickspecialicon @ ">";
 	}
 
 	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
