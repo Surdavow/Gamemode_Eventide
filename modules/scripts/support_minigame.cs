@@ -14,18 +14,20 @@ package Eventide_Minigame
 
     function MiniGameSO::Reset(%minigame,%client)
 	{
-		//if ($Pref::Server::MapRotation::ResetCount >= $Pref::Server::MapRotation::minreset) 
-		//{
-		//	for(%i=0;%i<%minigame.numMembers;%i++) if(isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
-		//	%client.play2d("item_get_sound");		 			
-		//
-		//	nextMap("\c3" SPC $Pref::Server::MapRotation::minreset SPC "rounds have passed, loading the next map!");
-		//}
-//
-		//if (ClientGroup.getCount() >= 0) 
-		//$Pref::Server::MapRotation::ResetCount++;
+		if (ClientGroup.getCount() >= 0 && $Pref::Server::MapRotation::enabled)
+  		{
+			if ($Pref::Server::MapRotation::ResetCount >= $Pref::Server::MapRotation::minreset) 
+			{
+				for(%i=0;%i<%minigame.numMembers;%i++) if(isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
+				%client.play2d("item_get_sound");		 			
+			
+				nextMap("\c3" SPC $Pref::Server::MapRotation::minreset SPC "rounds have passed, loading the next map!");
+   				$Pref::Server::MapRotation::ResetCount = 0;
+			}
 
-		//%minigame.chatMsgAll("\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minreset);
+			$Pref::Server::MapRotation::ResetCount++;
+			%minigame.chatMsgAll("\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minreset);
+    		}
 
 		Parent::Reset(%minigame, %client);		
 
