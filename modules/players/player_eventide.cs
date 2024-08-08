@@ -69,6 +69,8 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
+
+	if(isObject(%obj.billboardbot)) %ob.billboardbot.delete();
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -373,6 +375,17 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 	%this.DownLoop(%obj);
     %obj.playthread(0,sit);
 
+	if(!isObject(%obj.billboardbot))
+	{
+		%obj.billboardbot = new Player() 
+		{ 
+			dataBlock = "EmptyPlayer";
+			source = %obj;
+			slotToMountBot = 5;
+			lightToMount = "downedBillboard";
+		};
+	}
+
 	if(isObject(%obj.client) && isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%teams = %minigame.teams))
 	{				
 		for(%i = 0; %i < %teams.getCount(); %i++) if(isObject(%team = %teams.getObject(%i)))
@@ -418,6 +431,8 @@ function EventidePlayer::onDisabled(%this,%obj)
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
 	Parent::onDisabled(%this,%obj);
+
+	if(isObject(%obj.billboardbot)) %obj.billboardbot.delete();
 
 	if(isObject(%funcclient = %obj.client))
 	{
@@ -491,8 +506,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		}		
 		
 		for(%i = 0; %i < %minigame.numMembers; %i++)
-		if(isObject(%member = %minigame.member[%i]) && !%obj.markedforRenderDeath) %member.play2D("");
-		else %member.play2D("render_kill_sound");
+		if(isObject(%member = %minigame.member[%i]) && %obj.markedforRenderDeath) %member.play2D("render_kill_sound");
 	}	
 }
 

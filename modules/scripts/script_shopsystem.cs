@@ -1,5 +1,4 @@
 $ShopInstrumentList = "GuitarImage BanjoImage HarmonicaImage ViolinImage KeytarImage FluteImage ElectricGuitarImage ElectricBassImage";
-$ShopEffectList = "HeartStatusImage StinkyStatusImage ConfettiStatusImage ElectricStatusImage SparkleStatusImage FireStatusImage NeonFlameStatusImage";
 $ShopTitleList = "Title Color Bitmap Font";
 
 if(isObject(EventideShopMainMenu)) EventideShopMainMenu.delete();
@@ -8,14 +7,12 @@ new ScriptObject(EventideShopMainMenu)
     isCenterprintMenu = 1;
     menuName = "Eventide Shop";
 
-     menuOption[0] = "Effects";
+    menuOption[0] = "Custom Title";
     menuFunction[0] = "openOptionShop";
-    menuOption[1] = "Custom Title";
+    menuOption[1] = "Instruments";
     menuFunction[1] = "openOptionShop";
-    menuOption[2] = "Instruments";
-    menuFunction[2] = "openOptionShop";
-    menuOption[3] = "Exit";
-    menuFunction[3] = "exitCenterprintMenu";    
+    menuOption[2] = "Exit";
+    menuFunction[2] = "exitCenterprintMenu";    
 
     justify = "<just:right>";
     menuOptionCount = 5;
@@ -43,9 +40,8 @@ function openOptionShop(%client,%menu,%option)
 
     switch(%option)
     {
-        case 0: %type = "EventideEffectsShopMenu";
-        case 1: %type = "EventideTitlesShopMenu";
-        case 2: %type = "EventideInstrumentsShopMenu";
+        case 0: %type = "EventideTitlesShopMenu";
+        case 1: %type = "EventideInstrumentsShopMenu";
     }
     %client.startCenterprintMenu(%type);
 }
@@ -244,73 +240,4 @@ EventideSetTitleFontMenu.menuFunction[getWordCount($TitleFontList)] = "exitCente
 function EventideSetCustomFont(%client,%menu,%option)
 {    
     return %client.customtitlefont = strreplace(getWord($TitleFontList,%option),"_"," ");
-}
-
-
-
-if(isObject(EventideEffectsShopMenu)) EventideEffectsShopMenu.delete();
-new ScriptObject(EventideEffectsShopMenu)
-{
-    menuName = "Eventide Shop - Effects";
-    isCenterprintMenu = true;
-    justify = "<just:right>";
-    menuOptionCount = getWordCount($ShopEffectList)+1;
-};
-
-for (%i = 0; %i < getWordCount($ShopEffectList); %i++) 
-{    
-    if(%i < 3) %price = " - 25 Points";
-    else if (%i < 6) %price = " - 50 Points";
-    
-    EventideEffectsShopMenu.menuOption[%i] = strreplace(getWord($ShopEffectList,%i),"StatusImage","") @ %price;
-    EventideEffectsShopMenu.menuFunction[%i] = "BuyEffect";
-}
-
-EventideEffectsShopMenu.menuOption[getWordCount($ShopEffectList)] = "Return";
-EventideEffectsShopMenu.menuFunction[getWordCount($ShopEffectList)] = "returnToMainShopMenu";
-
-function BuyEffect(%client,%menu,%option)
-{
-    %client.exitCenterprintMenu();
-    if(%client.hasEffect[%option]) return commandToClient(%client, 'messageboxOK', "Error", "You already have this! Check your effects with /effect");
-    else
-    {
-        if(%option < 3) %minScore = 25;
-        else if(%option < 6) %minScore = 50;
-            
-        if(%client.score >= %minScore)
-        {
-            %client.incScore(-%minScore);
-            %client.hasEffect[%option] = true;
-            commandToClient(%client, 'messageboxOK', "Success", "Successfully purchased! Check your effect with /effect");
-        }
-        else return commandToClient(%client, 'messageboxOK', "Error", "Not enough points!");
-    }  
-}
-
-function servercmdeffect(%client,%effect)
-{
-    if(!isObject(%client) || !isObject(%player = %client.player) || !isObject(%effectbot = %player.effectbot)) return;
-    if(strlwr(%effect) $= "none")
-    {
-        %effectbot.unmountImage(0);
-        %client.effect = 0;        
-        return;
-    }
-    
-    for(%i = 0; %i < getWordCount($ShopEffectList); %i++)
-    if(strlwr(%effect) $= strreplace(strlwr(getWord($ShopEffectList,%i)),"statusimage","") && %client.hasEffect[%i])
-    {
-        %effectbot.mountImage(getWord($ShopEffectList,%i),0);
-        %client.effect = getWord($ShopEffectList,%i);
-        return;
-    }
-
-    messageClient(%client, '', "<tab:280>\c6Your Effects List");
-    messageClient(%client, '', "\c7--------------------------------------------------------------------------------");
-    for(%i = 0; %i <= getWordCount($ShopEffectList); %i++) if(%client.hasEffect[%i]) 
-    messageClient(%client, '', "<tab:280>\c6" @ strreplace(getWord($ShopEffectList,%i),"StatusImage",""));
-    messageClient(%client, '', "<tab:280>\c6None");
-    %effectbot.unmountImage(0);    
-    %client.effect = 0;
 }

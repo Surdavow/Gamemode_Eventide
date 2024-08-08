@@ -57,19 +57,6 @@ package Eventide_Player
 		%this.GazeLoop(%obj);
 		%this.schedule(500,KillerCheck,%obj);
 
-		//if(isObject(%client = %obj.client) && !isObject(%obj.effectbot))
-		//{
-		//	%obj.effectbot = new Player() 
-    	//	{
-    	//    	dataBlock = "EmptyBot";
-    	//	};
-		//	%obj.mountobject(%obj.effectbot,5);			
-		//	%obj.effectbot.mountImage(%client.effect,0);
-		//	%obj.effectbot.setNetFlag(6,true);
-		//	for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client = clientgroup.getObject(%i)) && %client.player != %obj)
-		//	%obj.effectbot.clearScopeToClient(%client);			
-		//}
-
 		if(%this != %obj.getDatablock() && %this.maxTools != %obj.client.lastMaxTools)
 		{
 			%obj.client.lastMaxTools = %this.maxTools;
