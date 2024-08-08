@@ -44,6 +44,8 @@ addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_puppet
 addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_skinwalker_disguise.png");	
 addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_skinwalker_reveal.png");	
 addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_vanish.png");	
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/icon_downed.png");	
+addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/passive_Vault.png");	
 
 // Faces
 if (isFile(%faceiflpath = "./models/face.ifl"))
