@@ -14,7 +14,7 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 	killerChaseLvl2Music = "musicData_OUT_GenocideChase";
 
 	killeridlesound = "genocide_idle";
-	killeridlesoundamount = 18;
+	killeridlesoundamount = 19;
 
 	killerchasesound = "genocide_chase";
 	killerchasesoundamount = 18;
