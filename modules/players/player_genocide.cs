@@ -10,8 +10,8 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 	meleetrailoffset = "0.3 1.4 0.7"; 	
 	meleetrailscale = "4 4 3";
 
-	killerChaseLvl1Music = "musicData_OUT_GenocideNear";
-	killerChaseLvl2Music = "musicData_OUT_GenocideChase";
+	killerChaseLvl1Music = "musicData_Eventide_GenocideNear";
+	killerChaseLvl2Music = "musicData_Eventide_GenocideChase";
 
 	killeridlesound = "genocide_idle";
 	killeridlesoundamount = 19;
