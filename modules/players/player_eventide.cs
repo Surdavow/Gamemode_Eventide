@@ -362,7 +362,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
         %obj.setDatablock("EventidePlayerDowned");
 
 		if(isObject(%obj.billboardbot.lightToMount)) 
-		%obj.billboardbot.lightToMount.setdatablock("downedBillboard");
+		%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
 
 		if(isObject(%minigame = getMinigamefromObject(%obj))) for(%i = 0; %i < %minigame.numMembers; %i++)
 		if(isObject(%member = %minigame.member[%i]))
