@@ -360,9 +360,6 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
     {        
         %obj.setDatablock("EventidePlayerDowned");
 
-		if(isObject(%obj.billboardbot.lightToMount)) 
-		%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
-
 		if(isObject(%minigame = getMinigamefromObject(%obj))) for(%i = 0; %i < %minigame.numMembers; %i++)
 		if(isObject(%member = %minigame.member[%i]))
 		%member.play2D("outofbounds_sound");
@@ -392,8 +389,12 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 {
 	Parent::onNewDataBlock(%this,%obj);
+	
 	%this.DownLoop(%obj);
     %obj.playthread(0,sit);
+
+	if(isObject(%obj.billboardbot.lightToMount)) 
+	%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
 
 	if(isObject(%obj.client) && isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%teams = %minigame.teams))
 	{				
@@ -441,7 +442,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
 	Parent::onDisabled(%this,%obj);
 
-	if(isObject(%obj.billboardbot)) %obj.billboardbot.delete();
+	if(isObject(%obj.billboardbot)) 
+	%obj.billboardbot.delete();
 
 	if(isObject(%funcclient = %obj.client))
 	{
