@@ -90,59 +90,16 @@ function PlayerRenowned::bottomprintgui(%this,%obj,%client)
 
 function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 {
-	if(%obj.isSkinwalker && isObject(%obj.victimreplicatedclient)) %funcclient = %obj.victimreplicatedclient;
-    else %funcclient = %client;	
-	
 	%obj.hideNode("ALL");
-	%obj.unHideNode("chest");
-	%obj.unHideNode((%funcclient.rhand ? "rhook" : "rhand"));
-	%obj.unHideNode((%funcclient.lhand ? "lhook" : "lhand"));
-	%obj.unHideNode((%funcclient.rarm ? "rarmSlim" : "rarm"));
-	%obj.unHideNode((%funcclient.larm ? "larmSlim" : "larm"));
+	%obj.unHideNode("chest");	
+	%obj.unHideNode("rhand");
+	%obj.unHideNode("lhand");
+	%obj.unHideNode("rarm");
+	%obj.unHideNode("larm");
 	%obj.unHideNode("headskin");
-
-	if($pack[%funcclient.pack] !$= "none")
-	{
-		%obj.unHideNode($pack[%funcclient.pack]);
-		%obj.setNodeColor($pack[%funcclient.pack],%funcclient.packColor);
-	}
-	if($secondPack[%funcclient.secondPack] !$= "none")
-	{
-		%obj.unHideNode($secondPack[%funcclient.secondPack]);
-		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
-	}	
-	
 	%obj.unHideNode("pants");
-	%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
-	%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));
-
-	%obj.setHeadUp(0);
-	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
-
-	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
-	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
-	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
-	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
-	if (%obj.bloody["chest_front"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_front");
-	if (%obj.bloody["chest_back"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_back");
-
-	%obj.setFaceName(%funcclient.faceName);
-	%obj.setDecalName(%funcclient.decalName);
-
-	%obj.setNodeColor("headskin",%funcclient.headColor);	
-	%obj.setNodeColor("chest",%funcclient.chestColor);
-	%obj.setNodeColor("femChest",%funcclient.chestColor);
-	%obj.setNodeColor("pants",%funcclient.hipColor);
-	%obj.setNodeColor("rarm",%funcclient.rarmColor);
-	%obj.setNodeColor("larm",%funcclient.larmColor);
-	%obj.setNodeColor("rarmSlim",%funcclient.rarmColor);
-	%obj.setNodeColor("larmSlim",%funcclient.larmColor);
-	%obj.setNodeColor("rhand",%funcclient.rhandColor);
-	%obj.setNodeColor("lhand",%funcclient.lhandColor);
-	%obj.setNodeColor("rshoe",%funcclient.rlegColor);
-	%obj.setNodeColor("lshoe",%funcclient.llegColor);
-	%obj.setNodeColor("rpeg",%funcclient.rlegColor);
-	%obj.setNodeColor("lpeg",%funcclient.llegColor);
+	%obj.unHideNode("rshoe");
+	%obj.unHideNode("lshoe");	
 
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
@@ -151,23 +108,23 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand_blood", "0.7 0 0 1");
 	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
 	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
-	%obj.setNodeColor("femchest_blood_front", "0.7 0 0 1");
-	%obj.setNodeColor("femchest_blood_back", "0.7 0 0 1");
 	
 	%obj.setFaceName("renownedface");
 	%obj.setDecalName("renowneddecal");
 	
 	%skinColor = "0.83 0.73 0.66 1";
-
-	if(%obj.chest)
-	{
-		%obj.hideNode("femchest");
-		%obj.unhideNode("chest");		
-	}	
+	%pantsColor = "0.075 0.075 0.075 1";
+	%shirtColor = "0.541 0.698 0.553 1";
 
 	%obj.setNodeColor("headskin",%skinColor);
+	%obj.setNodeColor("chest",%shirtColor);
 	%obj.setNodeColor("Rhand",%skinColor);
 	%obj.setNodeColor("Lhand",%skinColor);
+	%obj.setNodeColor("lshoe",%pantsColor);
+	%obj.setNodeColor("rshoe",%pantsColor);
+	%obj.setNodeColor("pants",%pantsColor);
+	%obj.setNodeColor("rarm",%shirtColor);
+	%obj.setNodeColor("larm",%shirtColor);
 	%obj.hideNode($hat[%client.hat]);
 	%obj.HideNode($accent[%client.accent]);
 	%obj.HideNode($secondPack[%client.secondPack]);
@@ -175,10 +132,7 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.HideNode("visor");
 	%obj.HideNode("rpeg");
 	%obj.HideNode("lpeg");
-	%obj.unHideNode("rshoe");
-	%obj.unHideNode("lshoe");
 	%obj.mountImage("renownedeyesimage",2);
-	%obj.setHeadUp(0);
 
 	%obj.unHideNode("renownedeyes");
 }
