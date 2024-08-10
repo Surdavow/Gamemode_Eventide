@@ -3,7 +3,7 @@ datablock fxLightData(blankBillboard)
 	LightOn = false;
 	flareOn = true;
 	flarebitmap = "base/data/shapes/blank.png";
-	ConstantSize = 2.5;
+	ConstantSize = 2;
     ConstantSizeOn = true;
 	LinkFlare = false;
 	AnimOffsets = false;
@@ -16,7 +16,7 @@ datablock fxLightData(blankBillboard)
 datablock fxLightData(downedBillboard : blankBillboard)
 {
 	flarebitmap = "./icons/icon_downed.png";
-	ConstantSize = 2.5;
+	ConstantSize = 2;
 };
 
 datablock PlayerData(emptyPlayer : playerStandardArmor)

@@ -79,6 +79,21 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 			slotToMountBot = 5;
 			lightToMount = "blankBillboard";
 		};
+
+		for(%i = 0; %i < clientgroup.getCount(); %i++) 
+		if(isObject(%client = clientgroup.getObject(%i))) 
+		{
+			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller)
+			{
+				%cobj.lightToMount.ScopeToClient(%client);
+				%obj.ScopeToClient(%client);
+			}
+			else 
+			{
+				%cobj.lightToMount.clearScopeToClient(%client);
+				%cobj.clearScopeToClient(%client);
+			}
+		}
 	}
 	else if(isObject(%obj.billboardbot.lightToMount)) 
 	%obj.billboardbot.lightToMount.setdatablock("blankBillboard");
