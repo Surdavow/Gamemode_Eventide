@@ -16,7 +16,7 @@ datablock fxLightData(blankBillboard)
 datablock fxLightData(downedBillboard : blankBillboard)
 {
 	flarebitmap = "./icons/icon_downed.png";
-	ConstantSize = 5;
+	ConstantSize = 2.5;
 };
 
 datablock PlayerData(emptyPlayer : playerStandardArmor)
