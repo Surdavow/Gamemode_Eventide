@@ -1,9 +1,9 @@
-datablock fxLightData(downedBillboard : blankBillboard)
+datablock fxLightData(blankBillboard)
 {
 	LightOn = false;
 	flareOn = true;
-	flarebitmap = "./icons/icon_downed.png";
-	ConstantSize = 5;
+	flarebitmap = "base/data/shapes/blank.png";
+	ConstantSize = 0.1;
     ConstantSizeOn = true;
 	LinkFlare = false;
 	AnimOffsets = false;
@@ -11,6 +11,12 @@ datablock fxLightData(downedBillboard : blankBillboard)
 	
 	blendMode = 1;
 	flareColor = "1 1 1 1";	
+};
+
+datablock fxLightData(downedBillboard : blankBillboard)
+{
+	flarebitmap = "./icons/icon_downed.png";
+	ConstantSize = 5;
 };
 
 datablock PlayerData(emptyPlayer : playerStandardArmor)

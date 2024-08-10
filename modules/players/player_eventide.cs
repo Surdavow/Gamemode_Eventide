@@ -70,7 +70,16 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 
-	if(isObject(%obj.billboardbot)) %ob.billboardbot.delete();
+	if(!isObject(%obj.billboardbot))
+	{
+		%obj.billboardbot = new Player() 
+		{ 
+			dataBlock = "EmptyPlayer";
+			source = %obj;
+			slotToMountBot = 5;
+			lightToMount = "blankBillboard";
+		};
+	}
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -189,6 +198,10 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			if(isObject(%victim.client)) %victim.client.centerprint("<color:FFFFFF><font:impact:40>You were revived by" SPC %obj.client.name,1);
 			%victim.setHealth(75);			
 			%victim.setDatablock("EventidePlayer");			
+
+			if(isObject(%obj.billboardbot.lightToMount)) 
+			%obj.billboardbot.lightToMount.setdatablock("blankBillboard");
+
 			%victim.playthread(0,"root");
 			if(%victim.downedamount >= 1) %victim.getdataBlock().PulsingScreen(%victim);
 			return;
@@ -347,6 +360,14 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
     {        
         %obj.setDatablock("EventidePlayerDowned");
+
+		if(isObject(%obj.billboardbot.lightToMount)) 
+		%obj.billboardbot.lightToMount.setdatablock("downedBillboard");
+
+		if(isObject(%minigame = getMinigamefromObject(%obj))) for(%i = 0; %i < %minigame.numMembers; %i++)
+		if(isObject(%member = %minigame.member[%i]))
+		%member.play2D("outofbounds_sound");
+		
         %obj.setHealth(100);
 		%obj.downedamount++;		
         return;
@@ -374,17 +395,6 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 	Parent::onNewDataBlock(%this,%obj);
 	%this.DownLoop(%obj);
     %obj.playthread(0,sit);
-
-	if(!isObject(%obj.billboardbot))
-	{
-		%obj.billboardbot = new Player() 
-		{ 
-			dataBlock = "EmptyPlayer";
-			source = %obj;
-			slotToMountBot = 5;
-			lightToMount = "downedBillboard";
-		};
-	}
 
 	if(isObject(%obj.client) && isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%teams = %minigame.teams))
 	{				
