@@ -2,9 +2,12 @@ datablock fxLightData(blankBillboard)
 {
 	LightOn = false;
 	flareOn = true;
+	ConstantSizeOn = true;
 	flarebitmap = "base/data/shapes/blank.png";
-	ConstantSize = 1.25;
-    ConstantSizeOn = true;
+	ConstantSize = 10;    
+	nearSize = 10;
+	farSize = 10;
+	farDistance = 9999;
 	LinkFlare = false;
 	AnimOffsets = false;
     FadeTime = 99999;
@@ -62,8 +65,10 @@ function emptyPlayer::onAdd(%this, %obj)
 			%billboard.attachToObject(%obj);
 
 			for(%i = 0; %i < clientgroup.getCount(); %i++) 			
-			if(isObject(%client = clientgroup.getObject(%i)) && isObject(%client.player) && !%client.player.getdataBlock().isKiller)
-			%billboard.ScopeToClient(%client);
+			{
+				if(isObject(%client = clientgroup.getObject(%i)) && isObject(%client.player)) %billboard.ScopeToClient(%client);
+				else if (%client.player.getdataBlock().isKiller || %client.player $= %source) %billboard.ClearScopeToClient(%client);
+			}
 		}
 	}
 	else
