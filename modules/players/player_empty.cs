@@ -3,7 +3,7 @@ datablock fxLightData(blankBillboard)
 	LightOn = false;
 	flareOn = true;
 	flarebitmap = "base/data/shapes/blank.png";
-	ConstantSize = 0.1;
+	ConstantSize = 2.5;
     ConstantSizeOn = true;
 	LinkFlare = false;
 	AnimOffsets = false;
