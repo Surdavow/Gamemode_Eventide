@@ -80,6 +80,8 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 			lightToMount = "blankBillboard";
 		};
 	}
+	else if(isObject(%obj.billboardbot.lightToMount)) 
+	%obj.billboardbot.lightToMount.setdatablock("blankBillboard");
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -197,10 +199,7 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			if(isObject(%obj.client)) %obj.client.centerprint("<color:FFFFFF><font:impact:40>You revived" SPC %victim.client.name,1);
 			if(isObject(%victim.client)) %victim.client.centerprint("<color:FFFFFF><font:impact:40>You were revived by" SPC %obj.client.name,1);
 			%victim.setHealth(75);			
-			%victim.setDatablock("EventidePlayer");			
-
-			if(isObject(%obj.billboardbot.lightToMount)) 
-			%obj.billboardbot.lightToMount.setdatablock("blankBillboard");
+			%victim.setDatablock("EventidePlayer");						
 
 			%victim.playthread(0,"root");
 			if(%victim.downedamount >= 1) %victim.getdataBlock().PulsingScreen(%victim);
