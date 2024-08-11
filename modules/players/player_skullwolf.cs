@@ -103,9 +103,8 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	if(%alpha == 1)
 	{
 		%obj.playaudio(1,"skullwolf_cloak_sound");
-		if(isObject(%obj.light))
-		%obj.light.delete();
-		
+
+		if(isObject(%obj.light)) %obj.light.delete();		
 	}
 	
 	%alpha = mClampF(%alpha-0.025,0,1);
@@ -163,9 +162,9 @@ function PlayerSkullWolf::onImpact(%this, %obj, %col, %vec, %force)
 
 function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 {
-	if(!isObject(%obj) || isEventPending(%obj.disappearsched)) return;
+	if (!isObject(%obj) || isEventPending(%obj.disappearsched)) return;
 
-	if(%alpha == 0) 
+	if (%alpha == 0) 
 	{
 		%obj.unHideNode("ALL");
 		%obj.isInvisible = false;
@@ -177,16 +176,19 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 	%alpha = mClampF(%alpha+0.025,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
 	%obj.setTempSpeed(0.375);
-	if(%alpha == 1) 
+
+	if (%alpha == 1) 
 	{
 		%obj.setTempSpeed(1);
 		%obj.unHideNode("ALL");
+
 		if(!isObject(%obj.light))
 		{
 			%obj.light = new fxLight ("")
 			{
 				dataBlock = %obj.getDataBlock().killerlight;
 			};
+
 			MissionCleanup.add (%obj.light);
 			%obj.light.setTransform(%obj.getTransform ());
 			%obj.light.attachToObject(%obj);
@@ -200,10 +202,11 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 
 function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 {		
+	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
+
 	if(%bool) switch(%triggerNum)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25)
-				%obj.KillerMelee(%this,4.5);
+		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4.5);
 			
 		case 4: if(!%obj.isInvisible)
 				{		
@@ -215,13 +218,12 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 					cancel(%obj.reappearsched);
 					%this.reappear(%obj,0);
 				}
-	}
-	Parent::onTrigger(%this,%obj,%triggerNum,%bool);	
+	}	
 }
 
 function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 {
-	if(!isObject(%obj)) return;
+	if (!isObject(%obj)) return;
 	
 	%furcolor = "0.05 0.05 0.05 1";
 	%obj.startFade(0, 0, true);
@@ -239,5 +241,5 @@ function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 function PlayerSkullWolf::onDisabled(%this, %obj, %state)
 {
 	Parent::onDisabled(%this, %obj, %state);
-	if(%obj.getState() $= "Dead" && !%obj.isInvisible) %obj.playaudio(0,"skullwolf_death" @ getRandom(0, 6) @ "_sound");
+	if(%obj.getState() $= "Dead") %obj.playaudio(0,"skullwolf_death" @ getRandom(0, 6) @ "_sound");
 }

@@ -42,13 +42,15 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 };
 
 function PlayerHuntress::onTrigger(%this, %obj, %trig, %press) 
-{			
+{	
+	Parent::onTrigger(%this, %obj, %trig, %press);	
+
 	if(%press) switch(%trig)
 	{
 		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4.5);				
 				return;
 	}
-	Parent::onTrigger(%this, %obj, %trig, %press);	
+	
 }
 
 function PlayerHuntress::onPeggFootstep(%this,%obj)
@@ -113,5 +115,6 @@ function PlayerHuntress::EventideAppearance(%this,%obj,%client)
 function PlayerHuntress::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
+
 	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"huntress_pain" @ getRandom(1, 1) @ "_sound");
 }

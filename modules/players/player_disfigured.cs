@@ -92,8 +92,6 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("lhand",%skinColor);
 	%obj.setNodeColor("headskin",%skinColor);
 	%obj.startFade(0, 0, true);
-	//%obj.unhideNode("femchest_blood_front");
-	//%obj.unhideNode("Rhand_blood");
 }
 
 function PlayerDisfigured::onDamage(%this, %obj, %delta)

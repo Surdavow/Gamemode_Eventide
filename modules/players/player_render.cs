@@ -168,38 +168,20 @@ function PlayerRender::onRemove(%this,%obj)
 }
 
 function Player::PrepperizerEffect(%obj)
-{	
+{
 	if (!isObject(%obj) || %obj.isInvisible) return;
 
 	// Set random scale
-	%scaleX = getRandom(70, 110) * 0.01;
-	%scaleY = getRandom(70, 110) * 0.01;
-	%scaleZ = getRandom(100, 110) * 0.01;
-	%obj.setScale(%scaleX SPC %scaleY SPC %scaleZ);
+	%obj.setScale((getRandom(70, 110) * 0.01) SPC (getRandom(70, 110) * 0.01) SPC (getRandom(100, 110) * 0.01));
 
 	// Set random shape name
-	if (getRandom(1, 10) == 1) %obj.setShapeName(getRandom(1, 999999), 8564862);
-	else %obj.setShapeName("", 8564862);
+	%obj.setShapeName(getRandom(1, 10) == 1 ? getRandom(1, 999999) : "", 8564862);
 
 	// Set random face name
-	%faceName = getRandom(1, 10) == 1 ? "smiley" : "asciiTerror";
-	%obj.setFaceName(%faceName);
+	%obj.setFaceName(getRandom(1, 10) == 1 ? "smiley" : "asciiTerror");
 
 	// Set random arm thread
-	if (getRandom(1, 10) == 1)
-	{
-		%thread = "";
-		switch (getRandom(1, 5))
-		{
-			case 1: %thread = "death1";
-			case 2: %thread = "sit";
-			case 3: %thread = "crouch";
-			case 4: %thread = "standjump";			
-			case 5: %thread = "talk";
-		}
-		%obj.setArmThread(%thread);
-	}
-	else %obj.setArmThread("look");
+	%obj.setArmThread(getRandom(1, 10) == 1 ? getRandom("death1" TAB "sit" TAB "crouch" TAB "standjump" TAB "talk") : "look");
 
 	// Handle light effects
 	if (isObject(%obj.light)) %obj.light.delete();
@@ -217,6 +199,7 @@ function Player::PrepperizerEffect(%obj)
 		%obj.light.schedule(1000, delete);
 	}
 }
+
 
 function PlayerRender::Prepperizer(%this,%obj)
 {
@@ -330,6 +313,7 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 
 	%alpha = mClampF(%alpha+0.15,0,1);		
 	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
+	
 	if(%alpha == 1) 
 	{
 		%obj.setTempSpeed(1);

@@ -161,6 +161,7 @@ function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
             %obj.playaudio(3,"skinwalker_change_sound");
             %obj.changeaudio = true;
         }
+
         %obj.playthread(0,"plant");
         %obj.monstertransformschedule = %this.schedule(100,monstertransform,%obj,%bool,%count+1);
     }
@@ -173,6 +174,7 @@ function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
                         if(isObject(%obj.lightbot)) %obj.lightbot.delete();	
                         %obj.setdatablock("EventidePlayer");
         }
+		
         %obj.changeaudio = false;
     }
 }
