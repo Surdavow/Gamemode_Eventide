@@ -156,13 +156,15 @@ function Armor::KillerCheck(%this,%obj)
 // Params:
 // %this = datablock
 // %obj = object
-// %chasing = boolean
-
+// %chasing = victim object
+// Currently nothing is performed because it is meant for custom actions determined by killer
 function Armor::onKillerChase(%this,%obj,%chasing)
 {
 	//Hello world
 }
 
+
+// Function that manages the behavior of the killer, handling its state, playing sounds, and scheduling future actions.
 function Armor::onKillerLoop(%this,%obj)
 {
     // Return if the player does not exist or is dead, or if the player is not in a minigame
@@ -175,14 +177,10 @@ function Armor::onKillerLoop(%this,%obj)
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), 40, $TypeMasks::PlayerObjectType);		
 		while(%nearbyplayer = containerSearchNext())
 		{
-			if (%nearbyplayer == %obj || %nearbyplayer.getClassName() !$= "Player" || containerSearchCurrDist() > 40)
-			continue;		
+			if (!isObject(%nearbyplayer) || %nearbyplayer.getClassName() !$= "Player" || !isObject(getMinigamefromObject(%nearbyplayer)) || %nearbyplayer.getDataBlock().isKiller || containerSearchCurrDist() > 40)
+			continue;
 
-			if (!isObject(getMinigamefromObject(%nearbyplayer)) || %nearbyplayer.getDataBlock().isKiller)
-			continue;		
-
-			%line = vectorNormalize(vectorSub(%nearbyplayer.getMuzzlePoint(2), %obj.getEyePoint()));
-			%dot = vectorDot(%obj.getEyeVector(), %line);
+			%dot = vectorDot(%obj.getEyeVector(), vectorNormalize(vectorSub(%nearbyplayer.getMuzzlePoint(2), %obj.getEyePoint())));
 			%killerclient = %obj.client;
 			%victimclient = %nearbyplayer.client;
 
