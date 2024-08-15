@@ -5,7 +5,7 @@ datablock fxLightData(blankBillboard)
 	ConstantSizeOn = true;
 	flarebitmap = "base/data/shapes/blank.png";
 	ConstantSize = 10;    
-	nearSize = 10;
+	nearSize = 1;
 	farSize = 10;
 	farDistance = 9999;
 	LinkFlare = false;
@@ -13,7 +13,7 @@ datablock fxLightData(blankBillboard)
     FadeTime = 99999;
 	
 	blendMode = 1;
-	flareColor = "1 1 1 1";	
+	flareColor = "1 1 1 0.5";	
 };
 
 datablock fxLightData(downedBillboard : blankBillboard)
