@@ -96,13 +96,13 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 						%this.disappear(%obj,1);
 						%obj.setEnergylevel(0);
 					}
-
 				}
 				else if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{
 					cancel(%obj.reappearsched);
 					%this.reappear(%obj,0);
-					if(!isEventPending(reappearsched)) %obj.setEnergylevel(66);										
+					if(!isEventPending(reappearsched)) 
+					%obj.setEnergylevel(66);										
 				}
 	}	
 }
