@@ -171,16 +171,10 @@ function Player::PrepperizerEffect(%obj)
 {
 	if (!isObject(%obj) || %obj.isInvisible) return;
 
-	// Set random scale
+	// Set random appearance stuff
 	%obj.setScale((getRandom(70, 110) * 0.01) SPC (getRandom(70, 110) * 0.01) SPC (getRandom(100, 110) * 0.01));
-
-	// Set random shape name
 	%obj.setShapeName(getRandom(1, 10) == 1 ? getRandom(1, 999999) : "", 8564862);
-
-	// Set random face name
 	%obj.setFaceName(getRandom(1, 10) == 1 ? "smiley" : "asciiTerror");
-
-	// Set random arm thread
 	%obj.setArmThread(getRandom(1, 10) == 1 ? getRandom("death1" TAB "sit" TAB "crouch" TAB "standjump" TAB "talk") : "look");
 
 	// Handle light effects
@@ -268,6 +262,33 @@ function PlayerRender::Prepperizer(%this,%obj)
 	%obj.Prepperizer = %this.schedule(33,Prepperizer,%obj);
 }
 
+function PlayerRender::reappear(%this,%obj,%alpha)
+{
+	if(!isObject(%obj) || isEventPending(%obj.disappearsched)) return;
+
+	if(%alpha == 0) 
+	{
+		%this.EventideAppearance(%obj,%obj.client);
+		%obj.playaudio(1,"render_appear_sound");
+		%obj.mountImage("PrepperImage",3);
+	}
+
+	%alpha = mClampF(%alpha+0.15,0,1);		
+	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
+	
+	if(%alpha == 1) 
+	{
+		%obj.setTempSpeed(1);
+		%obj.isInvisible = false;
+		%obj.unMountImage(3);
+		%this.EventideAppearance(%obj);
+		%this.Prepperizer(%obj);
+		return;
+	}
+
+	%obj.reappearsched = %this.schedule(33, reappear, %obj, %alpha);	
+}
+
 function PlayerRender::disappear(%this,%obj,%alpha)
 {
 	if(!isObject(%obj) || isEventPending(%obj.reappearsched)) return;
@@ -300,35 +321,10 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 	%obj.disappearsched = %this.schedule(25, disappear, %obj, %alpha);	
 }
 
-function PlayerRender::reappear(%this,%obj,%alpha)
-{
-	if(!isObject(%obj) || isEventPending(%obj.disappearsched)) return;
-
-	if(%alpha == 0) 
-	{
-		%this.EventideAppearance(%obj,%obj.client);
-		%obj.playaudio(1,"render_appear_sound");
-		%obj.mountImage("PrepperImage",3);
-	}
-
-	%alpha = mClampF(%alpha+0.15,0,1);		
-	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
-	
-	if(%alpha == 1) 
-	{
-		%obj.setTempSpeed(1);
-		%obj.isInvisible = false;
-		%obj.unMountImage(3);
-		%this.EventideAppearance(%obj);
-		%this.Prepperizer(%obj);
-		return;
-	}
-
-	%obj.reappearsched = %this.schedule(33, reappear, %obj, %alpha);	
-}
-
 function PlayerRender::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
-	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"render_hurt" @ getRandom(1, 4) @ "_sound");
+
+	if(%obj.getState() !$= "Dead") 
+	%obj.playaudio(0,"render_hurt" @ getRandom(1, 4) @ "_sound");
 }
