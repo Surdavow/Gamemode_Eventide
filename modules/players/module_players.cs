@@ -19,33 +19,9 @@ while(%file !$= "")
 	%file = findNextFile(%pattern);
 }
 
-// Icons
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_blind.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_consume.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_grab.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_handaxe.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_headache.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_meathook.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_melee.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_puppet.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_puppetcontrol.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_skinwalker_disguise.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_skinwalker_reveal.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/hicolor_vanish.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_blind.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_consume.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_grab.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_handaxe.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_headache.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_meathook.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_melee.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_puppet.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_puppetcontrol.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_skinwalker_disguise.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_skinwalker_reveal.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/locolor_vanish.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/icon_downed.png");	
-addExtraResource("Add-Ons/Gamemode_Eventide/modules/players/icons/passive_Vault.png");	
+%iconpath = "./icons/*.png"; 
+for (%iconfile = findFirstFile(%iconpath); %iconfile !$= ""; %iconfile = findNextFile(%iconpath))
+addExtraResource(%iconfile);
 
 // Faces
 if (isFile(%faceiflpath = "./models/face.ifl"))
