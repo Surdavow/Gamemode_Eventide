@@ -47,24 +47,22 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
 			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));				
 
-			if(isObject(%obscure))
+			if(isObject(%obscure) && %dataBlock.hitobscureprojectile !$= "" && %dot > 0.85)
 			{								
-				if(%dataBlock.hitobscureprojectile !$= "" && %dot > 0.85 && isObject(%obscure))
+				%c = new Projectile()
 				{
-					%c = new Projectile()
-					{
-						dataBlock = %datablock.hitobscureprojectile;
-						initialPosition = posfromraycast(%obscure);
-						sourceObject = %obj;
-						client = %obj.client;
-					};
-					MissionCleanup.add(%c);
-					%c.explode();
-				}
+					dataBlock = %datablock.hitobscureprojectile;
+					initialPosition = posfromraycast(%obscure);
+					sourceObject = %obj;
+					client = %obj.client;
+				};
+				
+				MissionCleanup.add(%c);
+				%c.explode();
 				return;
 			}
 
-			if(%dot < 0.6) continue;			
+			if(%dot < 0.6) continue;		
 
 			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
 			{
