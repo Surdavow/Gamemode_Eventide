@@ -1,5 +1,5 @@
-registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
-registerInputEvent("fxDTSBrick","onAllRitualsPlaced","Self fxDTSBrick" TAB "Player Player" TAB "Client GameConnection" TAB "MiniGame MiniGame");
+registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "MiniGame MiniGame");
+registerInputEvent("fxDTSBrick","onAllRitualsPlaced","Self fxDTSBrick" TAB "MiniGame MiniGame");
 
 datablock fxDTSBrickData (brickEventideEventCaller : brick2x2Data)
 {
