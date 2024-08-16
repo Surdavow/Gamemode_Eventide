@@ -1,4 +1,5 @@
-datablock TSShapeConstructor(DollDTS) {
+datablock TSShapeConstructor(DollDTS) 
+{
 	baseShape = "./models/puppet.dts";
 	sequence0 = "./models/default.dsq";
 };
