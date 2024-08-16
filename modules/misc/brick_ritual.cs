@@ -43,11 +43,6 @@ datablock fxLightData(RitualLight)
 	FadeTime		= 0.1;
 };
 
-/**
- * Checks for items on the ritual and completes it if all items are present. Also handles player interaction with the ritual.
- * @param %this the datablock that this script is attached to
- * @param %obj the brick that this script is attached to
- */
 function brickEventideRitual::ritualCheck(%this,%obj)
 {
 	if(!isObject(%obj)) return;
