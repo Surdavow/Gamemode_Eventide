@@ -48,17 +48,17 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 	if(!isObject(%obj)) return;
 
 	initContainerRadiusSearch(%obj.getPosition(), 3, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
-	while(%hit = containerSearchNext())
+	while(%scan = containerSearchNext())
 	{
-		if(%hit.getType() & $TypeMasks::PlayerObjectType || isObject(%hit.client))
+		if((%scan.getType() & $TypeMasks::PlayerObjectType) && isObject(%scan.client))
 		{
-			%hit.client.centerprint("\c3Drop items on the ritual to complete it!",1);
+			%scan.client.centerprint("\c3Drop items on the ritual to complete it!",1);
 			continue;
 		}
 
-		if(getWord(%hit.getPosition(),2) < getWord(%obj.getPosition(),2) || !isObject(%obj.client.minigame)) continue;
+		if(EventideShapeGroup.getCount() >= 10 || getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2) || !isObject(%obj.client.minigame)) continue;
 
-		%item = %hit.getdatablock().image;
+		%item = %scan.getdatablock().image;
 		if(!%item.isRitual) continue;
 
 		//Trigger an event if the eventide console exists
@@ -120,7 +120,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			}			
 		}
 		
-		%hit.delete();
+		%scan.delete();
 
 		if(EventideShapeGroup.getCount() >= 10)
 		{				
@@ -141,7 +141,6 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 				$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
 				$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.client);
 			}
-			return;
 		}
 	}
 
