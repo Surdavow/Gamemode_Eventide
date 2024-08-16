@@ -64,9 +64,9 @@ function emptyPlayer::onAdd(%this, %obj)
 			%billboard.setTransform(%obj.getTransform());
 			%billboard.attachToObject(%obj);
 
-			for(%i = 0; %i < clientgroup.getCount(); %i++) 			
+			for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client.player))		
 			{
-				if(isObject(%client = clientgroup.getObject(%i)) && isObject(%client.player)) %billboard.ScopeToClient(%client);
+				if(isObject(%client = clientgroup.getObject(%i))) %billboard.ScopeToClient(%client);
 				else if (%client.player.getdataBlock().isKiller || %client.player $= %source) %billboard.ClearScopeToClient(%client);
 			}
 		}

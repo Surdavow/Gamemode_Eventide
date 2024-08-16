@@ -81,7 +81,7 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 		};
 
 		for(%i = 0; %i < clientgroup.getCount(); %i++) 
-		if(isObject(%client = clientgroup.getObject(%i))) 
+		if(isObject(%client = clientgroup.getObject(%i)) && isObject(%cobj = %client.player)) 
 		{
 			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller)
 			{
