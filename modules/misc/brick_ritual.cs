@@ -61,10 +61,10 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			continue;
 		}
 
-		if(EventideShapeGroup.getCount() >= 10 || getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2) || !isObject(%obj.client.minigame)) continue;
+		if(getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2) || !isObject(%obj.client.minigame)) continue;
 
 		%item = %scan.getdatablock().image;
-		if(!%item.isRitual) continue;
+		if(!%item.isRitual || (isObject(EventideShapeGroup) && EventideShapeGroup.getCount() >= 10)) continue;
 
 		//Trigger an event if the eventide console exists
 		if(isObject($EventideEventCaller))
@@ -126,26 +126,23 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 		}
 		
 		%scan.delete();
+		
+		if(isObject(%minigame = getMiniGameFromObject(%EventideEventCaller.client)))
+		{
+			%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
 
-		if(EventideShapeGroup.getCount() >= 10)
-		{				
-			if(isObject(%minigame = getMiniGameFromObject(%EventideEventCaller.client)))
-			{
-				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
+			for(%i = 0; %i < %minigame.numMembers; %i++) 
+			if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
+		}
 
-				for(%i = 0; %i < %minigame.numMembers; %i++) 
-				if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
-			}
+		if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
 
-			if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
-
-			//lets call that console brick
-			if(isObject($EventideEventCaller))
-			{
-				$InputTarget_["Self"] = $EventideEventCaller;		
-				$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
-				$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.client);
-			}
+		//lets call that console brick
+		if(isObject($EventideEventCaller))
+		{
+			$InputTarget_["Self"] = $EventideEventCaller;		
+			$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
+			$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.client);
 		}
 	}
 
