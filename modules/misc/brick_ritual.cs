@@ -47,97 +47,99 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 {
 	if(!isObject(%obj)) return;
 
-	initContainerRadiusSearch(%obj.getPosition(), 3, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
-	while(%scan = containerSearchNext())
+	if(isObject(%minigame = getMiniGameFromObject($EventideEventCaller.client)))
 	{
-		if((%scan.getType() & $TypeMasks::PlayerObjectType) && isObject(%scan.client))
+		initContainerRadiusSearch(%obj.getPosition(), 3, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
+		while(%scan = containerSearchNext())
 		{
-			%scan.client.centerprint("\c3Drop items on the ritual to complete it!",1);
-			continue;
-		}
+			// If the player is near the ritual and the ritual is not complete, give a message.
+			if((%scan.getType() & $TypeMasks::PlayerObjectType) && isObject(%scan.client) && isObject(EventideShapeGroup) && EventideShapeGroup.getCount() < 10)
+			{
+				%scan.client.centerprint("\c3Drop items on the ritual to complete it!",1);
+				continue;
+			}
 
-		if(getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2) || !isObject(%obj.client.minigame)) continue;
+			// Make sure the item is above the ritual
+			if(getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2)) continue;
 
-		%item = %scan.getdatablock().image;
-		if(!%item.isRitual || (isObject(EventideShapeGroup) && EventideShapeGroup.getCount() >= 10)) continue;
+			%itemimage = %scan.getdatablock().image;
+			if(!%itemimage.isRitual) continue;			
 
-		//Trigger an event if the eventide console exists
-		if(isObject($EventideEventCaller))
-		{
-			$InputTarget_["Self"] = $EventideEventCaller;
-			$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
-			$EventideEventCaller.processInputEvent("onRitualPlaced", $EventideEventCaller.client);
-		}			
+			if(!isObject(EventideShapeGroup))
+			{
+				new ScriptGroup(EventideShapeGroup);
+				missionCleanup.add(EventideShapeGroup);
+			}
 
-		if(!isObject(EventideShapeGroup))
-		{
-			new ScriptGroup(EventideShapeGroup);
-			missionCleanup.add(EventideShapeGroup);
-		}
-	
-		switch$(%item.staticShape)
-		{
-			case "brickCandleStaticShape": 	%obj.candlecount++;
+			if(%itemimage.isGemRitual)		
+			{
+				if(%obj.gemcount <= 4 && !isObject(%obj.gemshape[%obj.gemcount+1]))
+				{	
+					%obj.gemcount++;
+					%obj.gemshape[%obj.gemcount] = new StaticShape() { datablock = %itemimage.staticShape; };
+					%obj.gemshape[%obj.gemcount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().gempos[%obj.gemcount] SPC getWords(%obj.gettransform,3,6)));
+					%interactiveshape = %obj.gemshape[%obj.gemcount];
+					%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
+					EventideShapeGroup.add(%interactiveshape);
+				}
+				else continue;			
+			}
+			else switch$(%itemimage.staticShape)
+			{
+				case "brickCandleStaticShape":  if(%obj.candlecount <= 4 && !isObject(%obj.candleshape[%obj.candlecount+1]))											
+												{
+													%obj.candlecount++;										
+													%obj.candleshape[%obj.candlecount] = new StaticShape() { datablock = %itemimage.staticShape; };
+													%obj.candleshape[%obj.candlecount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().candlePos[%obj.candlecount] SPC getWords(%obj.gettransform,3,6)));
+													%interactiveshape = %obj.candleshape[%obj.candlecount];
+													EventideShapeGroup.add(%interactiveshape);
+												}
+												else continue;
 
-											if(%obj.candlecount <= 4 && !isObject(%obj.candleshape[%obj.candlecount]))											
-											{													
-												%obj.candleshape[%obj.candlecount] = new StaticShape() { datablock = %item.staticShape; };
-												%obj.candleshape[%obj.candlecount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().candlePos[%obj.candlecount] SPC getWords(%obj.gettransform,3,6)));
-												%interactiveshape = %obj.candleshape[%obj.candlecount];
+				case "brickBookStaticShape":	if(isObject(%obj.bookshape)) continue;
+
+												%obj.bookshape = new StaticShape() { datablock = %itemimage.staticShape; };
+												%transformdelta = %obj.ritualshape.getdatablock().bookPos SPC getWords(%obj.gettransform,3,6);
+												%obj.bookshape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
+												%interactiveshape = %obj.bookshape;
 												EventideShapeGroup.add(%interactiveshape);
-											}
 
-			case "brickBookStaticShape":	if(isObject(%obj.bookshape)) continue;
-											
-											%obj.bookshape = new StaticShape() { datablock = %item.staticShape; };
-											%transformdelta = %obj.ritualshape.getdatablock().bookPos SPC getWords(%obj.gettransform,3,6);
-											%obj.bookshape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
-											%interactiveshape = %obj.bookshape;
-											EventideShapeGroup.add(%interactiveshape);
-											
 
-			case "brickdaggerStaticShape":	if(isObject(%obj.daggershape)) continue;
-											
-											%obj.daggershape = new StaticShape() { datablock = %item.staticShape; };
-											%transformdelta = %obj.ritualshape.getdatablock().daggerPos SPC "0 90 0";
-											%obj.daggershape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
-											%interactiveshape = %obj.daggershape;
-											%interactiveshape.setnodecolor("ALL",%item.colorShiftColor);
-											EventideShapeGroup.add(%interactiveshape);													
-		}
+				case "brickdaggerStaticShape":	if(isObject(%obj.daggershape)) continue;
 
-		if(%item.isGemRitual)		
-		{
-			%obj.gemcount++;
+												%obj.daggershape = new StaticShape() { datablock = %itemimage.staticShape; };
+												%transformdelta = %obj.ritualshape.getdatablock().daggerPos SPC "0 90 0";
+												%obj.daggershape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
+												%interactiveshape = %obj.daggershape;
+												%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
+												EventideShapeGroup.add(%interactiveshape);													
+			}
 
-			if(%obj.gemcount <= 4 && !isObject(%obj.gemshape[%obj.gemcount]))
-			{	
-				%obj.gemshape[%obj.gemcount] = new StaticShape() { datablock = %item.staticShape; };
-				%obj.gemshape[%obj.gemcount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().gempos[%obj.gemcount] SPC getWords(%obj.gettransform,3,6)));
-				%interactiveshape = %obj.gemshape[%obj.gemcount];
-				%interactiveshape.setnodecolor("ALL",%item.colorShiftColor);
-				EventideShapeGroup.add(%interactiveshape);
-			}			
-		}
-		
-		%scan.delete();
-		
-		if(isObject(%minigame = getMiniGameFromObject(%EventideEventCaller.client)))
-		{
-			%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
+			//Trigger an event if the eventide console exists
+			if(isObject($EventideEventCaller))
+			{
+				$InputTarget_["Self"] = $EventideEventCaller;
+				$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
+				$EventideEventCaller.processInputEvent("onRitualPlaced", $EventideEventCaller.client);
+			}
 
-			for(%i = 0; %i < %minigame.numMembers; %i++) 
-			if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
-		}
+			%scan.delete();
 
-		if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
+			if(EventideShapeGroup.getCount() >= 10)
+			{
+				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
 
-		//lets call that console brick
-		if(isObject($EventideEventCaller))
-		{
-			$InputTarget_["Self"] = $EventideEventCaller;		
-			$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
-			$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.client);
+				for(%i = 0; %i < %minigame.numMembers; %i++) 
+				if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
+
+				//lets call that console brick
+				if(isObject($EventideEventCaller))
+				{
+					$InputTarget_["Self"] = $EventideEventCaller;		
+					$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
+					$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.client);
+				}
+			}
 		}
 	}
 
@@ -151,6 +153,7 @@ function brickEventideRitual::onPlant(%this, %obj)
 	Parent::onPlant(%this,%obj);
 
 	%this.ritualCheck(%obj);
+	$EventideRitualBrick = %obj;
 
 	%obj.setRendering(0);
 	%obj.setColliding(0);

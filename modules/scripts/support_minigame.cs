@@ -27,31 +27,39 @@ package Eventide_Minigame
 
 			$Pref::Server::MapRotation::ResetCount++;
 			%minigame.chatMsgAll("\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minreset);
-    		}
+		}
 
 		Parent::Reset(%minigame, %client);		
 
-		if(strlwr(%minigame.title) $= "eventide")
+		
+		
+		for (%i=0;%i<%minigame.numMembers;%i++)
+		if (isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
 		{
-			for(%i=0;%i<%minigame.numMembers;%i++)
-			if(isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
+			if (isObject(%client.EventidemusicEmitter))
 			{
-				%client.play2d("round_start_sound");		 			
-				%client.escaped = false;
+				%client.EventidemusicEmitter.delete();
+				%client.musicChaseLevel = 0;
 			}
-			%minigame.centerprintall("<font:impact:40>\c3Eventide: The Hunt begins",2);
+	 			
+			%client.escaped = false;
+
+			if (strlwr(%minigame.title) $= "eventide") 
+			{
+				%minigame.centerprintall("<font:impact:40>\c3Eventide: The Hunt begins",2);
+				%client.play2d("round_start_sound");
+			}
 		}
 
-        for(%i=0;%i<%minigame.numMembers;%i++)
-        if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter))
-        {
-            %client.EventidemusicEmitter.delete();
-            %client.musicChaseLevel = 0;
-        }
-
+		if(isObject(PuppetGroup)) PuppetGroup.delete();
 		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();
 		if(isObject(EventideShapeGroup)) EventideShapeGroup.delete();
 		if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
+		if($EventideRitualBrick)
+		{
+			$EventideRitualBrick.gemcount = 0;
+			$EventideRitualBrick.candlecount = 0;
+		}
 
 		%minigame.randomizeEventideItems(true);
     }
@@ -67,6 +75,7 @@ package Eventide_Minigame
 			%client.escaped = false;
 		}
 		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();
+		if(isObject(PuppetGroup)) PuppetGroup.delete();
 
 		%minigame.randomizeEventideItems(false);
     }
