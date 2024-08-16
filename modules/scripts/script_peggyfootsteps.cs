@@ -533,9 +533,14 @@ function Armor::onLand(%data, %obj, %horiz)
 {
 	if (!$Pref::Server::PF::landingFX || %obj.isInvisible) return;
 
+	$oldTimescale = getTimescale();
+	setTimescale(getRandom(75,150)*0.01);
+	
 	if (%horiz > $Pref::Server::PF::minLandSpeed + 16) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
 	else if (%horiz > $Pref::Server::PF::minLandSpeed + 8) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
 	else if (%horiz >= $Pref::Server::PF::minLandSpeed) serverplay3d("land_lite" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());	
+
+	setTimescale($oldTimescale);
 }
 
 //+++ Drop some rad peggstep noise in here!
@@ -635,7 +640,10 @@ function PeggFootsteps(%obj, %lastVert)
 		{
 			%obj.touchColor = "";
 			%obj.surface = "under water";
+			$oldTimescale = getTimescale();
+			setTimescale(getRandom(75,150)*0.01);
 			serverplay3d(checkPlayback(%obj), %obj.getHackPosition());
+			setTimescale($oldTimescale);
 			if(!%obj.isCrouched()) %obj.getDatablock().onPeggFootstep(%obj);
 			%obj.peggstep = schedule(500 * getWord(%obj.getScale(), 0), 0, PeggFootsteps, %obj);
 		}
@@ -644,7 +652,10 @@ function PeggFootsteps(%obj, %lastVert)
 		else if (%isGround && mAbs(%horiz) > 0)
 		{
 			%obj.peggstep = schedule(320 * getWord(%obj.getScale(), 0), 0, PeggFootsteps, %obj, %vert);
+			$oldTimescale = getTimescale();
+			setTimescale(getRandom(75,150)*0.01);	
 			serverplay3d(checkPlayback(%obj), %obj.getHackPosition());
+			setTimescale($oldTimescale);
 			if(!%obj.isCrouched()) %obj.getDatablock().onPeggFootstep(%obj);
 		}
 
