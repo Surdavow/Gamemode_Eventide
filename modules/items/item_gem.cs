@@ -151,6 +151,7 @@ datablock StaticShapeData(brickGem5StaticShape : brickGem1StaticShape)
 function brickGem1StaticShape::onAdd(%this,%obj)
 {
 	Parent::onAdd(%this,%obj);
+	%obj.schedule(33,playaudio,3,%this.placementSound);
 }
 
 function brickGem2StaticShape::onAdd(%this,%obj)
