@@ -47,10 +47,10 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 {
 	if(!isObject(%obj)) return;
 
-	talk("pass");
-
 	if(isObject(%minigame = getMiniGameFromObject($EventideEventCaller.client)))
 	{
+
+			talk("pass");
 		initContainerRadiusSearch(%obj.getPosition(), 3, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
 		while(%scan = containerSearchNext())
 		{
