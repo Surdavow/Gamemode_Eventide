@@ -280,6 +280,7 @@ function BreakActionShotgunProjectile::onCollision(%data, %proj, %col, %fade, %p
 function BreakActionShotgunImage::onFire(%data,%p,%slot)
 {
 	%p.playThread(2,"plant");
+	%p.spawnExplosion("impulseProjectile",%p.getScale()); 
 	serverPlay3D("shotgun_fire_sound",%p.getHackPosition());
 	parent::onFire(%data,%p,%slot);
 }
