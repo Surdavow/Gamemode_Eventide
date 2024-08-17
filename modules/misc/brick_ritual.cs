@@ -47,10 +47,8 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 {
 	if(!isObject(%obj)) return;
 
-	if(isObject(%minigame = getMiniGameFromObject($EventideEventCaller.client)))
+	if(isObject(%minigame = getMiniGameFromObject($EventideEventCaller.getGroup().client)))
 	{
-
-			talk("pass");
 		initContainerRadiusSearch(%obj.getPosition(), 3, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
 		while(%scan = containerSearchNext())
 		{
@@ -121,8 +119,8 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			if(isObject($EventideEventCaller))
 			{
 				$InputTarget_["Self"] = $EventideEventCaller;
-				$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
-				$EventideEventCaller.processInputEvent("onRitualPlaced", $EventideEventCaller.client);
+				$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.getGroup().client);
+				$EventideEventCaller.processInputEvent("onRitualPlaced", $EventideEventCaller.getGroup().client);
 			}
 
 			%scan.delete();
@@ -138,8 +136,8 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 				if(isObject($EventideEventCaller))
 				{
 					$InputTarget_["Self"] = $EventideEventCaller;		
-					$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.client);
-					$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.client);
+					$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.getGroup().client);
+					$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.getGroup().client);
 				}
 			}
 		}
