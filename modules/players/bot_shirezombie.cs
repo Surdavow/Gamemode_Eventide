@@ -18,6 +18,10 @@ function ShireZombieBot::applyAppearance(%this,%obj)
     %headColor = %zskin;
     %obj.setFaceName(%faceName);
 	%obj.HideNode("visor");
+	%obj.HideNode("lpeg");
+	%obj.HideNode("rpeg");
+	%obj.unHideNode("lshoe");
+	%obj.unHideNode("rshoe");
 	%obj.setNodeColor("ALL",%headColor);
     %obj.setFaceName("hexZombie");
 	%obj.setDecalName("none"); 	
@@ -35,7 +39,7 @@ function ShireZombieBot::onAdd(%this,%obj)
     %obj.setMoveSlowdown(0);
 	%this.applyAppearance(%obj,%obj.ghostclient);
     %this.onBotLoop(%obj);
-    %obj.mountImage("GlowFaceZombieImage",2);
+    %obj.mountImage("GlowFaceZombieImage",0);
 	%obj.mountImage("ZombieBodyImage",1);    
 	%obj.playaudio(3,"hex_ghostSpawn");
 }
