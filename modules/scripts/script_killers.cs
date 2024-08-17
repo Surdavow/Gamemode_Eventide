@@ -344,16 +344,8 @@ function Player::KillerGhostLightCheck(%obj)
 		for(%i = 0; %i < clientgroup.getCount(); %i++) 
 		if(isObject(%client = clientgroup.getObject(%i))) 
 		{
-			if(%obj == %client.player)
-			{
-				%obj.light.ScopeToClient(%client);
-				%obj.ScopeToClient(%client);
-			}
-			else 
-			{
-				%obj.light.clearScopeToClient(%client);
-				%obj.clearScopeToClient(%client);
-			}
+			if(%obj == %client.player) %obj.light.ScopeToClient(%client);
+			else %obj.light.clearScopeToClient(%client);
 		}			
 	}
 	else if(isObject(%obj.light)) %obj.light.delete();	
