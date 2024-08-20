@@ -22,7 +22,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	firstpersononly = false;
 	canJet = false;
 	renderFirstPerson = false;
-	defaultTunnelFOV = 110;
+	tunnelFOVIncrease = 20;
 
 	rechargeRate = 0.375;
 	maxTools = 3;
@@ -53,6 +53,11 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	isDowned = true;
 	uiName = "";
 };
+
+function EventidePlayer::onAdd(%this, %obj)
+{
+	%obj.originalFOV = %obj.getControlCameraFov();
+}
 
 function EventidePlayer::PulsingScreen(%this,%obj)
 {
@@ -337,7 +342,9 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
 
-	if(!%obj.TunnelFOV) %obj.TunnelFOV = %this.defaultTunnelFOV;
+	%tunnelVisionFOV = %obj.originalFOV + %this.tunnelFOVIncrease;
+
+	if(!%obj.TunnelFOV) %obj.TunnelFOV = %tunnelVisionFOV;
 
 	if(%bool) 
 	{		
@@ -345,7 +352,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		{
 			%obj.tunnelvision = mClampF(%obj.tunnelvision+0.1,0,1);
 			commandToClient( %obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
-			%obj.client.setcontrolcamerafov(mClampF(%obj.TunnelFOV--,50,%this.defaultTunnelFOV));
+			%obj.client.setcontrolcamerafov(mClampF(%obj.TunnelFOV--,50,%tunnelVisionFOV));
 		}
 
 		if(%obj.tunnelvision >= 1) return;
@@ -355,7 +362,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		if(%obj.tunnelvision > 0)
 		{
 			%obj.tunnelvision = mClampF(%obj.tunnelvision-0.1,0,1);
-			%obj.client.setcontrolcamerafov(mClampF(%obj.TunnelFOV++,50,%this.defaultTunnelFOV));
+			%obj.client.setcontrolcamerafov(mClampF(%obj.TunnelFOV++,50,%tunnelVisionFOV));
 			commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
 		}
 
