@@ -170,18 +170,18 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 	{
 		switch(%trig)
 		{
-			case 0:	%ray = containerRayCast(%obj.getEyePoint(), vectoradd(%obj.getEyePoint(),vectorscale(%obj.getEyeVector(),5*getWord(%obj.getScale(),2))),$TypeMasks::FxBrickObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType,%obj);
-					if(isObject(%ray) && (%ray.getClassName() $= "Player" || %ray.getClassName() $= "AIPlayer") && %ray.getdataBlock().isDowned && !isObject(%obj.getMountedImage(0)))
+			case 0:	%eyePoint = %object.getEyePoint();
+					%endPoint = vectoradd(%obj.getEyePoint(),vectorscale(%obj.getEyeVector(),5*getWord(%obj.getScale(),2)));
+					%masks = $TypeMasks::FxBrickObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType;
+			
+					%ray = containerRayCast(%eyePoint, %endPoint,%masks,%obj);
+					if(isObject(%ray) && (%ray.getClassName() $= "Player" || %ray.getClassName() $= "AIPlayer") && %ray.getdataBlock().isDowned && !isObject(%obj.getMountedImage(0)) && !%ray.isBeingSaved)
 					{
-						if(!%ray.isBeingSaved)
-						{
-							%obj.isSaving = %ray;
-							%obj.playthread(2,"armReadyRight");
-							%ray.isBeingSaved = true;
-							%this.SaveVictim(%obj,%ray,%press);
-						}
+						%obj.isSaving = %ray;
+						%obj.playthread(2,"armReadyRight");
+						%ray.isBeingSaved = true;
+						%this.SaveVictim(%obj,%ray,%press);
 					}
-			case 2: 
 			case 4: if(%obj.isSkinwalker && %obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
 					PlayerSkinwalker.monstertransform(%obj,true);
 		}
@@ -348,29 +348,21 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 
 	if(%bool) 
 	{		
-		if(%obj.tunnelvision <= 1)
-		{
-			%obj.tunnelvision = mClampF(%obj.tunnelvision+0.1,0,1);
-			commandToClient( %obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
-			%obj.client.setcontrolcamerafov(mClampF(%obj.TunnelFOV--,50,%tunnelVisionFOV));
-		}
+		%obj.tunnelvision = mClampF(%obj.tunnelvision + 0.1, 0, 1);
+		commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
+		%obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV--, 50, %tunnelVisionFOV));
 
-		if(%obj.tunnelvision >= 1) return;
+		if (%obj.tunnelvision >= 1) return;
 	}
 	else
 	{
-		if(%obj.tunnelvision > 0)
+		if (%obj.tunnelvision > 0)
 		{
-			%obj.tunnelvision = mClampF(%obj.tunnelvision-0.1,0,1);
-			%obj.client.setcontrolcamerafov(mClampF(%obj.TunnelFOV++,50,%tunnelVisionFOV));
-			commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
+		    %obj.tunnelvision = mClampF(%obj.tunnelvision - 0.1, 0, 1);
+		    %obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV++, 50, %tunnelVisionFOV));
+		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
 		}
-
-		if(%obj.tunnelvision <= 0)
-		{
-			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);		
-			return;
-		}
+		else return commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);		
 	}
 
 	%obj.tunnelvisionsched = %this.schedule(50, TunnelVision, %obj, %bool);	
@@ -381,13 +373,29 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
     {        
         %obj.setDatablock("EventidePlayerDowned");
+		%obj.setHealth(100);
+		%obj.downedamount++;	
 
-		if(isObject(%minigame = getMinigamefromObject(%obj))) for(%i = 0; %i < %minigame.numMembers; %i++)
-		if(isObject(%member = %minigame.member[%i]))
-		%member.play2D("outofbounds_sound");
-		
-        %obj.setHealth(100);
-		%obj.downedamount++;		
+		if(isObject(%minigame = getMinigamefromObject(%obj))) 
+		{
+			// Play the game over sound.
+			for(%i = 0; %i < %minigame.numMembers; %i++)
+			if(isObject(%member = %minigame.member[%i])) %member.play2D("outofbounds_sound");	
+
+			// This will only work team based Slayer minigames.
+			if(isObject(%teams = %minigame.teams))
+			{				
+				for(%i = 0; %i < %teams.getCount(); %i++) if(isObject(%team = %teams.getObject(%i)))
+				{
+					if(strstr(strlwr(%team.name), "hunter") != -1) %hunterteam = %team;
+
+					if(strstr(strlwr(%team.name), "survivor") != -1)
+					for(%j = 0; %j < %team.numMembers; %j++) if(isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) %livingcount++;
+				}
+
+				if(!%livingcount) %minigame.endRound(%hunterteam);
+			}
+		}
         return;
     }
 
@@ -413,23 +421,7 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 	Parent::onNewDataBlock(%this,%obj);
 	
 	%this.DownLoop(%obj);
-    %obj.playthread(0,sit);
-
-	if(isObject(%obj.billboardbot.lightToMount)) 
-	%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
-
-	if(isObject(%obj.client) && isObject(%minigame = getMinigamefromObject(%obj)) && isObject(%teams = %minigame.teams))
-	{				
-		for(%i = 0; %i < %teams.getCount(); %i++) if(isObject(%team = %teams.getObject(%i)))
-		{
-			if(strstr(strlwr(%team.name), "hunter") != -1) %hunterteam = %team;
-			
-			if(strstr(strlwr(%team.name), "survivor") != -1)
-			for(%j = 0; %j < %team.numMembers; %j++) if(isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) %livingcount++;
-		}
-		
-		if(!%livingcount) %minigame.endRound(%hunterteam);
-	}		
+    %obj.playthread(0,sit);		
 }
 
 function EventidePlayerDowned::DownLoop(%this,%obj)
@@ -438,6 +430,9 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
+			if(isObject(%obj.billboardbot.lightToMount) && %object.billboardbot.lightToMount.getDatablock().getName() !$= "downedBillboard") 
+			%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
+
 			%obj.addhealth(-1);
 			%obj.setdamageflash(0.25);
 
