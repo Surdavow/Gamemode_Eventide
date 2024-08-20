@@ -56,7 +56,8 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 
 function EventidePlayer::onAdd(%this, %obj)
 {
-	%obj.originalFOV = %obj.getControlCameraFov();
+	if(isObject(%obj.client))
+	%obj.originalFOV = %obj.client.getControlCameraFov();
 }
 
 function EventidePlayer::PulsingScreen(%this,%obj)
@@ -170,7 +171,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 	{
 		switch(%trig)
 		{
-			case 0:	%eyePoint = %object.getEyePoint();
+			case 0:	%eyePoint = %obj.getEyePoint();
 					%endPoint = vectoradd(%obj.getEyePoint(),vectorscale(%obj.getEyeVector(),5*getWord(%obj.getScale(),2)));
 					%masks = $TypeMasks::FxBrickObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType;
 			
@@ -466,6 +467,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	{
 		%obj.ghostclient = %funcclient;
 		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+
+		if(%obj.originalFOV)
 		%obj.client.setcontrolcamerafov(%obj.originalFOV);
 
 		if(%obj.markedForShireZombify && isObject(%funcclient.minigame))

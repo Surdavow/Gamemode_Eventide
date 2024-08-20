@@ -41,12 +41,7 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 
 function PlayerGenocide::onTrigger(%this, %obj, %trig, %press) 
 {		
-	if(%press) switch(%trig)
-	{
-		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);
-				return;
-	}
-	Parent::onTrigger(%this, %obj, %trig, %press);
+	PlayerCannibal::onTrigger(%this, %obj, %trig, %press);
 }
 
 function PlayerGenocide::onNewDatablock(%this,%obj)
@@ -55,17 +50,6 @@ function PlayerGenocide::onNewDatablock(%this,%obj)
 	%obj.schedule(10,onKillerLoop);
 	%obj.mountImage("shovelImage",1);
 	%obj.setScale("1 1 1");
-
-//	%randomitem[%i++] = "mine_IncendiaryImage";
-//  %randomitem[%i++] = "CatARImage";
-//  %randomitem[%i++] = "PeeingItemImage";
-//  %randomitem[%i++] = "PetitionImage";
-//  %randomitem[%i++] = "bookItem";
-//  %randomitem[%i++] = "grenade_flashbangImage";
-//  %randomitem[%i++] = "grenade_riotImage";
-		
-//	%obj.mountImage(%randomitem[getRandom(1,%i)],0);	
-//	if(%obj.getmountedimage(0).armReady) %obj.playthread(1,"armReadyRight");
 	KillerSpawnMessage(%obj);
 }
 

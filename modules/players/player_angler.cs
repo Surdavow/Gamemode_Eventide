@@ -165,8 +165,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 {		
 	if(%press) switch(%trig)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);				
-				return;
+		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);
 			
 		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy/1)
 				{

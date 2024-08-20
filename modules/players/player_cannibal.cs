@@ -41,14 +41,13 @@ datablock PlayerData(PlayerCannibal : PlayerRenowned)
 	jumpForce = 0;
 };
 
-function PlayerCannibal::onTrigger(%this, %obj, %trig, %press) 
+function PlayerCannibal::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
 	if(%press) switch(%trig)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);
-				return;
+		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);
 	}
 }
 

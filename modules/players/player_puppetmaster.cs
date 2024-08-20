@@ -69,8 +69,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 {		
 	if(%bool) switch(%triggerNum)
 	{
-		case 0:	if(%obj.getEnergyLevel() >= 25)
-				%obj.KillerMelee(%this,4.25);
+		case 0:	if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4.25);
 				
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{

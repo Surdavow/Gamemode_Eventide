@@ -143,7 +143,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 	
 	switch(%trig)
 	{
-		case 0: if(%press && %obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);
+		case 0: if(%press && %obj.getEnergyLevel() >= 25) return; %obj.KillerMelee(%this,4);
 
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{

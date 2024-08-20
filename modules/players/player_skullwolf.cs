@@ -103,8 +103,7 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	if(%alpha == 1)
 	{
 		%obj.playaudio(1,"skullwolf_cloak_sound");
-
-		if(isObject(%obj.light)) %obj.light.delete();		
+		if(isObject(%obj.light)) %obj.light.delete();
 	}
 	
 	%alpha = mClampF(%alpha-0.025,0,1);
@@ -201,12 +200,10 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 }
 
 function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
-{		
-	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
-
+{
 	if(%bool) switch(%triggerNum)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4.5);
+		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4.5);
 			
 		case 4: if(!%obj.isInvisible)
 				{		
@@ -219,6 +216,8 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 					%this.reappear(%obj,0);
 				}
 	}	
+
+	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
 }
 
 function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)

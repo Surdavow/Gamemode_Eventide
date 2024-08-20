@@ -66,8 +66,7 @@ function PlayerDoll::onTrigger(%this, %obj, %trig, %press)
 {			
 	if(%press) switch(%trig)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4.5);				
-				return;
+		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4.5);
 	}
 	Parent::onTrigger(%this, %obj, %trig, %press);	
 }

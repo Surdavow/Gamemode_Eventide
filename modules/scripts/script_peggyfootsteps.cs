@@ -534,7 +534,7 @@ function Armor::onLand(%data, %obj, %horiz)
 	if (!$Pref::Server::PF::landingFX || %obj.isInvisible) return;
 
 	$oldTimescale = getTimescale();
-	setTimescale(getRandom(75,150)*0.01);
+	setTimescale((getRandom(75,150)*0.01) * $oldTimescale);
 	
 	if (%horiz > $Pref::Server::PF::minLandSpeed + 16) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
 	else if (%horiz > $Pref::Server::PF::minLandSpeed + 8) serverplay3d("land_medium" @ getRandom(1,3) @ "_sound", %obj.getHackPosition());
@@ -641,7 +641,7 @@ function PeggFootsteps(%obj, %lastVert)
 			%obj.touchColor = "";
 			%obj.surface = "under water";
 			$oldTimescale = getTimescale();
-			setTimescale(getRandom(75,150)*0.01);
+			setTimescale((getRandom(75,150)*0.01) * $oldTimescale);
 			serverplay3d(checkPlayback(%obj), %obj.getHackPosition());
 			setTimescale($oldTimescale);
 			if(!%obj.isCrouched()) %obj.getDatablock().onPeggFootstep(%obj);
@@ -653,7 +653,7 @@ function PeggFootsteps(%obj, %lastVert)
 		{
 			%obj.peggstep = schedule(320 * getWord(%obj.getScale(), 0), 0, PeggFootsteps, %obj, %vert);
 			$oldTimescale = getTimescale();
-			setTimescale(getRandom(75,150)*0.01);	
+			setTimescale((getRandom(75,150)*0.01) * $oldTimescale);
 			serverplay3d(checkPlayback(%obj), %obj.getHackPosition());
 			setTimescale($oldTimescale);
 			if(!%obj.isCrouched()) %obj.getDatablock().onPeggFootstep(%obj);

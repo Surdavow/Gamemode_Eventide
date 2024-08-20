@@ -56,8 +56,7 @@ function PlayerNightmare::onTrigger(%this, %obj, %trig, %press)
 		
 	if(%press) switch(%trig)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) %obj.KillerMelee(%this,4);
-				return;
+		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);
 	}
 }
 

@@ -80,8 +80,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 		
 	switch(%trig)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25 && %press) 
-				%obj.KillerMelee(%this,4.5);
+		case 0: if(%obj.getEnergyLevel() >= 25 && %press) return %obj.KillerMelee(%this,4.5);
 
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				if(%press)
