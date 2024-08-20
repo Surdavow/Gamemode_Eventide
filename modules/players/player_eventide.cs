@@ -471,7 +471,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	{
 		%obj.ghostclient = %funcclient;
 		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
-		%obj.client.setcontrolcamerafov(%this.defaultTunnelFOV);
+		%obj.client.setcontrolcamerafov(%obj.originalFOV);
 
 		if(%obj.markedForShireZombify && isObject(%funcclient.minigame))
 		{
