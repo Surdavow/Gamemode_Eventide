@@ -86,20 +86,12 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 		for(%i = 0; %i < clientgroup.getCount(); %i++) 
 		if(isObject(%client = clientgroup.getObject(%i)) && isObject(%cobj = %client.player)) 
 		{
-			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller)
-			{
-				%cobj.lightToMount.ScopeToClient(%client);
-				%obj.ScopeToClient(%client);
-			}
-			else 
-			{
-				%cobj.lightToMount.clearScopeToClient(%client);
-				%cobj.clearScopeToClient(%client);
-			}
+			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller) %obj.billboardbot.lightToMount.ScopeToClient(%client);
+
+			else %obj.billboardbot.lightToMount.clearScopeToClient(%client);			
 		}
 	}
-	else if(isObject(%obj.billboardbot.lightToMount)) 
-	%obj.billboardbot.lightToMount.setdatablock("blankBillboard");
+	else if(isObject(%obj.billboardbot.lightToMount)) %obj.billboardbot.lightToMount.setdatablock("blankBillboard");
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -168,18 +160,21 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 	{
 		switch(%trig)
 		{
-			case 0:	%eyePoint = %obj.getEyePoint();
+			case 0:	if (!isObject(%obj.getMountedImage(0))) return;
+			
+					%eyePoint = %obj.getEyePoint();
 					%endPoint = vectoradd(%obj.getEyePoint(),vectorscale(%obj.getEyeVector(),5*getWord(%obj.getScale(),2)));
 					%masks = $TypeMasks::FxBrickObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType;
 			
 					%ray = containerRayCast(%eyePoint, %endPoint,%masks,%obj);
-					if(isObject(%ray) && (%ray.getClassName() $= "Player" || %ray.getClassName() $= "AIPlayer") && %ray.getdataBlock().isDowned && !isObject(%obj.getMountedImage(0)) && !%ray.isBeingSaved)
+					if(isObject(%ray) && (%ray.getType() & $TypeMasks::PlayerObjectType) && %ray.getdataBlock().isDowned && !%ray.isBeingSaved)
 					{
 						%obj.isSaving = %ray;
 						%obj.playthread(2,"armReadyRight");
 						%ray.isBeingSaved = true;
 						%this.SaveVictim(%obj,%ray,%press);
 					}
+
 			case 4: if(%obj.isSkinwalker && %obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
 					PlayerSkinwalker.monstertransform(%obj,true);
 		}
@@ -371,8 +366,8 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
     {        
         %obj.setDatablock("EventidePlayerDowned");
-			%obj.setHealth(100);
-			%obj.downedamount++;	
+		%obj.setHealth(100);
+		%obj.downedamount++;	
 			
 		if(isObject(%minigame = getMinigamefromObject(%obj))) 
 		{
