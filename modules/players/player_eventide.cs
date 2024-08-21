@@ -18,7 +18,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 
 	uniformCompatible = true;
 	isEventideModel = true;
-	showEnergyBar = true;
+	showEnergyBar = false;
 	firstpersononly = false;
 	canJet = false;
 	renderFirstPerson = false;
@@ -128,7 +128,31 @@ function EventidePlayer_BreakFreePrint(%funcclient,%amount)
 
 function EventidePlayer::onActivate(%this,%obj)
 {
-	Parent::onNewDatablock(%this,%obj);
+	%triggerTime = getSimTime();
+	%obj.setEnergyLevel(%obj.getEnergyLevel()-4);
+
+	if(%triggerTime - %obj.laststaminatime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
+	{
+		%obj.laststaminacount = 0;
+		%obj.laststaminatime = 0;
+	}	
+
+	%obj.laststaminacount += 0.25;
+	%obj.laststaminatime = (%triggerTime+200)+(10*%obj.laststaminacount);
+
+	if(%obj.laststaminacount >= 5) 
+	{
+		if(%obj.laststaminacount == 5) 
+		{
+			%this.TunnelVision(%obj,true);
+			%obj.setTempSpeed(0.75);
+		}
+
+		cancel(%obj.resetStamina);
+		%obj.setTempSpeed(0.75);	
+		%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+	}
+
 
 	if(%obj.isPossessed) 
 	{		
@@ -162,8 +186,8 @@ function EventidePlayer::resetStamina(%this,%obj)
 {
 	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
 
-	%obj.lastmeleecount = 0;
-	%obj.lastmeleetime = 0;
+	%obj.laststaminacount = 0;
+	%obj.laststaminatime = 0;
 	%this.TunnelVision(%obj,false);
 }
 
@@ -199,34 +223,37 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 					{
 						%triggerTime = getSimTime();
 
-						if(%triggerTime - %obj.lastmeleetime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
+						if(%triggerTime - %obj.laststaminatime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
                     	{
-                        	%obj.lastmeleecount = 0;
-	                        %obj.lastmeleetime = 0;
+                        	%obj.laststaminacount = 0;
+	                        %obj.laststaminatime = 0;
 						}
 
-						if(%obj.lastmeleetime < %triggerTime && %obj.getEnergyLevel() >= %this.maxEnergy/4)//Shoving
+						if(%obj.laststaminatime < %triggerTime && %obj.getEnergyLevel() >= %this.maxEnergy/4)//Shoving
 						{
 							%obj.setEnergyLevel(%obj.getEnergyLevel()-20);
-							%obj.lastmeleecount++;
-							%obj.lastmeleetime = (%triggerTime+400)+(40*%obj.lastmeleecount);
+							%obj.laststaminacount++;
+							%obj.laststaminatime = (%triggerTime+400)+(40*%obj.laststaminacount);
+							%soundpitch = getRandom(50,125);
 
-							if(%obj.lastmeleecount == 5)
+							if(%obj.laststaminacount == 5)
 							{							
 								%this.TunnelVision(%obj,true);
+								%obj.setTempSpeed(0.75);	
 								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
 							}
 
-							if(%obj.lastmeleecount >= 5)
+							if(%obj.laststaminacount >= 5)
 							{
 								cancel(%obj.resetStamina);
+								%soundpitch = getRandom(50,80);
+								if(getRandom(1,4) == 1) %obj.playaudio(3,"PainCrySound");
 								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
 							}
 							
 							%obj.playthread(3,"activate2");
-
 							$oldTimescale = getTimescale();
-							setTimescale((getRandom(50,125)*0.01) * $oldTimescale);
+							setTimescale((%soundpitch*0.01) * $oldTimescale);
 							serverPlay3D("melee_swing" @ getRandom(1,2) @ "_sound",%obj.getHackPosition());
 							setTimescale($oldTimescale);
 							
@@ -432,6 +459,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		else
 		{
 			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+			%obj.setTempSpeed(1);
 			return;
 		}
 	}
@@ -608,14 +636,4 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		for(%i = 0; %i < %minigame.numMembers; %i++)
 		if(isObject(%member = %minigame.member[%i]) && %obj.markedforRenderDeath) %member.play2D("render_kill_sound");
 	}	
-}
-
-function EventidePlayer::onRemove(%this,%obj)
-{
-	EventidePlayerDowned::onRemove(%this,%obj);
-}
-
-function EventidePlayerDowned::onRemove(%this,%obj)
-{	
-	Parent::onRemove(%this,%obj);
 }

@@ -55,7 +55,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			// If the player is near the ritual and the ritual is not complete, give a message.
 			if((%scan.getType() & $TypeMasks::PlayerObjectType) && isObject(%scan.client) && isObject(EventideShapeGroup) && EventideShapeGroup.getCount() < 10)
 			{
-				%scan.client.centerprint("\c3Drop items on the ritual to complete it!",1);
+				%scan.client.centerprint("\c3Drop your ritual items on the ritual to complete it!",1);
 				continue;
 			}
 
