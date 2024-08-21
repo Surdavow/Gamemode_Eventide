@@ -54,12 +54,6 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	uiName = "";
 };
 
-function EventidePlayer::onAdd(%this, %obj)
-{
-	if(isObject(%obj.client))
-	%obj.originalFOV = %obj.client.getControlCameraFov();
-}
-
 function EventidePlayer::PulsingScreen(%this,%obj)
 {
 	if((!isObject(%obj) || %obj.getclassname() !$= "Player" || %obj.getState() $= "Dead") || %obj.getdamageLevel() < 25)
@@ -75,6 +69,9 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
+
+	if(isObject(%obj.client))
+	%obj.originalFOV = %obj.client.getControlCameraFov();
 
 	if(!isObject(%obj.billboardbot))
 	{
