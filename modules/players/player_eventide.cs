@@ -70,7 +70,7 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 
-	%this.schedule(1000,getControlCameraOriginalFov,%obj);
+	//%this.schedule(1000,getControlCameraOriginalFov,%obj);
 
 	if(!isObject(%obj.billboardbot))
 	{
@@ -435,6 +435,12 @@ function EventidePlayerDowned::EventideAppearance(%this,%obj,%funcclient)
 function EventidePlayer::TunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
+
+	if(%obj.tunnelvision == 0)
+	{
+		//FOV hasn't been changed yet, store it.
+		%obj.originalFOV = %obj.getControlCameraOriginalFov();
+	}
 
 	%tunnelVisionFOV = %obj.originalFOV + %this.tunnelFOVIncrease;
 
