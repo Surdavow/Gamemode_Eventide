@@ -2,6 +2,7 @@ datablock PlayerData(PlayerRender : PlayerRenowned)
 {
 	uiName = "Render Player";
 
+	enablePeggFootsteps = false;
 	killerSpawnMessage = "A silent anomally reemerges from the past.";
 
 	firstpersononly = true;

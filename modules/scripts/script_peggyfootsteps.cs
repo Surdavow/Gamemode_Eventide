@@ -546,10 +546,30 @@ function Armor::onLand(%data, %obj, %horiz)
 //+++ Drop some rad peggstep noise in here!
 function PeggFootsteps(%obj, %lastVert)
 {
-	if(isObject(%obj) && %obj.getdataBlock().getName() $= "PlayerRender") return;
+	if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getdataBlock().enablePeggFootsteps) return;
 
 	cancel(%obj.peggstep);
-	if($Pref::Server::PF::footstepsEnabled == 1 && isObject(%obj))
+	if(%obj.getdataBlock().getName() $= "EventidePlayer")
+	{
+		%velz = getword(%obj.getVelocity(),2);
+		if(%velz < 0) %obj.addvelocity("0 0 -0.1");
+
+		if(%velz < -15 && !%obj.isFalling)
+		{				
+			%obj.playthread(2,"side");
+			%obj.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
+			%obj.getDatablock().TunnelVision(%obj,true);
+			%obj.isFalling = true;
+		}
+		else if(%obj.isFalling && %velz >= 0)
+		{
+			%obj.playthread(2,"root");
+			%obj.getDatablock().TunnelVision(%obj,false);
+			%obj.isFalling = false;
+		}
+	}	
+
+	if($Pref::Server::PF::footstepsEnabled)
 	{
 		if(%obj.isMounted() || %obj.isInvisible)
 		{

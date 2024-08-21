@@ -18,7 +18,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 
 	uniformCompatible = true;
 	isEventideModel = true;
-	showEnergyBar = false;
+	showEnergyBar = true;
 	firstpersononly = false;
 	canJet = false;
 	renderFirstPerson = false;
@@ -70,8 +70,7 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 
-	if(isObject(%obj.client))
-	%obj.originalFOV = %obj.client.getControlCameraFov();
+	%this.schedule(1000,getControlCameraOriginalFov,%obj);
 
 	if(!isObject(%obj.billboardbot))
 	{
@@ -92,6 +91,13 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 		}
 	}
 	else if(isObject(%obj.billboardbot.lightToMount)) %obj.billboardbot.lightToMount.setdatablock("blankBillboard");
+}
+
+function EventidePlayer::getControlCameraOriginalFov(%this,%obj)
+{
+	if(!isObject(%obj.client)) return;
+
+	%obj.originalFOV = %obj.client.getControlCameraFov();
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -152,6 +158,15 @@ function EventidePlayer::onActivate(%this,%obj)
 	}
 }
 
+function EventidePlayer::resetStamina(%this,%obj)
+{
+	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+
+	%obj.lastmeleecount = 0;
+	%obj.lastmeleetime = 0;
+	%this.TunnelVision(%obj,false);
+}
+
 function EventidePlayer::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
@@ -175,8 +190,67 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 						%this.SaveVictim(%obj,%ray,%press);
 					}
 
-			case 4: if(%obj.isSkinwalker && %obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
-					PlayerSkinwalker.monstertransform(%obj,true);
+			case 4: if(%obj.isSkinwalker)
+					{
+						if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
+						PlayerSkinwalker.monstertransform(%obj,true);
+					}		
+					else
+					{
+						%triggerTime = getSimTime();
+
+						if(%triggerTime - %obj.lastmeleetime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
+                    	{
+                        	%obj.lastmeleecount = 0;
+	                        %obj.lastmeleetime = 0;
+						}
+
+						if(%obj.lastmeleetime < %triggerTime && %obj.getEnergyLevel() >= %this.maxEnergy/4)//Shoving
+						{
+							%obj.setEnergyLevel(%obj.getEnergyLevel()-20);
+							%obj.lastmeleecount++;
+							%obj.lastmeleetime = (%triggerTime+400)+(40*%obj.lastmeleecount);
+
+							if(%obj.lastmeleecount == 5)
+							{							
+								%this.TunnelVision(%obj,true);
+								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+							}
+
+							if(%obj.lastmeleecount >= 5)
+							{
+								cancel(%obj.resetStamina);
+								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+							}
+							
+							%obj.playthread(3,"activate2");
+
+							$oldTimescale = getTimescale();
+							setTimescale((getRandom(50,125)*0.01) * $oldTimescale);
+							serverPlay3D("melee_swing" @ getRandom(1,2) @ "_sound",%obj.getHackPosition());
+							setTimescale($oldTimescale);
+							
+							%pos = %obj.getEyePoint();
+							%radius = 0.25;
+							%eyeVec = %obj.getEyeVector();
+							%mask = $TypeMasks::PlayerObjectType;
+
+							initContainerRadiusSearch(%pos,%radius,%mask);
+							while(%hit = containerSearchNext())
+							{
+								%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+								%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
+		
+								if(%hit == %obj || isObject(%obscure) || %dot < 0.5) continue;
+								if(%hit.getState() $= "Dead" || !miniGameCanDamage(%obj,%hit) || %hit.getDatablock().resistMelee) continue;
+
+								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
+								%hit.playThread(3,"jump");
+								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getForwardVector(),"750"),"0 0 250"));
+							}												
+						}
+					
+					}
 		}
 	}
 	else if(isObject(%obj.isSaving)) %this.SaveVictim(%obj,%obj.isSaving,0);
@@ -347,7 +421,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 
 		if (%obj.tunnelvision >= 1) return;
 	}
-	else
+	else if (!%obj.chaseLevel)
 	{
 		if(%obj.tunnelvision > 0)
 		{
@@ -355,7 +429,11 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		    %obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV++, 50, %tunnelVisionFOV));
 		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
 		}
-		else return commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+		else
+		{
+			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+			return;
+		}
 	}
 
 	%obj.tunnelvisionsched = %this.schedule(50, TunnelVision, %obj, %bool);	
