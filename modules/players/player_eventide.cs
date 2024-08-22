@@ -70,8 +70,6 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 
-	//%this.schedule(1000,getControlCameraOriginalFov,%obj);
-
 	if(!isObject(%obj.billboardbot))
 	{
 		%obj.billboardbot = new Player() 
