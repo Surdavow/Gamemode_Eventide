@@ -54,12 +54,6 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	uiName = "";
 };
 
-function EventidePlayer::onAdd(%this, %obj)
-{
-	if(isObject(%obj.client))
-	%obj.originalFOV = %obj.client.getControlCameraFov();
-}
-
 function EventidePlayer::PulsingScreen(%this,%obj)
 {
 	if((!isObject(%obj) || %obj.getclassname() !$= "Player" || %obj.getState() $= "Dead") || %obj.getdamageLevel() < 25)
@@ -89,20 +83,19 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 		for(%i = 0; %i < clientgroup.getCount(); %i++) 
 		if(isObject(%client = clientgroup.getObject(%i)) && isObject(%cobj = %client.player)) 
 		{
-			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller)
-			{
-				%cobj.lightToMount.ScopeToClient(%client);
-				%obj.ScopeToClient(%client);
-			}
-			else 
-			{
-				%cobj.lightToMount.clearScopeToClient(%client);
-				%cobj.clearScopeToClient(%client);
-			}
+			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller) %obj.billboardbot.lightToMount.ScopeToClient(%client);
+
+			else %obj.billboardbot.lightToMount.clearScopeToClient(%client);			
 		}
 	}
-	else if(isObject(%obj.billboardbot.lightToMount)) 
-	%obj.billboardbot.lightToMount.setdatablock("blankBillboard");
+	else if(isObject(%obj.billboardbot.lightToMount)) %obj.billboardbot.lightToMount.setdatablock("blankBillboard");
+}
+
+function EventidePlayer::getControlCameraOriginalFov(%this,%obj)
+{
+	if(!isObject(%obj.client)) return;
+
+	%obj.originalFOV = %obj.client.getControlCameraFov();
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -133,7 +126,31 @@ function EventidePlayer_BreakFreePrint(%funcclient,%amount)
 
 function EventidePlayer::onActivate(%this,%obj)
 {
-	Parent::onNewDatablock(%this,%obj);
+	%triggerTime = getSimTime();
+	%obj.setEnergyLevel(%obj.getEnergyLevel()-4);
+
+	if(%triggerTime - %obj.laststaminatime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
+	{
+		%obj.laststaminacount = 0;
+		%obj.laststaminatime = 0;
+	}	
+
+	%obj.laststaminacount += 0.25;
+	%obj.laststaminatime = (%triggerTime+200)+(10*%obj.laststaminacount);
+
+	if(%obj.laststaminacount >= 5) 
+	{
+		if(%obj.laststaminacount == 5) 
+		{
+			%this.TunnelVision(%obj,true);
+			%obj.setTempSpeed(0.75);
+		}
+
+		cancel(%obj.resetStamina);
+		%obj.setTempSpeed(0.75);	
+		%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+	}
+
 
 	if(%obj.isPossessed) 
 	{		
@@ -163,6 +180,15 @@ function EventidePlayer::onActivate(%this,%obj)
 	}
 }
 
+function EventidePlayer::resetStamina(%this,%obj)
+{
+	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+
+	%obj.laststaminacount = 0;
+	%obj.laststaminatime = 0;
+	%this.TunnelVision(%obj,false);
+}
+
 function EventidePlayer::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
@@ -171,20 +197,85 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 	{
 		switch(%trig)
 		{
-			case 0:	%eyePoint = %obj.getEyePoint();
+			case 0:	if (!isObject(%obj.getMountedImage(0))) return;
+			
+					%eyePoint = %obj.getEyePoint();
 					%endPoint = vectoradd(%obj.getEyePoint(),vectorscale(%obj.getEyeVector(),5*getWord(%obj.getScale(),2)));
 					%masks = $TypeMasks::FxBrickObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType;
 			
 					%ray = containerRayCast(%eyePoint, %endPoint,%masks,%obj);
-					if(isObject(%ray) && (%ray.getClassName() $= "Player" || %ray.getClassName() $= "AIPlayer") && %ray.getdataBlock().isDowned && !isObject(%obj.getMountedImage(0)) && !%ray.isBeingSaved)
+					if(isObject(%ray) && (%ray.getType() & $TypeMasks::PlayerObjectType) && %ray.getdataBlock().isDowned && !%ray.isBeingSaved)
 					{
 						%obj.isSaving = %ray;
 						%obj.playthread(2,"armReadyRight");
 						%ray.isBeingSaved = true;
 						%this.SaveVictim(%obj,%ray,%press);
 					}
-			case 4: if(%obj.isSkinwalker && %obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
-					PlayerSkinwalker.monstertransform(%obj,true);
+
+			case 4: if(%obj.isSkinwalker)
+					{
+						if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
+						PlayerSkinwalker.monstertransform(%obj,true);
+					}		
+					else
+					{
+						%triggerTime = getSimTime();
+
+						if(%triggerTime - %obj.laststaminatime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
+                    	{
+                        	%obj.laststaminacount = 0;
+	                        %obj.laststaminatime = 0;
+						}
+
+						if(%obj.laststaminatime < %triggerTime && %obj.getEnergyLevel() >= %this.maxEnergy/4)//Shoving
+						{
+							%obj.setEnergyLevel(%obj.getEnergyLevel()-20);
+							%obj.laststaminacount++;
+							%obj.laststaminatime = (%triggerTime+400)+(40*%obj.laststaminacount);
+							%soundpitch = getRandom(50,125);
+
+							if(%obj.laststaminacount == 5)
+							{							
+								%this.TunnelVision(%obj,true);
+								%obj.setTempSpeed(0.75);	
+								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+							}
+
+							if(%obj.laststaminacount >= 5)
+							{
+								cancel(%obj.resetStamina);
+								%soundpitch = getRandom(50,80);
+								if(getRandom(1,4) == 1) %obj.playaudio(3,"PainCrySound");
+								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+							}
+							
+							%obj.playthread(3,"activate2");
+							$oldTimescale = getTimescale();
+							setTimescale((%soundpitch*0.01) * $oldTimescale);
+							serverPlay3D("melee_swing" @ getRandom(1,2) @ "_sound",%obj.getHackPosition());
+							setTimescale($oldTimescale);
+							
+							%pos = %obj.getEyePoint();
+							%radius = 0.25;
+							%eyeVec = %obj.getEyeVector();
+							%mask = $TypeMasks::PlayerObjectType;
+
+							initContainerRadiusSearch(%pos,%radius,%mask);
+							while(%hit = containerSearchNext())
+							{
+								%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+								%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
+		
+								if(%hit == %obj || isObject(%obscure) || %dot < 0.5) continue;
+								if(%hit.getState() $= "Dead" || !miniGameCanDamage(%obj,%hit) || %hit.getDatablock().resistMelee) continue;
+
+								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
+								%hit.playThread(3,"jump");
+								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getForwardVector(),"750"),"0 0 250"));
+							}												
+						}
+					
+					}
 		}
 	}
 	else if(isObject(%obj.isSaving)) %this.SaveVictim(%obj,%obj.isSaving,0);
@@ -343,6 +434,12 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
 
+	if(%obj.tunnelvision == 0)
+	{
+		//FOV hasn't been changed yet, store it.
+		%obj.originalFOV = %this.getControlCameraOriginalFov(%obj);
+	}
+
 	%tunnelVisionFOV = %obj.originalFOV + %this.tunnelFOVIncrease;
 
 	if(!%obj.TunnelFOV) %obj.TunnelFOV = %tunnelVisionFOV;
@@ -355,7 +452,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 
 		if (%obj.tunnelvision >= 1) return;
 	}
-	else
+	else if (!%obj.chaseLevel)
 	{
 		if(%obj.tunnelvision > 0)
 		{
@@ -363,7 +460,12 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		    %obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV++, 50, %tunnelVisionFOV));
 		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
 		}
-		else return commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+		else
+		{
+			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+			%obj.setTempSpeed(1);
+			return;
+		}
 	}
 
 	%obj.tunnelvisionsched = %this.schedule(50, TunnelVision, %obj, %bool);	
@@ -374,8 +476,8 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
     {        
         %obj.setDatablock("EventidePlayerDowned");
-			%obj.setHealth(100);
-			%obj.downedamount++;	
+		%obj.setHealth(100);
+		%obj.downedamount++;	
 			
 		if(isObject(%minigame = getMinigamefromObject(%obj))) 
 		{
@@ -431,7 +533,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
-			if(isObject(%obj.billboardbot.lightToMount) && %object.billboardbot.lightToMount.getDatablock().getName() !$= "downedBillboard") 
+			if(isObject(%obj.billboardbot.lightToMount) && %obj.billboardbot.lightToMount.getDatablock().getName() !$= "downedBillboard") 
 			%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
 			%obj.addhealth(-1);
 			%obj.setdamageflash(0.25);
@@ -538,14 +640,4 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		for(%i = 0; %i < %minigame.numMembers; %i++)
 		if(isObject(%member = %minigame.member[%i]) && %obj.markedforRenderDeath) %member.play2D("render_kill_sound");
 	}	
-}
-
-function EventidePlayer::onRemove(%this,%obj)
-{
-	EventidePlayerDowned::onRemove(%this,%obj);
-}
-
-function EventidePlayerDowned::onRemove(%this,%obj)
-{	
-	Parent::onRemove(%this,%obj);
 }
