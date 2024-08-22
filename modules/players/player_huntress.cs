@@ -41,9 +41,19 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	PainSound = "huntress_pain";
 };
 
-function PlayerHuntress::onTrigger(%this, %obj, %trig, %press) 
+function PlayerHuntress::onTrigger(%this, %obj, %trig, %press, %client) 
 {	
-	PlayerCannibal::onTrigger(%this, %obj, %trig, %press);
+	if(%press) switch(%trig)
+	{
+		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);
+		
+		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy/1)
+				{
+					%obj.setEnergyLevel(0);
+					%obj.playThread(2,"armReadyRight");
+					%obj.mountImage("BerserkerTomahawkImage",0);
+				}
+	}
 }
 
 function PlayerHuntress::onPeggFootstep(%this,%obj)
