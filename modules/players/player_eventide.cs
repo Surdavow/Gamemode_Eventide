@@ -437,7 +437,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 	if(%obj.tunnelvision == 0)
 	{
 		//FOV hasn't been changed yet, store it.
-		%obj.originalFOV = %obj.getControlCameraOriginalFov();
+		%obj.originalFOV = %this.getControlCameraOriginalFov(%obj);
 	}
 
 	%tunnelVisionFOV = %obj.originalFOV + %this.tunnelFOVIncrease;
