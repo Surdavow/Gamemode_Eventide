@@ -141,13 +141,10 @@ function EventidePlayer::onActivate(%this,%obj)
 	if(%obj.laststaminacount >= 5) 
 	{
 		if(%obj.laststaminacount == 5) 
-		{
-			%this.TunnelVision(%obj,true);
-			%obj.setTempSpeed(0.75);
-		}
+		%this.TunnelVision(%obj,true);
 
 		cancel(%obj.resetStamina);
-		%obj.setTempSpeed(0.75);	
+		//%obj.setTempSpeed(0.75);	
 		%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
 	}
 
@@ -237,7 +234,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 							if(%obj.laststaminacount == 5)
 							{							
 								%this.TunnelVision(%obj,true);
-								%obj.setTempSpeed(0.75);	
+								///%obj.setTempSpeed(0.75);	
 								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
 							}
 
@@ -463,7 +460,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		else
 		{
 			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
-			%obj.setTempSpeed(1);
+			//%obj.setTempSpeed(1);
 			return;
 		}
 	}
