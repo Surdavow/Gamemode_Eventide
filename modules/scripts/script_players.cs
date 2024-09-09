@@ -27,22 +27,23 @@ function Player::AddMoveSpeedModifier(%obj,%a)
 	%obj.SetSpeedModifier(%obj.Speed_Modifier + %a);
 }
 
-function Player::SetTempSpeed(%obj,%slowdowndivider)
+function Player::SetTempSpeed(%obj,%speedMultiplier)
 {						
 	if(!isObject(%obj) || %obj.getstate() $= "Dead") return;
 
-	%datablock = %obj.getDataBlock();
-	%obj.setMaxForwardSpeed(%datablock.MaxForwardSpeed*%slowdowndivider);
-	%obj.setMaxSideSpeed(%datablock.MaxSideSpeed*%slowdowndivider);
-	%obj.setMaxBackwardSpeed(%datablock.maxBackwardSpeed*%slowdowndivider);
+	%this = %obj.getDataBlock();
 
-	%obj.setMaxCrouchForwardSpeed(%datablock.maxForwardCrouchSpeed*%slowdowndivider);
-  	%obj.setMaxCrouchBackwardSpeed(%datablock.maxSideCrouchSpeed*%slowdowndivider);
-  	%obj.setMaxCrouchSideSpeed(%datablock.maxSideCrouchSpeed*%slowdowndivider);
+	%obj.setMaxForwardSpeed(%datablock.MaxForwardSpeed*%speedMultiplier);
+	%obj.setMaxSideSpeed(%datablock.MaxSideSpeed*%speedMultiplier);
+	%obj.setMaxBackwardSpeed(%datablock.maxBackwardSpeed*%speedMultiplier);
 
- 	%obj.setMaxUnderwaterBackwardSpeed(%datablock.MaxUnderwaterBackwardSpeed*%slowdowndivider);
-  	%obj.setMaxUnderwaterForwardSpeed(%datablock.MaxUnderwaterForwardSpeed*%slowdowndivider);
-  	%obj.setMaxUnderwaterSideSpeed(%datablock.MaxUnderwaterForwardSpeed*%slowdowndivider);	
+	%obj.setMaxCrouchForwardSpeed(%datablock.maxForwardCrouchSpeed*%speedMultiplier);
+  	%obj.setMaxCrouchBackwardSpeed(%datablock.maxSideCrouchSpeed*%speedMultiplier);
+  	%obj.setMaxCrouchSideSpeed(%datablock.maxSideCrouchSpeed*%speedMultiplier);
+
+ 	%obj.setMaxUnderwaterBackwardSpeed(%datablock.MaxUnderwaterBackwardSpeed*%speedMultiplier);
+  	%obj.setMaxUnderwaterForwardSpeed(%datablock.MaxUnderwaterForwardSpeed*%speedMultiplier);
+  	%obj.setMaxUnderwaterSideSpeed(%datablock.MaxUnderwaterForwardSpeed*%speedMultiplier);	
 }
 
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
@@ -181,24 +182,26 @@ function GameConnection::Escape(%client)
 	%client.escaped = true;
 
 	// Iterate through each member of the survivor's team
-	for (%i = 0; %i < %client.slyrTeam.numMembers; %i++)	
-    	if (isObject(%member = %client.slyrTeam.member[%i]))
-    	{
-		// Assign variables for living and escaped players, although escaped players technically are dead too in the following lines
-		if (isObject(%member.player)) %living++;
-		if (%member.escaped) %escaped++;
-    	}
-	
-	%client.player.delete();
-	%client.camera.setMode("Spectator",%client);
-	%client.setcontrolobject(%client.camera);	
+	for (%i = 0; %i < %client.slyrTeam.numMembers; %i++) 
+	{
+    	if (!isObject(%member = %client.slyrTeam.member[%i])) continue;
+
+    	%living += isObject(%member.player) ? 1 : 0;
+    	%escaped += %member.escaped ? 1 : 0;
+	}
+
+	//Announce the escape and award points
 	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
+	%client.incscore(10);
+	
+	// Kill the player
+	%client.player.delete();
 	%client.lives = 0;
 	%client.setdead(1);
 
-	if(%escaped >= %living)
-	{
-		%minigame.endRound(%client.slyrTeam);
-		return;
-	}	
+	// Force the player into spectator mode
+	%client.camera.setmode("Spectator",%client);
+	%client.setcontrolobject(%client.camera);	
+
+	if(%escaped >= %living) return %minigame.endRound(%client.slyrTeam);
 }

@@ -36,7 +36,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				
 		if(%datablock.meleetrailskin !$= "") %obj.spawnKillerTrail(%datablock.meleetrailskin,%datablock.meleetrailoffset,%meleetrailangle,%datablock.meleetrailscale);		
 		if(%datablock.killermeleesound !$= "") serverPlay3D(%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound",%obj.getWorldBoxCenter());				
-		if(%datablock.killerweaponsound !$= "")serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
+		if(%datablock.killerweaponsound !$= "") serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
 		%obj.playthread(2,"melee" @ %meleeAnim);
 
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
@@ -162,7 +162,6 @@ function Armor::onKillerChase(%this,%obj,%chasing)
 {
 	//Hello world
 }
-
 
 // Function that manages the behavior of the killer, handling its state, playing sounds, and scheduling future actions.
 function Armor::onKillerLoop(%this,%obj)
