@@ -78,13 +78,9 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					if(isObject(%hit) && (%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
 					{
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
-						//%obj.playaudio(0,"render_pain_sound");
 						%hit.mountImage("RenderTurnImage",3);
 						%hit.playaudio(0,"render_turn_sound");
-						%hit.schedule(4950,playaudio,0,"render_turnComplete_sound");
-						%hit.schedule(4950,unMountImage,3);
-						%hit.setTempSpeed(0.333);
-						%hit.schedule(4950,setTempSpeed,1);
+						%hit.setTempSpeed(1/3);
 						loopTurn(%hit, getRandom(0, 1) * 2 - 1);
 					}
 				}
@@ -110,20 +106,23 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 
 function loopTurn(%pl, %direction, %currTotal)
 {
-  cancel(%pl.loopTurnSchedule);
-  
-  %rotationChange = 0.04;
-  %currTotal += %rotationChange;
+  	cancel(%pl.loopTurnSchedule);	
+  	%rotationChange = 0.04;
+  	%currTotal += %rotationChange;
+  	%transform = %pl.getTransform();
+  	%currZDir = getWord(%transform, 5) >= 0 ? 1.0 : -1.0;
+  	%transform = setWord(%transform, 6, getWord(%transform, 6) + %direction * %currZDir * %rotationChange);
+  	%pl.setTransform(%transform);
 
-  %transform = %pl.getTransform();
-  %currZDir = getWord(%transform, 5) >= 0 ? 1.0 : -1.0;
-  %transform = setWord(%transform, 6, getWord(%transform, 6) + %direction * %currZDir * %rotationChange);
-  %pl.setTransform(%transform);
+  	if (%currTotal > $pi)
+  	{
+		%hit.playaudio(0,"render_turnComplete_sound");
+		%hit.unMountImage(3);
+		%hit.setTempSpeed();
+		return;
+  	}
 
-  if (%currTotal > 3.14159)
-    return;
-
-  %pl.loopTurnSchedule = schedule(50, %pl, loopTurn, %pl, %direction, %currTotal);
+  	%pl.loopTurnSchedule = schedule(50, %pl, loopTurn, %pl, %direction, %currTotal);
 }
 
 function PlayerRender::onNewDatablock(%this,%obj)

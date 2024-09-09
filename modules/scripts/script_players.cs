@@ -31,19 +31,21 @@ function Player::SetTempSpeed(%obj,%speedMultiplier)
 {						
 	if(!isObject(%obj) || %obj.getstate() $= "Dead") return;
 
+	if (%speedMultiplier $= "") %speedMultiplier = 1;
+
 	%this = %obj.getDataBlock();
 
-	%obj.setMaxForwardSpeed(%datablock.MaxForwardSpeed*%speedMultiplier);
-	%obj.setMaxSideSpeed(%datablock.MaxSideSpeed*%speedMultiplier);
-	%obj.setMaxBackwardSpeed(%datablock.maxBackwardSpeed*%speedMultiplier);
+	%obj.setMaxForwardSpeed(%this.MaxForwardSpeed*%speedMultiplier);
+	%obj.setMaxSideSpeed(%this.MaxSideSpeed*%speedMultiplier);
+	%obj.setMaxBackwardSpeed(%this.maxBackwardSpeed*%speedMultiplier);
 
-	%obj.setMaxCrouchForwardSpeed(%datablock.maxForwardCrouchSpeed*%speedMultiplier);
-  	%obj.setMaxCrouchBackwardSpeed(%datablock.maxSideCrouchSpeed*%speedMultiplier);
-  	%obj.setMaxCrouchSideSpeed(%datablock.maxSideCrouchSpeed*%speedMultiplier);
+	%obj.setMaxCrouchForwardSpeed(%this.maxForwardCrouchSpeed*%speedMultiplier);
+  	%obj.setMaxCrouchBackwardSpeed(%this.maxSideCrouchSpeed*%speedMultiplier);
+  	%obj.setMaxCrouchSideSpeed(%this.maxSideCrouchSpeed*%speedMultiplier);
 
- 	%obj.setMaxUnderwaterBackwardSpeed(%datablock.MaxUnderwaterBackwardSpeed*%speedMultiplier);
-  	%obj.setMaxUnderwaterForwardSpeed(%datablock.MaxUnderwaterForwardSpeed*%speedMultiplier);
-  	%obj.setMaxUnderwaterSideSpeed(%datablock.MaxUnderwaterForwardSpeed*%speedMultiplier);	
+ 	%obj.setMaxUnderwaterBackwardSpeed(%this.MaxUnderwaterBackwardSpeed*%speedMultiplier);
+  	%obj.setMaxUnderwaterForwardSpeed(%this.MaxUnderwaterForwardSpeed*%speedMultiplier);
+  	%obj.setMaxUnderwaterSideSpeed(%this.MaxUnderwaterForwardSpeed*%speedMultiplier);	
 }
 
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
@@ -94,6 +96,7 @@ function Armor::EventideAppearance(%this,%obj,%client)
 		%obj.unHideNode($pack[%client.pack]);
 		%obj.setNodeColor($pack[%client.pack],%client.packColor);
 	}
+
 	if($secondPack[%client.secondPack] !$= "none")
 	{
 		%obj.unHideNode($secondPack[%client.secondPack]);
@@ -119,6 +122,7 @@ function Armor::EventideAppearance(%this,%obj,%client)
 
 	%obj.setHeadUp(0);
 	if(%client.pack+%client.secondPack > 0) %obj.setHeadUp(1);
+	
 	if($hat[%client.hat] $= "Helmet")
 	{
 		if(%client.accent == 1 && $accent[4] !$= "none")
@@ -133,10 +137,13 @@ function Armor::EventideAppearance(%this,%obj,%client)
 		%obj.setNodeColor($accent[%client.accent],%client.accentColor);
 	}
 
-	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
-	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
-	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
-	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
+	%bloodyParts = "lshoe rshoe lhand rhand";
+	for (%i = 0; %i < getWordCount(%bloodyParts); %i++) 
+	{
+	    %part = getWord(%bloodyParts, %i);
+	    if (%obj.bloody[%part]) %obj.unHideNode(%part @ "_blood");
+	}
+
 	if (%obj.bloody["chest_front"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_front");
 	if (%obj.bloody["chest_back"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_back");
 
