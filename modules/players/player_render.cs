@@ -173,7 +173,7 @@ function Player::PrepperizerEffect(%obj)
 
 	// Set random appearance stuff
 	%obj.setScale((getRandom(70, 110) * 0.01) SPC (getRandom(70, 110) * 0.01) SPC (getRandom(100, 110) * 0.01));
-	%obj.setShapeName(getRandom(1, 10) == 1 ? getRandom(1, 999999) : "", 8564862);
+	%obj.setShapeName(getRandom(1, 10) == 1 ? mPow(getRandom(2,4), getRandom(1, 32)) : "", 8564862);
 	%obj.setFaceName(getRandom(1, 10) == 1 ? "smiley" : "asciiTerror");
 	%obj.setArmThread(getRandom(1, 10) == 1 ? getRandom("death1" TAB "sit" TAB "crouch" TAB "standjump" TAB "talk") : "look");
 
@@ -193,7 +193,6 @@ function Player::PrepperizerEffect(%obj)
 		%obj.light.schedule(1000, delete);
 	}
 }
-
 
 function PlayerRender::Prepperizer(%this,%obj)
 {
@@ -292,8 +291,10 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 function PlayerRender::disappear(%this,%obj,%alpha)
 {
 	if(!isObject(%obj) || isEventPending(%obj.reappearsched)) return;
+	
+	%alpha = mClampF(%alpha-0.05,0,1);
 
-	if(%alpha == 1)
+	if(%alpha)
 	{
 		%obj.setShapeName ("", 8564862);
 		%obj.setArmThread("look");
@@ -302,10 +303,7 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 		%this.EventideAppearance(%obj);
 		%obj.setScale("1 1 1");
 	}
-	
-	%alpha = mClampF(%alpha-0.05,0,1);
-
-	if(%alpha == 0)
+	else
 	{
 		%obj.unmountImage(2);
 		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
@@ -315,8 +313,6 @@ function PlayerRender::disappear(%this,%obj,%alpha)
 		%obj.isInvisible = true;	
 		return;
 	}
-	else %obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
-	
 
 	%obj.disappearsched = %this.schedule(25, disappear, %obj, %alpha);	
 }
@@ -325,6 +321,5 @@ function PlayerRender::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
 
-	if(%obj.getState() !$= "Dead") 
-	%obj.playaudio(0,"render_hurt" @ getRandom(1, 4) @ "_sound");
+	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"render_hurt" @ getRandom(1, 4) @ "_sound");
 }
