@@ -1,5 +1,5 @@
 //Default stuff...
-ADDON Print_Eventide
+ADDON Print_1x1_Eventide
 
 //environment
 $EnvGuiServer::SimpleMode 0
