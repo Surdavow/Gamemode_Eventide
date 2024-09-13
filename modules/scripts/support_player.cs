@@ -112,13 +112,13 @@ package Eventide_Player
 		if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) %obj.getMountedObject(%i).delete();
 	}
 
-
-	function Player::ActivateStuff (%player)//Not parenting, I made an overhaul of this function so it might cause compatibility issues...
+	//Not parenting, I made an overhaul of this function so it might cause compatibility issues...
+	function Player::ActivateStuff (%player)
 	{
 		Parent::ActivateStuff(%player);
 		
 		if(isObject(%player) && %player.getState() !$= "Dead" && isFunction(%player.getDataBlock().getName(),onActivate)) 
-		%player.getDataBlock().onActivate(%player);
+		return %player.getDataBlock().onActivate(%player);
 	}	
 };
 
