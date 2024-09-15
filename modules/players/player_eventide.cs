@@ -194,7 +194,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 	{
 		switch(%trig)
 		{
-			case 0:	if (!isObject(%obj.getMountedImage(0))) return;
+			case 0:	if (isObject(%obj.getMountedImage(0))) return;
 			
 					%eyePoint = %obj.getEyePoint();
 					%endPoint = vectoradd(%obj.getEyePoint(),vectorscale(%obj.getEyeVector(),5*getWord(%obj.getScale(),2)));
