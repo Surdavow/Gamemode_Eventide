@@ -102,7 +102,7 @@ if (isFile(%decalfilepath = "./models/decal.ifl"))
 	%decalpath = "./models/decals/*.png";
 	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
-		eval("addExtraResource(\""@ %decalfile @ "\");");
+		addExtraResource(%decalfile);
 		%write.writeLine(%decalfile);
 	}
 
@@ -114,7 +114,7 @@ if (isFile(%decalfilepath = "./models/decal.ifl"))
 exec("./player_eventide.cs");
 exec("./player_renowned.cs");
 
-// Scripts
+// Execute scripts
 %path = "./*.cs";
 for (%file = findFirstFile(%path); %file !$= ""; %file = findNextFile(%path))
 {
