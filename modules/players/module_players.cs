@@ -1,14 +1,16 @@
+// Load sounds
 %pattern = "./*.wav";
 %file = findFirstFile(%pattern);
 while(%file !$= "")
 {
     %soundName = strreplace(filename(strlwr(%file)), ".wav", "");
 
+	// Automatic sound instancing based on name of the sound, self explanatory names.
 	if(strstr(%file,"normal") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClose3d; filename = \"" @ %file @ "\"; };");	
 	if(strstr(%file,"quiet") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClosest3d; filename = \"" @ %file @ "\"; };");	
 	if(strstr(%file,"loud") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioDefault3d; filename = \"" @ %file @ "\"; };");
 
-	//footsteps
+	//Unique condition for footsteps
 	if(strstr(%file,"sounds/footsteps/") != -1)
 	{
 		if(strstr(%file,"walk") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
@@ -19,6 +21,7 @@ while(%file !$= "")
 	%file = findNextFile(%pattern);
 }
 
+// Icons
 %iconpath = "./icons/*.png"; 
 for (%iconfile = findFirstFile(%iconpath); %iconfile !$= ""; %iconfile = findNextFile(%iconpath))
 addExtraResource(%iconfile);
