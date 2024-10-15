@@ -390,7 +390,15 @@ function EventidePlayer::EventideAppearance(%this,%obj,%funcclient)
 	if (%obj.bloody["chest_front"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_front");
 	if (%obj.bloody["chest_back"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_back");
 
-	%obj.setFaceName(%funcclient.faceName);
+	//Face system functionality: prevent face from being overwritten by an avatar update.
+	if(isObject(%obj.faceConfig) && %obj.faceConfig.currentFace !$= "")
+	{
+		%obj.faceConfigShowFace(%obj.faceConfig.currentFace);
+	}
+	else
+	{
+		%obj.setFaceName(%funcclient.faceName);
+	}
 	%obj.setDecalName(%funcclient.decalName);
 
 	%obj.setNodeColor("headskin",%funcclient.headColor);	

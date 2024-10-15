@@ -1,6 +1,7 @@
 datablock PlayerData(PlayerShire : PlayerRenowned) 
 {
 	uiName = "Shire Player";
+	isKiller = true;
 
 	killerSpawnMessage = "A hooded figure channels a blinding wrath.";
 	
@@ -83,8 +84,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 		case 0: if(%obj.getEnergyLevel() >= 25 && %press)
 		{
 			%obj.KillerMelee(%this,4.5);
-			%obj.setFaceName("shireattack");
-			%obj.schedule(500, setFaceName, "shire");
+			%obj.faceConfigShowFace("Attack");
 			return;
 		}
 		
@@ -141,9 +141,23 @@ function PlayerShire::onPeggFootstep(%this,%obj)
 	serverplay3d("shire_walking" @ getRandom(1,6) @ "_sound", %obj.getHackPosition());
 }
 
-function PlayerShire::onNewDatablock(%this,%obj)
+function PlayerShire::onNewDatablock(%this, %obj)
 {
+	//Face system functionality.
+	%obj.createEmptyFaceConfig($Eventide_FacePacks["shire"]);
+	%facePack = %obj.faceConfig.getFacePack();
+	%obj.faceConfig.face["Neutral"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Neutral"));
+	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
+
+	%obj.faceConfig.face["Attack"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Attack"));
+	%obj.faceConfig.setFaceAttribute("Attack", "length", 500);
+
+	%obj.faceConfig.face["Pain"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Pain"));
+	%obj.faceConfig.setFaceAttribute("Pain", "length", 1000);
+
+	//Everything else.
 	Parent::onNewDatablock(%this,%obj);	
+
 	%obj.setScale("1.15 1.15 1.15");
 	%obj.mountImage("meleeAxeImage",0);
 	%obj.mountImage("newhoodieimage",3,2,addTaggedString("darkpurple"));
@@ -167,7 +181,10 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%pantsColor = "0.075 0.075 0.075 1";
 	%skinColor = "1 1 1 1";
 
-	%obj.setFaceName("shire");
+	if(isObject(%obj.faceConfig))
+	{
+		%obj.faceConfigShowFaceTimed("Neutral", -1);
+	}
 	%obj.setDecalName("robe");
 	%obj.setNodeColor("rarm",%hoodieColor);
 	%obj.setNodeColor("larm",%hoodieColor);
@@ -189,7 +206,6 @@ function PlayerShire::onDamage(%this, %obj, %delta)
 	if(%obj.getState() !$= "Dead")
 	{
 		%obj.playaudio(0,"shire_pain" @ getRandom(1, 4) @ "_sound");
-		%obj.setFaceName("shirepain");
-		%obj.schedule(1000, setFaceName, "shire");
+		%obj.faceConfigShowFace("Pain");
 	}
 }

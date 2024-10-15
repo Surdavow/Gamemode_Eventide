@@ -216,7 +216,18 @@ function Armor::onKillerLoop(%this,%obj)
 						cancel(%killerclient.StopChaseMusic);
 						%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
 					}
-				}						
+				}
+
+				//Face system functionality. Make the victim have scared and shocked facial expressions.
+				if(isObject(%nearbyplayer.faceConfig) && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
+				{
+					if(%nearbyplayer.faceConfig.subCategory !$= "Scared")
+					{
+						%nearbyplayer.createFaceConfig($Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"]);
+					}
+					%nearbyplayer.faceConfig.dupeFaceSlot("Neutral", "Scared");
+					//%nearbyplayer.faceConfig.resetFaceSlot("Neutral");
+				}					
 			}
 			else
 			{
@@ -230,6 +241,16 @@ function Armor::onKillerLoop(%this,%obj)
 
 					cancel(%victimclient.StopChaseMusic);
 					%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
+
+					//Face system functionality. Make the victim have scared facial expressions.
+					if(isObject(%nearbyplayer.faceConfig) && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
+					{
+						if(%nearbyplayer.faceConfig.subCategory !$= "Scared")
+						{
+							%nearbyplayer.createFaceConfig($Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"]);
+						}
+						%nearbyplayer.faceConfig.resetFaceSlot("Neutral");
+					}
 				}
 
 				if (!%obj.isChasing)
@@ -246,6 +267,16 @@ function Armor::onKillerLoop(%this,%obj)
 
 						cancel(%killerclient.StopChaseMusic);
 						%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
+
+						//Face system functionality. Make the victim have scared facial expressions.
+						if(isObject(%nearbyplayer.faceConfig) && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
+						{
+							if(%nearbyplayer.faceConfig.subCategory !$= "Scared")
+							{
+								%nearbyplayer.createFaceConfig($Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"]);
+							}
+							%nearbyplayer.faceConfig.resetFaceSlot("Neutral");
+						}
 					}
 				}
 
@@ -377,7 +408,15 @@ function GameConnection::StopChaseMusic(%client)
     if(isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();
 
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
-	%client.player.getdataBlock().TunnelVision(%client.player,false);
+	{
+		%client.player.getdataBlock().TunnelVision(%client.player,false);
+
+		//Face system functionality. Make the victim return to calm facial expressions when they are no longer being chased.
+		if(isObject(%client.player.faceConfig) && %client.player.faceConfig.subCategory $= "Scared")
+		{
+			%client.player.createFaceConfig($Eventide_FacePacks[%client.player.faceConfig.category]);
+		}
+	}
 
     %client.player.chaseLevel = 0;
     %client.musicChaseLevel = 0;
