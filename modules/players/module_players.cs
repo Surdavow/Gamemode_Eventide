@@ -32,27 +32,21 @@ if (isFile(%faceiflpath = "./models/face.ifl"))
 	%write = new FileObject();
 	%write.openForWrite(findFirstFile(%faceiflpath));
 	%write.writeLine("base/data/shapes/player/faces/smiley.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyRedBeard2.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyRedBeard.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyPirate3.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyPirate2.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyPirate1.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyOld.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyFemale1.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyEvil2.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyEvil1.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyCreepy.png");
-	%write.writeLine("Add-Ons/Face_Default/smileyBlonde.png");
-	%write.writeLine("Add-Ons/Face_Default/memeYaranika.png");
-	%write.writeLine("Add-Ons/Face_Default/memePBear.png");
-	%write.writeLine("Add-Ons/Face_Default/memeHappy.png");
-	%write.writeLine("Add-Ons/Face_Default/memeGrinMan.png");
-	%write.writeLine("Add-Ons/Face_Default/memeDesu.png");
-	%write.writeLine("Add-Ons/Face_Default/memeCats.png");
-	%write.writeLine("Add-Ons/Face_Default/memeBlockMongler.png");
-	%write.writeLine("Add-Ons/Face_Default/asciiTerror.png");
+
+	for(%faceFile = findFirstFile("Add-Ons/Face_Default/*.png"); %faceFile !$= ""; %faceFile = findNextFile("Add-Ons/Face_Default/*.png"))
+	{
+		%write.writeLine(%faceFile);
+	}
 	
 	%decalpath = "./models/faces/*.png";
+	for (%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
+	{
+		addExtraResource(%decalfile);
+		%write.writeLine(%decalfile);
+	}
+
+	//Face system functionality.
+	%decalpath = "./faces/*.png";
 	for (%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
 		addExtraResource(%decalfile);
@@ -70,34 +64,23 @@ if (isFile(%decalfilepath = "./models/decal.ifl"))
 	%write = new FileObject();
 	%write.openForWrite(findFirstFile(%decalfilepath));
 	%write.writeLine("base/data/shapes/players/decals/AAA-none.png");
-	%write.writeLine("Add-Ons/Decal_WORM/worm_engineer.png");
-	%write.writeLine("Add-Ons/Decal_WORM/worm-sweater.png");
 	%write.writeLine("Add-Ons/Decal_PlayerFitNE/zhwindnike.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/LinkTunic.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/Knight.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/HCZombie.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/DrKleiner.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/DKnight.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/Chef.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/Archer.png");
-	%write.writeLine("Add-Ons/Decal_Jirue/Alyx.png");
 	%write.writeLine("Add-Ons/Decal_Hoodie/Hoodie.png");
-	%write.writeLine("Add-Ons/Decal_Default/Space-Old.png");
-	%write.writeLine("Add-Ons/Decal_Default/Space-New.png");
-	%write.writeLine("Add-Ons/Decal_Default/Space-Nasa.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Suit.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Prisoner.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Police.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Pilot.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-DareDevil.png");
-	%write.writeLine("Add-Ons/Decal_Default/Mod-Army.png");
-	%write.writeLine("Add-Ons/Decal_Default/Meme-Mongler.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-YARLY.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-Tunic.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-Rider.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-ORLY.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-Lion.png");
-	%write.writeLine("Add-Ons/Decal_Default/Medieval-Eagle.png");
+
+	for(%decalFile = findFirstFile("Add-Ons/Decal_WORM/*.png"); %decalFile !$= ""; %decalFile = findNextFile("Add-Ons/Decal_WORM/*.png"))
+	{
+		%write.writeLine(%decalFile);
+	}
+
+	for(%decalFile = findFirstFile("Add-Ons/Decal_Jirue/*.png"); %decalFile !$= ""; %decalFile = findNextFile("Add-Ons/Decal_Jirue/*.png"))
+	{
+		%write.writeLine(%decalFile);
+	}
+	
+	for(%decalFile = findFirstFile("Add-Ons/Decal_Default/*.png"); %decalFile !$= ""; %decalFile = findNextFile("Add-Ons/Decal_Default/*.png"))
+	{
+		%write.writeLine(%decalFile);
+	}
 	
 	%decalpath = "./models/decals/*.png";
 	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
@@ -113,6 +96,9 @@ if (isFile(%decalfilepath = "./models/decal.ifl"))
 
 exec("./player_eventide.cs");
 exec("./player_renowned.cs");
+
+exec("./player_facesystem.cs");
+parseFacePacks("Add-Ons/Gamemode_Eventide/modules/players/faces");
 
 // Execute scripts
 %path = "./*.cs";
