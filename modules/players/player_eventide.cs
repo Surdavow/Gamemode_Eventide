@@ -509,6 +509,16 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
+	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward if enough damage has been received.
+	if(isObject(%obj.faceConfig) && %obj.faceConfig.isFace("Pain"))
+	{
+		if(%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")
+		{
+			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
+		}
+		%obj.schedule(33, "faceConfigShowFace", "Pain"); //This needs to be delayed for whatever reason. Blinking doesn't start otherwise.
+	}
+
 	if(%obj.isSkinwalker) 
 	{
 		%obj.setHealth(%this.maxDamage);

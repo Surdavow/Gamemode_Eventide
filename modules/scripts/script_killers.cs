@@ -218,16 +218,20 @@ function Armor::onKillerLoop(%this,%obj)
 					}
 				}
 
-				//Face system functionality. Make the victim have scared and shocked facial expressions.
-				if(isObject(%nearbyplayer.faceConfig) && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
+				//Face system functionality: make the victim have scared and shocked facial expressions.
+				if(isObject(%nearbyplayer.faceConfig))
 				{
-					if(%nearbyplayer.faceConfig.subCategory !$= "Scared")
+					if(%nearbyplayer.faceConfig.subCategory !$= "Hurt" && %nearbyplayer.faceConfig.subCategory !$= "Scared" && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
 					{
 						%nearbyplayer.createFaceConfig($Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"]);
 					}
-					%nearbyplayer.faceConfig.dupeFaceSlot("Neutral", "Scared");
-					//%nearbyplayer.faceConfig.resetFaceSlot("Neutral");
-				}					
+
+					if(%nearbyplayer.faceConfig.isFace("Scared"))
+					{
+						//Make the player have an open mouth instead of closed.
+						%nearbyplayer.faceConfig.dupeFaceSlot("Neutral", "Scared");
+					}
+				}			
 			}
 			else
 			{
@@ -242,14 +246,19 @@ function Armor::onKillerLoop(%this,%obj)
 					cancel(%victimclient.StopChaseMusic);
 					%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
 
-					//Face system functionality. Make the victim have scared facial expressions.
-					if(isObject(%nearbyplayer.faceConfig) && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
+					//Face system functionality: make the victim have scared facial expressions.
+					if(isObject(%nearbyplayer.faceConfig))
 					{
-						if(%nearbyplayer.faceConfig.subCategory !$= "Scared")
+						if(%nearbyplayer.faceConfig.subCategory !$= "Hurt" && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "" && %nearbyplayer.faceConfig.subCategory !$= "Scared")
 						{
 							%nearbyplayer.createFaceConfig($Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"]);
 						}
-						%nearbyplayer.faceConfig.resetFaceSlot("Neutral");
+
+						if(%nearbyplayer.faceConfig.face["Neutral"].faceName $= "Scared")
+						{
+							//If the neutral face is set to the open-mouth varient, reset it.
+							%nearbyplayer.faceConfig.resetFaceSlot("Neutral");
+						}
 					}
 				}
 

@@ -223,29 +223,38 @@ function FaceConfig::setFacePack(%obj, %facePack)
     %obj.facePack = %facePack;
 }
 
+function FaceConfig::cacheFace(%obj, %name)
+{
+    %facePack = %obj.getFacePack();
+    %face = %facePack.getFaceData(%name);
+    if(%face !$= "")
+    {
+        %obj.face[%name] = %face;
+    }
+    else if(%facePack.getFaceData(%facePack.category @ %name) !$= "")
+    {
+        %obj.face[%name] = %facePack.getFaceData(%facePack.category @ %name);
+    }
+    else if(%facePack.getFaceData(compileFaceDataName(%facePack, %name)) !$= "")
+    {
+        %obj.face[%name] = %facePack.getFaceData(compileFaceDataName(%facePack, %name));
+    }
+    else
+    {
+        //Fallback, no face found.
+        return "smiley"; 
+    }
+}
+
 function FaceConfig::getFace(%obj, %name)
 {
     if(%obj.face[%name] $= "")
     {
-        %face = %obj.getFacePack().getFaceData(%name);
-        %facePack = %obj.getFacePack();
-        if(%face !$= "")
+        %result = %obj.cacheFace(%name);
+        if(%result $= "smiley")
         {
-            %obj.face[%name] = %face;
-        }
-        else if(%facePack.subCategory $= "")
-        {
-            %obj.face[%name] = %facePack.getFaceData(%facePack.category @ %name);
-        }
-        else if(%facePack.subCategory !$= "")
-        {
-            %obj.face[%name] = %facePack.getFaceData(compileFaceDataName(%facePack, %name));
-        }
-        else
-        {
-            //Fallback, no face found.
-            error("Face pack \"" @ %facePack.getName() @ "\" does not contain face \"" @ %name @ "\".");
-            return "smiley"; 
+            //No face found under that name.
+            return "smiley";
         }
     }
     %obj.currentFace = fileBase(%obj.face[%name].getFile());
@@ -259,6 +268,11 @@ function FaceConfig::setFace(%obj, %name, %faceData)
 
 function FaceConfig::isFace(%obj, %name)
 {
+    if(%obj.face[%name] $= "")
+    {
+        //The face might be available but not cached, let's try that.
+        %obj.cacheFace(%name);
+    }
     return %obj.face[%name] !$= "";
 }
 
@@ -601,6 +615,16 @@ package Gamemode_Eventide_FaceSystem
     {
         //Make's a player's mouth move when they speak. Rudimentary at the moment, but noticable.
         parent::serverCmdMessageSent(%client, %message);
+        %player = %client.player;
+        if(isObject(%player) && isObject(%player.faceConfig) && %player.faceConfig.isFace("Smiley"))
+        {
+            %player.faceConfigTalkAnimation(%message);
+        }
+    }
+    function serverCmdTeamMessageSent(%client, %message)
+    {
+        //Make's a player's mouth move when they speak. Rudimentary at the moment, but noticable.
+        parent::serverCmdTeamMessageSent(%client, %message);
         %player = %client.player;
         if(isObject(%player) && isObject(%player.faceConfig) && %player.faceConfig.isFace("Smiley"))
         {
