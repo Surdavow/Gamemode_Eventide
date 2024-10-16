@@ -9,7 +9,7 @@ datablock PlayerData(PlayerDoll : PlayerRenowned)
 	uiName = "PlayerDoll";
 	shapeFile = DollDTS.baseShape;
 
-	// Weapon: ???
+	// Weapon: magic
 	hitprojectile = KillerSharpHitProjectile;
 	hitobscureprojectile = KillerAxeClankProjectile;
 	meleetrailskin = "magic";
@@ -22,10 +22,10 @@ datablock PlayerData(PlayerDoll : PlayerRenowned)
 	killerChaseLvl2Music = "musicData_Eventide_DollChase";
 
 	killeridlesound = "doll_idle";
-	killeridlesoundamount = 21;
+	killeridlesoundamount = 20;
 
 	killerchasesound = "doll_chase";
-	killerchasesoundamount = 9;
+	killerchasesoundamount = 8;
 	
 	killerweaponsound = "disfigured_weapon";
 	killerweaponsoundamount = 4;	
@@ -45,9 +45,9 @@ datablock PlayerData(PlayerDoll : PlayerRenowned)
 	firstpersononly = true;
 	rechargeRate = 0.3;
 	runForce = 5616;
-	maxForwardSpeed = 9.66;
-	maxBackwardSpeed = 5.52;
-	maxSideSpeed = 8.28;
+	maxForwardSpeed = 8.05;
+	maxBackwardSpeed = 4.6;
+	maxSideSpeed = 6.9;
 	//+15% Speed 8.05, 4.6, 6.9
 	maxDamage = 9999;
 	jumpforce = 0;
@@ -57,7 +57,7 @@ function PlayerDoll::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
-	%obj.setScale("0.85 0.85 0.85");
+	%obj.setScale("0.9 0.9 0.9");
 	%obj.schedule(1,setEnergyLevel,0);
 	KillerSpawnMessage(%obj);
 }
