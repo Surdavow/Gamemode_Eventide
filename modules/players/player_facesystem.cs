@@ -500,37 +500,61 @@ function Player::faceConfigShowFaceTimed(%player, %name, %time)
 
 function Player::faceConfigTalkAnimation(%player, %message)
 {
-    %lastWordIndex = 0;
-    %milisecondTimeIndex = 0;
-
-    for(%i = 0; %i < getWordCount(%message); %i++)
+    if(!isObject(%player.faceConfig))
     {
-        %currentWord = getWord(%message, %i);
-        %length = strlen(%currentWord);
+        return;
+    }
 
-        %indexPosition = strpos(%message, %currentWord, %lastWordIndex);
-        %wordEndIndexPosition = (%indexPosition + %length);
-
-        %speakingTime = (%length * 50);
-
-        %trailingCharacter = getSubStr(%message, %wordEndIndexPosition, (%wordEndIndexPosition + 1));
-        if(%trailingCharacter $= ",")
+    %milisecondTimeIndex = 0;
+    for(%i = 0; %i < strlen(%message); %i++)
+    {
+        //For every letter in the message...
+        %currentLetter = strlwr(getSubStr(%message, %i, 1));
+        %speakingTime = 50; //By default, 50 miliseconds to pronounce each letter. Changes for commas, periods, colons and semicolons.
+        // if(%currentLetter $= "a" || %currentLetter $= "i" || %currentLetter $= "l" || %currentLetter $= "y" || %currentLetter $= "d")
+        // {
+        //     %player.schedule(%milisecondTimeIndex, "faceConfigShowFaceTimed", "Smiley", %speakingTime); //Open mouth.
+        // }
+        if(%currentLetter $= "u" || %currentLetter $= "o" || %currentLetter $= "r" || %currentLetter $= "w" || %currentLetter $= "q")
         {
-            %speakingPause = 200;
+            if(%player.faceConfig.isFace("Oh"))
+            {
+                %player.schedule(%milisecondTimeIndex, "faceConfigShowFaceTimed", "Oh", %speakingTime); //Parsed lips.
+            }
         }
-        else if(%trailingCharacter $= ".")
+        else if(%currentLetter $= "e" || %currentLetter $= "c" || %currentLetter $= "s" || %currentLetter $= "n" || %currentLetter $= "k" || %currentLetter $= "z" || %currentLetter $= "j" || %currentLetter $= "s" || %currentLetter $= "t" || %currentLetter $= "f" || %currentLetter $= "v" || %currentLetter $= "h" || %currentLetter $= "g" || %currentLetter $= "x" || %currentLetter $= "y")
         {
-            %speakingPause = 350;
+            if(%player.faceConfig.isFace("Tooth"))
+            {
+                %player.schedule(%milisecondTimeIndex, "faceConfigShowFaceTimed", "Tooth", %speakingTime); //Closed teeth.
+            }
+        }
+        else if(%currentLetter $= "m" || %currentLetter $= "p" || %currentLetter $= "b")
+        {
+            if(%player.faceConfig.isFace("Smirk"))
+            {
+                %player.schedule(%milisecondTimeIndex, "faceConfigShowFaceTimed", "Smirk", %speakingTime); //Relaxed lips.
+            }
+        }
+        else if(%currentLetter $= "." || %currentLetter $= "?")
+        {
+            %speakingTime = 350;
+            %player.schedule(%milisecondTimeIndex, "faceConfigShowFaceTimed", "Neutral", %speakingTime); //Not talking.
+        }
+        else if(%currentLetter $= "," || %currentLetter $= ":" || %currentLetter $= ";")
+        {
+            %speakingTime = 200;
+            %player.schedule(%milisecondTimeIndex, "faceConfigShowFaceTimed", "Neutral", %speakingTime); //Not talking.
         }
         else
         {
-            %speakingPause = 100;
+            if(%player.faceConfig.isFace("Smiley"))
+            {
+                %player.schedule(%milisecondTimeIndex, "faceConfigShowFaceTimed", "Smiley", %speakingTime); //Open mouth.
+            }
         }
 
-        %player.schedule(%milisecondTimeIndex, "faceConfigShowFaceTimed", "Smiley", %speakingTime);
-
-        %milisecondTimeIndex += (%speakingTime + %speakingPause);
-        %lastWordIndex = %indexPosition;
+        %milisecondTimeIndex += %speakingTime;
     }
 }
 
@@ -564,10 +588,10 @@ package Gamemode_Eventide_FaceSystem
                 %player.faceConfigShowFaceTimed("Blink", -1);
             }
 
-            if(isObject(%player.faceConfig))
-            {
-                %player.faceConfig.delete();
-            }
+            // if(isObject(%player.faceConfig))
+            // {
+            //     %player.faceConfig.delete();
+            // }
         }
         parent::onDisabled(%this, %player, %state);
     }

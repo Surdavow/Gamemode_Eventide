@@ -391,9 +391,18 @@ function EventidePlayer::EventideAppearance(%this,%obj,%funcclient)
 	if (%obj.bloody["chest_back"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_back");
 
 	//Face system functionality: prevent face from being overwritten by an avatar update.
-	if(isObject(%obj.faceConfig) && %obj.faceConfig.currentFace !$= "")
+	if(isObject(%obj.faceConfig))
 	{
-		%obj.faceConfigShowFace(%obj.faceConfig.currentFace);
+		%neededFacePack = (%obj.client.chest ? $Eventide_FacePacks["female"] : $Eventide_FacePacks["male"]);
+		if(%obj.faceConfig.getFacePack() !$= %neededFacePack)
+		{
+			//If the player updated their avatar, give them a new face pack to reflect it.
+			%obj.createFaceConfig(%neededFacePack);
+		}
+		if(%obj.faceConfig.currentFace !$= "")
+		{
+			%obj.faceConfigShowFace(%obj.faceConfig.currentFace);
+		}
 	}
 	else
 	{
