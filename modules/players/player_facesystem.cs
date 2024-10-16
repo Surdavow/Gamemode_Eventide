@@ -604,6 +604,7 @@ package Gamemode_Eventide_FaceSystem
             %player.faceConfig.delete();
         }
     }
+
     function Player::emote(%player, %emote)
     {
         //Play a facial expression when the player emotes.
@@ -635,6 +636,7 @@ package Gamemode_Eventide_FaceSystem
             %player.faceConfigShowFace(%choice);
         }
     }
+
     function serverCmdMessageSent(%client, %message)
     {
         //Make's a player's mouth move when they speak. Rudimentary at the moment, but noticable.
@@ -655,6 +657,36 @@ package Gamemode_Eventide_FaceSystem
             %player.faceConfigTalkAnimation(%message);
         }
     }
+
+    function Player::addHealth(%obj, %amount)
+    {
+        //If hurt, change their face pack. If no longer hurt, change it back to normal.
+        parent::addHealth(%obj, %amount);
+        if(isObject(%obj.faceConfig))
+        {
+            if(%obj.getDamagePercent() < 0.33 && %obj.faceConfig.subCategory $= "Hurt")
+            {
+                %obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category]);
+            }
+        }
+    }
+    function Player::setHealth(%obj, %amount)
+    {
+        //If hurt, change their face pack. If no longer hurt, change it back to normal.
+        parent::setHealth(%obj, %amount);
+        if(isObject(%obj.faceConfig))
+        {
+            if(%obj.getDamagePercent() > 0.33 && %obj.faceConfig.subCategory !$= "Hurt" && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")
+            {
+                %obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
+            }
+            else if(%obj.faceConfig.subCategory $= "Hurt")
+            {
+                %obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category]);
+            }
+        }
+    }
+
     function destroyServer()
     {
         parent::destroyServer();
