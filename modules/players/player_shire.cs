@@ -154,6 +154,9 @@ function PlayerShire::onNewDatablock(%this, %obj)
 
 	%obj.faceConfig.face["Pain"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Pain"));
 	%obj.faceConfig.setFaceAttribute("Pain", "length", 1000);
+	
+	%obj.faceConfig.face["Blink"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Blink"));
+	%obj.faceConfig.setFaceAttribute("Blink", "length", 100);
 
 	//Everything else.
 	Parent::onNewDatablock(%this,%obj);	

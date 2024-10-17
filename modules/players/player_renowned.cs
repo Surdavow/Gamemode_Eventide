@@ -62,6 +62,19 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 
 function PlayerRenowned::onNewDatablock(%this,%obj)
 {
+	//Face system functionality.
+	%obj.createEmptyFaceConfig($Eventide_FacePacks["renowned"]);
+	%facePack = %obj.faceConfig.getFacePack();
+	%obj.faceConfig.face["Neutral"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Neutral"));
+	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
+
+	%obj.faceConfig.face["Attack"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Attack"));
+	%obj.faceConfig.setFaceAttribute("Attack", "length", 500);
+
+	%obj.faceConfig.face["Pain"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Pain"));
+	%obj.faceConfig.setFaceAttribute("Pain", "length", 1000);
+	
+	//Everything Else
 	Parent::onNewDatablock(%this,%obj);
 	
 	%obj.mountImage("meleeTantoImage",0);
@@ -210,5 +223,9 @@ function Player::ClearRenownedEffect(%obj)
 function PlayerRenowned::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
-	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"renowned_pain" @ getRandom(1, 4) @ "_sound");
+	if(%obj.getState() !$= "Dead")
+	{
+		%obj.playaudio(0,"renowned_pain" @ getRandom(1, 4) @ "_sound");
+		%obj.faceConfigShowFace("Pain");
+	}
 }

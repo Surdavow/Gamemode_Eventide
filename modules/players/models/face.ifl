@@ -74,7 +74,9 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shirePain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireBlink.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireAttack.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedface.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedPain.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedNeutral.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedAttack.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/scared/maleScaredTooth.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/scared/maleScaredSmirk.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/scared/maleScaredSmiley.png
@@ -119,3 +121,9 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/female/femalePain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleOh.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleBlink.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/disfigured/disfiguredface.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalPain.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalNeutral.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalBlink.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalAttack.png
+Add-Ons/Gamemode_Eventide/modules/players/faces/brute/huntressface.png
