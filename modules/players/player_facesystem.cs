@@ -686,6 +686,21 @@ package Gamemode_Eventide_FaceSystem
             }
         }
     }
+    function Player::setDamageLevel(%obj, %amount)
+    {
+        parent::setDamageLevel(%obj, %amount);
+        if(isObject(%obj.faceConfig))
+        {
+            if(%obj.getDamagePercent() > 0.33 && %obj.faceConfig.subCategory !$= "Hurt" && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")
+            {
+                %obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
+            }
+            else if(%obj.faceConfig.subCategory $= "Hurt")
+            {
+                %obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category]);
+            }
+        }
+    }
 
     function destroyServer()
     {
