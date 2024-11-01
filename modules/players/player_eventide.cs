@@ -586,8 +586,9 @@ function EventidePlayer::onDisabled(%this,%obj)
 }
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
-{	
+{
 	Parent::onDisabled(%this,%obj);
+	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 
 	if(isObject(%obj.billboardbot)) 
 	%obj.billboardbot.delete();
