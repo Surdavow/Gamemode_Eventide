@@ -412,8 +412,10 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
     MissionCleanup.add(%client.EventidemusicEmitter);
     %client.EventidemusicEmitter.scopeToClient(%client);
 		
-	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
-	%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);
+	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer" && %client.player.tunnelvision == 0)
+	{
+		%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);
+	}
 }
 
 function GameConnection::StopChaseMusic(%client)
@@ -423,7 +425,11 @@ function GameConnection::StopChaseMusic(%client)
 
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
 	{
-		%client.player.getdataBlock().TunnelVision(%client.player,false);
+
+		if(%client.player.tunnelvision > 0)
+		{
+			%client.player.getdataBlock().TunnelVision(%client.player,false);
+		}
 
 		//Face system functionality. Make the victim return to calm facial expressions when they are no longer being chased.
 		if(isObject(%client.player.faceConfig) && %client.player.faceConfig.subCategory $= "Scared")
