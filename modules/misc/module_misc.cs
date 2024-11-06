@@ -10,3 +10,4 @@ exec("./particle_killer.cs");
 exec("./particle_portal.cs");
 exec("./projectile_lightning.cs");
 exec("./datablocks_shire.cs");
+exec("./datablocks_knight.cs");

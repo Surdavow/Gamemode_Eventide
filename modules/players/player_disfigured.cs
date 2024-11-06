@@ -76,7 +76,10 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 	%skinColor = "0.63 0.71 1 0.6";
 	%bloodColor = "0.36 0.07 0.07 0.6";
 
-	%obj.setFaceName("disfiguredface");
+	if(isObject(%obj.faceConfig))
+	{
+		%obj.faceConfigShowFaceTimed("Neutral", -1);
+	}
 	%obj.setDecalName("disfigureddecal");
 	%obj.setNodeColor("rarm",%skinColor);
 	%obj.setNodeColor("larmslim",%bloodColor);

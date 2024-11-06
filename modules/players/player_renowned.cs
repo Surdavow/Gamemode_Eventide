@@ -122,7 +122,10 @@ function PlayerRenowned::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
 	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
 	
-	%obj.setFaceName("renownedface");
+	if(isObject(%obj.faceConfig))
+	{
+		%obj.faceConfigShowFaceTimed("Neutral", -1);
+	}
 	%obj.setDecalName("renowneddecal");
 	
 	%skinColor = "0.83 0.73 0.66 1";

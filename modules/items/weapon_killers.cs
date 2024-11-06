@@ -109,6 +109,15 @@ datablock ShapeBaseImageData(ShovelImage : meleeTantoImage)
    mountPoint = 1;
 };
 
+datablock ShapeBaseImageData(ZweihanderImage : meleeTantoImage)
+{
+   shapeFile = "./models/zweihander.dts";
+   mountPoint = 0;
+   doColorShift = true;
+   colorShiftColor = (100/255) SPC (100/255) SPC (100/255) SPC (255/255);
+};
+
+
 function meleeTantoImage::onFire(%this,%obj,%slot)
 {
 	return;
@@ -125,6 +134,11 @@ function meleeAxeImage::onFire(%this,%obj,%slot)
 }
 
 function meleeMacheteImage::onFire(%this,%obj,%slot)
+{
+	meleeTantoImage::onFire(%this,%obj,%slot);
+}
+
+function ZweihanderImage::onFire(%this,%obj,%slot)
 {
 	meleeTantoImage::onFire(%this,%obj,%slot);
 }
