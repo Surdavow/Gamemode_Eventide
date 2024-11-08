@@ -34,7 +34,7 @@ datablock PlayerData(PlayerAngler : PlayerRenowned)
 	rightclickspecialicon = "";
 	leftclickspecialicon = "";
 	
-	killerlight = "NoFlareBLight";	
+	killerlight = "NoFlareRLight";	
 
 	killerChaseLvl1Music = "musicData_Eventide_AnglerNear";
 	killerChaseLvl2Music = "musicData_Eventide_AnglerChase";
