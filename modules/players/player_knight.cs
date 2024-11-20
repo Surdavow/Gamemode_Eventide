@@ -5,8 +5,8 @@ datablock PlayerData(PlayerKnight : PlayerRenowned)
 	
 	killerSpawnMessage = "An armored figure quests for blood.";
 	
-	killerChaseLvl1Music = "musicData_Eventide_KnightNear";
-	killerChaseLvl2Music = "musicData_Eventide_KnightChase";
+	killerChaseLvl1Music = "musicData_Eventide_SorrowfulNear";
+	killerChaseLvl2Music = "musicData_Eventide_SorrowfulChase";
 
 	killeridlesound = "knight_idle";
 	killeridlesoundamount = 4;
