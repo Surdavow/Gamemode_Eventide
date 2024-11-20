@@ -69,20 +69,19 @@ package Eventide_GameConnection
 
 		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
 
-		if(%message !$= "0")
+		if(%message !$= "0") return;
+		
+		if(isObject(%client.player))
 		{
-			if(isObject(%client.player))
-			{
-				%client.player.playThread(3,talk);
-				%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+			%client.player.playThread(3,talk);
+			%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
 
-				if(%client.player.radioEquipped) ChatMod_RadioMessage(%client, %message, true);
-				if(isObject(%client.minigame)) ChatMod_TeamLocalChat(%client, %message);
-				else if(!%client.player.radioEquipped) messageClient(%client,'',"\c5You must be in a minigame to team chat.");
-			}
-			else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
-			%client.lastMessageSent = %client;
-		}			
+			if(%client.player.radioEquipped) ChatMod_RadioMessage(%client, %message, true);
+			if(isObject(%client.minigame)) ChatMod_TeamLocalChat(%client, %message);
+			else if(!%client.player.radioEquipped) messageClient(%client,'',"\c5You must be in a minigame to team chat.");
+		}
+		else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
+		%client.lastMessageSent = %client;			
 	}	
 
 	function ServerCmdPlantBrick (%client)

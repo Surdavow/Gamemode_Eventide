@@ -94,7 +94,7 @@ function brickEventideItemSpawnData::onPlant(%data,%obj)
         new SimSet("EventideItemSpawnSet");
         missionCleanup.add(EventideItemSpawnSet);
     }
-    EventideItemSpawnSet.add(%obj);
+    else EventideItemSpawnSet.add(%obj);
 }
 
 function brickEventideItemSpawnData::onloadPlant(%data, %obj)
