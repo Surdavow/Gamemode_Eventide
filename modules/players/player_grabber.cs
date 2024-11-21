@@ -31,6 +31,8 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	rightclickicon = "color_grab";
 	leftclickicon = "color_melee";
 
+	isKiller = true;
+
 	firstpersononly = false;
 	rechargeRate = 0.5;
 	maxTools = 0;
@@ -52,6 +54,8 @@ datablock PlayerData(PlayerGrabberNoJump : PlayerGrabber)
 
 function PlayerGrabber::onNewDatablock(%this,%obj)
 {
+	Parent::onNewDatablock(%this,%obj);
+
 	%obj.schedule(10,onKillerLoop);
 	
 	if(!isObject(%obj.client)) applyDefaultCharacterPrefs(%obj);
