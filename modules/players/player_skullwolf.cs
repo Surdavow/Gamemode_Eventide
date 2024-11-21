@@ -104,6 +104,8 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	{
 		%obj.playaudio(1,"skullwolf_cloak_sound");
 		if(isObject(%obj.light)) %obj.light.delete();
+		if(isObject(%obj.lshoe)) %obj.lshoe.unhidenode("ALL");
+		if(isObject(%obj.rshoe)) %obj.rshoe.unhidenode("ALL");
 	}
 	
 	%alpha = mClampF(%alpha-0.025,0,1);
@@ -208,7 +210,9 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 		case 4: if(!%obj.isInvisible)
 				{		
 					if(%obj.getEnergyLevel() == %this.maxEnergy && !isEventPending(%obj.disappearsched)) 
-					%this.disappear(%obj,1);		
+					%this.disappear(%obj,1);
+					if(isObject(%obj.lshoe)) %obj.lshoe.hidenode("ALL");
+					if(isObject(%obj.rshoe)) %obj.rshoe.hidenode("ALL");	
 				}
 				else 
 				{
