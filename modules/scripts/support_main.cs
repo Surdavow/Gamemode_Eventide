@@ -120,7 +120,8 @@ package DSBloodPackage {
 	{
 		Parent::onEnterLiquid(%data, %obj, %coverage, %type);
 
-		if(%obj.getdatablock() $= "PlayerRender") return;
+		if(%obj.getdatablock().getName() $= "PlayerRender") return;
+
 		%obj.bloody["lshoe"] = false;
 		%obj.bloody["rshoe"] = false;
 		%obj.bloody["lhand"] = false;
