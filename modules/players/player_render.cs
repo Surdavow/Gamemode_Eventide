@@ -80,7 +80,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
 						%hit.mountImage("RenderTurnImage",3);
 						%hit.playaudio(0,"render_turn_sound");
-						%hit.setTempSpeed(1/3);
+						%hit.setTempSpeed(1/8);
 						loopTurn(%hit, getRandom(0, 1) * 2 - 1);
 					}
 				}
