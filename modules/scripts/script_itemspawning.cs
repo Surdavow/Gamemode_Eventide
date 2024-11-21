@@ -15,6 +15,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
     for(%g = 0; %g < EventideItemSpawnSet.getCount(); %g++) if(isObject(%brick = EventideItemSpawnSet.getObject(%g)))
     {
         %brick.setItem("none");
+        
         %brick.setEmitter("none");
 
         switch$(strlwr(%brick.getname()))

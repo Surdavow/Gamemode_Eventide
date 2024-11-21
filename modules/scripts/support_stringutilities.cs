@@ -104,10 +104,7 @@ function sortStrings(%s,%sep,%comp)
 function stringList(%s,%listSep,%comma,%type)
 {
 	%wcount = getStringCount(%s,%listSep);
-	if(%wcount <= 1)
-	{
-		return %s;
-	}
+	if(%wcount <= 1) return %s;
 
 	for(%j = 0; %j < %wcount; %j++)
 	{
