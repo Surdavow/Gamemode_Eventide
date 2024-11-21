@@ -92,6 +92,9 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					{
 						%this.disappear(%obj,1);
 						%obj.setEnergylevel(0);
+
+						if(isObject(%obj.lshoe)) %obj.lshoe.hidenode("ALL");
+						if(isObject(%obj.rshoe)) %obj.rshoe.hidenode("ALL");
 					}
 				}
 				else if(%obj.getEnergyLevel() == %this.maxEnergy)
@@ -277,6 +280,8 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	
 	if(%alpha == 1) 
 	{
+		if(isObject(%obj.lshoe)) %obj.lshoe.unhidenode("ALL");
+		if(isObject(%obj.rshoe)) %obj.rshoe.unhidenode("ALL");
 		%obj.setTempSpeed(1);
 		%obj.isInvisible = false;
 		%obj.unMountImage(3);
