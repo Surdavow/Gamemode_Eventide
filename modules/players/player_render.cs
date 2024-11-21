@@ -104,26 +104,25 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 	}	
 }
 
-function loopTurn(%pl, %direction, %currTotal)
+function loopTurn(%obj, %direction, %currTotal)
 {
-  	cancel(%pl.loopTurnSchedule);	
+  	cancel(%obj.loopTurnSchedule);	
   	%rotationChange = 0.04;
   	%currTotal += %rotationChange;
-  	%transform = %pl.getTransform();
+  	%transform = %obj.getTransform();
   	%currZDir = getWord(%transform, 5) >= 0 ? 1.0 : -1.0;
   	%transform = setWord(%transform, 6, getWord(%transform, 6) + %direction * %currZDir * %rotationChange);
-  	%pl.setTransform(%transform);
+  	%obj.setTransform(%transform);
 
   	if (%currTotal >= $pi)
   	{
-		talk("test");
-		%hit.playaudio(0,"render_turnComplete_sound");
-		%hit.unMountImage(3);
-		%hit.setTempSpeed();
+		%obj.playaudio(0,"render_turnComplete_sound");
+		%obj.unMountImage(3);
+		%obj.setTempSpeed();
 		return;
   	}
 
-  	%pl.loopTurnSchedule = schedule(50, %pl, loopTurn, %pl, %direction, %currTotal);
+  	%obj.loopTurnSchedule = schedule(50, %obj, loopTurn, %obj, %direction, %currTotal);
 }
 
 function PlayerRender::onNewDatablock(%this,%obj)
