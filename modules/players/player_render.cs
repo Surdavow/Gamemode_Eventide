@@ -114,8 +114,9 @@ function loopTurn(%pl, %direction, %currTotal)
   	%transform = setWord(%transform, 6, getWord(%transform, 6) + %direction * %currZDir * %rotationChange);
   	%pl.setTransform(%transform);
 
-  	if (%currTotal > $pi)
+  	if (%currTotal >= $pi)
   	{
+		talk("test");
 		%hit.playaudio(0,"render_turnComplete_sound");
 		%hit.unMountImage(3);
 		%hit.setTempSpeed();
