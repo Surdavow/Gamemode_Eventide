@@ -104,8 +104,6 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	{
 		%obj.playaudio(1,"skullwolf_cloak_sound");
 		if(isObject(%obj.light)) %obj.light.delete();
-		if(isObject(%obj.lshoe)) %obj.lshoe.unhidenode("ALL");
-		if(isObject(%obj.rshoe)) %obj.rshoe.unhidenode("ALL");
 	}
 	
 	%alpha = mClampF(%alpha-0.025,0,1);
@@ -182,6 +180,8 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 	{
 		%obj.setTempSpeed(1);
 		%obj.unHideNode("ALL");
+		if(isObject(%obj.lshoe)) %obj.lshoe.unhidenode("ALL");
+		if(isObject(%obj.rshoe)) %obj.rshoe.unhidenode("ALL");		
 
 		if(!isObject(%obj.light))
 		{
