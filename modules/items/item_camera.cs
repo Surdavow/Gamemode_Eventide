@@ -1,8 +1,5 @@
 datablock ItemData(DCamera)
 {
-	//category = "Item"; //Weapon?
-	//className = "Item"; //Weapon?
-	
 	shapeFile = "./models/DCamera/DCamera.dts";
 	rotate = false;
 	mass = 1;

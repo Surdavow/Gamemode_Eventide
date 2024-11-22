@@ -25,7 +25,6 @@ function nextMap(%msg)
 	} 
 	else 
 	{
-
 		if($Pref::Server::MapRotation::current != 0) 
 		messageAll('MsgUploadEnd', %msg);
 
@@ -49,8 +48,7 @@ function nextMap(%msg)
 		%client.setControlObject(%camera);
 	}
 
-	//clear all bricks 
-	// note: this function is deferred, so we'll have to set a callback to be triggered when it's done
+	//clear all of the public bricks
 	BrickGroup_230349.chaindeletecallback = "LoadLevel(\"" @ %filename @ "\");";
 	BrickGroup_230349.chaindeleteall();	
 }

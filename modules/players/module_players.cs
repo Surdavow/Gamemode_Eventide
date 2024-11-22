@@ -38,7 +38,7 @@ if (isFile(%faceiflpath = "./models/face.ifl"))
 		%write.writeLine(%faceFile);
 	}
 	
-	%decalpath = "./models/faces/*.png";
+	%decalpath = "./faces/*.png";
 	for (%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
 		addExtraResource(%decalfile);
@@ -82,7 +82,7 @@ if (isFile(%decalfilepath = "./models/decal.ifl"))
 		%write.writeLine(%decalFile);
 	}
 	
-	%decalpath = "./models/decals/*.png";
+	%decalpath = "./decals/*.png";
 	for(%decalfile = findFirstFile(%decalpath); %decalfile !$= ""; %decalfile = findNextFile(%decalpath))
 	{
 		addExtraResource(%decalfile);

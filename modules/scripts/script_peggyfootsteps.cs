@@ -36,6 +36,7 @@ function servercmdSetFootstep(%client, %type, %sound)
 			break;
 		}
 	}
+
 	if (!%match)
 	{
 		for (%a=0; %a <= %j; %a++) essageClient(%client, '', "\c5 - " @ %sounds[%a]);
@@ -43,6 +44,7 @@ function servercmdSetFootstep(%client, %type, %sound)
 		messageClient(%client,'',"\c0There is no sound with the name '\c3" @ trim(%sound) @ "\c0'.\c6 The sounds you can choose are listed above. <color:aaaaaa>(PgUp to see all options)");
 		return;
 	}
+
 	switch$ ( %type )
 	{
 		case "pearl": $Pref::Server::PF::brickFXsounds::pearlStep = %hit;
@@ -62,6 +64,7 @@ function servercmdSetFootstep(%client, %type, %sound)
 						$Pref::Server::PF::defaultStep = %hit;
 
 		case "terrain": $Pref::Server::PF::terrainStep = %hit;
+		
 		case "vehicle": $Pref::Server::PF::vehicleStep = %hit;
 		default: for(%a=0; %a <= %i; %a++) messageClient(%client, '', "\c5 - " @ %types[%a]);
 				 messageClient(%client,'',"\c0There is no surface with the name '\c3" @ trim(%type) @ "\c0'.\c6 The surfaces you can choose are listed above. <color:aaaaaa>(PgUp to see all options)");
