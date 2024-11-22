@@ -54,21 +54,16 @@ function PlayerNightmare::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
-	if(%press) switch(%trig)
-	{
-		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);
-	}
+	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
+	return %obj.KillerMelee(%this,4);
 }
 
 function PlayerNightmare::onKillerChase(%this,%obj,%chasing)
 {
 	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
 	
-	switch(%chasing)
-	{
-		case true: 	%obj.mountImage("ChainsawSawingImage",0);					
-		case false: %obj.mountImage("ChainsawImage",0);
-	}
+	if(%chasing) %obj.mountImage("ChainsawSawingImage",0);
+	else %obj.mountImage("ChainsawImage",0);
 }
 
 function PlayerNightmare::EventideAppearance(%this,%obj,%client)
