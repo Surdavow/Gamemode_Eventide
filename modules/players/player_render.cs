@@ -181,7 +181,11 @@ function Player::PrepperizerEffect(%obj)
 	%obj.setArmThread(getRandom(1, 10) == 1 ? getRandom("death1" TAB "sit" TAB "crouch" TAB "standjump" TAB "talk") : "look");
 
 	// Handle light effects
-	if (isObject(%obj.light)) %obj.light.delete();
+	if (isObject(%obj.light))
+	{
+		%obj.light.delete();
+		%obj.setNodeColor("ALL", "0 0 0 1");
+	} 
 	
 	if (getRandom(1, 10) == 1)
 	{
@@ -194,6 +198,7 @@ function Player::PrepperizerEffect(%obj)
 		%obj.light.setTransform(%obj.getTransform());
 		%obj.light.attachToObject(%obj);
 		%obj.light.schedule(1000, delete);
+		%obj.setNodeColor("ALL", "0 0 0 0");
 	}
 }
 
