@@ -4,7 +4,7 @@ function Player::SetSpeedModifier(%obj,%a)
 {
 	if(%obj.Speed_Modifier $= "") %obj.Speed_Modifier = 1;	
 
-	if(%a <= 0) return;	
+	if(!%a) return;	
 
 	%prev = %obj.Speed_Modifier;
 	%curr = %obj.Speed_Modifier = %a;
@@ -72,7 +72,8 @@ function Armor::GazeLoop(%this,%obj)
 			%hit.processInputEvent("onGaze", %gazer);
 		}
 
-		if(%hit.getType() & $TypeMasks::PlayerObjectType) %obj.gazingPlayer = true;
+		if(%hit.getType() & $TypeMasks::PlayerObjectType) 
+		%obj.gazingPlayer = true;
 		%obj.gazing = %hit;
 	}	
 

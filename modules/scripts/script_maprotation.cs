@@ -4,7 +4,6 @@ if (!isFile("saves/EventideMapRotation/README.txt"))
 
 	if (%file.openForWrite("saves/EventideMapRotation/README.txt"))
 	%file.writeLine("You need to place save files in this folder for the Map Rotation to be able to work!");
-
 	else error("File is not open for writing");
 	
 	%file.close();
@@ -25,7 +24,7 @@ function nextMap(%msg)
 	} 
 	else 
 	{
-		if($Pref::Server::MapRotation::current != 0) 
+		if($Pref::Server::MapRotation::current) 
 		messageAll('MsgUploadEnd', %msg);
 
 		%filename = $Pref::Server::MapRotation::map0;

@@ -94,16 +94,26 @@ if (isFile(%decalfilepath = "./models/decal.ifl"))
 	addExtraResource(findFirstFile(%decalfilepath));
 }
 
+// Execute these first, the other playertypes inherit from them.
 exec("./player_eventide.cs");
 exec("./player_renowned.cs");
 
-exec("./player_facesystem.cs");
-parseFacePacks("Add-Ons/Gamemode_Eventide/modules/players/faces");
-
-// Execute scripts
-%path = "./*.cs";
-for (%file = findFirstFile(%path); %file !$= ""; %file = findNextFile(%path))
-{
-    if (strstr(strlwr(%file),"module_players") != -1 || strstr(strlwr(%file),"player_eventide") != -1 || strstr(strlwr(%file),"player_renowned") != -1 || strstr(strlwr(%file),"module_misc") != -1) continue;
-	exec(%file);
-}
+exec("./player_angler.cs");
+exec("./player_cannibal.cs");
+exec("./player_disfigured.cs");
+exec("./player_doll.cs");
+exec("./player_empty.cs");
+exec("./player_genocide.cs");
+exec("./player_grabber.cs");
+exec("./player_huntress.cs");
+exec("./player_knight.cs");
+exec("./player_lurker.cs");
+exec("./player_lurkerinvis.cs");
+exec("./player_nightmare.cs");
+exec("./player_nightmareTeleport.cs");
+exec("./player_puppetmaster.cs");
+exec("./player_puppetmasterpuppet.cs");
+exec("./player_render.cs");
+exec("./player_shire.cs");
+exec("./player_skinwalker.cs");
+exec("./player_skullwolf.cs");

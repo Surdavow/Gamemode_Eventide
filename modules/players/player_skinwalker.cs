@@ -59,17 +59,12 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	uiName = "Skinwalker Player";	
 	
 	rechargeRate = 0.375;	
-	maxDamage = 9999;
-	jumpForce = 9;
+	maxDamage = 9999;;
 	maxForwardSpeed = 6.16;
 	maxBackwardSpeed = 3.52;
 	maxSideSpeed = 5.28;
-	//+10% Speed
 	boundingBox = "4.5 4.5 9.5";
 	crouchBoundingBox = "4.5 4.5 3.6";
-	maxItems   = 0;
-	maxWeapons = 0;
-	maxTools = 0;	
 };
 
 function PlayerSkinwalker::bottomprintgui(%this,%obj,%client)

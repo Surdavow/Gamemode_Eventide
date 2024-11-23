@@ -1,5 +1,6 @@
 exec("./script_chatsystem.cs");
 exec("./script_facesystem.cs");
+parseFacePacks("Add-Ons/Gamemode_Eventide/modules/players/faces");
 exec("./script_commands.cs");
 exec("./script_itemparticle.cs");
 exec("./script_itemspawning.cs");

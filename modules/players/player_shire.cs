@@ -35,13 +35,9 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerlight = "NoFlarePLight";
 
 	rechargeRate = 0.3;
-	maxTools = 0;
-	maxWeapons = 0;
 	maxForwardSpeed = 6.55;
 	maxBackwardSpeed = 3.74;
 	maxSideSpeed = 5.61;
-	//+10% Speed
-	jumpForce = 0;
 };
 
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)

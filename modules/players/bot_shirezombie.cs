@@ -50,160 +50,200 @@ function ShireZombieBot::onDisabled(%this,%obj)
     %obj.playaudio(0,"zombie_death" @ getRandom(1,10) @ "_sound");
 }
 
-function ShireZombieBot::onBotLoop(%this,%obj)
+function ShireZombieBot::onBotLoop(%this, %obj)
 {
-    if(isObject(%obj) && %obj.getState() !$= "Dead") %obj.BotLoopSched = %this.schedule(500,onBotLoop,%obj);
-    else return;
-
+    // Early return if bot is invalid or dead
+    if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+    
+    %obj.BotLoopSched = %this.schedule(500, onBotLoop, %obj);
+    
     %target = %obj.target;
     %currentTime = getSimTime();
-
-    if(!%target && %obj.lastSearchTime < %currentTime)//Let's find a target if we don't have one
+    
+    // Target search logic
+    if(!%target && %obj.lastSearchTime < %currentTime)
     {
-        %obj.lastSearchTime = %currentTime+1500;//Scan every 1500 ms
-
-		for(%i = 0; %i < clientgroup.getCount(); %i++)
-		{
-			if(isObject(%nearbyplayer = clientgroup.getObject(%i).player) && minigameCanDamage(%obj,%nearbyplayer))
-			{
-				if(%nearbyplayer == %obj || %nearbyplayer.getDataBlock().classname $= "PlayerData" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 50 || %nearbyplayer.getdataBlock().isKiller) 
-				continue;
-
-                %scan = %nearbyplayer;
-
-                %line = vectorNormalize(vectorSub(%scan.getposition(),%obj.getposition()));
-                %dot = vectorDot(%obj.getEyeVector(), %line );
-                %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%scan.getPosition(),"0 0 1.9"),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-
-                if(!isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%scan.getposition()) < 75)//Distance should be less than 75, and they can see them   
-                {
-                    %obj.target = %scan;
-                    %target = %obj.target;            
-                }
+        %obj.lastSearchTime = %currentTime + 1500; //Search every 1.5 seconds
+        
+        // Search through client group for valid targets
+        for(%i = 0; %i < ClientGroup.getCount(); %i++)
+        {
+            %nearbyPlayer = ClientGroup.getObject(%i).player;
+            if(!isObject(%nearbyPlayer) || !minigameCanDamage(%obj, %nearbyPlayer))
+                continue;
+                
+            // Skip invalid targets
+            if(%nearbyPlayer == %obj || 
+               %nearbyPlayer.getDataBlock().classname $= "PlayerData" || 
+               %nearbyPlayer.getDataBlock().isKiller || 
+               VectorDist(%nearbyPlayer.getPosition(), %obj.getPosition()) > 50)
+                continue;
+            
+            // Vision check
+            %line = vectorNormalize(vectorSub(%nearbyPlayer.getPosition(), %obj.getPosition()));
+            %dot = vectorDot(%obj.getEyeVector(), %line);
+            %obscure = containerRayCast(%obj.getEyePoint(), 
+                                      vectorAdd(%nearbyPlayer.getPosition(), "0 0 1.9"),
+                                      $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, 
+                                      %obj);
+            
+            if(!isObject(%obscure) && %dot > 0.5)
+            {
+                %obj.target = %nearbyPlayer;
+                %target = %obj.target;
+                break;
             }
         }
     }
-
-    //Conditions to check if target is still valid
-    if(!isObject(%target) || %target.getState() $= "Dead" || %target.getDataBlock().isKiller) 
+    
+    // Target validation
+    if(%target)
     {
-        %obj.target = 0;//They either do not exist or are dead so clear the target
-        %obj.setMoveY(0);
-        %obj.setMoveX(0);
-    }
-    else if(isObject(%target) && %target.getState() !$= "Dead")
-    {
-        %dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%target.getposition(), %obj.getposition())));
-        %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%target.getPosition(),"0 0 1.9"),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);        
-
-        if(!isObject(%obscure) && %dot > 0.5 && vectorDist(%obj.getposition(),%target.getposition()) < 50) %obj.cannotSeeTarget = 0;//We see them again, reset countdown
-        else %obj.cannotSeeTarget++;//Cannot see, increase the countdown
-
-        if(%obj.cannotSeeTarget >= 15)//Can no longer be seen and acquired, so clear the target and reset the countdown
+        if(!isObject(%target) || %target.getState() $= "Dead" || %target.getDataBlock().isKiller)
         {
+            // Clear invalid target
             %obj.target = 0;
-            %obj.cannotSeeTarget = 0;
-            %obj.clearMoveX();
-            %obj.clearMoveY();            
+            %obj.setMoveY(0);
+            %obj.setMoveX(0);
+        }
+        else
+        {
+            // Line of sight check
+            %dot = vectorDot(%obj.getEyeVector(), vectorNormalize(vectorSub(%target.getPosition(), %obj.getPosition())));
+            %obscure = containerRayCast(%obj.getEyePoint(), 
+                                      vectorAdd(%target.getPosition(), "0 0 1.9"),
+                                      $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, 
+                                      %obj);
+            
+            if(!isObject(%obscure) && %dot > 0.5 && VectorDist(%obj.getPosition(), %target.getPosition()) < 50)
+                %obj.cannotSeeTarget = 0;
+            else
+                %obj.cannotSeeTarget++;
+            
+            if(%obj.cannotSeeTarget >= 15)
+            {
+                %obj.target = 0;
+                %obj.cannotSeeTarget = 0;
+                %obj.clearMoveX();
+                %obj.clearMoveY();
+            }
         }
     }
-
+    
+    // Combat behavior
     if(isObject(%target))
     {
-        %distance = vectorDist(%obj.getposition(),%target.getposition());
-
-        if(%distance < 10)//Raise arms if we are close enough
+        %distance = VectorDist(%obj.getPosition(), %target.getPosition());
+        
+        // Close combat handling
+        if(%distance < 10)
         {
-            if(!%obj.raisearms)
+            if(!%obj.raiseArms)
             {
-                %obj.playthread(1,"ArmReadyBoth");
-                %obj.raisearms = true;
+                %obj.playThread(1, "ArmReadyBoth");
+                %obj.raiseArms = true;
             }
-
-            if(%distance < 5) %obj.playthread(2,"activate2");//let's start swinging
-
+            
+            if(%distance < 5)
+                %obj.playThread(2, "activate2");
+                
             if(%distance < 2)
             {
-                %target.damage(%obj,%target.getWorldBoxCenter(),30,$DamageType::Default);        
-                %target.SetTempSpeed(0.5);
-                %target.schedule(1000,SetTempSpeed,1);
-                %target.playthread(3,"plant");
-
-                %obj.playaudio(3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
+                %target.damage(%obj, %target.getWorldBoxCenter(), 30, $DamageType::Default);
+                %target.setTempSpeed(0.5);
+                %target.schedule(1000, setTempSpeed, 1);
+                %target.playThread(3, "plant");
+                
+                %obj.playAudio(3, "skullwolf_hit" @ getRandom(1, 3) @ "_sound");
                 cancel(%obj.BotLoopSched);
-                %obj.playthread(3,"activate2");
+                %obj.playThread(3, "activate2");
                 %obj.setMoveX(0);
                 %obj.setMoveY(-0.25);
-                %obj.BotLoopSched = %this.schedule(2000,onBotLoop,%obj);   
+                %obj.BotLoopSched = %this.schedule(2000, onBotLoop, %obj);
             }
         }
-        else if(%obj.raisearms)//Too far, lower the arms once more
+        else if(%obj.raiseArms)
         {
-            %obj.playthread(1,"root");
-            %obj.raisearms = false;
+            %obj.playThread(1, "root");
+            %obj.raiseArms = false;
         }
         
-        if(%obj.lastTargetTime < %currentTime)//Tick every 3.5 seconds
+        // Movement update
+        if(%obj.lastTargetTime < %currentTime)
         {
-            %obj.playaudio(0,"zombie_chase" @ getRandom(0,10) @ "_sound");
-            %obj.lastTargetTime = %currentTime+3500;
+            %obj.playAudio(0, "zombie_chase" @ getRandom(0, 10) @ "_sound");
+            %obj.lastTargetTime = %currentTime + 3500;
             %obj.setMoveY(1);
-            if(getRandom(1,3) == 1) %obj.setMoveX(getRandom(-100,100)*0.01);
-            else %obj.setMoveX(0);
+            
+            if(getRandom(1, 3) == 1)
+                %obj.setMoveX(getRandom(-100, 100) * 0.01);
+            else
+                %obj.setMoveX(0);
+                
             %obj.setHeadAngle(0);
-            %obj.setMoveObject(%obj.target);
-            %obj.setAimObject(%obj.targt);
+            %obj.setMoveObject(%target);
+            %obj.setAimObject(%target);
         }
     }
-    else if(%obj.lastIdleTime < %currentTime)//If there's no target, idle around
+    // Idle behavior
+    else if(%obj.lastIdleTime < %currentTime)
     {
-        %obj.lastIdleTime = %currentTime+4000;        
-
-        if(%obj.raisearms)
+        %obj.lastIdleTime = %currentTime + 4000;
+        
+        if(%obj.raiseArms)
         {
-            %obj.playthread(1,"root");
-            %obj.raisearms = false;
+            %obj.playThread(1, "root");
+            %obj.raiseArms = false;
         }
-
-        %obj.playaudio(0,"zombie_idle" @ getRandom(0,4) @ "_sound");
-
-        switch(getRandom(1,4))//We either look around, move, or clear our movement
+        
+        %obj.playAudio(0, "zombie_idle" @ getRandom(0, 4) @ "_sound");
+        
+        switch(getRandom(1, 4))
         {
-            case 1: %obj.maxYawSpeed = getRandom(3,8);
-	                %obj.maxPitchSpeed = getRandom(3,8);
-
-    	            %xPos = getRandom(1,5);
-	                if(getRandom(0,1)) %xPos = -%xPos;
-
-    	            %yPos = getRandom(1,5);
-    	            if(getRandom(0,1)) %yPos = -%yPos;
-
-                    %obj.setaimlocation(vectorAdd(%obj.getEyePoint(),%xPos SPC %yPos SPC getrandom(1,-1)));
-
-                    if(getRandom(1,4) == 1)//Twitch the head around
-                    {
-                        %obj.setHeadAngleSpeed(0.25);
-                        %obj.setHeadAngle(getRandom(-90,90));
-                    }
-                    else %obj.setHeadAngle(0);
-
-            case 4: %obj.maxYawSpeed = getRandom(3,10);
-                    %obj.maxPitchSpeed = getRandom(3,10);
-
-                    %speed = getRandom(50,100)*0.01;
-                    if(getRandom(1,5) == 1) %speed = -%speed;
-                    %obj.setMoveY(%speed);
-
-    	            %xPos = getRandom(1,5);
-	                if(getRandom(0,1)) %xPos = -%xPos;
-
-    	            %yPos = getRandom(1,5);
-    	            if(getRandom(0,1)) %yPos = -%yPos;
-
-                    %obj.setaimlocation(vectorAdd(%obj.getEyePoint(),%xPos SPC %yPos SPC 0));
-                           
-            default: %obj.clearMoveY();
-                     %obj.clearMoveX();
+            case 1:
+                %obj.maxYawSpeed = getRandom(3, 8);
+                %obj.maxPitchSpeed = getRandom(3, 8);
+                
+                %xPos = getRandom(1, 5);
+                if(getRandom(0, 1))
+                    %xPos *= -1;
+                    
+                %yPos = getRandom(1, 5);
+                if(getRandom(0, 1))
+                    %yPos *= -1;
+                    
+                %obj.setAimLocation(vectorAdd(%obj.getEyePoint(), %xPos SPC %yPos SPC getRandom(1, -1)));
+                
+                if(getRandom(1, 4) == 1)
+                {
+                    %obj.setHeadAngleSpeed(0.25);
+                    %obj.setHeadAngle(getRandom(-90, 90));
+                }
+                else
+                    %obj.setHeadAngle(0);
+                    
+            case 4:
+                %obj.maxYawSpeed = getRandom(3, 10);
+                %obj.maxPitchSpeed = getRandom(3, 10);
+                
+                %speed = getRandom(50, 100) * 0.01;
+                if(getRandom(1, 5) == 1)
+                    %speed *= -1;
+                %obj.setMoveY(%speed);
+                
+                %xPos = getRandom(1, 5);
+                if(getRandom(0, 1))
+                    %xPos *= -1;
+                    
+                %yPos = getRandom(1, 5);
+                if(getRandom(0, 1))
+                    %yPos *= -1;
+                    
+                %obj.setAimLocation(vectorAdd(%obj.getEyePoint(), %xPos SPC %yPos SPC 0));
+                
+            default:
+                %obj.clearMoveY();
+                %obj.clearMoveX();
         }
     }
 }

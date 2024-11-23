@@ -7,10 +7,9 @@ function DataInstance_ListDelete(%list)
 	for(%i = 0; %i < %count; %i++)
 	{
 		%curr = getWord(%list,%i);
-		if(isObject(%curr))
-		{
-			%curr.delete();
-		}
+
+		if(isObject(%curr)) 
+		%curr.delete();	
 	}
 }
 
@@ -125,7 +124,7 @@ function SimObject::DataInstance_ListLoad(%obj)
 	%fo.delete();
 
 	DataInstance_ListDelete(%obj.DataInstance_List);
-	//unwrapped first loop to ensure propper formatting without trimming
+
 	%data = %data[0];
 	%obj.DataInstance_List = %data;
 	if(isObject(%data))
@@ -145,9 +144,7 @@ function SimObject::DataInstance_ListLoad(%obj)
 		{
 			%data.DataInstance_parent = %obj;
 			if(%data.DataInstance_List !$= "")
-			{
-				%data.DataInstance_ListLoad();
-			}
+			%data.DataInstance_ListLoad();			
 		}
 	}
 }
@@ -161,9 +158,8 @@ function Player::DataIdentifier(%obj,%append)
 {
 	%c = %obj.client;
 	if(isObject(%c))
-	{
-		return %c.getBLID() @ %append;
-	}
+	return %c.getBLID() @ %append;
+	
 }
 
 function fxDtsBrick::DataIdentifier(%obj,%append)
