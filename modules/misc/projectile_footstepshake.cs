@@ -10,7 +10,7 @@ datablock ExplosionData(Eventide_footstepShakeExplosion)
 	camShakeFreq = "7.0 7.0 7.0";
 	camShakeAmp = "0.25 0.25 0.25";
 	camShakeDuration = 0.375;
-	camShakeRadius = 10;
+	camShakeRadius = 100;
 	
 	damageRadius = 0;
 	radiusDamage = 0;

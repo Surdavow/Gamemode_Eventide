@@ -152,6 +152,7 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 function PlayerSkinwalker::onPeggFootstep(%this,%obj)
 {
 	serverplay3d("skinwalker_walking" @ getRandom(1,5) @ "_sound", %obj.getHackPosition());
+	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
 
 function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
