@@ -59,7 +59,7 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	uiName = "Skinwalker Player";	
 	
 	rechargeRate = 0.375;	
-	maxDamage = 9999;;
+	maxDamage = 9999;
 	maxForwardSpeed = 6.16;
 	maxBackwardSpeed = 3.52;
 	maxSideSpeed = 5.28;
