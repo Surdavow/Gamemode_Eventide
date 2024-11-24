@@ -1,4 +1,4 @@
-datablock TSShapeConstructor(DollDTS) 
+datablock TSShapeConstructor(KillerDollDTS) 
 {
 	baseShape = "./models/puppet.dts";
 	sequence0 = "./models/default.dsq";
@@ -7,9 +7,8 @@ datablock TSShapeConstructor(DollDTS)
 datablock PlayerData(PlayerDoll : PlayerRenowned)
 {
 	uiName = "PlayerDoll";
-	shapeFile = DollDTS.baseShape;
+	shapeFile = KillerDollDTS.baseShape;
 
-	// Weapon: magic
 	hitprojectile = KillerSharpHitProjectile;
 	hitobscureprojectile = KillerAxeClankProjectile;
 	meleetrailskin = "magic";
@@ -40,17 +39,12 @@ datablock PlayerData(PlayerDoll : PlayerRenowned)
 	
 	killerlight = "NoFlarePLight";
 
-	maxTools = 0;
-	maxWeapons = 0;
-	firstpersononly = true;
 	rechargeRate = 0.3;
 	runForce = 5616;
 	maxForwardSpeed = 8.05;
 	maxBackwardSpeed = 4.6;
 	maxSideSpeed = 6.9;
-	//+15% Speed 8.05, 4.6, 6.9
 	maxDamage = 9999;
-	jumpforce = 0;
 };
 
 function PlayerDoll::onNewDatablock(%this,%obj)
@@ -64,11 +58,10 @@ function PlayerDoll::onNewDatablock(%this,%obj)
 
 function PlayerDoll::onTrigger(%this, %obj, %trig, %press) 
 {			
-	if(%press) switch(%trig)
-	{
-		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4.5);
-	}
-	Parent::onTrigger(%this, %obj, %trig, %press);	
+	Parent::onTrigger(%this, %obj, %trig, %press);
+
+	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
+	return %obj.KillerMelee(%this,4.5);
 }
 
 function PlayerDoll::onPeggFootstep(%this,%obj)

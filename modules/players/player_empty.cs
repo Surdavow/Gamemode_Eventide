@@ -46,11 +46,14 @@ function emptyPlayer::onAdd(%this, %obj)
 	{
 		%source.mountObject(%obj,%obj.slotToMountBot);
 		
+		// Mount the image if there is one assigned
 		if(%obj.imageToMount !$= "") 
 		{
 			if(%obj.imageColor !$= "") %obj.mountImage(%obj.imageToMount,0,1,%obj.imageColor);
 			else %obj.mountImage(%obj.imageToMount,0);
 		}
+
+		// Mount the light if there is one assigned
 		if(%obj.lightToMount !$= "")
 		{
 			%billboard = new fxLight ("")
@@ -64,10 +67,14 @@ function emptyPlayer::onAdd(%this, %obj)
 			%billboard.setTransform(%obj.getTransform());
 			%billboard.attachToObject(%obj);
 
+			// Force the light to be visible only to the survivors, and not the killers
 			for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client.player))		
 			{
-				if(isObject(%client = clientgroup.getObject(%i))) %billboard.ScopeToClient(%client);
-				else if (%client.player.getdataBlock().isKiller || %client.player $= %source) %billboard.ClearScopeToClient(%client);
+				if(isObject(%client = clientgroup.getObject(%i))) 
+				%billboard.ScopeToClient(%client);
+
+				else if (%client.player.getdataBlock().isKiller || %client.player $= %source) 
+				%billboard.ClearScopeToClient(%client);
 			}
 		}
 	}

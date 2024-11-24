@@ -1,223 +1,142 @@
-function fcbn(%cl)
-{
-	return findclientbyname(%cl);
-}
-
-function ServerCmdLocalChatHelp(%cl)
-{
-	messageClient(%cl, '', "\c3Modifiers (put at beginning of message):");
-	if(ChatMod_getGlobalChatPerm(%cl)) messageClient(%cl, '', "\c4& \c6- Global chats the message");
-	messageClient(%cl, '', "\c4ALL CAPS or ! \c6- Shouts your message; range is a multiple of the default chat range");
-	messageClient(%cl, '', "\c4. \c6- Whispers your message; range is a multiple of the default chat range");
-	messageClient(%cl, '', "\c4Team chat \c6- If you have your radio out, sends your message over the radio and over local chat via typing in team chat");
-}
-
-function ServerCmdChatHelp(%cl)
-{
-	ServerCmdLocalChatHelp(%cl);
-}
-
-function Chatmod_resetRadioChannels()
-{
-	for (%i = 0; %i < clientGroup.getCount(); %i++)
-	if(isObject(%client = clientGroup.getObject(%i)) && isObject(%player = %client.player) && %player.radioEquipped)
-	{
-		%client.centerPrint("\c5More channels are being broadcasted! Check what channels are available.",4);
-		%player.playaudio(3,"radio_change_sound");
-	}
-}
-
-function ChatMod_getGlobalChatPerm(%cl)
-{
-	switch($Pref::Server::ChatMod::lchatGlobalChatLevel)
-	{
-		case 1: return %cl.isAdmin;
-		case 2: return %cl.isSuperAdmin;
-		default: return true;
-	}
-}
-
 function chatMessageClientRP(%target,%pre,%name,%suf,%text)
 {
     %msgString = '\c7%1\c3%2\c7%3\c6: %4';
     chatMessageClient(%target, "", "",  "", %msgString, %pre, %name, %suf, %text);
 }
 
-function chatMessageClientRPSize(%target,%pre,%name,%suf,%text,%size)
-{
-	%fontmod = "<font:Palatino Linotype:" @ %size @ ">";
-	chatMessageClientRP(%target, %fontmod@"\c7"@%pre, %fontmod@"\c3"@%name, %fontmod@"\c7"@%suf, %fontmod@"\c6"@%text);
-}
-
-function ChatMod_processMessage(%client,%message,%lastMessageSent)
-{
-	%message = trim(stripMLControlChars(%message)); //removes trailing spaces and html tags.
-
-	for(%i = 0; %i < getWordCount(%message); %i++)
-	{
-		%word = getWord(%message, %i);
-		if(getSubStr(%word, 0, 7) $= "http://" ) %message = setWord(%message, %i, "<a:" @ %word @ ">" @ %word @ "</a>");
-	}
-
-	//etard
-	if($Pref::Server::ETardFilter) for(%i=0; %i < getWordCount(%message); %i++)
-	{
-		%word = getWord(%message, %i);
-		for(%j=0; %j<getwordCount($Pref::Server::ETardList); %j++) if(%word $= getWord($Pref::Server::ETardList,%j)) 
-		%etardcheck = true;
-	}	
-
-	//conditional check
-	if(%etardcheck || (%message $= %lastMessageSent && !%client.isAdmin) || %message $= "")
-	{
-		if(%etardcheck) messageClient(%client, '', "This is a civilized game. Please use full words.");
-		else if(%message $= %lastMessageSent && !%client.isAdmin) messageClient(%client, '', "Do not spam.");		
-		return false;
-	}
-
-	return %message;
-}
-
-// Helper function to check message type and return both type and prefix
-function ChatMod_GetMessagePrefix(%message) 
-{
-    // Default to normal message type
-    %type = "normal";
-
-    // Check for whisper (if the first character is '.')
-    if (getSubStr(%message, 0, 1) $= ".") {
-        // Validate that there are characters after the '.'
-        if (strLen(%message) <= 1) {
-            return "" TAB "" TAB ""; // Invalid message
-        }
-        %type = "whisper";
-        %message = getSubStr(%message, 1, strLen(%message) - 1); // Remove the first character (.)
-        return "\c3(whisper) " TAB %type TAB %message;
+function ChatMod_processMessage(%client, %message, %lastMessageSent) 
+{    
+    %message = trim(stripMLControlChars(%message));
+    if (%message $= "") return false;
+    
+    // Check for duplicate messages (spam)
+    if (%message $= %lastMessageSent && !%client.isAdmin) 
+    {
+        messageClient(%client, '', "Do not spam.");
+        return false;
     }
     
-    // Check for shouting (if the first character is '!')
-    if (getSubStr(%message, 0, 1) $= "!") {
-        // Validate that there are characters after the '!'
-        if (strLen(%message) <= 1) {
-            return "" TAB "" TAB ""; // Invalid message
-        }
-        %type = "shout";
-        %message = getSubStr(%message, 1, strLen(%message) - 1); // Remove the first character (!)
-        return "\c3(SHOUT) " TAB %type TAB %message;
+    // Process URLs
+    for (%i = 0; %i < getWordCount(%message); %i++) 
+    {
+        %word = getWord(%message, %i);
+        if (getSubStr(%word, 0, 7) $= "http://") %message = setWord(%message, %i, "<a:" @ %word @ ">" @ %word @ "</a>");        
     }
+    
+    //etard
+    if($Pref::Server::ETardFilter) for(%i=0; %i < getWordCount(%message); %i++)
+    {
+        %word = getWord(%message, %i);
+        for(%j=0; %j<getwordCount($Pref::Server::ETardList); %j++) if(%word $= getWord($Pref::Server::ETardList,%j)) 
+        %etardcheck = true;
+    }    
 
-    // Return normal by default
-    return "" TAB %type TAB %message;
+    //conditional check
+    if(%etardcheck || (%message $= %lastMessageSent && !%client.isAdmin) || %message $= "")
+    {
+        if(%etardcheck) messageClient(%client, '', "This is a civilized game. Please use full words.");
+        else if(%message $= %lastMessageSent && !%client.isAdmin) messageClient(%client, '', "Do not spam.");        
+        return false;
+    }
+    
+    return %message;
 }
 
-// Helper function to display and schedule removal of shape name
 function ChatMod_ShowShapeName(%player, %message, %messageType) 
 {
-    // Set distance based on message type
-    %distance = (%messageType $= "whisper") ? 5 : ((%messageType $= "shout") ? 20 : 10);
+    if (!isObject(%player)) return;
+
+    // The distance of the shape name depends on the type of message, whisper is 10, shout is 30, normal is 20
+    %distance = (%messageType $= "whisper") ? 10 : ((%messageType $= "shout") ? 30 : 20);
 
     %player.setShapeNameDistance(%distance);
+    %player.setShapeNameColor("1 1 1");
     %player.setShapeName(%message, "8564862");
 
+    // Cancel any existing schedule for the shape name, schedule the shape name to be removed after 5 seconds
     cancel(%player.shapeNameSchedule);
     %player.shapeNameSchedule = %player.schedule(5000, "setShapeName", "", "8564862");
 }
 
+function ChatMod_GetMessagePrefix(%message) 
+{    
+    // Handle invalid or short messages
+    %messageEdit = getSubStr(%message, 1, strLen(%message) - 1);
+
+    switch$(getSubStr(%message, 0, 1)) 
+    {
+        case "&": return "\c6[\c4GLOBAL\c6] " TAB "global" TAB %messageEdit;
+        case ".": return "\c3(whisper) " TAB "whisper" TAB %messageEdit;
+        case "!": return "\c3(SHOUT) " TAB "shout" TAB %messageEdit;
+        default: return "" TAB "" TAB %message;
+    }
+}
+
 function ChatMod_LocalChat(%client, %message) 
 {
-    if (!isObject(%client.player)) return;
+    if (!isObject(%client)) return;
 
-    // Get message type, prefix, and updated message
+    // Process message to determine type and content
     %result = ChatMod_GetMessagePrefix(%message);
-    %namePrefix = getField(%result, 0); // Extract prefix
-    %messageType = getField(%result, 1); // Extract message type
-    %message = getField(%result, 2); // Extract the updated message without the leading character
+    %namePrefix = getField(%result, 0);
+    %messageType = getField(%result, 1);
+    %message = getField(%result, 2);
 
-    // If the message is invalid, stop processing
-    if (%messageType $= "" || %message $= "") {
-        return; // Don't send empty or invalid messages
+    // Global chat handling
+    if (%messageType $= "global") 
+    {
+        messageAll('', %namePrefix @ "\c3" @ %client.name @ "\c6: " @ %message);
+        return;
     }
-    
-    // Calculate chat distance based on type
-    %chatDistance = $Pref::Server::ChatMod::lChatDistance;
-    if (%messageType $= "whisper")
-        %chatDistance *= $Pref::Server::ChatMod::lChatWhisperMultiplier;
-    else if (%messageType $= "shout")
-        %chatDistance *= $Pref::Server::ChatMod::lChatShoutMultiplier;
 
-    // Handle skinwalker replication
-    %sourceClient = (isObject(%client.player.victimReplicatedClient)) ? 
-        %client.player.victimReplicatedClient : %client;
-    
-    // Show message above player's head with appropriate distance
+    // Configure chat distance based on message type
+    %chatDistance = $Pref::Server::ChatMod::lChatDistance;
+    if (%messageType $= "whisper") %chatDistance *= $Pref::Server::ChatMod::lChatWhisperMultiplier;
+    else if (%messageType $= "shout") %chatDistance *= $Pref::Server::ChatMod::lChatShoutMultiplier;    
+
+    // Show the chat bubble or notification above the player
     ChatMod_ShowShapeName(%client.player, %message, %messageType);
-    
-    // Send messages to clients in range
+
+    // Send messages to nearby players
     for (%i = 0; %i < ClientGroup.getCount(); %i++) 
     {
-        %targetClient = ClientGroup.getObject(%i);
-        if (!isObject(%targetClient)) 
-            continue;
+        if (!isObject(%targetClient = ClientGroup.getObject(%i))) continue;
+
+        // If the target client is dead, send either a dead player message or a normal message depending on player status
+        if (!isObject(%targetClient.player)) 
+        {
+            %prefix = isObject(%client.player) ? %client.clanPrefix : "\c7[DEAD]";
+            chatMessageClientRP(%targetClient, %prefix, %namePrefix @ %client.name @ %client.clanSuffix, "", %message);
+        }
         
-        if (isObject(%targetClient.player)) 
+        // If the target client and player client are alive, check distance before sending a message
+        else if (isObject(%client.player) && isObject(%targetClient.player))
         {
             %playerDistance = vectorDist(%client.player.getTransform(), %targetClient.player.getTransform());
-            if (%playerDistance >= %chatDistance)
-                continue;
-                
-            // Calculate message size if enabled
-            if ($Pref::Server::ChatMod::lChatSizeModEnabled) 
-            {
-                %sizeDiff = $Pref::Server::ChatMod::lChatSizeMax - $Pref::Server::ChatMod::lChatSizeMin;
-                %size = mFloor(((%chatDistance - %playerDistance) / %chatDistance * %sizeDiff)) + 
-                    $Pref::Server::ChatMod::lChatSizeMin;
-                    
-                chatMessageClientRPSize(%targetClient, %sourceClient.clanPrefix, 
-                    %namePrefix @ %sourceClient.name @ %nameSuffix, 
-                    %sourceClient.clanSuffix, %message, %size);
-            } else {
-                chatMessageClientRP(%targetClient, %sourceClient.clanPrefix, 
-                    %namePrefix @ %sourceClient.name @ %nameSuffix, 
-                    %sourceClient.clanSuffix, %message);
-            }
-        } else {
-            // Simple message for clients without players
-            chatMessageClientRP(%targetClient, %sourceClient.clanPrefix, 
-                %namePrefix @ %sourceClient.name @ %nameSuffix, 
-                %sourceClient.clanSuffix, %message);
+            if (%playerDistance >= %chatDistance) continue;
+
+            chatMessageClientRP(%targetClient, %client.clanPrefix,%namePrefix @ %client.name @ %client.clanSuffix, "", %message);
         }
     }
 }
 
-function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
+function ChatMod_RadioMessage(%client, %message)
 {
-	//If were the skinwalker and we have a replicated victim
+	//If the player is a skinwalker, use the victim replicated client instead for impersonation
 	if(isObject(%player = %client.player) && isObject(%player.victimreplicatedclient)) %tempclient = %player.victimreplicatedclient;
 	else %tempclient = %client;
+    
+    //If the player doesn't have a radio ID, generate one
+    if(!%client.player.radioID) %client.player.radioID = getRandom(100, 10000);
 
-	if(getSubStr(%message, 0, 1) $= ".") %message = strreplace(%message, getSubStr(%message, 0, 1), "");	
-
-	%pre = "\c4[Radio]";	
-
-	if(!%client.player.radioID) %client.player.radioID = getRandom(100, 10000);
-	%name = getSubStr(%tempclient.name, 0, 1) @ "." @ %client.player.radioID;	
+	%pre = "\c4[Radio] ";	
+	%name = getSubStr(%tempclient.name, 0, 1) @ "." @ %client.player.radioID;
 	%message = "\c4" @ %message;
 
 	for(%i = 0; %i < clientGroup.getCount(); %i++)
-	{
-		if(isObject(%target = clientGroup.getObject(%i)) && isObject(%target.player))
-		if(%target.player.radioEquipped) 
-		{
-			if(%isTeamMessage && isObject(Slayer) && %client.getTeam() $= %target.getTeam())
-			{
-				chatMessageClientRP(%target,%pre,%name,"",%message);
-				%target.player.playaudio(3,"radio_message_sound");
-			}
-			else
-			{
-				chatMessageClientRP(%target,%pre,%name,"",%message);
-				%target.player.playaudio(3,"radio_message_sound");
-			}
-		}
-	}
+    if(isObject(%target = clientGroup.getObject(%i)) && isObject(%target.player) && %target.player.radioEquipped)
+    {
+        %target.player.playaudio(3,"radio_message_sound");
+        chatMessageClientRP(%target,%pre,%name,"",%message);		
+    }
 }

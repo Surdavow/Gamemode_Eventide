@@ -203,6 +203,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 function PlayerAngler::onPeggFootstep(%this,%obj)
 {
 	serverplay3d("angler_walking" @ getRandom(1,8) @ "_sound", %obj.getHackPosition());
+	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
 
 function PlayerAngler::onDisabled(%this, %obj, %state) //makes bots have death sound and animation and runs the required bot hole command

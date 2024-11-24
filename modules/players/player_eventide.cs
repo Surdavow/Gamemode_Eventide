@@ -268,7 +268,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 
 								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
 								%hit.playThread(3,"jump");
-								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getForwardVector(),"750"),"0 0 250"));
+								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getForwardVector(),"1250"),"0 0 300"));
 							}												
 						}
 					
