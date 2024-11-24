@@ -1,0 +1,284 @@
+//
+// Support functions.
+//
+
+function mQuadrant(%angle)
+{
+    if(%angle < 0)
+    {
+        //Convert negative values to positive, and normalize.
+        %angle = (%angle % 360) + 360;
+    }
+    else
+    {
+        //Normalize the angle to be between 0 and 360 degrees.
+        %angle = %angle % 360;
+    }
+    
+    if(%angle < 90)
+    {
+        return 0; //First quadrant (0° - 90°).
+    }
+    else if(%angle < 180)
+    {
+        return 1; //Second quadrant (90° - 180°).
+    }
+    else if (%angle < 270)
+    {
+        return 2; //Third quadrant (180° - 270°).
+    }
+    else
+    {
+        return 3; //Fourth quadrant (270° - 360°).
+    }
+}
+
+//
+// Creating AudioEmitters/playing a distant sound on a player.
+//
+
+function Player::playDistantSound(%player, %audioProfile)
+{
+    %audioEmitter = new AudioEmitter()
+    {
+        position = %player.getPosition();
+        profile = %audioProfile;
+        useProfileDescription = false;
+		volume = 1;
+		ReferenceDistance = "9e9";
+		maxDistance = "9e9";
+		isLooping = 0;
+    };
+    MissionCleanup.add(%audioEmitter);
+
+    adjustObjectScopeToAll(%audioEmitter, false, %player.client); //Make sure only the target player hears it.
+
+    //Get the millisecond length of the sound file, then divide it against 360 to make that the time needed to complete a rotation around the player.
+    %soundLength = alxGetWaveLen(%audioEmitter.profile.fileName);
+    %rotationSpeed = 360 / (%soundLength / 1000);
+    %tickRate = 50;
+
+    %distantSoundDataObject = new ScriptObject()
+    {
+        radius = "9e6"; //Impossible to run past an AudioEmitter this far away. Could be further, but higher values are bug-prone.
+        rotationSpeed = %rotationSpeed;
+        lastQuadrant = 0;
+        player = %player;
+        audioEmitter = %audioEmitter;
+        soundLength = %soundLength;
+    };
+    MissionCleanup.add(%distantSoundDataObject);
+    
+    for(%i = %tickRate; %i <= %soundLength; %i += %tickRate)
+    {
+        %player.schedule(%i, "_distantSoundTick", %distantSoundDataObject);
+    }
+    //Delete this stuff once we're done with them.
+    scheduleNoQuota((getSimTime() + %soundLength), %dsdo.audioEmitter, "delete");
+    scheduleNoQuota((getSimTime() + %soundLength), %dsdo, "delete");
+
+    return %distantSoundDataObject;
+}
+
+function Player::_distantSoundTick(%player, %dsdo)
+{
+    //If there's no data, we can't do this stuff. If the player is deleted, this function is stopped automatically.
+    if(!isObject(%dsdo) || !isObject(%dsdo.audioEmitter))
+    {
+        return;
+    }
+
+    //Use a sine wave to make the AudioEmitter rotate around the player.
+    %angle = getSimTime() * %dsdo.rotationSpeed;
+
+    //Simulate an echo by making the AudioEmitter skip every other quadrant.
+    %quadrant = mQuadrant(%angle);
+    if(%quadrant != %dsdo.lastQuadrant)
+    {
+        if((%dsdo.lastQuadrant == 0 && %quadrant == 1) || (%dsdo.lastQuadrant == 2 && %quadrant == 3))
+        {
+            %angle += 90; //Rotate the AudioEmitter 90 degrees, so that it skips a quadrant.
+        }
+        %dsdo.lastQuadrant = %quadrant;
+    }
+
+    //Calculate the new position based on the sine and cosine of the sine wave.
+    %xOffset = (%dsdo.radius * mSin(%angle));
+    %yOffset = (%dsdo.radius * mCos(%angle));
+
+    %newPosition = VectorAdd(%player.getHackPosition(), %xOffset SPC %yOffset SPC "0");
+    %dsdo.audioEmitter.setTransform(%newPosition);
+}
+
+//
+// Deciding when distant sound effects should play.
+//
+
+function killerPlayDistantSound(%player, %category, %audioProfile, %cooldownAmount)
+{
+    %killer = getCurrentKiller();
+    if(!isObject(%killer))
+    {
+        //No killer, no use.
+        return;
+    }
+
+    %minimumDistance = 100; //The loudest sounds in Eventide (AudioDefault3d) reach 100 units. So, anything lower than this is not distant.
+    if(VectorDist(%player.getPosition(), %killer.getPosition()) < %minimumDistance)
+    {
+        //Sound source isn't far enough away.
+        return;
+    }
+
+    %cooldown = %killer.distantSoundData[%player.getID(), %category, "cooldown"];
+    if(%cooldown > 0 && getSimTime() < %cooldown)
+    {
+        //The sound is under cooldown, don't play it.
+        return;
+    }
+
+    //Check if the sound is already playing, and stop it first.
+    %previousDsdo = %killer.distantSoundData[%player.getID(), %category];
+    if(isObject(%previousDsdo))
+    {
+        %previousDsdo.audioEmitter.delete();
+        %previousDsdo.delete();
+    }
+
+    //Check if a cooldown amount was provided, and if not, set it to 0.
+    if(%cooldownAmount $= "" || %cooldownAmount < 0)
+    {
+        %cooldownAmount = 0;
+    }
+
+    //Finally, play the sound.
+    %dsdo = %killer.playDistantSound(%audioProfile);
+    %killer.distantSoundData[%player.getID(), %category] = %dsdo;
+    %killer.distantSoundData[%player.getID(), %category, "cooldown"] = (getSimTime() + %dsdo.soundLength + %cooldownAmount); 
+}
+
+package Eventide_distantSounds
+{
+    //
+    // Distant footsteps sound.
+    //
+    function Armor::onPeggFootstep(%this, %obj)
+    {
+        parent::onPeggFootstep(%this, %obj);
+
+        %killer = getCurrentKiller();
+
+        //Decide what sound to play.
+        //TODO: This is hardcoded and must be changed every time you add a sound.
+        //It would be cool to create another system like the face system, where this is automated.
+        %distantSound = "";
+        switch$(%obj.surface)
+        {
+            case "metal":
+                %distantSound = "footsteps_metal" @ getRandom(1, 3) @ "_sound";
+            case "sand":
+                %distantSound = "footsteps_dirt" @ getRandom(1, 4) @ "_sound";
+            case "dirt":
+                %distantSound = "footsteps_dirt" @ getRandom(1, 4) @ "_sound";
+            case "fabric":
+                %distantSound = "footsteps_grass" @ getRandom(1, 4) @ "_sound";
+            case "grass":
+                %distantSound = "footsteps_grass" @ getRandom(1, 4) @ "_sound";
+            case "basic":
+                %distantSound = "footsteps_pavement" @ getRandom(1, 3) @ "_sound";
+            case "stone":
+                %distantSound = "footsteps_pavement" @ getRandom(1, 3) @ "_sound";
+            case "wood":
+                %distantSound = "footsteps_wood" @ getRandom(1, 3) @ "_sound";
+            case "under water":
+                %distantSound = "water_splash" @ getRandom(1, 4) @ "_sound";
+            case "water":
+                %distantSound = "water_splash" @ getRandom(1, 4) @ "_sound";
+            case "snow":
+                %distantSound = "footsteps_grass" @ getRandom(1, 4) @ "_sound";
+            default:
+        }
+
+        killerPlayDistantSound(%obj, %obj.surface, %distantSound, 15000);
+    }
+
+    //
+    // Distant talking sounds.
+    //
+
+    function serverCmdMessageSent(%client, %message)
+    {
+        parent::serverCmdMessageSent(%client, %message);
+        %killer = getCurrentKiller();
+        %player = %client.player;
+        if(isObject(%player) && isObject(%killer) && %player != %killer)
+        {
+            %distantSound = (%client.chest ? "female" : "male") @ "_talk" @ getRandom(1, 8);
+            killerPlayDistantSound(%player, "voiceTalking", %distantSound, 5000);
+        }
+    }
+
+    function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
+    {
+        parent::ChatMod_RadioMessage(%client, %message, %isTeamMessage);
+        %killer = getCurrentKiller();
+        %player = %client.player;
+        if(isObject(%player) && isObject(%killer) && %player != %killer)
+        {
+            %distantSound = "radio_talk" @ getRandom(1, 16);
+            killerPlayDistantSound(%player, "radioTalking", %distantSound, 5000);
+        }
+    }
+
+    //
+    // Distant item gathering sounds.
+    //
+
+    function ItemData::onPickup(%this, %obj, %user, %amount)
+    {
+        parent::onPickup(%this, %obj, %user, %amount);
+        if(%obj.canPickup && miniGameCanUse(%user, %obj))
+        {
+            %freeslot = false;
+            for (%i = 0; %i < %user.getDataBlock().maxTools; %i++)
+            {
+                if(%user.tool[%i] == 0)
+                {
+                    %freeslot = true;
+                    break;
+                }
+            }
+
+            if(%freeslot)
+            {
+                %distantSound = "gather" @ getRandom(1, 3);
+                killerPlayDistantSound(%user, "gathering", %distantSound, 5000);
+            }
+        }
+    }
+
+    //
+    // Distant healing sounds.
+    //
+
+    function ZombieMedpackImage::onUse(%this, %obj, %slot)
+    {
+        parent::onUse(%this, %obj, %slot);
+        if(%obj.getDamageLevel() > 1.0)
+        {
+            %distantSound = "bandage" @ getRandom(1, 3);
+            killerPlayDistantSound(%obj, "bandaging", %distantSound, 5000);
+        }
+    }
+
+    function GauzeImage::onUse(%this, %obj, %slot)
+    {
+        parent::onUse(%this, %obj, %slot);
+        if(%obj.getDamageLevel() > 1.0)
+        {
+            %distantSound = "bandage" @ getRandom(1, 3);
+            killerPlayDistantSound(%obj, "bandaging", %distantSound, 5000);
+        }
+    }
+};
+activatePackage(Eventide_distantSounds);
