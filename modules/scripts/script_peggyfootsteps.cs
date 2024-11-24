@@ -504,6 +504,7 @@ function checkPlayback(%obj)
 		}
 	}
 	if (%obj.isSwimming) %surface = "water";//splashing in the water	
+	%obj.surface = %surface; //Robb's bugfix.
 	return PeggFootsteps_getSound(%surface, %speed);
 }
 
@@ -686,7 +687,7 @@ function PeggFootsteps(%obj, %lastVert)
 
 function Armor::onPeggFootstep(%this,%obj)
 {
-	
+
 }
 
 registerOutputEvent("fxDTSBrick","setFootstep","List Clear -1 Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9");

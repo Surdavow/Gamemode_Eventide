@@ -82,6 +82,10 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 	%obj.setScale("1.05 1.05 1.05");
 	%obj.mountImage("renownedeyesimage",2);
 	KillerSpawnMessage(%obj);
+
+	//Stuff for the distant sound system.
+	$Eventide_currentKiller = %obj;
+	%obj.distantSoundData['initialized'] = true;
 }
 
 function PlayerRenowned::bottomprintgui(%this,%obj,%client)

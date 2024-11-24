@@ -1,3 +1,8 @@
+function getCurrentKiller()
+{
+	return $Eventide_currentKiller;
+}
+
 function KillerSpawnMessage(%obj)
 {
 	if(!isObject(%obj) || !isObject(%minigame = getMiniGameFromObject(%obj)) || %obj.firstMessageSpawn) return;
