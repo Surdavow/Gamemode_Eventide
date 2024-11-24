@@ -56,7 +56,8 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	PainSound = "skinwalker_pain_sound";
 	DeathSound = "skinwalker_death_sound";
 	JumpSound = "";
-	uiName = "Skinwalker Player";	
+	uiName = "Skinwalker Player";
+	jumpForce = 0;
 	
 	rechargeRate = 0.375;	
 	maxDamage = 9999;
