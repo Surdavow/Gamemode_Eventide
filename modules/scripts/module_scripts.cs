@@ -1,4 +1,6 @@
 exec("./script_chatsystem.cs");
+exec("./script_facesystem.cs");
+parseFacePacks("Add-Ons/Gamemode_Eventide/modules/players/faces");
 exec("./script_commands.cs");
 exec("./script_itemparticle.cs");
 exec("./script_itemspawning.cs");
@@ -15,6 +17,7 @@ exec("./support_datainstance.cs");
 exec("./support_extraresources.cs");
 exec("./support_items.cs");
 exec("./support_main.cs");
+exec("./support_blood.cs");
 exec("./support_minigame.cs");
 exec("./support_player.cs");
 exec("./support_statuseffect.cs");

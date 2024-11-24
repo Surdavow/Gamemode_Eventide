@@ -78,84 +78,115 @@ function ChatMod_processMessage(%client,%message,%lastMessageSent)
 	return %message;
 }
 
-function ChatMod_LocalChat(%client, %message)
+// Helper function to check message type and return both type and prefix
+function ChatMod_GetMessagePrefix(%message) 
 {
-	//Check if were yelling or whispering
-	if(getSubStr(%message, 0, 1) $= ".") 
-	{		
-		%message = strreplace(%message, getSubStr(%message, 0, 1), "");
-		%nameprefix = "\c3(whisper) ";
-		%isWhisper = true;
-	}
-	else if(((strstr(%message, "!") >= 0)) || (strCmp(%message, strUpr(%message)) == 0 && strlen(stripChars(%message, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")) != strlen(%message)))
-	{
-		%nameprefix = "\c3(SHOUT) ";
-		%isYell = true;
-	}
+    // Default to normal message type
+    %type = "normal";
 
-	//If were the skinwalker and we have a replicated victim
-	if(isObject(%player = %client.player) && isObject(%player.victimreplicatedclient)) %tempclient = %player.victimreplicatedclient;
-	else %tempclient = %client;	
+    // Check for whisper (if the first character is '.')
+    if (getSubStr(%message, 0, 1) $= ".") {
+        // Validate that there are characters after the '.'
+        if (strLen(%message) <= 1) {
+            return "" TAB "" TAB ""; // Invalid message
+        }
+        %type = "whisper";
+        %message = getSubStr(%message, 1, strLen(%message) - 1); // Remove the first character (.)
+        return "\c3(whisper) " TAB %type TAB %message;
+    }
+    
+    // Check for shouting (if the first character is '!')
+    if (getSubStr(%message, 0, 1) $= "!") {
+        // Validate that there are characters after the '!'
+        if (strLen(%message) <= 1) {
+            return "" TAB "" TAB ""; // Invalid message
+        }
+        %type = "shout";
+        %message = getSubStr(%message, 1, strLen(%message) - 1); // Remove the first character (!)
+        return "\c3(SHOUT) " TAB %type TAB %message;
+    }
 
-	for(%i=0; %i<clientGroup.getCount(); %i++)
-	{
-		if(isObject(%targetClient=clientGroup.getObject(%i)))
-		{
-			if(isObject(%targetClient.player))
-			{
-				%playerdistance = vectorDist(%client.player.getTransform(),%targetClient.player.getTransform());
-				%localchatdistance = (%isWhisper ? ($Pref::Server::ChatMod::lChatDistance*$Pref::Server::ChatMod::lchatWhisperMultiplier) : %localchatdistance) || (%isYell ? ($Pref::Server::ChatMod::lChatDistance*$Pref::Server::ChatMod::lchatShoutMultiplier) : $Pref::Server::ChatMod::lchatDistance);
-				%diff = $Pref::Server::ChatMod::lchatSizeMax - $Pref::Server::ChatMod::lchatSizeMin;
-				%size = mFloor(((%localchatdistance-%playerdistance) / %localchatdistance * %diff)) + $Pref::Server::ChatMod::lchatSizeMin;			
-
-				if(%playerdistance < %localchatdistance)
-				if(!$Pref::Server::ChatMod::lchatSizeModEnabled) chatMessageClientRP(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message);
-				else chatMessageClientRPSize(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message, %size);
-			}
-			else chatMessageClientRP(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message);
-		}
-	}
+    // Return normal by default
+    return "" TAB %type TAB %message;
 }
 
-function ChatMod_TeamLocalChat(%client, %message)
+// Helper function to display and schedule removal of shape name
+function ChatMod_ShowShapeName(%player, %message, %messageType) 
 {
-	//Check if were yelling or whispering
-	if(getSubStr(%message, 0, 1) $= ".") 
-	{		
-		%message = strreplace(%message, getSubStr(%message, 0, 1), "");
-		%nameprefix = "\c3(whisper) ";
-		%isWhisper = true;
-	}
-	else if(((strstr(%message, "!") >= 0)) || (strCmp(%message, strUpr(%message)) == 0 && strlen(stripChars(%message, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")) != strlen(%message)))
-	{
-		%nameprefix = "\c3(SHOUT) ";
-		%isYell = true;
-	}
+    // Set distance based on message type
+    %distance = (%messageType $= "whisper") ? 5 : ((%messageType $= "shout") ? 20 : 10);
 
-	//If were the skinwalker and we have a replicated victim
-	if(isObject(%player = %client.player) && isObject(%player.victimreplicatedclient)) %tempclient = %player.victimreplicatedclient;
-	else %tempclient = %client;
+    %player.setShapeNameDistance(%distance);
+    %player.setShapeName(%message, "8564862");
 
-	for(%i=0; %i<clientGroup.getCount(); %i++)
-	if(isObject(%targetClient=clientGroup.getObject(%i)) && isObject(%targetClient.player) && isObject(%targetClient.minigame) && %targetClient.minigame == %client.minigame)
-	{
-		%playerdistance = vectorDist(%client.player.getTransform(),%targetClient.player.getTransform());
-		%localchatdistance = (%isWhisper ? ($Pref::Server::ChatMod::lChatDistance*$Pref::Server::ChatMod::lchatWhisperMultiplier) : %localchatdistance) || (%isYell ? ($Pref::Server::ChatMod::lChatDistance*$Pref::Server::ChatMod::lchatShoutMultiplier) : $Pref::Server::ChatMod::lchatDistance);
-		%diff = $Pref::Server::ChatMod::lchatSizeMax - $Pref::Server::ChatMod::lchatSizeMin;
-		%size = mFloor(((%localchatdistance-%playerdistance) / %localchatdistance * %diff)) + $Pref::Server::ChatMod::lchatSizeMin;		
+    cancel(%player.shapeNameSchedule);
+    %player.shapeNameSchedule = %player.schedule(5000, "setShapeName", "", "8564862");
+}
 
-		if(%playerdistance < %localchatdistance)
-		{
-			if(isObject(Slayer))
-			{			
-				if(%client.getTeam() == %targetClient.getTeam())
-				if(!$Pref::Server::ChatMod::lchatSizeModEnabled) chatMessageClientRP(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message);
-				else chatMessageClientRPSize(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message, %size);				
-			}
-			else if(!$Pref::Server::ChatMod::lchatSizeModEnabled) chatMessageClientRP(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message);
-			else chatMessageClientRPSize(%targetClient, %tempclient.clanPrefix, %namePrefix @ %tempclient.name @ %nameSuffix, %tempclient.clanSuffix, %message, %size);			
-		}
-	}
+function ChatMod_LocalChat(%client, %message) 
+{
+    if (!isObject(%client.player)) return;
+
+    // Get message type, prefix, and updated message
+    %result = ChatMod_GetMessagePrefix(%message);
+    %namePrefix = getField(%result, 0); // Extract prefix
+    %messageType = getField(%result, 1); // Extract message type
+    %message = getField(%result, 2); // Extract the updated message without the leading character
+
+    // If the message is invalid, stop processing
+    if (%messageType $= "" || %message $= "") {
+        return; // Don't send empty or invalid messages
+    }
+    
+    // Calculate chat distance based on type
+    %chatDistance = $Pref::Server::ChatMod::lChatDistance;
+    if (%messageType $= "whisper")
+        %chatDistance *= $Pref::Server::ChatMod::lChatWhisperMultiplier;
+    else if (%messageType $= "shout")
+        %chatDistance *= $Pref::Server::ChatMod::lChatShoutMultiplier;
+
+    // Handle skinwalker replication
+    %sourceClient = (isObject(%client.player.victimReplicatedClient)) ? 
+        %client.player.victimReplicatedClient : %client;
+    
+    // Show message above player's head with appropriate distance
+    ChatMod_ShowShapeName(%client.player, %message, %messageType);
+    
+    // Send messages to clients in range
+    for (%i = 0; %i < ClientGroup.getCount(); %i++) 
+    {
+        %targetClient = ClientGroup.getObject(%i);
+        if (!isObject(%targetClient)) 
+            continue;
+        
+        if (isObject(%targetClient.player)) 
+        {
+            %playerDistance = vectorDist(%client.player.getTransform(), %targetClient.player.getTransform());
+            if (%playerDistance >= %chatDistance)
+                continue;
+                
+            // Calculate message size if enabled
+            if ($Pref::Server::ChatMod::lChatSizeModEnabled) 
+            {
+                %sizeDiff = $Pref::Server::ChatMod::lChatSizeMax - $Pref::Server::ChatMod::lChatSizeMin;
+                %size = mFloor(((%chatDistance - %playerDistance) / %chatDistance * %sizeDiff)) + 
+                    $Pref::Server::ChatMod::lChatSizeMin;
+                    
+                chatMessageClientRPSize(%targetClient, %sourceClient.clanPrefix, 
+                    %namePrefix @ %sourceClient.name @ %nameSuffix, 
+                    %sourceClient.clanSuffix, %message, %size);
+            } else {
+                chatMessageClientRP(%targetClient, %sourceClient.clanPrefix, 
+                    %namePrefix @ %sourceClient.name @ %nameSuffix, 
+                    %sourceClient.clanSuffix, %message);
+            }
+        } else {
+            // Simple message for clients without players
+            chatMessageClientRP(%targetClient, %sourceClient.clanPrefix, 
+                %namePrefix @ %sourceClient.name @ %nameSuffix, 
+                %sourceClient.clanSuffix, %message);
+        }
+    }
 }
 
 function ChatMod_RadioMessage(%client, %message, %isTeamMessage)

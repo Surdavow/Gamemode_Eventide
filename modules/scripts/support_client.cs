@@ -1,6 +1,5 @@
 package Eventide_GameConnection
 {
-
 	function gameConnection::spawnPlayer(%client)
 	{
 		Parent::spawnPlayer(%client);
@@ -30,6 +29,7 @@ package Eventide_GameConnection
 	function GameConnection::setControlObject(%this,%obj)
 	{
 		Parent::setControlObject(%this,%obj);
+		
 		if(%obj == %this.player && %obj.getDatablock().maxTools != %this.lastMaxTools)
 		{
 			%this.lastMaxTools = %obj.getDatablock().maxTools;
@@ -50,7 +50,7 @@ package Eventide_GameConnection
 		parent::applyBodyParts(%client);
 
 		// Call the EventideAppearance function if the player is an Eventide player
-		if(isObject(%player = %client.player) && fileName(%player.getDataBlock().shapeFile) $= "Eventideplayer.dts") 
+		if(isObject(%player = %client.player) && %player.getDataBlock().isEventideModel) 
 		%player.getDataBlock().EventideAppearance(%player,%client);
 	}
 
@@ -76,9 +76,12 @@ package Eventide_GameConnection
 			%client.player.playThread(3,talk);
 			%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
 
-			if(%client.player.radioEquipped) ChatMod_RadioMessage(%client, %message, true);
-			if(isObject(%client.minigame)) ChatMod_TeamLocalChat(%client, %message);
-			else if(!%client.player.radioEquipped) messageClient(%client,'',"\c5You must be in a minigame to team chat.");
+			if(%client.player.radioEquipped) 
+			{
+				ChatMod_RadioMessage(%client, %message, true);
+				ChatMod_LocalChat(%client, %message);
+			}
+			else messageClient(%client,'',"\c5You use a radio to use team chat.");		
 		}
 		else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
 		%client.lastMessageSent = %client;			
@@ -158,7 +161,6 @@ package Eventide_GameConnection
 		%client.lastMessageSent = %message;		
 		echo(%client.name @ ": " @ getSubStr(%message, 0, strlen(%message)));
 	}
-
 
 	function serverCmdLight(%client)
 	{

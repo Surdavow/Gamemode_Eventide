@@ -1,44 +1,13 @@
 eval("chainsaw_sawing_sound.description = \"AudioDefaultLooping3D\";");
-
-datablock ExplosionData(chainsawExplosion)
-{
-	lifetimeMS = 400;
-	emitter[0] = hammerExplosionEmitter;
-	emitter[1] = hammerSparkEmitter;
-	faceViewer = 1;
-	explosionScale = "1 1 1";
-	shakeCamera = 1;
-	camShakeFreq = "20.0 22.0 20.0";
-	camShakeAmp = "0.50 0.50 0.50";
-	camShakeDuration = 0.5;
-	camShakeRadius = 0.1;
-	lightStartRadius = 2;
-	lightEndRadius = 1;
-	lightStartColor = "0.6 0.6 0.0";
-	lightEndColor = "0 0 0";
-};
 AddDamageType("HammerDirect", '<bitmap:base/client/ui/ci/hammer> %1', '%2 <bitmap:base/client/ui/ci/hammer> %1', 0, 1);
-datablock ProjectileData(chainsawProjectile)
+
+datablock ExplosionData(chainsawExplosion : hammerExplosion)
 {
-	directDamage = 10;
-	radiusDamage = 0;
-	damageRadius = 0;
+	camShakeRadius = 0.1;
+};
+datablock ProjectileData(chainsawProjectile : hammerProjectile)
+{
 	Explosion = chainsawExplosion;
-	DirectDamageType = $DamageType::HammerDirect;
-	RadiusDamageType = $DamageType::HammerDirect;
-	muzzleVelocity = 50;
-	velInheritFactor = 1;
-	armingDelay = 0;
-	lifetime = 0;
-	fadeDelay = 70;
-	bounceElasticity = 0;
-	bounceFriction = 0;
-	isBallistic = 0;
-	gravityMod = 0;
-	explodeOnDeath = 1;
-	hasLight = 0;
-	lightRadius = 3;
-	lightColor = "0 0 0.5";
 };
 
 datablock ParticleData(ChainsawRevParticle)

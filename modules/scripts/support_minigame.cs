@@ -29,9 +29,9 @@ package Eventide_Minigame
 			%minigame.chatMsgAll("\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minreset);
 		}
 
-		Parent::Reset(%minigame, %client);		
+		Parent::Reset(%minigame, %client);
 
-		
+		if (isObject(DecalGroup)) DecalGroup.deleteAll();
 		
 		for (%i=0;%i<%minigame.numMembers;%i++)
 		if (isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
