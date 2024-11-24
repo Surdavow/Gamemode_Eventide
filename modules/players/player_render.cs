@@ -80,7 +80,7 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 						%obj.setEnergyLevel(%obj.getEnergyLevel()-100);
 						%hit.mountImage("RenderTurnImage",3);
 						%hit.playaudio(0,"render_turn_sound");
-						%hit.setTempSpeed(1/3);
+						%hit.setTempSpeed(1/8);
 						loopTurn(%hit, getRandom(0, 1) * 2 - 1);
 					}
 				}
@@ -92,6 +92,9 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 					{
 						%this.disappear(%obj,1);
 						%obj.setEnergylevel(0);
+
+						if(isObject(%obj.lshoe)) %obj.lshoe.hidenode("ALL");
+						if(isObject(%obj.rshoe)) %obj.rshoe.hidenode("ALL");
 					}
 				}
 				else if(%obj.getEnergyLevel() == %this.maxEnergy)
@@ -104,25 +107,25 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 	}	
 }
 
-function loopTurn(%pl, %direction, %currTotal)
+function loopTurn(%obj, %direction, %currTotal)
 {
-  	cancel(%pl.loopTurnSchedule);	
+  	cancel(%obj.loopTurnSchedule);	
   	%rotationChange = 0.04;
   	%currTotal += %rotationChange;
-  	%transform = %pl.getTransform();
+  	%transform = %obj.getTransform();
   	%currZDir = getWord(%transform, 5) >= 0 ? 1.0 : -1.0;
   	%transform = setWord(%transform, 6, getWord(%transform, 6) + %direction * %currZDir * %rotationChange);
-  	%pl.setTransform(%transform);
+  	%obj.setTransform(%transform);
 
-  	if (%currTotal > $pi)
+  	if (%currTotal >= $pi)
   	{
-		%hit.playaudio(0,"render_turnComplete_sound");
-		%hit.unMountImage(3);
-		%hit.setTempSpeed();
+		%obj.playaudio(0,"render_turnComplete_sound");
+		%obj.unMountImage(3);
+		%obj.setTempSpeed();
 		return;
   	}
 
-  	%pl.loopTurnSchedule = schedule(50, %pl, loopTurn, %pl, %direction, %currTotal);
+  	%obj.loopTurnSchedule = schedule(50, %obj, loopTurn, %obj, %direction, %currTotal);
 }
 
 function PlayerRender::onNewDatablock(%this,%obj)
@@ -178,7 +181,11 @@ function Player::PrepperizerEffect(%obj)
 	%obj.setArmThread(getRandom(1, 10) == 1 ? getRandom("death1" TAB "sit" TAB "crouch" TAB "standjump" TAB "talk") : "look");
 
 	// Handle light effects
-	if (isObject(%obj.light)) %obj.light.delete();
+	if (isObject(%obj.light))
+	{
+		%obj.light.delete();
+		%obj.setNodeColor("ALL", "0 0 0 1");
+	} 
 	
 	if (getRandom(1, 10) == 1)
 	{
@@ -191,6 +198,7 @@ function Player::PrepperizerEffect(%obj)
 		%obj.light.setTransform(%obj.getTransform());
 		%obj.light.attachToObject(%obj);
 		%obj.light.schedule(1000, delete);
+		%obj.setNodeColor("ALL", "0 0 0 0");
 	}
 }
 
@@ -277,6 +285,8 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 	
 	if(%alpha == 1) 
 	{
+		if(isObject(%obj.lshoe)) %obj.lshoe.unhidenode("ALL");
+		if(isObject(%obj.rshoe)) %obj.rshoe.unhidenode("ALL");
 		%obj.setTempSpeed(1);
 		%obj.isInvisible = false;
 		%obj.unMountImage(3);

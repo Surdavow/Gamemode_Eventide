@@ -1,4 +1,5 @@
-datablock TSShapeConstructor(PuppetMasterPuppetDTS) {
+datablock TSShapeConstructor(PuppetMasterPuppetDTS) 
+{
 	baseShape = "./models/puppet.dts";
 	sequence0 = "./models/default.dsq";
 };
@@ -25,7 +26,6 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 	maxForwardSpeed = 10.47;
 	maxBackwardSpeed = 5.98;
 	maxSideSpeed = 8.58;
-	//+15% Speed
 	maxDamage = 10;
 	jumpforce = 0;
 	showenergybar = false;

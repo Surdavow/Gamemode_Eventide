@@ -14,10 +14,9 @@ function itemEmitterLoop(%obj, %emitterNode)
 	{
 		// creates emitter node using either the emitter node setting, or the default GenericEmitterNode
 		%nodeData = $ItemEmitterDatablock.pointEmitterNode;
-		if (!isObject(%nodeData))
-		{
-			%nodeData = GenericEmitterNode;
-		}
+
+		if (!isObject(%nodeData)) %nodeData = GenericEmitterNode;
+		
 		%emitterNode = new ParticleEmitterNode ("")
 		{
 			dataBlock = %nodeData;

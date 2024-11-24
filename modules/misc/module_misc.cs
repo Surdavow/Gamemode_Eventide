@@ -11,3 +11,4 @@ exec("./particle_portal.cs");
 exec("./projectile_lightning.cs");
 exec("./datablocks_shire.cs");
 exec("./datablocks_knight.cs");
+exec("./projectile_footstepShake.cs");

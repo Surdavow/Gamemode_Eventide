@@ -15,6 +15,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
     for(%g = 0; %g < EventideItemSpawnSet.getCount(); %g++) if(isObject(%brick = EventideItemSpawnSet.getObject(%g)))
     {
         %brick.setItem("none");
+        
         %brick.setEmitter("none");
 
         switch$(strlwr(%brick.getname()))
@@ -94,7 +95,7 @@ function brickEventideItemSpawnData::onPlant(%data,%obj)
         new SimSet("EventideItemSpawnSet");
         missionCleanup.add(EventideItemSpawnSet);
     }
-    EventideItemSpawnSet.add(%obj);
+    else EventideItemSpawnSet.add(%obj);
 }
 
 function brickEventideItemSpawnData::onloadPlant(%data, %obj)

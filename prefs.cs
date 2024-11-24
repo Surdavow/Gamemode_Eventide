@@ -9,13 +9,10 @@ if($RTB::Hooks::ServerControl)
 	RTB_registerPref("Enable local chat scaling",	"Eventide - Chat","$Pref::Server::ChatMod::lchatSizeModEnabled",	"bool","Gamemode_Eventide","0","0","0","");
 	RTB_registerPref("Local chat maximum size",	"Eventide - Chat","$Pref::Server::ChatMod::lchatSizeMax",	"int 1 48","Gamemode_Eventide","24","0","0","Gamemode_Eventide");
 	RTB_registerPref("Local chat minimum size",	"Eventide - Chat","$Pref::server::ChatMod::lchatSizeMin",	"int 1 48","Gamemode_Eventide","12","0","0","Gamemode_Eventide");
-
 	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Gamemode_Eventide",false,false,false);
 	RTB_registerPref("After how many rounds to load next?","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Gamemode_Eventide",5,false,true);	
-
 	RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
 	RTB_registerPref("Sight Range", "Eventide - Gaze", "$Pref::Server::GazeRange", "int 0 100", "Gamemode_Eventide", 20, 0, 0);
-
 	RTB_RegisterPref("Enable Footstep SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::footstepsEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
 	RTB_RegisterPref("BrickFX custom SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::brickFXSounds::enabled", "bool", "Gamemode_Eventide", 1, 0, 0);
 	RTB_RegisterPref("Enable Landing SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::landingFX", "bool", "Gamemode_Eventide", 1, 0, 0);
@@ -61,7 +58,7 @@ if ($Pref::Server::PF::brickFXsounds::glowStep $= "") $Pref::Server::PF::brickFX
 if ($Pref::Server::PF::brickFXsounds::blinkStep $= "") $Pref::Server::PF::brickFXsounds::blinkStep = 0;
 if ($Pref::Server::PF::brickFXsounds::swirlStep $= "") $Pref::Server::PF::brickFXsounds::swirlStep = 0;
 if ($Pref::Server::PF::brickFXsounds::rainbowStep $= "") $Pref::Server::PF::brickFXsounds::rainbowStep = 0;
-if ($Pref::Server::PF::brickFXsounds::unduloStep $= "") $Pref::Server::PF::unduloStep = 8;		
+if ($Pref::Server::PF::brickFXsounds::unduloStep $= "") $Pref::Server::PF::unduloStep = 8;
 
 // Always set this to 0, don't want there to be problems when the server is initialized
 $Pref::Server::ChatMod::lchatEnabled = 0;

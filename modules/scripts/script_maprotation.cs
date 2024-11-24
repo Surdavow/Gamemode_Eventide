@@ -4,7 +4,6 @@ if (!isFile("saves/EventideMapRotation/README.txt"))
 
 	if (%file.openForWrite("saves/EventideMapRotation/README.txt"))
 	%file.writeLine("You need to place save files in this folder for the Map Rotation to be able to work!");
-
 	else error("File is not open for writing");
 	
 	%file.close();
@@ -25,8 +24,7 @@ function nextMap(%msg)
 	} 
 	else 
 	{
-
-		if($Pref::Server::MapRotation::current != 0) 
+		if($Pref::Server::MapRotation::current) 
 		messageAll('MsgUploadEnd', %msg);
 
 		%filename = $Pref::Server::MapRotation::map0;
@@ -49,8 +47,7 @@ function nextMap(%msg)
 		%client.setControlObject(%camera);
 	}
 
-	//clear all bricks 
-	// note: this function is deferred, so we'll have to set a callback to be triggered when it's done
+	//clear all of the public bricks
 	BrickGroup_230349.chaindeletecallback = "LoadLevel(\"" @ %filename @ "\");";
 	BrickGroup_230349.chaindeleteall();	
 }

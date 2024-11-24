@@ -146,6 +146,7 @@ function PlayerSkullWolf::eatVictim(%this,%obj,%victim)
 function PlayerSkullWolf::onPeggFootstep(%this,%obj)
 {
 	serverplay3d("skullwolf_walking" @ getRandom(1,6) @ "_sound", %obj.getHackPosition());
+	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
 
 function PlayerSkullWolf::onImpact(%this, %obj, %col, %vec, %force)
@@ -161,42 +162,52 @@ function PlayerSkullWolf::onImpact(%this, %obj, %col, %vec, %force)
 
 function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 {
-	if (!isObject(%obj) || isEventPending(%obj.disappearsched)) return;
+	// Early return if object is invalid or already disappearing
+	if (!isObject(%obj) || isEventPending(%obj.disappearsched)) 
+	return;
 
+	// Initial reappearance
 	if (%alpha == 0) 
 	{
 		%obj.unHideNode("ALL");
 		%obj.isInvisible = false;
-		%obj.playaudio(1,"skullwolf_uncloak_sound");
+		%obj.playaudio(1, "skullwolf_uncloak_sound");
 		%obj.setmaxforwardspeed(6.84);
 		%obj.setEnergyLevel(0);
 	}
 
-	%alpha = mClampF(%alpha+0.025,0,1);		
-	%obj.setNodeColor("ALL","0.05 0.05 0.05" SPC %alpha);
+	// Gradually increase visibility
+	%alpha = mClampF(%alpha + 0.025, 0, 1);		
+	%obj.setNodeColor("ALL", "0.05 0.05 0.05" SPC %alpha);
 	%obj.setTempSpeed(0.375);
 
+	// Fully visible state
 	if (%alpha == 1) 
 	{
 		%obj.setTempSpeed(1);
 		%obj.unHideNode("ALL");
+		
+		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++)
+		{
+			%mounted = %obj.getMountedObject(%i);
+			if(isObject(%mounted)) %mounted.unhideNode("ALL");
+		}
 
+		// Create light effect if it doesn't exist
 		if(!isObject(%obj.light))
 		{
-			%obj.light = new fxLight ("")
-			{
-				dataBlock = %obj.getDataBlock().killerlight;
-			};
+			%obj.light = new fxLight("") { dataBlock = %obj.getDataBlock().killerlight; };
 
-			MissionCleanup.add (%obj.light);
-			%obj.light.setTransform(%obj.getTransform ());
+			MissionCleanup.add(%obj.light);
+			%obj.light.setTransform(%obj.getTransform());
 			%obj.light.attachToObject(%obj);
 			%obj.light.Player = %obj;
 		}
 		return;
 	}
 
-	%obj.reappearsched = %this.schedule(20, reappear, %obj, %alpha);	
+	// Schedule next reappear step
+	%obj.reappearsched = %this.schedule(20, "reappear", %obj, %alpha);	
 }
 
 function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
@@ -208,7 +219,9 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 		case 4: if(!%obj.isInvisible)
 				{		
 					if(%obj.getEnergyLevel() == %this.maxEnergy && !isEventPending(%obj.disappearsched)) 
-					%this.disappear(%obj,1);		
+					%this.disappear(%obj,1);
+					if(isObject(%obj.lshoe)) %obj.lshoe.hidenode("ALL");
+					if(isObject(%obj.rshoe)) %obj.rshoe.hidenode("ALL");	
 				}
 				else 
 				{
