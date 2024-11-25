@@ -24,8 +24,7 @@ function nextMap(%msg)
 	} 
 	else 
 	{
-		if($Pref::Server::MapRotation::current) 
-		messageAll('MsgUploadEnd', %msg);
+		if($Pref::Server::MapRotation::current) messageAll('MsgUploadEnd', %msg);
 
 		%filename = $Pref::Server::MapRotation::map0;
 		$Pref::Server::MapRotation::current = 0;

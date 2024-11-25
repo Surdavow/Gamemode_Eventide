@@ -18,7 +18,7 @@ package Eventide_Minigame
 
     function MiniGameSO::Reset(%minigame,%client)
 	{
-		if (ClientGroup.getCount() > 0 && $Pref::Server::MapRotation::enabled)
+		if (ClientGroup.getCount() && $Pref::Server::MapRotation::enabled)
   		{
 			if ($Pref::Server::MapRotation::ResetCount >= $Pref::Server::MapRotation::minreset) 
 			{

@@ -15,7 +15,7 @@ function brickEventideEventCaller::onPlant(%this, %obj)
 }
 
 function brickEventideEventCaller::onloadPlant(%this, %obj) 
-{ 
+{
 	brickEventideEventCaller::onPlant(%this, %obj); 
 }
 
