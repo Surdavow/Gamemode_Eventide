@@ -26,7 +26,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	useCustomPainEffects = true;
 	jumpSound = "";
 	PainSound		= "";
-	DeathSound		= "";.
+	DeathSound		= "";
 	
 	renderFirstPerson = false;
 	firstpersononly = true;
