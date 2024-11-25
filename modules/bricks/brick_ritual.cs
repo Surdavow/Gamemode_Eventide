@@ -3,7 +3,7 @@ datablock fxDTSBrickData (brickEventideRitual : brick16x16fData)
 	uiName = "Ritual Shape";
 	Category = "Special";
 	Subcategory = "Eventide";
-    iconName = "Add-Ons/Gamemode_Eventide/modules/misc/icons/icon_ritual";
+    iconName = "Add-Ons/Gamemode_Eventide/modules/bricks/icons/icon_ritual";
 };
 
 datablock StaticShapeData(brickEventideRitualStaticShape)
