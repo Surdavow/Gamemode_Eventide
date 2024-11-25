@@ -247,9 +247,8 @@ function Armor::onKillerLoop(%this, %obj)
                         %victim.faceConfig.dupeFaceSlot("Neutral", "Scared");
                     }
                 }
-            }
-			// If we cannot see the victim, stop music and perform some actions
-            else
+            }		
+            else // If we cannot see the victim, stop music and perform some actions
             {
                 // Update victim's chase state
                 if (isObject(%victim.client) && %victim.TimeSinceChased + 6000 < getSimTime())
@@ -263,6 +262,7 @@ function Armor::onKillerLoop(%this, %obj)
                         %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
                         %victim.chaseLevel = 1;
                     }
+
                     cancel(%victim.client.StopChaseMusic);
                     %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
                 }
@@ -407,13 +407,12 @@ function GameConnection::StopChaseMusic(%client)
     if(!isObject(%client)) return;
     if(isObject(%client.EventidemusicEmitter)) %client.EventidemusicEmitter.delete();
 
+	// Handle survivor conditions
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
 	{
-
-		if(%client.player.tunnelvision > 0)
-		{
-			%client.player.getdataBlock().TunnelVision(%client.player,false);
-		}
+		// Reset tunnelvision
+		if(%client.player.tunnelvision > 0) 
+		%client.player.getdataBlock().TunnelVision(%client.player,false);
 
 		//Face system functionality. Make the victim return to calm facial expressions when they are no longer being chased.
 		if(isObject(%client.player.faceConfig) && %client.player.faceConfig.subCategory $= "Scared")
