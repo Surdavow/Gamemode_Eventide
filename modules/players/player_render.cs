@@ -213,7 +213,6 @@ function PlayerRender::Prepperizer(%this,%obj)
 			%this.disappear(%obj,1);
 			%obj.setEnergylevel(0);
 			cancel(%obj.Prepperizer);
-			%obj.playaudio(0,"render_death_sound");
 			return;
 		}
 

@@ -54,7 +54,7 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	killermeleehitsoundamount = 3;    
 
 	PainSound = "skinwalker_pain_sound";
-	DeathSound = "skinwalker_death_sound";
+	DeathSound = "";
 	JumpSound = "";
 	uiName = "Skinwalker Player";
 	jumpForce = 0;

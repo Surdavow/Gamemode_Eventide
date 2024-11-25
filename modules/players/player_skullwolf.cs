@@ -253,5 +253,4 @@ function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 function PlayerSkullWolf::onDisabled(%this, %obj, %state)
 {
 	Parent::onDisabled(%this, %obj, %state);
-	if(%obj.getState() $= "Dead") %obj.playaudio(0,"skullwolf_death" @ getRandom(0, 6) @ "_sound");
 }
