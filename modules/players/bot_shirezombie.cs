@@ -47,7 +47,7 @@ function ShireZombieBot::onAdd(%this,%obj)
 function ShireZombieBot::onDisabled(%this,%obj)
 {
 	Parent::onDisabled(%this,%obj);
-    %obj.playaudio(0,"zombie_death" @ getRandom(1,10) @ "_sound");
+    %obj.delete();
 }
 
 function ShireZombieBot::onBotLoop(%this, %obj)
