@@ -40,8 +40,6 @@ else
 	if ($Pref::Server::PF::vehicleStep $= "") $Pref::Server::PF::vehicleStep = 0;	
 	if ($Pref::Server::MapRotation::enabled $= "") $Pref::Server::MapRotation::enabled = true;
 	if ($Pref::Server::MapRotation::minreset $= "") $Pref::Server::MapRotation::minreset = 5;
-
-	$Pref::Server::MapRotation::cooldown = 10;
 }
 
 if ($Pref::Server::PF::brickFXsounds::pearlStep $= "") $Pref::Server::PF::pearlStep = 4;
@@ -54,4 +52,6 @@ if ($Pref::Server::PF::brickFXsounds::unduloStep $= "") $Pref::Server::PF::undul
 
 // Always set this to 0, don't want there to be problems when the server is initialized
 $Pref::Server::ChatMod::lchatEnabled = 0;
+$Pref::Server::MapRotation::cooldown = 10;
+$Pref::Server::MapRotation::ResetCount = 0;
 $iconspath = "Add-ons/Gamemode_Eventide/modules/players/icons/";
