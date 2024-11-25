@@ -69,7 +69,7 @@ function ShireZombieBot::onBotLoop(%this, %obj)
         for(%i = 0; %i < ClientGroup.getCount(); %i++)
         {
             %nearbyPlayer = ClientGroup.getObject(%i).player;
-            if(!isObject(%nearbyPlayer) || !minigameCanDamage(%obj, %nearbyPlayer))
+            if(!isObject(%nearbyPlayer) || !minigameCanDamage(%obj, %nearbyPlayer) || %nearbyPlayer.getDataBlock().getName() $= "EventidePlayerDowned")
                 continue;
                 
             // Skip invalid targets
@@ -99,10 +99,11 @@ function ShireZombieBot::onBotLoop(%this, %obj)
     // Target validation
     if(%target)
     {
-        if(!isObject(%target) || %target.getState() $= "Dead" || %target.getDataBlock().isKiller)
+        if(!isObject(%target) || %target.getState() $= "Dead" || %target.getDataBlock().isKiller || %target.getDataBlock().getName() $= "EventidePlayerDowned")
         {
             // Clear invalid target
             %obj.target = 0;
+            %obj.cannotSeeTarget = 0;
             %obj.setMoveY(0);
             %obj.setMoveX(0);
         }
@@ -116,9 +117,8 @@ function ShireZombieBot::onBotLoop(%this, %obj)
                                       %obj);
             
             if(!isObject(%obscure) && %dot > 0.5 && VectorDist(%obj.getPosition(), %target.getPosition()) < 50)
-                %obj.cannotSeeTarget = 0;
-            else
-                %obj.cannotSeeTarget++;
+            %obj.cannotSeeTarget = 0;
+            else %obj.cannotSeeTarget++;                
             
             if(%obj.cannotSeeTarget >= 15)
             {
@@ -158,7 +158,6 @@ function ShireZombieBot::onBotLoop(%this, %obj)
                 cancel(%obj.BotLoopSched);
                 %obj.playThread(3, "activate2");
                 %obj.setMoveX(0);
-                %obj.setMoveY(-0.25);
                 %obj.BotLoopSched = %this.schedule(2000, onBotLoop, %obj);
             }
         }

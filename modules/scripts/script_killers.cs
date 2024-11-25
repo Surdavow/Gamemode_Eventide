@@ -39,9 +39,15 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 			case 4: %meleetrailangle = %datablock.meleetrailangle4;
 		}
 				
-		if(%datablock.meleetrailskin !$= "") %obj.spawnKillerTrail(%datablock.meleetrailskin,%datablock.meleetrailoffset,%meleetrailangle,%datablock.meleetrailscale);		
-		if(%datablock.killermeleesound !$= "") serverPlay3D(%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound",%obj.getWorldBoxCenter());				
-		if(%datablock.killerweaponsound !$= "") serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
+		if(%datablock.meleetrailskin !$= "") 
+		%obj.spawnKillerTrail(%datablock.meleetrailskin,%datablock.meleetrailoffset,%meleetrailangle,%datablock.meleetrailscale);
+		
+		if(%datablock.killermeleesound !$= "") 
+		serverPlay3D(%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound",%obj.getWorldBoxCenter());
+
+		if(%datablock.killerweaponsound !$= "") 
+		serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
+		
 		%obj.playthread(2,"melee" @ %meleeAnim);
 
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
@@ -169,184 +175,157 @@ function Armor::onKillerChase(%this,%obj,%chasing)
 }
 
 // Function that manages the behavior of the killer, handling its state, playing sounds, and scheduling future actions.
-function Armor::onKillerLoop(%this,%obj)
+function Armor::onKillerLoop(%this, %obj)
 {
-    // Return if the player does not exist or is dead, or if the player is not in a minigame
-	if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj))) return;	
+    // Skip if invalid state
+    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj))) return;
 
-	// In case the player is not a killer, such as the skinwalker mimicking a player
-	if(%obj.getDataBlock().isKiller)
-	{
-		// Container loop
-		initContainerRadiusSearch(%obj.getMuzzlePoint(0), 40, $TypeMasks::PlayerObjectType);		
-		while(%nearbyplayer = containerSearchNext())
-		{
-			if (!isObject(%nearbyplayer) || %nearbyplayer.getClassName() !$= "Player" || !isObject(getMinigamefromObject(%nearbyplayer)) || %nearbyplayer.getDataBlock().isKiller || containerSearchCurrDist() > 40)
+    if(%obj.getDataBlock().isKiller)
+    {
+        %chasingVictims = 0;
+        initContainerRadiusSearch(%obj.getMuzzlePoint(0), 40, $TypeMasks::PlayerObjectType);
+
+        // Process nearby players
+        while(%victim = containerSearchNext())
+        {
+            // Skip invalid victims
+            if (!isObject(%victim) || %victim.getClassName() !$= "Player")
 			continue;
 
-			%dot = vectorDot(%obj.getEyeVector(), vectorNormalize(vectorSub(%nearbyplayer.getMuzzlePoint(2), %obj.getEyePoint())));
-			%killerclient = %obj.client;
-			%victimclient = %nearbyplayer.client;
+			if(!isObject(getMinigamefromObject(%victim)) || %victim.getDataBlock().isKiller || containerSearchCurrDist() > 40) 
+			continue;
+			
+			%typemasks = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType;
+            %dot = vectorDot(%obj.getEyeVector(), vectorNormalize(vectorSub(%victim.getMuzzlePoint(2), %obj.getEyePoint())));
+            %canSeeVictim = !isObject(containerRayCast(%obj.getEyePoint(), %victim.getMuzzlePoint(2), %typemasks, %obj));
 
-			// Chase behavior
-			if (%dot > 0.45 && !isObject(containerRayCast(%obj.getEyePoint(), %nearbyplayer.getMuzzlePoint(2), $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType, %obj)) && !%obj.isInvisible)
-			{			
-				%obj.isChasing = true;
-				%this.onKillerChase(%obj,true);
+            // If we can see the victim, play some music and perform some actions
+            if (%dot > 0.45 && %canSeeVictim && !%obj.isInvisible)
+            {
+                %chasingVictims++;
+                %obj.isChasing = true;
+                %this.onKillerChase(%obj, true);
 
-				if($Pref::Server::Eventide::chaseMusicEnabled)
-				{
-					// Set chase music and timers					
-					if (isObject(%victimclient))
-					{				
-						if(%nearbyplayer.chaseLevel != 2)
-						{
-							%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,true);
-							%nearbyplayer.chaseLevel = 2;
-						}
+                if($Pref::Server::Eventide::chaseMusicEnabled)
+                {
+                    // Update victim's chase state
+                    if (isObject(%victim.client))
+                    {
+                        if(%victim.chaseLevel != 2)
+                        {
+                            %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, true);
+                            %victim.chaseLevel = 2;
+                        }
+                        %victim.TimeSinceChased = getSimTime();
+                        cancel(%victim.client.StopChaseMusic);
+                        %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
+                    }
 
-						%victimclient.player.TimeSinceChased = getSimTime();
-						cancel(%victimclient.StopChaseMusic);
-						%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
-					}
+                    // Update killer's chase state
+                    if (isObject(%obj.client) && %chasingVictims)
+                    {
+                        if(%obj.chaseLevel != 2)
+                        {
+                            %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, false);
+                            %obj.chaseLevel = 2;
+                        }
+                        cancel(%obj.client.StopChaseMusic);
+                        %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+                    }
+                }
 
-					if (isObject(%killerclient))
-					{
-						if(%obj.chaseLevel != 2)
-						{
-							%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music,false);
-							%obj.chaseLevel = 2;
-						}
+                // Update victim's face
+                if(isObject(%victim.faceConfig))
+                {
+                    if(%victim.faceConfig.subCategory $= "" && 
+                       $Eventide_FacePacks[%victim.faceConfig.category, "Scared"] !$= "")
+                    {
+                        %victim.createFaceConfig($Eventide_FacePacks[%victim.faceConfig.category, "Scared"]);
+                    }
+                    if(%victim.faceConfig.isFace("Scared"))
+                    {
+                        %victim.faceConfig.dupeFaceSlot("Neutral", "Scared");
+                    }
+                }
+            }
+			// If we cannot see the victim, stop music and perform some actions
+            else
+            {
+                // Update victim's chase state
+                if (isObject(%victim.client) && %victim.TimeSinceChased + 6000 < getSimTime())
+                {
+                	// Reset victim's face
+					if(isObject(%victim.faceConfig) && %victim.faceConfig.face["Neutral"].faceName $= "Scared") 
+					%victim.faceConfig.resetFaceSlot("Neutral");                    
+					
+					if(%victim.chaseLevel != 1)
+                    {
+                        %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+                        %victim.chaseLevel = 1;
+                    }
+                    cancel(%victim.client.StopChaseMusic);
+                    %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
+                }
 
-						cancel(%killerclient.StopChaseMusic);
-						%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
-					}
-				}
+				// Update killer's chase state
+                if (!%obj.isChasing)
+                {
+                    %this.onKillerChase(%obj, false);
+                    if(isObject(%obj.client) && !%chasingVictims)
+                    {
+                        if(%obj.chaseLevel != 1)
+                        {
+                            %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+                            %obj.chaseLevel = 1;
+                        }
+                        cancel(%obj.client.StopChaseMusic);
+                        %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+                    }
+                }
+				
+                %obj.isChasing = false;
+            }
+        }
 
-				//Face system functionality: make the victim have scared and shocked facial expressions.
-				if(isObject(%nearbyplayer.faceConfig))
-				{
-					if(%nearbyplayer.faceConfig.subCategory $= "" && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
-					{
-						%nearbyplayer.createFaceConfig($Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"]);
-					}
-
-					if(%nearbyplayer.faceConfig.isFace("Scared"))
-					{
-						//Make the player have an open mouth instead of closed.
-						%nearbyplayer.faceConfig.dupeFaceSlot("Neutral", "Scared");
-					}
-				}			
-			}
-			else
+        // Handle killer sounds
+        if (%obj.lastKillerIdle + getRandom(7000, 10000) < getSimTime())
+        {
+            %obj.lastKillerIdle = getSimTime();
+            
+			if (!%obj.isInvisible) 
 			{
-				if (isObject(%victimclient) && %victimclient.player.TimeSinceChased + 6000 < getSimTime())
-				{
-					if(%nearbyplayer.chaseLevel != 1)
-					{
-						%victimclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music,false);
-						%nearbyplayer.chaseLevel = 1;
-					}
-
-					cancel(%victimclient.StopChaseMusic);
-					%victimclient.StopChaseMusic = %victimclient.schedule(6000, StopChaseMusic);
-
-					//Face system functionality: make the victim have scared facial expressions.
-					if(isObject(%nearbyplayer.faceConfig))
-					{
-						if(%nearbyplayer.faceConfig.subCategory $= "" && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
-						{
-							%nearbyplayer.createFaceConfig($Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"]);
-						}
-
-						if(%nearbyplayer.faceConfig.face["Neutral"].faceName $= "Scared")
-						{
-							//If the neutral face is set to the open-mouth varient, reset it.
-							%nearbyplayer.faceConfig.resetFaceSlot("Neutral");
-						}
-					}
-				}
-
-				if (!%obj.isChasing)
-				{
-					%this.onKillerChase(%obj,false);
-
-					if(isObject(%killerclient))
-					{
-						if (%obj.chaseLevel != 1)
-						{
-							%killerclient.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music,false);
-							%obj.chaseLevel = 1;
-						}
-
-						cancel(%killerclient.StopChaseMusic);
-						%killerclient.StopChaseMusic = %killerclient.schedule(6000, StopChaseMusic);
-
-						//Face system functionality. Make the victim have scared facial expressions.
-						if(isObject(%nearbyplayer.faceConfig))
-						{
-							if(%nearbyplayer.faceConfig.subCategory $= "" && $Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"] !$= "")
-							{
-								%nearbyplayer.createFaceConfig($Eventide_FacePacks[%nearbyplayer.faceConfig.category, "Scared"]);
-							}
-
-							if(%nearbyplayer.faceConfig.face["Neutral"].faceName $= "Scared")
-							{
-								//If the neutral face is set to the open-mouth varient, reset it.
-								%nearbyplayer.faceConfig.resetFaceSlot("Neutral");
-							}
-						}
-					}
-				}
-
-				%obj.isChasing = false;
+			    // Determine if chasing or idle sounds should be played
+			    if (%obj.isChasing && %this.killerChaseSound !$= "") 
+			    {
+			        %obj.playThread(3, "plant");
+			        %obj.playAudio(0, %this.killerChaseSound @ getRandom(1, %this.killerChaseSoundAmount) @ "_sound");
+			    } 
+			    else if (!%obj.isChasing && %this.killerIdleSound !$= "") 
+			    {
+			        %obj.playThread(3, "plant");
+			        %obj.playAudio(0, %this.killerIdleSound @ getRandom(1, %this.killerIdleSoundAmount) @ "_sound");
+			    }
 			}
-		}
 
-    	// Idle sounds
-    	if (%obj.lastKillerIdle + getRandom(7000, 10000) < getSimTime())
-    	{
-        	%obj.lastKillerIdle = getSimTime();
+			// Handle arm-raising logic
+			if (%obj.isChasing && !%obj.raiseArms && %this.killerRaiseArms) 
+			{
+			    %obj.playThread(1, "armReadyBoth");
+			    %obj.raiseArms = true;
+			} 
+			else if (!%obj.isChasing && %obj.raiseArms) 
+			{
+			    %obj.playThread(1, "root");
+			    %obj.raiseArms = false;
+			}
+        }
+    }
 
-        	// Play sounds based on chase state
-        	if (%obj.isChasing)
-        	{
-        	    if (!%obj.isInvisible && %this.killerChaseSound !$= "")
-        	    {
-        	        %obj.playThread(3, "plant");
-        	        %obj.playAudio(0, %this.killerChaseSound @ getRandom(1, %this.killerChaseSoundAmount) @ "_sound");
-        	    }
+    // Update UI and schedule next loop
+    if (isObject(%obj.client)) %this.bottomprintgui(%obj, %obj.client);
 
-        	    if (!%obj.raiseArms && %this.killerRaiseArms)
-        	    {
-        	        %obj.playThread(1, "armReadyBoth");
-        	        %obj.raiseArms = true;
-        	    }
-        	}
-        	else
-        	{
-        	    if (!%obj.isInvisible && %this.killerIdleSound !$= "")
-        	    {
-        	        %obj.playThread(3, "plant");
-        	        %obj.playAudio(0, %this.killerIdleSound @ getRandom(1, %this.killerIdleSoundAmount) @ "_sound");
-        	    }
-
-        	    if (%obj.raiseArms)
-        	    {
-        	        %obj.playThread(1, "root");
-        	        %obj.raiseArms = false;
-        	    }
-        	}
-    	}
-	}
-
-	// Bottom print gui
-	if (isObject(%client = %obj.client)) 
-	%this.bottomprintgui(%obj,%client);
-
-	// Prevent duplicate processes from running
     cancel(%obj.onKillerLoop);
-	%obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
+    %obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
 }
 
 function Armor::bottomprintgui(%this,%obj,%client)

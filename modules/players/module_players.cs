@@ -114,6 +114,7 @@ exec("./player_nightmareTeleport.cs");
 exec("./player_puppetmaster.cs");
 exec("./player_puppetmasterpuppet.cs");
 exec("./player_render.cs");
+exec("./bot_shirezombie.cs");
 exec("./player_shire.cs");
 exec("./player_skinwalker.cs");
 exec("./player_skullwolf.cs");
