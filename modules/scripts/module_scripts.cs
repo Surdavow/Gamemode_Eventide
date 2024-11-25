@@ -22,6 +22,7 @@ exec("./support_extraresources.cs");
 exec("./support_items.cs");
 exec("./support_main.cs");
 exec("./support_blood.cs");
+exec("./support_medical.cs");
 exec("./support_minigame.cs");
 exec("./support_player.cs");
 exec("./support_statuseffect.cs");
