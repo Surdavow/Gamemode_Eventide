@@ -180,10 +180,8 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%pantsColor = "0.075 0.075 0.075 1";
 	%skinColor = "1 1 1 1";
 
-	if(isObject(%obj.faceConfig))
-	{
-		%obj.faceConfigShowFaceTimed("Neutral", -1);
-	}
+	if(isObject(%obj.faceConfig)) %obj.faceConfigShowFaceTimed("Neutral", -1);
+	
 	%obj.setDecalName("robe");
 	%obj.setNodeColor("rarm",%hoodieColor);
 	%obj.setNodeColor("larm",%hoodieColor);
@@ -202,9 +200,10 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 function PlayerShire::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
+
 	if(%obj.getState() !$= "Dead")
 	{
-		%obj.playaudio(0,"shire_pain" @ getRandom(1, 4) @ "_sound");
+		%obj.playaudio(0,"shire_pain" @ getRandom(1,4) @ "_sound");
 		%obj.faceConfigShowFace("Pain");
 	}
 }
