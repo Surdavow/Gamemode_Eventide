@@ -1,5 +1,5 @@
 $ShopInstrumentList = "GuitarImage BanjoImage HarmonicaImage ViolinImage KeytarImage FluteImage ElectricGuitarImage ElectricBassImage";
-$ShopTitleList = "Title Color Bitmap Font";
+$ShopTitleList = "Title Color Bitmap";
 
 if(isObject(EventideShopMainMenu)) EventideShopMainMenu.delete();
 new ScriptObject(EventideShopMainMenu)
@@ -183,20 +183,16 @@ function servercmdst(%client,%type,%input)
 
         case "bitmap":  if(!%client.hasTitleAccess[2]) return messageClient(%client, '', "\c0You haven't purchased this ability!");
                         
-                        return %client.startCenterprintMenu(EventideSetTitleBitmapMenu);                        
-
-        case "font":    if(!%client.hasTitleAccess[3]) return messageClient(%client, '', "\c0You haven't purchased this ability!");
-        
-                        return %client.startCenterprintMenu(EventideSetTitleFontMenu);                        
+                        return %client.startCenterprintMenu(EventideSetTitleBitmapMenu);                                   
     }
 }
 
-$TitleBitmapList = "skull blue_ribbon car bomb trophy star generic demobanner lagicon gglogo150 greenlight-steam-logo title";
+$TitleBitmapList = "skull blue_ribbon car bomb trophy star generic demobanner lagicon gglogo150 greenlight-steam-logo PaintLabel crossHair decalFrame";
 
 if(isObject(EventideSetTitleBitmapMenu)) EventideSetTitleBitmapMenu.delete();
 new ScriptObject(EventideSetTitleBitmapMenu)
 {
-    menuName = "Title - Set Font";
+    menuName = "Title - Set Bitmap";
     isCenterprintMenu = true;
     justify = "<just:right>";
     menuOptionCount = getWordCount($TitleBitmapList)+1;
@@ -215,29 +211,4 @@ function EventideSetCustomBitmap(%client,%menu,%option)
 {    
     if(%option <= 6) return %client.customtitlebitmap = "<bitmap:base/client/ui/CI/" @ strreplace(getWord($TitleBitmapList,%option),"_","") @ ".png>";
     else return %client.customtitlebitmap = "<bitmap:base/client/ui/" @ strreplace(getWord($TitleBitmapList,%option),"_","") @ ".png>";
-}
-
-$TitleFontList = "Impact Arial Constantia Georgia Corbel Cambria";
-
-if(isObject(EventideSetTitleFontMenu)) EventideSetTitleFontMenu.delete();
-new ScriptObject(EventideSetTitleFontMenu)
-{
-    menuName = "Title - Set Font";
-    isCenterprintMenu = true;
-    justify = "<just:right>";
-    menuOptionCount = getWordCount($TitleFontList)+1;
-};
-
-for (%i = 0; %i < getWordCount($TitleFontList); %i++) 
-{        
-    EventideSetTitleFontMenu.menuOption[%i] = strreplace(getWord($TitleFontList,%i),"_"," ");
-    EventideSetTitleFontMenu.menuFunction[%i] = "EventideSetCustomFont";
-}
-
-EventideSetTitleFontMenu.menuOption[getWordCount($TitleFontList)] = "Exit";
-EventideSetTitleFontMenu.menuFunction[getWordCount($TitleFontList)] = "exitCenterprintMenu";
-
-function EventideSetCustomFont(%client,%menu,%option)
-{    
-    return %client.customtitlefont = strreplace(getWord($TitleFontList,%option),"_"," ");
 }

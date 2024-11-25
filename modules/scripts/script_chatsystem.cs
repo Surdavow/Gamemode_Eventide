@@ -59,7 +59,9 @@ function ChatMod_ShowShapeName(%player, %message, %messageType)
 }
 
 function ChatMod_GetMessagePrefix(%message) 
-{    
+{   
+    if(!strLen(%message) > 1) return "" TAB "" TAB "";
+    
     // Handle invalid or short messages
     %messageEdit = getSubStr(%message, 1, strLen(%message) - 1);
 
@@ -82,6 +84,8 @@ function ChatMod_LocalChat(%client, %message)
     %messageType = getField(%result, 1);
     %message = getField(%result, 2);
 
+    if(%message $= "") return;
+
     // Global chat handling
     if (%messageType $= "global") 
     {
@@ -97,17 +101,31 @@ function ChatMod_LocalChat(%client, %message)
     // Show the chat bubble or notification above the player
     ChatMod_ShowShapeName(%client.player, %message, %messageType);
 
+    if(isObject(%client.player))
+    {
+        %client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+        %client.player.playThread(3,talk);
+    }    
+
     // Send messages to nearby players
     for (%i = 0; %i < ClientGroup.getCount(); %i++) 
     {
         if (!isObject(%targetClient = ClientGroup.getObject(%i))) continue;
 
+        %color = (%client.customtitlecolor $= "") ? "FFFFFF" : %client.customtitlecolor;
+        %bitmap = (%client.customtitlebitmap $= "") ? "" : %client.customtitlebitmap;
+
+		if (%client.customtitle !$= "") 
+		%prefix = %bitmap @ "<color:" @ %color @ ">" @ %client.customtitle SPC "";
+		
+		else %prefix = (%client.customtitlebitmap !$= "") ? (%bitmap @ "") : "";
+
+        %prefix = isObject(%client.player) ? %prefix : "\c7[DEAD]";
+
         // If the target client is dead, send either a dead player message or a normal message depending on player status
         if (!isObject(%targetClient.player)) 
-        {
-            %prefix = isObject(%client.player) ? %client.clanPrefix : "\c7[DEAD]";
-            chatMessageClientRP(%targetClient, %prefix, %namePrefix @ %client.name @ %client.clanSuffix, "", %message);
-        }
+        chatMessageClientRP(%targetClient, %prefix, %namePrefix @ %client.name, "", %message);
+        
         
         // If the target client and player client are alive, check distance before sending a message
         else if (isObject(%client.player) && isObject(%targetClient.player))
@@ -115,7 +133,7 @@ function ChatMod_LocalChat(%client, %message)
             %playerDistance = vectorDist(%client.player.getTransform(), %targetClient.player.getTransform());
             if (%playerDistance >= %chatDistance) continue;
 
-            chatMessageClientRP(%targetClient, %client.clanPrefix,%namePrefix @ %client.name @ %client.clanSuffix, "", %message);
+            chatMessageClientRP(%targetClient, %prefix,%namePrefix @ %client.name, "", %message);
         }
     }
 }

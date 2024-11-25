@@ -89,7 +89,8 @@ package Eventide_GameConnection
 	}	
 
 	function serverCmdMessageSent(%client,%message)
-	{		
+	{
+		%client.clanSuffix = "";
 		%color = (%client.customtitlecolor $= "") ? "FFFFFF" : %client.customtitlecolor;
         %bitmap = (%client.customtitlebitmap $= "") ? "" : %client.customtitlebitmap;
 
@@ -105,16 +106,7 @@ package Eventide_GameConnection
 		}
 
 		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
-		if(%message !$= "")
-		{
-			if(isObject(%client.player))
-			{
-				%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
-				%client.player.playThread(3,talk);
-			}
-
-			ChatMod_LocalChat(%client, %message);
-		}
+		if(%message !$= "") ChatMod_LocalChat(%client, %message);		
 
 		%client.lastMessageSent = %message;
 		echo(%client.name @ ": " @ getSubStr(%message, 0, strlen(%message)));		
@@ -128,6 +120,7 @@ package Eventide_GameConnection
 
 	function ServerCmdTeamMessageSent(%client, %message)
 	{
+		%client.clanSuffix = "";
 		if(!$Pref::Server::ChatMod::lchatEnabled)
 		{
 			Parent::ServerCmdTeamMessageSent(%client, %message);
