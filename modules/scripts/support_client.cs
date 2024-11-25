@@ -9,16 +9,10 @@ package Eventide_GameConnection
 	}
 
 	function gameConnection::autoAdminCheck(%client) 
-	{
-		schedule(100,0,Eventide_loadEventideStats,%client);
+	{		
 		Parent::autoAdminCheck(%client);
+		scheduleNoQuota(1000,0,Eventide_loadEventideStats,%client);
 	}
-
-	function GameConnection::onClientEnterGame(%client)
-	{
-		parent::onClientEnterGame(%client);
-		Eventide_loadEventideStats(%client);		
-	}	
 
 	function GameConnection::onClientLeaveGame(%client)
 	{
@@ -61,14 +55,14 @@ package Eventide_GameConnection
 
 	function ServerCmdPlantBrick (%client)
 	{		
-		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "PlayerPuppetMaster" && isObject(PuppetGroup))
+		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
 		{	
 			if(%client.puppetnumber $= "") %client.puppetnumber = 0;
 
-			if(isObject(PuppetGroup.getObject(%client.puppetnumber))) 
+			if(isObject(Eventide_MinigameGroup.getObject(%client.puppetnumber))) 
 			{
 				%client.getcontrolObject().schedule(1500,setActionThread,sit,1);
-				%client.setcontrolobject(PuppetGroup.getObject(%client.puppetnumber));
+				%client.setcontrolobject(Eventide_MinigameGroup.getObject(%client.puppetnumber));
 				%client.puppetnumber++;
 			}
 			else

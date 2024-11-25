@@ -4,15 +4,11 @@
 /// @param	up	3-element vector
 function relativeVectorToRotation(%for, %up)
 {
-    %yaw = mAtan(getWord(%for, 0), -getWord(%for, 1)) + $pi;
-    
-	if(%yaw >= $pi)
-		%yaw -= $m2pi;
-    
-    %rightAxis = vectorNormalize(vectorCross(%for, "0 0 1"));
+    %yaw = mAtan(getWord(%for, 0), -getWord(%for, 1)) + $pi;    
+	if(%yaw >= $pi) %yaw -= $m2pi;
 	
-	if(vectorLen(%rightAxis) == 0)
-		%rightAxis = "-1 0 0";
+    %rightAxis = vectorNormalize(vectorCross(%for, "0 0 1"));	
+	if(vectorLen(%rightAxis) == 0) %rightAxis = "-1 0 0";
     
 	%upAxis = vectorNormalize(vectorCross(%rightAxis, %for));
     

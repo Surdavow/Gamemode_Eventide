@@ -44,19 +44,12 @@ function ShireZombieBot::onAdd(%this,%obj)
 	%obj.playaudio(3,"hex_ghostSpawn");
 }
 
-function ShireZombieBot::onDisabled(%this,%obj)
-{
-	Parent::onDisabled(%this,%obj);
-    %obj.delete();
-}
-
 function ShireZombieBot::onBotLoop(%this, %obj)
 {
     // Early return if bot is invalid or dead
     if(!isObject(%obj) || %obj.getState() $= "Dead") return;
     
-    %obj.BotLoopSched = %this.schedule(500, onBotLoop, %obj);
-    
+    %obj.BotLoopSched = %this.schedule(500, onBotLoop, %obj);    
     %target = %obj.target;
     %currentTime = getSimTime();
     
@@ -70,7 +63,7 @@ function ShireZombieBot::onBotLoop(%this, %obj)
         {
             %nearbyPlayer = ClientGroup.getObject(%i).player;
             if(!isObject(%nearbyPlayer) || !minigameCanDamage(%obj, %nearbyPlayer) || %nearbyPlayer.getDataBlock().getName() $= "EventidePlayerDowned")
-                continue;
+            continue;
                 
             // Skip invalid targets
             if(%nearbyPlayer == %obj || 
@@ -250,7 +243,12 @@ function ShireZombieBot::onBotLoop(%this, %obj)
 function ShireZombieBot::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType,%damageLoc)
 {	
 	Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType,%damageLoc);
-    %obj.addhealth(%damage);
+}
+
+function ShireZombieBot::onDisabled(%this,%obj)
+{
+	Parent::onDisabled(%this,%obj);
+    %obj.delete();
 }
 
 function ShireZombieBot::onRemove(%this,%obj)

@@ -4,7 +4,6 @@ datablock PlayerData(PlayerCannibal : PlayerRenowned)
 
 	killerSpawnMessage = "...";
 	
-	// Weapon: Knife
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = "";
 	meleetrailskin = "ragged";

@@ -78,8 +78,9 @@ function PuppetMasterPuppet::onDisabled(%this,%obj)
 
 function PuppetMasterPuppet::onRemove(%this,%obj)
 {
-	%obj.sourceclient.setcontrolobject(PuppetGroup.getObject(%obj.sourceclient.puppetnumber));
+	%obj.sourceclient.setcontrolobject(%obj);
 	%obj.source.mountimage("sm_stunImage",2);
+
 	Parent::onRemove(%this,%obj);	
 }
 

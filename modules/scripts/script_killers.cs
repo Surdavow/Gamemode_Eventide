@@ -359,12 +359,12 @@ function Player::KillerGhostLightCheck(%obj)
 			source = %obj;
 		};
 
-		if(!isObject(DroppedItemGroup))
+		if(!isObject(Eventide_MinigameGroup))
 		{
-			new SimGroup(DroppedItemGroup);
-			missionCleanUp.add(DroppedItemGroup);
+			new SimGroup(Eventide_MinigameGroup);
+			missionCleanUp.add(Eventide_MinigameGroup);
 		}
-		DroppedItemGroup.add(%obj.light);
+		Eventide_MinigameGroup.add(%obj.light);
 		
 		%obj.light.attachToObject(%obj);		
 		%obj.light.setNetFlag(6,true);

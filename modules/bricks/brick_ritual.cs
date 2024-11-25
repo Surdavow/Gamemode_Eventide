@@ -53,7 +53,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 		while(%scan = containerSearchNext())
 		{
 			// If the player is near the ritual and the ritual is not complete, give a message.
-			if((%scan.getType() & $TypeMasks::PlayerObjectType) && isObject(%scan.client) && isObject(EventideShapeGroup) && EventideShapeGroup.getCount() < 10)
+			if((%scan.getType() & $TypeMasks::PlayerObjectType) && isObject(%scan.client) && isObject(Eventide_ShapeGroup) && Eventide_ShapeGroup.getCount() < 10)
 			{
 				%scan.client.centerprint("\c3Drop your ritual items on the ritual to complete it!",1);
 				continue;
@@ -65,10 +65,10 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			%itemimage = %scan.getdatablock().image;
 			if(!%itemimage.isRitual) continue;			
 
-			if(!isObject(EventideShapeGroup))
+			if(!isObject(Eventide_ShapeGroup))
 			{
-				new ScriptGroup(EventideShapeGroup);
-				missionCleanup.add(EventideShapeGroup);
+				new ScriptGroup(Eventide_ShapeGroup);
+				missionCleanup.add(Eventide_ShapeGroup);
 			}
 
 			if(%itemimage.isGemRitual)		
@@ -80,7 +80,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 					%obj.gemshape[%obj.gemcount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().gempos[%obj.gemcount] SPC getWords(%obj.gettransform,3,6)));
 					%interactiveshape = %obj.gemshape[%obj.gemcount];
 					%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
-					EventideShapeGroup.add(%interactiveshape);
+					Eventide_ShapeGroup.add(%interactiveshape);
 				}
 				else continue;			
 			}
@@ -92,7 +92,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 													%obj.candleshape[%obj.candlecount] = new StaticShape() { datablock = %itemimage.staticShape; };
 													%obj.candleshape[%obj.candlecount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().candlePos[%obj.candlecount] SPC getWords(%obj.gettransform,3,6)));
 													%interactiveshape = %obj.candleshape[%obj.candlecount];
-													EventideShapeGroup.add(%interactiveshape);
+													Eventide_ShapeGroup.add(%interactiveshape);
 												}
 												else continue;
 
@@ -102,7 +102,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 												%transformdelta = %obj.ritualshape.getdatablock().bookPos SPC getWords(%obj.gettransform,3,6);
 												%obj.bookshape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
 												%interactiveshape = %obj.bookshape;
-												EventideShapeGroup.add(%interactiveshape);
+												Eventide_ShapeGroup.add(%interactiveshape);
 
 
 				case "brickdaggerStaticShape":	if(isObject(%obj.daggershape)) continue;
@@ -112,7 +112,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 												%obj.daggershape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
 												%interactiveshape = %obj.daggershape;
 												%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
-												EventideShapeGroup.add(%interactiveshape);													
+												Eventide_ShapeGroup.add(%interactiveshape);													
 			}
 
 			//Trigger an event if the eventide console exists
@@ -125,7 +125,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 
 			%scan.delete();
 
-			if(EventideShapeGroup.getCount() >= 10)
+			if(Eventide_ShapeGroup.getCount() >= 10)
 			{
 				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
 

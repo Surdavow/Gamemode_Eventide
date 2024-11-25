@@ -28,12 +28,12 @@ package Eventide_Items
 
 	function Item::schedulePop (%obj)
 	{
-		if(!isObject(DroppedItemGroup))
+		if(!isObject(Eventide_MinigameGroup))
 		{
-			new SimGroup(DroppedItemGroup);
-			missionCleanUp.add(DroppedItemGroup);
+			new SimGroup(Eventide_MinigameGroup);
+			missionCleanUp.add(Eventide_MinigameGroup);
 		}
-		DroppedItemGroup.add(%obj);
+		Eventide_MinigameGroup.add(%obj);
 
 		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount()))
 		return;

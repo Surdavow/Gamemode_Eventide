@@ -132,6 +132,7 @@ function PlayerRender::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 
+    %obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 	if(isObject(%obj.light)) %obj.light.delete();
 	%this.EventideAppearance(%obj);
 	%this.Prepperizer(%obj);
@@ -331,4 +332,16 @@ function PlayerRender::onDamage(%this, %obj, %delta)
 	Parent::onDamage(%this, %obj, %delta);
 
 	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"render_hurt" @ getRandom(1, 4) @ "_sound");
+}
+
+function PlayerRender::onDisabled(%this,%obj)
+{
+	Parent::onDisabled(%this,%obj);
+    %obj.delete();
+}
+
+function PlayerRender::onRemove(%this,%obj)
+{    
+    Parent::onRemove(%this,%obj);
+    %obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 }

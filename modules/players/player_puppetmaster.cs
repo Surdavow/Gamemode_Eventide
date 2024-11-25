@@ -73,10 +73,10 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 				
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{
-					if(!isObject(PuppetGroup)) new SimGroup(PuppetGroup);
-					MissionCleanup.add(PuppetGroup);
+					if(!isObject(Eventide_MinigameGroup)) new SimGroup(Eventide_MinigameGroup);
+					MissionCleanup.add(Eventide_MinigameGroup);
 
-					if(PuppetGroup.getCount() < 3)
+					if(Eventide_MinigameGroup.getCount() < 3)
 					{
 						%puppet = new Player()
 						{
@@ -86,7 +86,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 							minigame = getMiniGameFromObject(%obj);					
 						};
 						%obj.mountObject(%puppet,8);
-						PuppetGroup.add(%puppet);
+						Eventide_MinigameGroup.add(%puppet);
 
 						%puppet.unmount();
 						%obj.playthread(3,"leftrecoil");

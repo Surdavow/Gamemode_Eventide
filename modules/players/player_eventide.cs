@@ -613,13 +613,13 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			%bot.setTransform(%obj.getTransform());
 			%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 
-			if(!isObject(Shire_BotGroup))
+			if(!isObject(Eventide_MinigameGroup))
 			{
-    			new SimGroup(Shire_BotGroup);
-    			missionCleanup.add(Shire_BotGroup);
-				Shire_BotGroup.add(%bot);
+    			new SimGroup(Eventide_MinigameGroup);
+    			missionCleanup.add(Eventide_MinigameGroup);
+				Eventide_MinigameGroup.add(%bot);
 			}
-			else if(!Shire_BotGroup.isMember(%bot)) Shire_BotGroup.add(%bot);
+			else if(!Eventide_MinigameGroup.isMember(%bot)) Eventide_MinigameGroup.add(%bot);
 
 			%obj.schedule(1,delete);
 		}		
@@ -658,12 +658,12 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			%item.spawnBrick = -1;
 			%item.setVelocity(%itemVec);						
 
-			if(!isObject(DroppedItemGroup))
+			if(!isObject(Eventide_MinigameGroup))
 			{
-				new SimGroup(DroppedItemGroup);
-				missionCleanUp.add(DroppedItemGroup);
+				new SimGroup(Eventide_MinigameGroup);
+				missionCleanUp.add(Eventide_MinigameGroup);
 			}
-			DroppedItemGroup.add(%item);
+			Eventide_MinigameGroup.add(%item);
 		}		
 		
 		for(%i = 0; %i < %minigame.numMembers; %i++)

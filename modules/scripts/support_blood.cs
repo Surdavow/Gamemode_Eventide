@@ -16,13 +16,10 @@ package Eventide_DSBloodPackage
 		if (isObject(%src))
 		{
 			%source = %src;
+
 			if (isObject(%src.sourceObject)) %source = %src.sourceObject;
-
 			if (%pos $= "") %pos = %obj.getHackPosition();
-
-			if (%src.getType() & $TypeMasks::PlayerObjectType) %vector = %src.getForwardVector();
-			else %vector = vectorScale(%src.normal, - 1);
-
+			%vector = (%src.getType() & $TypeMasks::PlayerObjectType) ? %src.getForwardVector() : vectorScale(%src.normal, - 1);
 			%norm = vectorNormalize(vectorSub(%pos, %source.getEyePoint()));
 			%dot = vectorDot(%obj.getForwardVector(), %vector);
 
@@ -43,26 +40,26 @@ package Eventide_DSBloodPackage
 
 		if (%obj.getDamageLevel() + %damage > %this.maxDamage) %fatal = true;
 		
-
 		if ($Blood::DripOnDamage) 
         {
 			%time = %obj.getDamagePercent() * 10;
 			%time = mClampF(%time, 0, 10);
-
 			%obj.startDrippingBlood(%time);
 		}
 
-		if ($Blood::SprayOnDamage && !%fatal) {
-			if ($Blood::Effects)
-				createBloodSplatterExplosion(%pos, %norm, "1 1 1");
+		if ($Blood::SprayOnDamage && !%fatal) 
+		{
+			if ($Blood::Effects) 
+			createBloodSplatterExplosion(%pos, %norm, "1 1 1");
 			%obj.doSplatterBlood(getRandom(1, 4), %pos, %vector);
 		}
 		else if ($Blood::SprayOnDeath)
 		{
 			if ($Blood::Effects)
-				createBloodSplatterExplosion(%pos, %norm, "1 1 1");
+			createBloodSplatterExplosion(%pos, %norm, "1 1 1");
 			%obj.doSplatterBlood(7, %pos, %vector);
 		}
+
 		Parent::damage(%this, %obj, %src, %pos, %damage, %type);
 	}
 

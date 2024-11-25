@@ -157,9 +157,7 @@ function SimObject::DataIdentifier(%obj,%append)
 function Player::DataIdentifier(%obj,%append)
 {
 	%c = %obj.client;
-	if(isObject(%c))
-	return %c.getBLID() @ %append;
-	
+	if(isObject(%c)) return %c.getBLID() @ %append;	
 }
 
 function fxDtsBrick::DataIdentifier(%obj,%append)

@@ -4,7 +4,6 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 
 	killerSpawnMessage = "...";
 	
-	// Weapon: Claws
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = "";
 	meleetrailskin = "magic";

@@ -5,10 +5,6 @@ if($RTB::Hooks::ServerControl)
 	RTB_registerPref("Chat Distance",		"Eventide","$Pref::Server::ChatMod::lchatDistance",	"int 1 200","Gamemode_Eventide","30","0","0","");
 	RTB_registerPref("Shout Distance Multiplier",	"Eventide","$Pref::Server::ChatMod::lchatShoutMultiplier",	"float 0 10","Gamemode_Eventide","2","0","0","");
 	RTB_registerPref("Whisper Distance Multiplier",	"Eventide","$Pref::Server::ChatMod::lchatWhisperMultiplier",	"float 0 1","Gamemode_Eventide",".5","0","0","");
-	RTB_registerPref("& Global Chat restriction",	"Eventide","$Pref::Server::ChatMod::lchatGlobalChatLevel",	"list Everyone 0 Admin 1 Super_Admin 2","Gamemode_Eventide","0","0","0","");
-	RTB_registerPref("Enable local chat scaling",	"Eventide - Chat","$Pref::Server::ChatMod::lchatSizeModEnabled",	"bool","Gamemode_Eventide","0","0","0","");
-	RTB_registerPref("Local chat maximum size",	"Eventide - Chat","$Pref::Server::ChatMod::lchatSizeMax",	"int 1 48","Gamemode_Eventide","24","0","0","Gamemode_Eventide");
-	RTB_registerPref("Local chat minimum size",	"Eventide - Chat","$Pref::server::ChatMod::lchatSizeMin",	"int 1 48","Gamemode_Eventide","12","0","0","Gamemode_Eventide");
 	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Gamemode_Eventide",false,false,false);
 	RTB_registerPref("After how many rounds to load next?","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Gamemode_Eventide",5,false,true);	
 	RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
@@ -30,10 +26,6 @@ else
 	if ($Pref::Server::ChatMod::lchatDistance $= "") $Pref::Server::ChatMod::lchatDistance = 30;
 	if ($Pref::Server::ChatMod::lchatShoutMultiplier $= "") $Pref::Server::ChatMod::lchatShoutMultiplier = 2;
 	if ($Pref::Server::ChatMod::lchatWhisperMultiplier $= "") $Pref::Server::ChatMod::lchatWhisperMultiplier = 0.5;
-	if ($Pref::Server::ChatMod::lchatGlobalChatLevel $= "") $Pref::Server::ChatMod::lchatGlobalChatLevel = 1;
-	if ($Pref::Server::ChatMod::lchatSizeModEnabled $= "") $Pref::Server::ChatMod::lchatSizeModEnabled = 0;
-	if ($Pref::Server::ChatMod::lchatSizeMax $= "") $Pref::Server::ChatMod::lchatSizeMax = 24;
-	if ($Pref::Server::ChatMod::lchatSizeMin $= "") $Pref::server::ChatMod::lchatSizeMin = 12;
 	if ($Pref::Server::ChatMod::radioNumChannels $= "") $Pref::Server::ChatMod::radioNumChannels = 1;
 	if ($Pref::Server::GazeRange $= "") $Pref::Server::GazeRange = 20;
 	if ($Pref::Server::GazeEnabled $= "") $Pref::Server::GazeEnabled = 1;

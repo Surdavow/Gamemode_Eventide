@@ -2,7 +2,8 @@ function addExtraResource(%fileName)
 {
 	if(!ServerGroup.addedExtraResource[%fileName])
 	{
-		if(ServerGroup.extraResourceCount $= "")ServerGroup.extraResourceCount = 0;
+		if(ServerGroup.extraResourceCount $= "") 
+		ServerGroup.extraResourceCount = 0;
 
 		ServerGroup.extraResource[ServerGroup.extraResourceCount] = %fileName;
 		ServerGroup.extraResourceCount++;

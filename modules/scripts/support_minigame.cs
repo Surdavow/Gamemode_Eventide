@@ -1,14 +1,18 @@
 package Eventide_Minigame
 {
-	function Slayer_MiniGameSO::endRound(%this, %winner, %resetTime)
+	//TODO: Make dead players be able to chat with living players, preferably by setting a dead chat round variable to true.
+	function Slayer_MiniGameSO::endRound(%minigame, %winner, %resetTime)
 	{
-		Parent::endRound(%this, %winner, %resetTime);
+		Parent::endRound(%minigame, %winner, %resetTime);
 		
-		if (strlwr(%this.title) $= "eventide")
+		if (strlwr(%minigame.title) !$= "eventide") return;
+		
+		// Loop through all minigame members to play the round end sound
+		for (%i = 0; %i < %minigame.numMembers; %i++) 
 		{
-			
-			for (%i=0;%i<%this.numMembers;%i++) if (isObject(%client = %this.member[%i]) && %client.getClassName() $= "GameConnection") 
-			%client.play2d("round_end_sound");		 						
+    		%member = %minigame.member[%i];
+    		if (isObject(%member) && %member.getClassName() $= "GameConnection")
+        	%member.play2d("round_end_sound");
 		}
 	}
 
@@ -30,8 +34,6 @@ package Eventide_Minigame
 		}
 
 		Parent::Reset(%minigame, %client);
-
-		if (isObject(DecalGroup)) DecalGroup.deleteAll();
 		
 		for (%i=0;%i<%minigame.numMembers;%i++)
 		if (isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
@@ -51,10 +53,9 @@ package Eventide_Minigame
 			}
 		}
 
-		if(isObject(PuppetGroup)) PuppetGroup.delete();
-		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();
-		if(isObject(EventideShapeGroup)) EventideShapeGroup.delete();
-		if(isObject(DroppedItemGroup)) DroppedItemGroup.delete();
+		if(isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
+		if(isObject(Eventide_ShapeGroup)) Eventide_ShapeGroup.delete();
+		
 		if($EventideRitualBrick)
 		{
 			$EventideRitualBrick.gemcount = 0;
@@ -74,8 +75,9 @@ package Eventide_Minigame
 			%client.EventidemusicEmitter.delete();
 			%client.escaped = false;
 		}
-		if(isObject(Shire_BotGroup)) Shire_BotGroup.delete();
-		if(isObject(PuppetGroup)) PuppetGroup.delete();
+
+		if(isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
+		if(isObject(Eventide_ShapeGroup)) Eventide_ShapeGroup.delete();
 
 		%minigame.randomizeEventideItems(false);
     }

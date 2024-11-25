@@ -122,10 +122,10 @@ datablock ProjectileData(LightningArcProjectile)
    explodeOnDeath = true;
 
    brickExplosionRadius = 0;
-   brickExplosionImpact = 0;             //destroy a brick if we hit it directly?
-   brickExplosionForce  = 0;             
-   brickExplosionMaxVolume = 0;          //max volume of bricks that we can destroy
-   brickExplosionMaxVolumeFloating = 0;  //max volume of bricks that we can destroy if they aren't connected to the ground (should always be >= brickExplosionMaxVolume)
+   brickExplosionImpact = 0;
+   brickExplosionForce  = 0;
+   brickExplosionMaxVolume = 0;
+   brickExplosionMaxVolumeFloating = 0;
 
    collideWithPlayers = false;
 
