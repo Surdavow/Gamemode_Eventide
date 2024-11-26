@@ -1,4 +1,5 @@
 // Face system.
+exec("./support_extraresources.cs");
 exec("./script_facesystem.cs");
 parseFacePacks("Add-Ons/Gamemode_Eventide/modules/players/faces");
 
@@ -18,7 +19,6 @@ exec("./support_bricks.cs");
 exec("./support_centerprintmenusystem.cs");
 exec("./support_client.cs");
 exec("./support_datainstance.cs");
-exec("./support_extraresources.cs");
 exec("./support_items.cs");
 exec("./support_main.cs");
 exec("./support_blood.cs");
