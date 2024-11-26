@@ -70,6 +70,28 @@ datablock ShapeBaseImageData(RenderTurnImage)
 	stateTransitionOnTimeout[0]= "Wait";
 };
 
+datablock ParticleData(PrepperParticle)
+{
+   dragCoefficient      = 5.0;
+   gravityCoefficient   = 0.0;
+   inheritedVelFactor   = 0.0;
+   windCoefficient      = 0;
+   constantAcceleration = 0.0;
+   lifetimeMS           = 800;
+   lifetimeVarianceMS   = 0;
+   useInvAlpha          = false;
+   textureName          = "Add-Ons/Brick_Halloween/Prepper";
+   colors[0]     = "0.1 0.1 0.1 0.7";
+   colors[1]     = "1 0 0 0.8";
+   colors[2]     = "1 1 1 0.5";
+   sizes[0]      = 1;
+   sizes[1]      = 1.5;
+   sizes[2]      = 1.3;
+   times[0]      = 0;
+   times[1]      = 0.5;
+   times[2]      = 1.0;
+};
+
 datablock ParticleEmitterData(PrepperEmitter)
 {
    ejectionPeriodMS = 35;
@@ -104,28 +126,6 @@ datablock ShapeBaseImageData(PrepperImage)
 	stateTimeoutValue[0]		= 1000;
 	stateTransitionOnTimeout[0]	= "Glow";
 	stateScript[0]				= "onGlow";
-};
-
-datablock ParticleData(PrepperParticle)
-{
-   dragCoefficient      = 5.0;
-   gravityCoefficient   = 0.0;
-   inheritedVelFactor   = 0.0;
-   windCoefficient      = 0;
-   constantAcceleration = 0.0;
-   lifetimeMS           = 800;
-   lifetimeVarianceMS   = 0;
-   useInvAlpha          = false;
-   textureName          = "Add-Ons/Brick_Halloween/Prepper";
-   colors[0]     = "0.1 0.1 0.1 0.7";
-   colors[1]     = "1 0 0 0.8";
-   colors[2]     = "1 1 1 0.5";
-   sizes[0]      = 1;
-   sizes[1]      = 1.5;
-   sizes[2]      = 1.3;
-   times[0]      = 0;
-   times[1]      = 0.5;
-   times[2]      = 1.0;
 };
 
 datablock ExplosionData(PrepperExplosion)
