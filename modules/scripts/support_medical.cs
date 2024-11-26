@@ -1,4 +1,4 @@
-package Eventide_Medpack_Package
+package Eventide_Medical_Package
 {
     function ZombieMedpackImage::healLoop(%this, %obj)
     {
@@ -276,4 +276,4 @@ package Eventide_Medpack_Package
 };
 if (isPackage(Item_Medpack_Package)) deactivatePackage(Item_Medpack_Package);
 if (isPackage(Item_Gauze_Package)) deactivatePackage(Item_Gauze_Package);
-activatePackage(Eventide_Medpack_Package);
+activatePackage(Eventide_Medical_Package);

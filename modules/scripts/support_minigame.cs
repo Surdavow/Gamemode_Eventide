@@ -1,11 +1,12 @@
 package Eventide_Minigame
 {
-	//TODO: Make dead players be able to chat with living players, preferably by setting a dead chat round variable to true.
 	function Slayer_MiniGameSO::endRound(%minigame, %winner, %resetTime)
 	{
 		Parent::endRound(%minigame, %winner, %resetTime);
-		
-		if (strlwr(%minigame.title) !$= "eventide") return;
+
+		// Disable local chat at the end of the round, let everyone banter at the end.
+		$Pref::Server::ChatMod::lchatEnabled = 0;
+		%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
 		
 		// Loop through all minigame members to play the round end sound
 		for (%i = 0; %i < %minigame.numMembers; %i++) 
@@ -35,26 +36,30 @@ package Eventide_Minigame
 
 		Parent::Reset(%minigame, %client);
 		
+		// Loop through all minigame members to perform some actions
 		for (%i=0;%i<%minigame.numMembers;%i++)
 		if (isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
 		{
+			// Reset the escape flag
+			%client.escaped = 0;
+			
+			// Remove the Eventide music emitter if it exists and reset the music level
 			if (isObject(%client.EventidemusicEmitter))
 			{
 				%client.EventidemusicEmitter.delete();
 				%client.musicChaseLevel = 0;
 			}
-	 			
-			%client.escaped = false;
 
+			// Play the round start sound and announce the minigame
 			if (strlwr(%minigame.title) $= "eventide") 
 			{
-				%minigame.centerprintall("<font:impact:40>\c3Eventide: The Hunt begins",2);
+				%minigame.centerprintall("<font:impact:40>\c3Eventide: The Hunt",2);
+				%minigame.bottomprintall("<font:impact:20>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
 				%client.play2d("round_start_sound");
 			}
 		}
 
 		if(isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
-		if(isObject(Eventide_ShapeGroup)) Eventide_ShapeGroup.delete();
 		
 		if($EventideRitualBrick)
 		{
@@ -63,11 +68,17 @@ package Eventide_Minigame
 		}
 
 		%minigame.randomizeEventideItems(true);
+		if (strlwr(%minigame.title) $= "eventide") 
+		$Pref::Server::ChatMod::lchatEnabled = 1;
     }
 
     function MinigameSO::endGame(%minigame,%client)
     {
         Parent::endGame(%minigame,%client);
+
+		//Disable local chat
+		$Pref::Server::ChatMod::lchatEnabled = 0;
+		%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
 
         for(%i=0;%i<%minigame.numMembers;%i++)
         if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter)) 
@@ -76,8 +87,8 @@ package Eventide_Minigame
 			%client.escaped = false;
 		}
 
-		if(isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
-		if(isObject(Eventide_ShapeGroup)) Eventide_ShapeGroup.delete();
+		if(isObject(Eventide_MinigameGroup)) 
+		Eventide_MinigameGroup.delete();
 
 		%minigame.randomizeEventideItems(false);
     }

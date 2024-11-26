@@ -94,9 +94,9 @@ function ChatMod_LocalChat(%client, %message)
     }
 
     // Configure chat distance based on message type
-    %chatDistance = $Pref::Server::ChatMod::lChatDistance;
-    if (%messageType $= "whisper") %chatDistance *= $Pref::Server::ChatMod::lChatWhisperMultiplier;
-    else if (%messageType $= "shout") %chatDistance *= $Pref::Server::ChatMod::lChatShoutMultiplier;    
+    %chatDistance = 30;
+    if (%messageType $= "whisper") %chatDistance *= 2;
+    else if (%messageType $= "shout") %chatDistance *= 0.5;
 
     // Show the chat bubble or notification above the player
     ChatMod_ShowShapeName(%client.player, %message, %messageType);

@@ -2,9 +2,6 @@ if($RTB::Hooks::ServerControl)
 {            
 	RTB_registerPref("Enable local chat",	"Eventide","$Pref::Server::ChatMod::lchatEnabled",	"bool","Gamemode_Eventide","0","0","0","");
 	RTB_registerPref("Enable chase music",	"Eventide","$Pref::Server::Eventide::chaseMusicEnabled",	"bool","Gamemode_Eventide","1","0","0","");
-	RTB_registerPref("Chat Distance",		"Eventide","$Pref::Server::ChatMod::lchatDistance",	"int 1 200","Gamemode_Eventide","30","0","0","");
-	RTB_registerPref("Shout Distance Multiplier",	"Eventide","$Pref::Server::ChatMod::lchatShoutMultiplier",	"float 0 10","Gamemode_Eventide","2","0","0","");
-	RTB_registerPref("Whisper Distance Multiplier",	"Eventide","$Pref::Server::ChatMod::lchatWhisperMultiplier",	"float 0 1","Gamemode_Eventide",".5","0","0","");
 	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Gamemode_Eventide",false,false,false);
 	RTB_registerPref("After how many rounds to load next?","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Gamemode_Eventide",5,false,true);	
 	RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
@@ -21,11 +18,7 @@ if($RTB::Hooks::ServerControl)
 }
 else
 {
-	if ($Pref::Server::ChatMod::lchatEnabled $= "") $Pref::Server::ChatMod::lchatEnabled = 0;
 	if ($Pref::Server::Eventide::chaseMusicEnabled $= "") $Pref::Server::Eventide::chaseMusicEnabled = 1;
-	if ($Pref::Server::ChatMod::lchatDistance $= "") $Pref::Server::ChatMod::lchatDistance = 30;
-	if ($Pref::Server::ChatMod::lchatShoutMultiplier $= "") $Pref::Server::ChatMod::lchatShoutMultiplier = 2;
-	if ($Pref::Server::ChatMod::lchatWhisperMultiplier $= "") $Pref::Server::ChatMod::lchatWhisperMultiplier = 0.5;
 	if ($Pref::Server::ChatMod::radioNumChannels $= "") $Pref::Server::ChatMod::radioNumChannels = 1;
 	if ($Pref::Server::GazeRange $= "") $Pref::Server::GazeRange = 20;
 	if ($Pref::Server::GazeEnabled $= "") $Pref::Server::GazeEnabled = 1;
