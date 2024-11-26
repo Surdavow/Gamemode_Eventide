@@ -1,22 +1,14 @@
 function adjustObjectScopeOnClient(%object, %client, %scopeOn)
 {
-    if(%scopeOn)
-    {
-        %object.scopeToClient(%client);
-    }
-    else
-    {
-        %object.clearScopeToClient(%client);
-    }
+    if(%scopeOn) %object.scopeToClient(%client);
+    
+    else %object.clearScopeToClient(%client);
 }
 
 function adjustObjectScopeToAll(%object, %scopeOn, %exclusions)
 {
     //Resort to a default value if the user didn't provide one.
-    if(%scopeOn != true && %scopeOn != false)
-    {
-        %scopeOn = false;
-    }
+    if(%scopeOn != true && %scopeOn != false) %scopeOn = false;    
 
     if(isObject(%exclusions))
     {
@@ -52,19 +44,10 @@ function adjustObjectScopeToAllExclusions(%object, %scopeOn, %exclusions)
                 }
             }
         }
-        else if(%exclusions.getClassName() $= "GameConnection" && %client == %exclusions)
-        {
-            //For single clients.
-            %excluded = true;
-        }
+        
+        else if(%exclusions.getClassName() $= "GameConnection" && %client == %exclusions) %excluded = true;
 
-        if(%excluded)
-        {
-            adjustObjectScopeOnClient(%object, %client, !%scopeOn); //The selected scope operation is reversed here, as they are the exception.
-        }
-        else
-        {
-            adjustObjectScopeOnClient(%object, %client, %scopeOn);
-        }
+        if(%excluded) adjustObjectScopeOnClient(%object, %client, !%scopeOn); //The selected scope operation is reversed here, as they are the exception.        
+        else adjustObjectScopeOnClient(%object, %client, %scopeOn);    
     }
 }
