@@ -41,7 +41,6 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shirePain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireBlink.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireAttack.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/renownedface.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedPain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedAttack.png
@@ -70,14 +69,11 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/male/hurt/maleHurtSmiley.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/hurt/maleHurtScared.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/hurt/maleHurtOh.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/hurt/maleHurtNeutral.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/Madmanplain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/knight/knightNeutral.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/jonkler.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/jirue/Orc.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/jirue/KleinerSmiley.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/jirue/ChefSmiley.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/jirue/BrownSmiley.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/huntressface.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/scared/femaleScaredTooth.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/scared/femaleScaredSmirk.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/scared/femaleScaredSmiley.png
@@ -100,7 +96,6 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/female/femalePain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleOh.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleBlink.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/disfiguredface.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/disfigured/disfiguredface.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/smileyRedBeard2.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/smileyRedBeard.png
@@ -121,9 +116,6 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/default/memeDesu.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/memeCats.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/memeBlockMongler.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/asciiTerror.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/DavidBowie.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/cyborgface.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/Cannibal.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalPain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalBlink.png
@@ -133,7 +125,6 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shirePain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireBlink.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/shire/shireAttack.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/renownedface.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedPain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/renowned/renownedAttack.png
@@ -162,14 +153,11 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/male/hurt/maleHurtSmiley.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/hurt/maleHurtScared.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/hurt/maleHurtOh.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/male/hurt/maleHurtNeutral.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/Madmanplain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/knight/knightNeutral.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/jonkler.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/jirue/Orc.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/jirue/KleinerSmiley.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/jirue/ChefSmiley.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/jirue/BrownSmiley.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/huntressface.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/scared/femaleScaredTooth.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/scared/femaleScaredSmirk.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/scared/femaleScaredSmiley.png
@@ -192,7 +180,6 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/female/femalePain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleOh.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/female/femaleBlink.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/disfiguredface.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/disfigured/disfiguredface.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/smileyRedBeard2.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/smileyRedBeard.png
@@ -213,9 +200,6 @@ Add-Ons/Gamemode_Eventide/modules/players/faces/default/memeDesu.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/memeCats.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/memeBlockMongler.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/default/asciiTerror.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/DavidBowie.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/cyborgface.png
-Add-Ons/Gamemode_Eventide/modules/players/faces/Cannibal.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalPain.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalNeutral.png
 Add-Ons/Gamemode_Eventide/modules/players/faces/cannibal/cannibalBlink.png
