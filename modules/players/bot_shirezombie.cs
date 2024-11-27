@@ -41,7 +41,7 @@ function ShireZombieBot::onAdd(%this,%obj)
     %this.onBotLoop(%obj);
     %obj.mountImage("GlowFaceZombieImage",0);
 	%obj.mountImage("ZombieBodyImage",1);    
-	%obj.schedule(50,playAudio,2,"hex_ghostSpawn");
+	%obj.schedule(50,playAudio,2,"hex_ghostSpawn_sound");
 }
 
 function ShireZombieBot::onBotLoop(%this, %obj)
