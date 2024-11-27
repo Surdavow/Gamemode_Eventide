@@ -1,3 +1,24 @@
+package Eventide_PeggyFootsteps
+{
+	function Armor::onNewDatablock(%this,%obj)
+	{		
+		Parent::onNewDatablock(%this,%obj);
+
+		// Don't do anything if it's a vehicle or the schedule is already pending
+		if(%this.rideable || isEventPending(%obj.peggstep)) return;
+
+		%obj.touchcolor = "";
+		%obj.surface = parseSoundFromNumber($Pref::Server::PF::defaultStep, %obj);
+		%obj.isSlow = 0;
+		%obj.peggstep = schedule(50,0,PeggFootsteps,%obj);
+	}
+};
+
+// Deactivate the original peggsteps and deactivate this package if it's already activated, then reactivate it
+if(isPackage(peggsteps)) deactivatePackage(peggsteps);
+if(isPackage(Eventide_PeggyFootsteps)) deactivatePackage(Eventide_PeggyFootsteps);
+activatePackage(Eventide_PeggyFootsteps);
+
 //+++ Set BrickFX to custom sounds:
 function servercmdSetFootstep(%client, %type, %sound)
 {

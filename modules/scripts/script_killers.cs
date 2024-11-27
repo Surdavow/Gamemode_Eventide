@@ -1,3 +1,60 @@
+package Eventide_Killers
+{
+	function ShapeBase::pickup(%obj, %item)
+	{
+        if(%obj.getDataBlock().getName() $= "PlayerSkinwalker") return;                   
+        
+        Parent::pickup(%obj, %item);
+    }
+
+    function Player::addItem(%player, %image, %client)
+	{
+		if(!$Player::PlayerSkinwalker::NoAddItem)
+		Parent::addItem(%player, %image, %client);		
+    }
+
+	function Observer::onTrigger (%this, %obj, %trigger, %state)
+	{		
+		if(isObject(%client = %obj.getControllingClient ()) && isObject(%player = %client.Player)) 
+		if(%player.stunned) return;
+		
+		Parent::onTrigger (%this, %obj, %trigger, %state);
+	}
+
+	function player::setDamageFlash(%obj,%value)
+	{
+		if(!isObject(%obj.getControllingClient())) return;
+		
+		if(!%obj.ShireBlind && %value > 0.2) %value = 0.2;
+		Parent::setDamageFlash(%obj,%value);
+	}
+
+	function Armor::onNewDatablock(%this,%obj)
+	{		
+		Parent::onNewDatablock(%this,%obj);
+
+		%this.schedule(100,KillerCheck,%obj);
+	}
+
+	function Armor::onDisabled(%this, %obj, %state)
+	{
+        Parent::onDisabled(%this, %obj, %state);
+		
+		if(isObject(%killer = %obj.killer))
+		{
+			%killer.ChokeAmount = 0;
+			%killer.victim = 0;
+			%killer.playthread(3,"activate2");
+			%obj.dismount();
+			%obj.setVelocity(vectorscale(vectorAdd(%killer.getForwardVector(),"0 0 0.25"),15));		
+		}
+    }
+};
+
+// In case the package is already activated, deactivate it first before reactivating it
+if(isPackage(Eventide_Killers)) deactivatePackage(Eventide_Killers);
+activatePackage(Eventide_Killers);
+
 function getCurrentKiller()
 {
 	return $Eventide_currentKiller;
