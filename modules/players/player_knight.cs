@@ -253,8 +253,7 @@ function player::knightDash(%pl,%vec,%tick)
 		}
 	}
 	%pl.setEnergyLevel(%pl.knightEnergy);
-	if(!%pl.knightCancelDash)
-		%pl.setVelocity(vectorAdd(%x/5 SPC %y/5 SPC (%db.knightDashZ ? %z/5 : %z),%vec));
+	if(!%pl.knightCancelDash) %pl.setVelocity(vectorAdd(%x/5 SPC %y/5 SPC (%db.knightDashZ ? %z/5 : %z),%vec));
 	%pl.knightDashSched = %pl.schedule(32,knightDash,%vec,%tick++);
 }
 package swol_knight
@@ -274,19 +273,15 @@ package swol_knight
 	function Armor::onImpact(%db,%pl,%hit,%vec,%force)
 	{
 		if(%pl.isknightDash)
-		{
-			if(%db.knightDashZ || mAbs(getWord(%vec,2)) < %db.minImpactSpeed)
-				return;
-		}
+		if(%db.knightDashZ || mAbs(getWord(%vec,2)) < %db.minImpactSpeed) return;
+		
 		return parent::onImpact(%db,%pl,%hit,%vec,%force);
 	}
 	function armor::onTrigger(%db,%pl,%trig,%bool)
 	{
 		if(%db.knightDash)
-		{
-			if(%trig == 4 && %bool && !isObject(%pl.getObjectMount()))
-				%pl.knightDashStart();
-		}
+		if(%trig == 4 && %bool && !isObject(%pl.getObjectMount())) %pl.knightDashStart();
+		
 		return parent::onTrigger(%db,%pl,%trig,%bool);
 	}
 };

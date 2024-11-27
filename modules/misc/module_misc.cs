@@ -1,5 +1,3 @@
-exec("./brick_console.cs");
-exec("./brick_ritual.cs");
 exec("./datablocks_lights.cs");
 exec("./datablocks_misc.cs");
 exec("./datablocks_render.cs");
