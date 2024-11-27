@@ -31,8 +31,8 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	leftclickicon = "color_melee";
 
 	rechargeRate = 0.3;
-	maxTools = 1;
-	maxWeapons = 1;
+	maxTools = 0;
+	maxWeapons = 0;
 	maxForwardSpeed = 6.25;
 	maxBackwardSpeed = 3.57;
 	maxSideSpeed = 5.36;

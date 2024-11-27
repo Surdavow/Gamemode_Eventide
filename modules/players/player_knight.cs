@@ -65,6 +65,7 @@ function PlayerKnight::onNewDatablock(%this,%obj)
 function PlayerKnight::onPeggFootstep(%this,%obj)
 {
 	serverplay3d("knight_footstep" @ getRandom(1,6) @ "_sound", %obj.getHackPosition());
+	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
 
 datablock ParticleData(knight_trailParticle)
