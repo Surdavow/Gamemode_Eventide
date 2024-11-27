@@ -24,7 +24,6 @@ datablock PlayerData(PlayerKnight : PlayerRenowned)
 	killermeleehitsoundamount = 3;
 	
 	showEnergyBar = 1;
-	jumpForce = 0;
 	rechargeRate = 0.45;
 	maxForwardSpeed = 5.8;
 	maxBackwardSpeed = 3.2;
@@ -170,14 +169,11 @@ function player::knightDashStart(%pl)
 				%pl.mountImage(knight_trailImage,3);
 				%pl.playThread(0,plant);
 			}
-			else if(getSimTime()-%pl.lastknightDash > 260)
-				%error = 1;
+			else if(getSimTime()-%pl.lastknightDash > 260) %error = 1;
 		}
-		else
-			%error = 2;
+		else %error = 2;
 	}
-	else
-		%error = 0;
+	else %error = 0;
 	if(%error)
 	{
 		if(getSimTime()-%pl.lastknightInvalid > 400)
@@ -197,8 +193,7 @@ function player::knightDashStart(%pl)
 				%pl.knightFizzleSched = %pl.schedule(100,unMountImage,3);
 				%pl.playThread(0,plant);
 				%pl.playThread(3,undo);
-				if(isObject(%cl = %pl.client))
-					%pl.playaudio(3,"knight_invalid_sound");
+				if(isObject(%cl = %pl.client)) %pl.playaudio(3,"knight_invalid_sound");
 			}
 		}
 	}
@@ -215,10 +210,8 @@ function player::knightDash(%pl,%vec,%tick)
 	%x = getWord(%vel,0);
 	%y = getWord(%vel,1);
 	%z = getWord(%vel,2);
-	if(%pl.knightCancelDash && %tick > 0)
-	{
-		%pl.unMountImage(3);
-	}
+	if(%pl.knightCancelDash && %tick > 0) %pl.unMountImage(3);
+	
 	%time = getSimTime()-%pl.lastknightDash;
 	if(!%pl.knightDashSound && (%time > (%max = %db.knightDashTime)-100 || %pl.knightCancelDash && %tick > 4))
 	{
@@ -226,8 +219,7 @@ function player::knightDash(%pl,%vec,%tick)
 		//%pl.knightDashSound = 1;
 	}
 	if(%time > %max || (%pl.knightCancelDash && %tick > 4))
-	{
-		
+	{		
 		if(isObject(%cl = %pl.client))
 		{
 			%cl.setControlCameraFov(%pl.knightFov);
@@ -307,9 +299,8 @@ function PlayerKnight::EventideAppearance(%this,%obj,%client)
 	%skinColor = "0 0 0 1";
 
 	if(isObject(%obj.faceConfig))
-	{
-		%obj.faceConfigShowFaceTimed("Neutral", -1);
-	}
+	%obj.faceConfigShowFaceTimed("Neutral", -1);
+	
 	%obj.setDecalName("none");
 	%obj.setNodeColor("rarm",%armorColor);
 	%obj.setNodeColor("larm",%armorColor);

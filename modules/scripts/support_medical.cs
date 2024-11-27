@@ -28,8 +28,7 @@ package Eventide_Medical_Package
     					%client.setControlObject(%obj);
     				}
 
-    				%obj.client.play2d("MEDPACK_Finish");
-    
+    				%obj.client.play2d("MEDPACK_Finish");    
     				%obj.unMountImage(%slot);
     				%obj.playThread(0, "root");
     				%obj.playThread(1, "root");
@@ -39,18 +38,13 @@ package Eventide_Medical_Package
     				cancel(%obj.zombieMedpackSched);
     		}
     		else
-    		{
-    			if((%obj.zombieMedpackUse * 10) % 10 == 0)
-    			{
-    				if(getRandom(0, 1))
-    				{
-    					%obj.playThread(0, "activate");
-    				}
-    				else
-    				{
-    					%obj.playThread(3, "activate2");
-    				}
-    			}
+    		{    		    			
+				if((%obj.zombieMedpackUse * 10) % 10 == 0) 
+				switch(getRandom(0, 1))
+				{
+					case 1: %obj.playThread(0, "activate");
+					case 2: %obj.playThread(3, "activate2");
+				}    			
     
     			if(isObject(%client))
     			{
@@ -60,19 +54,15 @@ package Eventide_Medical_Package
     
     				for(%a = 0; %a < %div; %a++)
     				{
-    					if(%a == (%div - %tens))
-    					{
-    						%bars = %bars @ "<color:aaffaa>";
-    					}
-    
+    					if(%a == (%div - %tens)) %bars = %bars @ "<color:aaffaa>";
     					%bars = %bars @ "|";
     				}
     
     				commandToClient(%client, 'centerPrint', %bars, 0.25);
     			}
+
     			cancel(%obj.zombieMedpackSched);
-    			%obj.zombieMedpackSched = %this.schedule(100, "healLoop", %obj);
-    
+    			%obj.zombieMedpackSched = %this.schedule(100, "healLoop", %obj);    
     		}
     	}
     	else
@@ -124,17 +114,12 @@ package Eventide_Medical_Package
     		}
     		else
     		{
-    			if((%obj.GauzeUse * 10) % 10 == 0)
-    			{
-    				if(getRandom(0, 1))
-    				{
-    					%obj.playThread(0, "activate");
-    				}
-    				else
-    				{
-    					%obj.playThread(3, "activate2");
-    				}
-    			}
+				if((%obj.zombieMedpackUse * 10) % 10 == 0) 
+				switch(getRandom(0, 1))
+				{
+					case 1: %obj.playThread(0, "activate");
+					case 2: %obj.playThread(3, "activate2");
+				}
     
     			if(isObject(%client))
     			{
@@ -144,11 +129,7 @@ package Eventide_Medical_Package
     
     				for(%a = 0; %a < %div; %a++)
     				{
-    					if(%a == (%div - %tens))
-    					{
-    						%bars = %bars @ "<color:aaffaa>";
-    					}
-    
+    					if(%a == (%div - %tens)) %bars = %bars @ "<color:aaffaa>";
     					%bars = %bars @ "|";
     				}
     

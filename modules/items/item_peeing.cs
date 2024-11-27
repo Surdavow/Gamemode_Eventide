@@ -38,11 +38,8 @@ datablock ParticleEmitterData(PeeEmitter)
    phiReferenceVel  = 0;
    phiVariance      = 360;
    overrideAdvance = true;
-
    particles = PeeParticle;
-
    useEmitterColors = true;
-
 	uiName = "";
 };
 datablock ItemData(PeeingItem:PrintGun)

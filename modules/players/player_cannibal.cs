@@ -44,9 +44,7 @@ function PlayerCannibal::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
-	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
-	return %obj.KillerMelee(%this,4);
-	
+	if(%press && !%trig && %obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);	
 }
 
 function PlayerCannibal::onNewDatablock(%this,%obj)

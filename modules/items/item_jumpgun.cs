@@ -22,7 +22,6 @@ else
     $Jumpgun::CooldownAdmin = 3000;
 }
 
-
 datablock ItemData(jumpgunItem)
 {
  	category = "Weapon";

@@ -150,22 +150,20 @@ function PlayerAngler::EventideAppearance(%this,%obj,%client)
 
 function PlayerAngler::onImpact(%this, %obj, %col, %vec, %force)
 {
-	if(%obj.getState() !$= "Dead") 
-	{				
-		%zvector = getWord(%vec,2);
-		if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"land");
-	}
-	
 	Parent::onImpact(%this, %obj, %col, %vec, %force);	
+	
+	// Only play the animation if we are moving fast enough and not dead
+	if(%obj.getState() !$= "Dead" && %getWord(%vec,2) > %this.minImpactSpeed)
+	%obj.playthread(3,"land");
 }
 
 function PlayerAngler::onTrigger(%this, %obj, %trig, %press) 
 {		
 	if(%press) switch(%trig)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);
+		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4); //Only attack if we have enough energy
 			
-		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy/1)
+		case 4: if(isObject(%obj.getMountedImage(1)) && %obj.getEnergyLevel() >= %this.maxEnergy)
 				{
 					serverplay3d("angler_hookcast_sound",%obj.getposition());
 					%p = new projectile()
@@ -176,6 +174,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 						sourceObject = %obj;
 						client = %obj.client;
 					};
+
 					MissionCleanup.add(%p);
 					%obj.unmountImage(1);
 					%obj.playthread(2,"leftrecoil");
@@ -195,6 +194,7 @@ function PlayerAngler::onTrigger(%this, %obj, %trig, %press)
 					}								
 				}
 	}
+
 	Parent::onTrigger(%this, %obj, %trig, %press);	
 }
 
@@ -202,11 +202,6 @@ function PlayerAngler::onPeggFootstep(%this,%obj)
 {
 	serverplay3d("angler_walking" @ getRandom(1,8) @ "_sound", %obj.getHackPosition());
 	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
-}
-
-function PlayerAngler::onDisabled(%this, %obj, %state) //makes bots have death sound and animation and runs the required bot hole command
-{
-	Parent::onDisabled(%this, %obj, %state);
 }
 
 function PlayerAngler::idlesounds(%this,%obj)
@@ -221,12 +216,16 @@ function PlayerAngler::idlesounds(%this,%obj)
 	while((%targetid = containerSearchNext()) != 0 )
 	{
 		if(%targetid == %obj) continue;
+
 		%line = vectorNormalize(vectorSub(%targetid.getWorldBoxCenter(),%obj.getWorldBoxCenter()));
 		%dot = vectorDot(%obj.getEyeVector(), %line);
-		%obscure = containerRayCast(%obj.getEyePoint(),%targetid.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-		if(%dot > 0.55 && !isObject(%obscure) && minigameCanDamage(%obj,%targetid) == 1) %detectedvictims++;
+		%typemasks = $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType;
+		%obscure = containerRayCast(%obj.getEyePoint(),%targetid.getWorldBoxCenter(),%typemasks, %obj);
+
+		if(%dot > 0.55 && !isObject(%obscure) && minigameCanDamage(%obj,%targetid)) %detectedvictims = true;
 	}
 
+	//Play varying idle sounds depending there are survviors around
 	if(!%obj.isInvisible)
 	{
 		if(%detectedvictims) %obj.playaudio(0,"angler_Close" @ getRandom(0,2) @ "_sound");
@@ -246,15 +245,18 @@ function AnglerHookRope::onAdd(%this,%obj)
 	MissionCleanup.add(%obj);
 }
 
+//Base function originally by Conan, modified by Davow
 function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victims closer
 {		
-	if(!isObject(%obj) || (!isObject(%source = %obj.source) || %source.getState() $= "Dead") || !isObject(%end = %obj.end))//Check if the source (killer) and hook are still existing objects and that the killer is not dead
+	//Check if the source (killer) and hook are still existing objects and that the killer is not dead
+	if(!isObject(%obj) || (!isObject(%source = %obj.source) || %source.getState() $= "Dead") || !isObject(%end = %obj.end))
 	{
 		if(isObject(%obj)) %obj.delete();
 		return;
 	}
 
-	if((%end.getClassName() $= "Player" || %end.getClassName() $= "AIPlayer") && %end.getState() $= "Dead" || %end.getdataBlock().isDowned)//Check if the end attachment is a player and that it isn't dead, return and delete the object if this doesnt pass
+	//Check if the end attachment is a player and that it isn't dead, return and delete the object if this doesnt pass
+	if((%end.getClassName() $= "Player" || %end.getClassName() $= "AIPlayer") && %end.getState() $= "Dead" || %end.getdataBlock().isDowned)
 	{
 		if(isObject(%obj)) %obj.delete();
 		return;
@@ -297,7 +299,7 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 						%source.lastdamage = getsimtime();
 					}
 
-					if(%source.ChokeUpCount > 5)
+					if(%source.ChokeUpCount > 2)
 					{
 						%end.playaudio(0,"norm_cough" @ getrandom(1,3) @ "_sound");
 						%end.playthread(2,"plant");								

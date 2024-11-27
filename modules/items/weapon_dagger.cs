@@ -170,14 +170,14 @@ function daggerImage::onReady(%this, %obj, %slot)
 
 function daggerImage::onFire(%this, %obj, %slot)
 {
-	if(%obj.getstate() $= "Dead") return;
-	%obj.playthread(1, "shiftTo");
-
 	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+
+	%obj.playthread(1, "shiftTo");
 	%startpos = %obj.getMuzzlePoint(0);
-	%endpos = %obj.getMuzzleVector(0);
+	%endpos = vectorAdd(%startpos,VectorScale(%obj.getMuzzleVector(0),2.5));
+	%typemasks = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
 	
-	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,2.5)),$TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType,%obj);
+	%hit = containerRayCast(%startpos,%endpos,%typemasks,%obj);
 	if(isObject(%hit))
 	{
 		%hitpos = posFromRaycast(%hit);

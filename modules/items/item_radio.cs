@@ -39,20 +39,18 @@ function CRadioImage::onMount(%this,%obj,%slot)
 {	
 	if(!isObject(%obj) || %obj.radioEquipped) return;
 
-	%obj.RadioChannel = (%obj.RadioChannel+1) % ($Pref::Server::ChatMod::radioNumChannels);
-
-	for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
-	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
-	
-	%obj.radioEquipped = true;
-	%obj.stopAudio(3);
-	%obj.playaudio(3,"radio_change_sound");
-	%obj.client.centerPrint("\c4Radio is now enabled, use team chat to broadcast to other survivors.",4);
-
 	if(isObject(%obj.client))
 	{
+		%obj.client.centerPrint("\c4Radio is now equipped, use team chat to broadcast to other survivors.",4);
+
+		for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
+		if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;		
+
 		%obj.tool[%itemslot] = 0;
 		messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
 	}
-	if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);		
+
+	%obj.playaudio(3,"radio_change_sound");
+	%obj.radioEquipped = true;
+	%obj.unmountImage(%this.mountPoint);
 }

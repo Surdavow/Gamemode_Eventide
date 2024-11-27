@@ -1,5 +1,6 @@
 exec("./datablocks_lights.cs");
 exec("./datablocks_misc.cs");
+exec("./particle_bone.cs");
 exec("./datablocks_render.cs");
 exec("./datablocks_renowned.cs");
 exec("./datablocks_shopeffects.cs");
@@ -8,5 +9,4 @@ exec("./particle_killer.cs");
 exec("./particle_portal.cs");
 exec("./projectile_lightning.cs");
 exec("./datablocks_shire.cs");
-exec("./datablocks_knight.cs");
 exec("./projectile_footstepShake.cs");
