@@ -43,11 +43,13 @@ datablock fxLightData(RitualLight)
 	FadeTime		= 0.1;
 };
 
+
+
 function brickEventideRitual::ritualCheck(%this,%obj)
 {
-	if(!isObject(%obj) || %obj.ritualsPlaced >= 10) return;
+	if(!isObject(%obj)) return;
 
-	if(isObject(%minigame = getMiniGameFromObject($EventideEventCaller.getGroup().client)))
+	if(!%obj.ritualsPlaced >= 10 && isObject(%minigame = getMiniGameFromObject($EventideEventCaller.getGroup().client)))
 	{
 		initContainerRadiusSearch(%obj.getPosition(), 3, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
 		while(%scan = containerSearchNext())
@@ -144,6 +146,15 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 	// Cancel the ritual check to prevent duplicate calls.
 	cancel(%obj.ritualCheck);
 	%obj.ritualCheck = %this.schedule(500,ritualCheck,%obj);
+}
+
+function brickEventideRitual::clearRituals(%this, %obj)
+{	
+	Parent::onRemove(%this,%obj);
+	
+	%obj.ritualshape.delete();
+	%obj.bookshape.delete();
+	%obj.daggershape.delete();
 }
 
 function brickEventideRitual::onPlant(%this, %obj)

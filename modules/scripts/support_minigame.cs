@@ -69,7 +69,8 @@ package Eventide_Minigame
 		}
 
 		%minigame.randomizeEventideItems(true);
-		if (strlwr(%minigame.title) $= "eventide") 
+
+		if (strlwr(%minigame.title) $= "eventide" && $Pref::Server::ChatMod::lchatEnabled) 
 		$MinigameLocalChat = true;
     }
 
