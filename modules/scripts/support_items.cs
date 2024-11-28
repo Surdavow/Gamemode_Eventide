@@ -1,26 +1,35 @@
-EventidePickupItem(%obj,%item)
+EventidePickupItem(%obj, %item)
 {
-	//Skinwalker players and killers can't pick up items
-	if(%obj.isSkinwalker || %obj.getdataBlock().isKiller) return;
+    // Skinwalker players and killers can't pick up items
+    if (%obj.isSkinwalker || %obj.getDataBlock().isKiller) return;
 
-	//Check if the player already has an item in that slot
-	for(%i=0; %i < %obj.getdataBlock().maxTools; %i++)
-	if(%item.getDataBlock() == %obj.tool[%i]) return;
-	else 
-	{
-		%item.canPickup = false;
-		%obj.tool[%i] = %item.getDataBlock();
-		messageClient(%obj.client,'MsgItemPickup','',%i,%item.getDataBlock());
-		continue;
-	}
-	
-	//The parent function always returns an ID, so we need to check if that ID is valid
-	if(isObject(getMinigameFromObject(%obj)) && isObject(%item.spawnBrick)) 
-	{
-		%item.spawnBrick.setEmitter();
-		%item.delete();
-	}		
+    // Check if the player already has the item
+    for (%i = 0; %i < %obj.getDataBlock().maxTools; %i++)
+	if (%item.getDataBlock() == %obj.tool[%i]) return;
+
+    // Check for an available slot in the inventory
+    for (%i = 0; %i < %obj.getDataBlock().maxTools; %i++)
+    {
+        if (!isObject(%obj.tool[%i])) // If the slot is empty
+        {
+            %item.canPickup = false;
+            %obj.tool[%i] = %item.getDataBlock();
+            messageClient(%obj.client, 'MsgItemPickup', '', %i, %item.getDataBlock());
+
+            // Delete the item from the world
+            if (isObject(getMinigameFromObject(%obj)) && isObject(%item.spawnBrick)) 
+            {
+                %item.spawnBrick.setEmitter();
+                %item.delete();
+            }
+            return;
+        }
+    }
+
+    // Return if no slots are available (inventory is full)
+    return;
 }
+
 
 package Eventide_Items
 {
