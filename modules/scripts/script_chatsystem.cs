@@ -61,6 +61,9 @@ function ChatMod_ShowShapeName(%player, %message, %messageType)
 function ChatMod_GetMessagePrefix(%message) 
 {   
     if(!strLen(%message) > 1) return "" TAB "" TAB "";
+
+    if(strstr(%message,"!") != -1) return "\c3(SHOUT) " TAB "shout" TAB %messageEdit;
+    if(strstr(%message,"...") != -1) return "\c3(whisper) " TAB "whisper" TAB %messageEdit;
     
     // Handle invalid or short messages
     %messageEdit = getSubStr(%message, 1, strLen(%message) - 1);
@@ -68,8 +71,6 @@ function ChatMod_GetMessagePrefix(%message)
     switch$(getSubStr(%message, 0, 1)) 
     {
         case "&": return "\c6[\c4GLOBAL\c6] " TAB "global" TAB %messageEdit;
-        case ".": return "\c3(whisper) " TAB "whisper" TAB %messageEdit;
-        case "!": return "\c3(SHOUT) " TAB "shout" TAB %messageEdit;
         default: return "" TAB "" TAB %message;
     }
 }
