@@ -551,8 +551,12 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
-			if(isObject(%obj.billboardbot.lightToMount) && %obj.billboardbot.lightToMount.getDatablock().getName() !$= "downedBillboard") 
-			%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
+			if(isObject(%obj.billboardbot.lightToMount))
+			{
+				%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
+				%obj.billboardbot.lightToMount.schedule(400,setdatablock,"blankBillboard");
+			} 
+				
 			%obj.addhealth(-1);
 			%obj.setdamageflash(0.25);
 
