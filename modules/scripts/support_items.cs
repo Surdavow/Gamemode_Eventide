@@ -10,11 +10,12 @@ package Eventide_Items
 	{		
 		//Skinwalker players should not be able to pickup items
 		if(%obj.isSkinwalker || %obj.getdataBlock().isKiller) return false;
+		
 		%parent = Parent::Pickup(%obj,%item);
 
 		//Check if the player already has an item in that slot
 		for(%i=0; %i < %obj.getdataBlock().maxTools; %i++)
-		if(%item.getDataBlock() == %player.tool[%i]) return;
+		if(%item.getDataBlock() == %obj.tool[%i]) return;
 		
 		//The parent function always returns an ID, so we need to check if that ID is valid
 		if(isObject(%parent))
