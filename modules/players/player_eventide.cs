@@ -88,7 +88,12 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 			else %obj.billboardbot.lightToMount.clearScopeToClient(%client);			
 		}
 	}
-	else if(isObject(%obj.billboardbot.lightToMount)) %obj.billboardbot.lightToMount.setdatablock("blankBillboard");
+	else if(isObject(%obj.billboardbot.lightToMount)) 
+	{
+		cancel(%obj.billboardbot.lightschedule1);
+		cancel(%obj.billboardbot.lightschedule2);
+		%obj.billboardbot.lightToMount.setdatablock("blankBillboard");
+	}
 }
 
 function EventidePlayer::getControlCameraOriginalFov(%this,%obj)
@@ -553,8 +558,8 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		{
 			if(isObject(%obj.billboardbot.lightToMount))
 			{
-				%obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
-				%obj.billboardbot.lightToMount.schedule(400,setdatablock,"blankBillboard");
+				%obj.billboardbot.lightschedule1 = %obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
+				%obj.billboardbot.lightschedule2 = %obj.billboardbot.lightToMount.schedule(400,setdatablock,"blankBillboard");
 			} 
 				
 			%obj.addhealth(-1);

@@ -120,7 +120,7 @@ function ChatMod_LocalChat(%client, %message)
 		
 		else %prefix = (%client.customtitlebitmap !$= "") ? (%bitmap @ "") : "";
 
-        %prefix = isObject(%client.player) ? %prefix : "\c7[DEAD]";
+        %prefix = isObject(%client.player) ? %prefix : "\c7[DEAD] ";
 
         // If the target client is dead, send either a dead player message or a normal message depending on player status
         if (!isObject(%targetClient.player)) 
