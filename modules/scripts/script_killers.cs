@@ -1,5 +1,11 @@
 package Eventide_Killers
 {
+	function MiniGameSO::Reset(%obj, %client)
+	{
+		parent::Reset(%obj, %client);
+		$Eventide_currentKiller = "";
+	}
+	
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
 	{		
 		if(isObject(%client = %obj.getControllingClient ()) && isObject(%player = %client.Player)) 
@@ -63,6 +69,10 @@ function KillerSpawnMessage(%obj)
 	%minigame.playSound("round_start_sound");	
 
 	%obj.firstMessageSpawn = true;
+
+	//Stuff for the distant sound system.
+	$Eventide_currentKiller = %obj;
+	%obj.distantSoundData['initialized'] = true;
 }
 
 function Player::KillerMelee(%obj,%datablock,%radius)

@@ -54,7 +54,14 @@ function Player::playDistantSound(%player, %audioProfile)
     adjustObjectScopeToAll(%audioEmitter, false, %player.client); //Make sure only the target player hears it.
 
     //Get the millisecond length of the sound file, then divide it against 360 to make that the time needed to complete a rotation around the player.
-    %soundLength = alxGetWaveLen(%audioEmitter.profile.fileName);
+    if(isObject(%audioEmitter.profile))
+    {
+        %soundLength = alxGetWaveLen(%audioEmitter.profile.fileName);
+    }
+    else
+    {
+        %soundLength = alxGetWaveLen(%audioEmitter.fileName);
+    }
     %rotationSpeed = 360 / (%soundLength / 1000);
     %tickRate = 50;
 
