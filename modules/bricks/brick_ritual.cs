@@ -45,7 +45,7 @@ datablock fxLightData(RitualLight)
 
 function brickEventideRitual::ritualCheck(%this,%obj)
 {
-	if(!isObject(%obj)) return;
+	if(!isObject(%obj) || %obj.ritualsPlaced >= 10) return;
 
 	if(isObject(%minigame = getMiniGameFromObject($EventideEventCaller.getGroup().client)))
 	{

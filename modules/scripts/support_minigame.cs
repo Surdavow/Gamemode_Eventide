@@ -5,7 +5,7 @@ package Eventide_Minigame
 		Parent::endRound(%minigame, %winner, %resetTime);
 
 		// Disable local chat at the end of the round, let everyone banter at the end.
-		$Pref::Server::ChatMod::lchatEnabled = 0;
+		$MinigameLocalChat = false;
 		%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
 		
 		// Loop through all minigame members to play the round end sound
@@ -61,11 +61,16 @@ package Eventide_Minigame
 
 		if(isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
 		
-		if(isObject($EventideRitualBrick)) $EventideRitualBrick.ritualsPlaced = 0;
+		if(isObject($EventideRitualBrick)) 
+		{
+			$EventideRitualBrick.ritualsPlaced = 0;
+			$EventideRitualBrick.gemcount = 0;
+			$EventideRitualBrick.candlecount = 0;
+		}
 
 		%minigame.randomizeEventideItems(true);
 		if (strlwr(%minigame.title) $= "eventide") 
-		$Pref::Server::ChatMod::lchatEnabled = 1;
+		$MinigameLocalChat = true;
     }
 
     function MinigameSO::endGame(%minigame,%client)
@@ -73,7 +78,7 @@ package Eventide_Minigame
         Parent::endGame(%minigame,%client);
 
 		//Disable local chat
-		$Pref::Server::ChatMod::lchatEnabled = 0;
+		$MinigameLocalChat = false;
 		%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
 
         for(%i=0;%i<%minigame.numMembers;%i++)

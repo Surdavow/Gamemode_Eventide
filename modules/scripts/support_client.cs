@@ -78,7 +78,7 @@ package Eventide_GameConnection
 
 	function ServerCmdStartTalking(%client)
 	{
-		if($Pref::Server::ChatMod::lchatEnabled) return;
+		if($MinigameLocalChat) return;
 		else parent::ServerCmdStartTalking(%client);
 	}	
 
@@ -93,7 +93,7 @@ package Eventide_GameConnection
 		
 		else %client.clanPrefix = (%client.customtitlebitmap !$= "") ? (%bitmap @ "") : "";
 
-		if(!$Pref::Server::ChatMod::lchatEnabled)
+		if(!$MinigameLocalChat)
 		{
 			Parent::ServerCmdMessageSent(%client, %message);
 			return;
@@ -115,7 +115,7 @@ package Eventide_GameConnection
 	function ServerCmdTeamMessageSent(%client, %message)
 	{
 		%client.clanSuffix = "";
-		if(!$Pref::Server::ChatMod::lchatEnabled)
+		if(!$MinigameLocalChat)
 		{
 			Parent::ServerCmdTeamMessageSent(%client, %message);
 			return;
