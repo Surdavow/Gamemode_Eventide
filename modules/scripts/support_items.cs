@@ -1,3 +1,27 @@
+EventidePickupItem(%obj,%item)
+{
+	//Skinwalker players and killers can't pick up items
+	if(%obj.isSkinwalker || %obj.getdataBlock().isKiller) return;
+
+	//Check if the player already has an item in that slot
+	for(%i=0; %i < %obj.getdataBlock().maxTools; %i++)
+	if(%item.getDataBlock() == %obj.tool[%i]) return;
+	else 
+	{
+		%item.canPickup = false;
+		%obj.tool[%i] = %item.getDataBlock();
+		messageClient(%obj.client,'MsgItemPickup','',%i,%item.getDataBlock());
+		continue;
+	}
+	
+	//The parent function always returns an ID, so we need to check if that ID is valid
+	if(isObject(getMinigameFromObject(%obj)) && isObject(%item.spawnBrick)) 
+	{
+		%item.spawnBrick.setEmitter();
+		%item.delete();
+	}		
+}
+
 package Eventide_Items
 {
 	function Player::addItem(%player, %image, %client)
@@ -8,22 +32,8 @@ package Eventide_Items
 	
 	function Player::Pickup(%obj,%item)
 	{		
-		//Skinwalker players should not be able to pickup items
-		if(%obj.isSkinwalker || %obj.getdataBlock().isKiller) return false;
-		
-		%parent = Parent::Pickup(%obj,%item);
-
-		//Check if the player already has an item in that slot
-		for(%i=0; %i < %obj.getdataBlock().maxTools; %i++)
-		if(%item.getDataBlock() == %obj.tool[%i]) return;
-		
-		//The parent function always returns an ID, so we need to check if that ID is valid
-		if(isObject(%parent))
-		if(%obj.getDatablock().getName() $= "EventidePlayer" && isObject(getMinigameFromObject(%obj)) && isObject(%item.spawnBrick)) 
-		{
-			%item.spawnBrick.setEmitter();
-			%item.delete();
-		}		
+		if(!%obj.getDataBlock().isEventideModel) Parent::Pickup(%obj,%item);
+		else EventidePickupItem(%obj,%item);
 	}
 	
 	function ItemData::onAdd(%this, %obj)	
