@@ -70,6 +70,7 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 
+	//Create the billboard bot
 	if(!isObject(%obj.billboardbot))
 	{
 		%obj.billboardbot = new Player() 
@@ -80,15 +81,15 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 			lightToMount = "blankBillboard";
 		};
 
+		//Make it only visible to the survivors
 		for(%i = 0; %i < clientgroup.getCount(); %i++) 
 		if(isObject(%client = clientgroup.getObject(%i)) && isObject(%cobj = %client.player)) 
 		{
 			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller) %obj.billboardbot.lightToMount.ScopeToClient(%client);
-
 			else %obj.billboardbot.lightToMount.clearScopeToClient(%client);			
 		}
 	}
-	else if(isObject(%obj.billboardbot.lightToMount)) 
+	else if(isObject(%obj.billboardbot.lightToMount)) //Just cancel the schedules and set the datablock to blank
 	{
 		cancel(%obj.billboardbot.lightschedule1);
 		cancel(%obj.billboardbot.lightschedule2);
@@ -273,7 +274,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 
 								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
 								%hit.playThread(3,"jump");
-								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getForwardVector(),"1250"),"0 0 300"));
+								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getForwardVector(),"12550"),"0 0 300"));
 							}												
 						}
 					
@@ -556,6 +557,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
+			//Billboard bot functionality, just constantly switching between downed and blank billboard
 			if(isObject(%obj.billboardbot.lightToMount))
 			{
 				%obj.billboardbot.lightschedule1 = %obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
@@ -589,8 +591,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	Parent::onDisabled(%this,%obj);
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 
-	if(isObject(%obj.billboardbot)) 
-	%obj.billboardbot.delete();
+	//Delete the billboard bot
+	if(isObject(%obj.billboardbot)) %obj.billboardbot.delete();
 
 	if(isObject(%funcclient = %obj.client))
 	{
