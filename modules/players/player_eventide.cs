@@ -495,9 +495,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 			
 		if(isObject(%minigame = getMinigamefromObject(%obj))) 
 		{
-			// Play the game over sound.
-			for(%i = 0; %i < %minigame.numMembers; %i++)
-			if(isObject(%member = %minigame.member[%i])) %member.play2D("outofbounds_sound");	
+			%minigame.playSound("outofbounds_sound");
 
 			// This will only work team based Slayer minigames.
 			if(isObject(%teams = %minigame.teams))
@@ -536,14 +534,6 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	{
 		%obj.setHealth(%this.maxDamage);
 		if(getRandom(1,4) == 1) %obj.playaudio(3,"skinwalker_pain_sound");
-	}	
-
-	if(%obj.downedamount && %obj.getdamageLevel() < 25) %obj.downedamount = 0;	
-
-	if(%damage >= %this.maxDamage*2 && %obj.getState() $= "Dead" && %damageType != $DamageType::Suicide) 
-	{
-		%obj.spawnExplosion("goryExplosionProjectile",%obj.getScale());
-		%obj.schedule(1,delete);
 	}
 }
 

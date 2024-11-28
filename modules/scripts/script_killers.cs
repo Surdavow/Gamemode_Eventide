@@ -60,7 +60,7 @@ function KillerSpawnMessage(%obj)
 	}
 
 	%minigame.chatmsgall("<font:Impact:30>\c0" @ %message);
-	for(%i = 0; %i < %minigame.numMembers; %i++) if(isObject(%member = %minigame.member[%i])) %member.play2D("render_wind_sound");	
+	%minigame.playSound("round_start_sound");	
 
 	%obj.firstMessageSpawn = true;
 }

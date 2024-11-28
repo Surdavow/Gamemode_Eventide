@@ -97,3 +97,11 @@ package Eventide_Minigame
 // In case the package is already activated, deactivate it first before reactivating it
 if(isPackage(Eventide_Minigame)) deactivatePackage(Eventide_Minigame);
 activatePackage(Eventide_Minigame);
+
+function MiniGameSO::playSound(%minigame,%datablock)
+{
+	if(!isObject(%minigame) || !isObject(%datablock)) return;
+	
+	for(%i = 0; %i < %minigame.numMembers; %i++)
+	if(isObject(%member = %minigame.member[%i])) %member.play2D(%datablock);	
+}

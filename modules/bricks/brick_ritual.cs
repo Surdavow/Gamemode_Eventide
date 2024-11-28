@@ -128,11 +128,8 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			if(Eventide_ShapeGroup.getCount() >= 10)
 			{
 				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
+				%minigame.playSound("round_start_sound");				
 
-				for(%i = 0; %i < %minigame.numMembers; %i++) 
-				if(isObject(%member = %minigame.member[%i])) %member.play2D("round_start_sound");
-
-				//lets call that console brick
 				if(isObject($EventideEventCaller))
 				{
 					$InputTarget_["Self"] = $EventideEventCaller;		
