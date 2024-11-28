@@ -124,6 +124,7 @@ datablock ShapeBaseImageData(gem5Image : gem1Image)
 datablock StaticShapeData(brickGem1StaticShape)
 {
 	isInvincible = true;
+	isRitual = true;
 	shapeFile = "./models/gem1.dts";
 	placementSound = "gem_place_sound";
 };
@@ -131,21 +132,25 @@ datablock StaticShapeData(brickGem1StaticShape)
 datablock StaticShapeData(brickGem2StaticShape : brickGem1StaticShape)
 {
 	shapeFile = "./models/gem2.dts";
+	isRitual = true;
 };
 
 datablock StaticShapeData(brickGem3StaticShape : brickGem1StaticShape)
 {
 	shapeFile = "./models/Gem3.dts";
+	isRitual = true;
 };
 
 datablock StaticShapeData(brickGem4StaticShape : brickGem1StaticShape)
 {
 	shapeFile = "./models/Gem4.dts";
+	isRitual = true;
 };
 
 datablock StaticShapeData(brickGem5StaticShape : brickGem1StaticShape)
 {
 	shapeFile = "./models/Gem5.dts";
+	isRitual = true;
 };
 
 function brickGem1StaticShape::onAdd(%this,%obj)

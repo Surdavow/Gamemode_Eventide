@@ -102,6 +102,7 @@ datablock ShapeBaseImageData(candleImage)
 datablock StaticShapeData(brickCandleStaticShape)
 {
 	isInvincible = true;
+	isRitual = true;
 	shapeFile = "./models/candlestatic.dts";
 	placementSound = "candle_place_sound";
 };

@@ -153,6 +153,7 @@ datablock ShapeBaseImageData(daggerImage)
 datablock StaticShapeData(brickdaggerStaticShape)
 {
 	isInvincible = true;
+	isRitual = true;
 	shapeFile = "./models/daggerstatic.dts";
 	placementSound = "sworddagger_place_sound";
 };

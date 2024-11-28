@@ -61,11 +61,7 @@ package Eventide_Minigame
 
 		if(isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
 		
-		if($EventideRitualBrick)
-		{
-			$EventideRitualBrick.gemcount = 0;
-			$EventideRitualBrick.candlecount = 0;
-		}
+		if(isObject($EventideRitualBrick)) $EventideRitualBrick.ritualsPlaced = 0;
 
 		%minigame.randomizeEventideItems(true);
 		if (strlwr(%minigame.title) $= "eventide") 

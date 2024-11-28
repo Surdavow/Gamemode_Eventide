@@ -36,7 +36,7 @@ datablock ShapeBaseImageData(bookImage)
     projectileType = Projectile;
 
     staticShape = "brickBookStaticShape";
-    isRitual = true;    
+    isRitual = true;
 
     melee = true;
     doRetraction = false;
@@ -50,6 +50,7 @@ datablock ShapeBaseImageData(bookImage)
 datablock StaticShapeData(brickBookStaticShape)
 {
 	isInvincible = true;
+    isRitual = true;
 	shapeFile = "./models/book.dts";
 	placementSound = "book_place_sound";
 };
