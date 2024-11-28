@@ -1,4 +1,4 @@
-EventidePickupItem(%obj, %item)
+function EventidePickupItem(%obj, %item)
 {
     // Skinwalker players and killers can't pick up items
     if (%obj.isSkinwalker || %obj.getDataBlock().isKiller) return;
