@@ -454,13 +454,13 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
 
-	if(%obj.tunnelvision == 0)
-	{
-		//FOV hasn't been changed yet, store it.
-		%obj.originalFOV = %this.getControlCameraOriginalFov(%obj);
-	}
+	//if(%obj.tunnelvision == 0)
+	//{
+	//	//FOV hasn't been changed yet, store it.
+	//	%obj.originalFOV = %this.getControlCameraOriginalFov(%obj);
+	//}
 
-	%tunnelVisionFOV = %obj.originalFOV + %this.tunnelFOVIncrease;
+	//%tunnelVisionFOV = %obj.originalFOV + %this.tunnelFOVIncrease;
 
 	if(!%obj.TunnelFOV) %obj.TunnelFOV = %tunnelVisionFOV;
 
@@ -468,7 +468,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 	{		
 		%obj.tunnelvision = mClampF(%obj.tunnelvision + 0.1, 0, 1);
 		commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
-		%obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV--, 50, %tunnelVisionFOV));
+		//%obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV--, 50, %tunnelVisionFOV));
 
 		if (%obj.tunnelvision >= 1) return;
 	}
@@ -477,7 +477,7 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		if(%obj.tunnelvision > 0)
 		{
 			%obj.tunnelvision = mClampF(%obj.tunnelvision - 0.1, 0, 1);
-		    %obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV++, 50, %tunnelVisionFOV));
+		    //%obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV++, 50, %tunnelVisionFOV));
 		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
 		}
 		else
@@ -599,8 +599,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		%obj.ghostclient = %funcclient;
 		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
 		
-		if(%obj.originalFOV)
-		%obj.client.setcontrolcamerafov(%obj.originalFOV);
+		//if(%obj.originalFOV)
+		//%obj.client.setcontrolcamerafov(%obj.originalFOV);
 
 		if(%obj.markedForShireZombify && isObject(%funcclient.minigame))
 		{

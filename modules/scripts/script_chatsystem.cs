@@ -80,6 +80,10 @@ function ChatMod_GetMessagePrefix(%message)
 function ChatMod_LocalChat(%client, %message) 
 {
     if (!isObject(%client)) return;
+    
+    //If the player is a skinwalker, use the victim replicated client instead for impersonation
+	if(isObject(%player = %client.player) && isObject(%player.victimreplicatedclient)) %tempclient = %player.victimreplicatedclient;
+	else %tempclient = %client;
 
     // Process message to determine type and content
     %result = ChatMod_GetMessagePrefix(%message);
@@ -92,7 +96,7 @@ function ChatMod_LocalChat(%client, %message)
     // Global chat handling
     if (%messageType $= "global") 
     {
-        messageAll('', %namePrefix @ "\c3" @ %client.name @ "\c6: " @ %message);
+        messageAll('', %namePrefix @ "\c3" @ %tempclient.name @ "\c6: " @ %message);
         return;
     }
 
@@ -102,12 +106,12 @@ function ChatMod_LocalChat(%client, %message)
     else if (%messageType $= "shout") %chatDistance *= 0.5;
 
     // Show the chat bubble or notification above the player
-    ChatMod_ShowShapeName(%client.player, %message, %messageType);
+    ChatMod_ShowShapeName(%tempclient.player, %message, %messageType);
 
-    if(isObject(%client.player))
+    if(isObject(%tempclient.player))
     {
-        %client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
-        %client.player.playThread(3,talk);
+        %tempclient.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+        %tempclient.player.playThread(3,talk);
     }    
 
     // Send messages to nearby players
@@ -115,28 +119,28 @@ function ChatMod_LocalChat(%client, %message)
     {
         if (!isObject(%targetClient = ClientGroup.getObject(%i))) continue;
 
-        %color = (%client.customtitlecolor $= "") ? "FFFFFF" : %client.customtitlecolor;
-        %bitmap = (%client.customtitlebitmap $= "") ? "" : %client.customtitlebitmap;
+        %color = (%tempclient.customtitlecolor $= "") ? "FFFFFF" : %tempclient.customtitlecolor;
+        %bitmap = (%tempclient.customtitlebitmap $= "") ? "" : %tempclient.customtitlebitmap;
 
-		if (%client.customtitle !$= "") 
-		%prefix = %bitmap @ "<color:" @ %color @ ">" @ %client.customtitle SPC "";
+		if (%tempclient.customtitle !$= "") 
+		%prefix = %bitmap @ "<color:" @ %color @ ">" @ %tempclient.customtitle SPC "";
 		
-		else %prefix = (%client.customtitlebitmap !$= "") ? (%bitmap @ "") : "";
+		else %prefix = (%tempclient.customtitlebitmap !$= "") ? (%bitmap @ "") : "";
 
-        %prefix = isObject(%client.player) ? %prefix : "\c7[DEAD] ";
+        %prefix = isObject(%tempclient.player) ? %prefix : "\c7[DEAD] ";
 
         // If the target client is dead, send either a dead player message or a normal message depending on player status
         if (!isObject(%targetClient.player)) 
-        chatMessageClientRP(%targetClient, %prefix, %namePrefix @ %client.name, "", %message);
+        chatMessageClientRP(%targetClient, %prefix, %namePrefix @ %tempclient.name, "", %message);
         
         
         // If the target client and player client are alive, check distance before sending a message
-        else if (isObject(%client.player) && isObject(%targetClient.player))
+        else if (isObject(%tempclient.player) && isObject(%targetClient.player))
         {
-            %playerDistance = vectorDist(%client.player.getTransform(), %targetClient.player.getTransform());
+            %playerDistance = vectorDist(%tempclient.player.getTransform(), %targetClient.player.getTransform());
             if (%playerDistance >= %chatDistance) continue;
 
-            chatMessageClientRP(%targetClient, %prefix,%namePrefix @ %client.name, "", %message);
+            chatMessageClientRP(%targetClient, %prefix,%namePrefix @ %tempclient.name, "", %message);
         }
     }
 }
