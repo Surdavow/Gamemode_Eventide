@@ -44,11 +44,32 @@ function PlayerCannibal::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
-	if(%press && !%trig && %obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);	
+	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
+	{
+		%obj.KillerMelee(%this,4);
+		%obj.faceConfigShowFace("Attack");
+		return;
+	}
 }
 
 function PlayerCannibal::onNewDatablock(%this,%obj)
 {
+	//Face system functionality.
+	%obj.createEmptyFaceConfig($Eventide_FacePacks["cannibal"]);
+	%facePack = %obj.faceConfig.getFacePack();
+	%obj.faceConfig.face["Neutral"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Neutral"));
+	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
+
+	%obj.faceConfig.face["Attack"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Attack"));
+	%obj.faceConfig.setFaceAttribute("Attack", "length", 500);
+
+	%obj.faceConfig.face["Pain"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Pain"));
+	%obj.faceConfig.setFaceAttribute("Pain", "length", 1000);
+	
+	%obj.faceConfig.face["Blink"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Blink"));
+	%obj.faceConfig.setFaceAttribute("Blink", "length", 100);
+
+	//Everything else.
 	Parent::onNewDatablock(%this,%obj);
 	%obj.mountImage("meleeKnifeImage",0);
 	%obj.schedule(10,onKillerLoop);	
@@ -97,4 +118,14 @@ function PlayerCannibal::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand_blood", "0.7 0 0 1");
 	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
 	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
+}
+
+function PlayerCannibal::onDamage(%this, %obj, %delta)
+{
+	Parent::onDamage(%this, %obj, %delta);
+
+	if(%obj.getState() !$= "Dead")
+	{
+		%obj.faceConfigShowFace("Pain");
+	}
 }
