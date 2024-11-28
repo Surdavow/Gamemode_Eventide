@@ -15,13 +15,9 @@ function EventidePickupItem(%obj, %item)
             %item.canPickup = false;
             %obj.tool[%i] = %item.getDataBlock();
             messageClient(%obj.client, 'MsgItemPickup', '', %i, %item.getDataBlock());
-
-            // Delete the item from the world
-            if (isObject(getMinigameFromObject(%obj)) && isObject(%item.spawnBrick)) 
-            {
-                %item.spawnBrick.setEmitter();
-                %item.delete();
-            }
+			%item.spawnBrick.setEmitter();
+			%item.delete();
+            
             return;
         }
     }
@@ -41,7 +37,7 @@ package Eventide_Items
 	
 	function Player::Pickup(%obj,%item)
 	{		
-		if(!%obj.getDataBlock().isEventideModel) Parent::Pickup(%obj,%item);
+		if(!%obj.getDataBlock().isEventideModel && isObject(getMinigameFromObject(%obj))) Parent::Pickup(%obj,%item);
 		else EventidePickupItem(%obj,%item);
 	}
 	
