@@ -135,7 +135,7 @@ package Eventide_GameConnection
 				ChatMod_LocalChat(%client, %message);
 			}
 
-			else messageClient(%client,'',"\c5You need to use a radio to use team chat.");		
+			else messageClient(%client,'',"\c5You need to find a radio to use team chat.");		
 		}
 		else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
 		%client.lastMessageSent = %client;			
