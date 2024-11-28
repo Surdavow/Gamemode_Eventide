@@ -153,7 +153,7 @@ function PlayerAngler::onImpact(%this, %obj, %col, %vec, %force)
 	Parent::onImpact(%this, %obj, %col, %vec, %force);	
 	
 	// Only play the animation if we are moving fast enough and not dead
-	if(%obj.getState() !$= "Dead" && %getWord(%vec,2) > %this.minImpactSpeed)
+	if(%obj.getState() !$= "Dead" && getWord(%vec,2) > %this.minImpactSpeed)
 	%obj.playthread(3,"land");
 }
 

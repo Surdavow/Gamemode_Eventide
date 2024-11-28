@@ -1,5 +1,3 @@
-$Player::NoItemsPickup::NoAddItem = 0;
-
 package Eventide_Player
 {
 	function Armor::onImpact(%this, %obj, %col, %vec, %force)

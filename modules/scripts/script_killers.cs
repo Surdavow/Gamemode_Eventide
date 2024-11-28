@@ -1,18 +1,5 @@
 package Eventide_Killers
 {
-	function ShapeBase::pickup(%obj, %item)
-	{
-        if(%obj.getDataBlock().getName() $= "PlayerSkinwalker") return;                   
-        
-        Parent::pickup(%obj, %item);
-    }
-
-    function Player::addItem(%player, %image, %client)
-	{
-		if(!$Player::PlayerSkinwalker::NoAddItem)
-		Parent::addItem(%player, %image, %client);		
-    }
-
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
 	{		
 		if(isObject(%client = %obj.getControllingClient ()) && isObject(%player = %client.Player)) 

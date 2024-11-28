@@ -1,28 +1,35 @@
 package Eventide_Items
 {
+	function Player::addItem(%player, %image, %client)
+	{
+		if(!%obj.isSkinwalker)
+		Parent::addItem(%player, %image, %client);		
+    }
+	
 	function Player::Pickup(%obj,%item)
 	{		
 		//Skinwalker players should not be able to pickup items
 		if(%obj.isSkinwalker || %obj.getdataBlock().isKiller) return false;
 		%parent = Parent::Pickup(%obj,%item);
-
-		if(%parent == 1)
-		if(%obj.getDatablock().getName() $= "EventidePlayer" && isObject(getMinigameFromObject(%obj))) 
+		
+		//The parent function always returns an ID, so we need to check if that ID is valid
+		if(isObject(%parent))
+		if(%obj.getDatablock().getName() $= "EventidePlayer" && isObject(getMinigameFromObject(%obj)) && isObject(%item.spawnBrick)) 
 		{
-			if(isObject(%brick = %item.spawnBrick)) %brick.setEmitter();
+			%item.spawnBrick.setEmitter();
 			%item.delete();
 		}		
 	}	
 	
 	function ItemData::onAdd(%this, %obj)
 	{				
-		if (!%obj.static) itemEmitterLoop(%obj);
+		if(!%obj.static) itemEmitterLoop(%obj);
 		parent::onAdd(%this,%obj);
 	}
 
 	function ItemData::onRemove(%this, %obj)
-	{				
-		if (isObject(%obj.emitter)) %obj.emitter.delete();
+	{
+		if(isObject(%obj.emitter)) %obj.emitter.delete();
 		parent::onRemove(%this,%obj);
 	}	
 
@@ -56,10 +63,6 @@ package Eventide_Items
 // In case the package is already activated, deactivate it first before reactivating it
 if(isPackage(Eventide_Items)) deactivatePackage(Eventide_Items);
 activatePackage(Eventide_Items);
-
-//////////////////////
-// Item ammo functions
-//////////////////////
 
 function ItemAmmo_AmmoImage::onSelect(%data,%obj,%slot)
 {

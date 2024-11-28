@@ -1,6 +1,7 @@
 exec("./support_extraresources.cs");
 exec("./support_ghostingUtils.cs");
 exec("./support_bricks.cs");
+exec("./support_bricktext.cs");
 exec("./support_centerprintmenusystem.cs");
 exec("./support_client.cs");
 exec("./support_datainstance.cs");
