@@ -74,7 +74,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 {
 	if(!isObject(%obj)) return;
 
-	%this.BrickText(%obj,"Place your rituals by dropping them here!", "1 1 0", "25");	
+	%this.BrickText(%obj,"Place your rituals by dropping them here!", "0.8 0.1 0.75", "25");	
 
 	if(%obj.ritualsPlaced < 10 && isObject(%minigame = getMiniGameFromObject($EventideEventCaller.getGroup().client)))
 	{
@@ -84,7 +84,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			// If the player is near the ritual and the ritual is not complete, give a message.
 			if((%scan.getType() & $TypeMasks::PlayerObjectType)&& isObject(Eventide_MinigameGroup) && Eventide_MinigameGroup.getCount() < 10)
 			{
-				%obj.BrickText("Rituals needed: " @ 10-%obj.ritualsPlaced, "1 1 0", "20");
+				%obj.BrickText(%obj,"Rituals needed: " @ 10-%obj.ritualsPlaced, "0.8 0.1 0.75", "20");
 				continue;
 			}
 
