@@ -28,7 +28,7 @@ datablock PlayerData(DefaultBillboardMount)
 
 datablock PlayerData(OverheadBillboardMount : DefaultBillboardMount)
 {
-    shapeFile = "./billboardMount.dts";
+    shapeFile = "Add-ons/Gamemode_Eventide/modules/misc/models/billboardmount.dts";
 };
 
 function BillboardMount::OnAdd(%db,%bbm)

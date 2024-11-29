@@ -14,6 +14,7 @@ exec("./support_player.cs");
 exec("./support_statuseffect.cs");
 exec("./support_stringutilities.cs");
 exec("./support_vectorutilities.cs");
+exec("./support_billboard.cs");
 
 exec("./script_chatsystem.cs");
 exec("./script_commands.cs");

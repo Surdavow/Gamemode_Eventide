@@ -1,4 +1,5 @@
 exec("./datablocks_lights.cs");
+exec("./datablocks_billboard.cs");
 exec("./datablocks_misc.cs");
 exec("./particle_bone.cs");
 exec("./datablocks_render.cs");
