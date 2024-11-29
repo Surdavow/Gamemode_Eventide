@@ -74,7 +74,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 {
 	if(!isObject(%obj)) return;
 
-	%obj.BrickText("Place your rituals by dropping them here!", "1 1 0", "25");	
+	%this.BrickText(%obj,"Place your rituals by dropping them here!", "1 1 0", "25");	
 
 	if(%obj.ritualsPlaced < 10 && isObject(%minigame = getMiniGameFromObject($EventideEventCaller.getGroup().client)))
 	{
