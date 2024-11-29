@@ -84,7 +84,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			// If the player is near the ritual and the ritual is not complete, give a message.
 			if((%scan.getType() & $TypeMasks::PlayerObjectType)&& isObject(Eventide_MinigameGroup) && Eventide_MinigameGroup.getCount() < 10)
 			{
-				%obj.BrickText(%obj,"Rituals needed: " @ 10-%obj.ritualsPlaced, "0.8 0.1 0.75", "20");
+				%this.BrickText(%obj,"Rituals needed: " @ 10-%obj.ritualsPlaced, "0.8 0.1 0.75", "20");
 				continue;
 			}
 
