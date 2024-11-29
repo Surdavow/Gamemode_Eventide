@@ -458,7 +458,7 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
 
 function GameConnection::PlaySkullFrames(%client,%frame)
 {
-    if(!isObject(%client) || %frame > 12) return;
+    if(!isObject(%client) || %frame > 10) return;
 	if(!%frame) %frame = 1;
 
 	%client.centerprint("<br><br><bitmap:Add-ons/Server_SkullFrames/SkullFrame" @ %frame @ ">",1);
