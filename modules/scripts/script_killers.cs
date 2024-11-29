@@ -459,13 +459,13 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
 function GameConnection::PlaySkullFrames(%client,%frame)
 {
     if(!isObject(%client) || %frame > 12) return;
-	if(!%frame) %frame = 0;
+	if(!%frame) %frame = 1;
 
-	%client.centerprint("<br><br><br><bitmap:Add-ons/Server_SkullFrames/SkullFrame" @ %frame @ ">");
+	%client.centerprint("<br><br><bitmap:Add-ons/Server_SkullFrames/SkullFrame" @ 1 @ ">");
 
 	// Schedule next frame, preventing duplication
 	cancel(%client.SkullFrameSched);
-	%client.SkullFrameSched = %client.schedule(60, PlaySkullFrames, %client, %frame++);
+	%client.SkullFrameSched = %client.schedule(60, PlaySkullFrames, %frame++);
 }
 
 function GameConnection::StopChaseMusic(%client)
