@@ -41,7 +41,7 @@ function PlayerLurkerInvis::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);
 	%obj.isInvisible = true;	
-	%obj.setScale("0.9 0.9 1.2");
+	%obj.setScale("1 1 1");
 }
 
 function PlayerLurkerInvis::EventideAppearance(%this,%obj,%client)

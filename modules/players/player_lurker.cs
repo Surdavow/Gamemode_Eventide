@@ -9,8 +9,8 @@ datablock PlayerData(PlayerLurker : PlayerRenowned)
 	hitobscureprojectile = "";
 	meleetrailskin = "ragged";
 
-	killerChaseLvl1Music = "musicData_OUT_LurkerNear";
-	killerChaseLvl2Music = "musicData_OUT_LurkerChase";
+	killerChaseLvl1Music = "musicData_Eventide_LurkerNear";
+	killerChaseLvl2Music = "musicData_Eventide_LurkerChase";
 
 	killeridlesound = "";
 	killeridlesoundamount = 5;
@@ -53,46 +53,22 @@ function PlayerLurker::onPeggFootstep(%this,%obj)
 
 function PlayerLurker::onNewDatablock(%this,%obj)
 {
+	%obj.createEmptyFaceConfig($Eventide_FacePacks["knight"]);
+	%facePack = %obj.faceConfig.getFacePack();
+	%obj.faceConfig.face["Neutral"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Neutral"));
+	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
+	
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
-	%obj.setScale("0.9 0.9 1.2");
+	%obj.setScale("1.2 1.2 1.2");
 	%obj.isInvisible = false;
+	
+	if(isObject(%obj.faceConfig))
+	%obj.faceConfigShowFaceTimed("Neutral", -1);
 }
 
 function PlayerLurker::EventideAppearance(%this,%obj,%client)
-{
-	%obj.hideNode("ALL");	
-	%obj.unhideNode("pants");
-	%obj.unhideNode("headskin");
-	%obj.unhideNode("larm");
-	%obj.unhideNode("rarm");
-	%obj.unhideNode("rshoe");
-	%obj.unhideNode("lshoe");
-	%obj.unhideNode("lhand");
-	%obj.unhideNode("rhand");
-	%obj.unhideNode("chest");
-
-	%hoodieColor = "0.0 0.18 0.1 1";
-	%pantsColor = "0.075 0.075 0.075 1";
-	%skinColor = "0.83 0.73 0.66 1";
-
-	%obj.setFaceName("Madmanplain");
-	%obj.setDecalName("francis");
-	%obj.setNodeColor("rarm",%hoodieColor);
-	%obj.setNodeColor("larm",%hoodieColor);
-	%obj.setNodeColor("chest",%hoodieColor);
-	%obj.setNodeColor("pants",%pantsColor);
-	%obj.setNodeColor("rshoe",%pantsColor);
-	%obj.setNodeColor("lshoe",%pantsColor);
-	%obj.setNodeColor("rhand",%skinColor);
-	%obj.setNodeColor("lhand",%skinColor);
-	%obj.setNodeColor("headskin",%skinColor);
-	%obj.unhideNode("chest_blood_front");
-	%obj.unhideNode("Lhand_blood");
-	%obj.unhideNode("Rhand_blood");
-	%obj.unhideNode("lshoe_blood");
-	%obj.unhideNode("rshoe_blood");
-	
+{	
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
 	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");

@@ -37,7 +37,6 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	maxBackwardSpeed = 3.57;
 	maxSideSpeed = 5.36;
 	//+5% Speed
-	jumpForce = 0;
 	PainSound = "huntress_pain";
 };
 

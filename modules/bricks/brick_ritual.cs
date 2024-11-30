@@ -43,21 +43,48 @@ datablock fxLightData(RitualLight)
 	FadeTime		= 0.1;
 };
 
+function brickEventideRitual::BrickText(%this, %obj, %name, %color, %distance, %client)
+{
+    %player = %client.player;
 
+    if (isObject(%obj.textShape))
+    {
+        %obj.textShape.setShapeName(%name);
+        %obj.textShape.setShapeNameColor(%color);
+        %obj.textShape.setShapeNameDistance(%distance);
+        %obj.bricktext = %name;
+    }
+    else
+    {
+        %obj.textShape = new StaticShape()
+        {
+            datablock = BrickTextEmptyShape;
+            position = vectorAdd(%obj.getPosition(), "0 0" SPC %obj.getDatablock().brickSizeZ / 9 + "0.166");
+            scale = "0.1 0.1 0.1";
+        };
+
+        %obj.textShape.setShapeName(%name);
+        %obj.textShape.setShapeNameColor(%color);        
+        %obj.textShape.setShapeNameDistance(%distance);
+        %obj.bricktext = %name;
+    }
+}
 
 function brickEventideRitual::ritualCheck(%this,%obj)
 {
 	if(!isObject(%obj)) return;
 
+	%this.BrickText(%obj,"Place your rituals by dropping them here!", "0.8 0.1 0.75", "25");	
+
 	if(%obj.ritualsPlaced < 10 && isObject(%minigame = getMiniGameFromObject($EventideEventCaller.getGroup().client)))
 	{
-		initContainerRadiusSearch(%obj.getPosition(), 3, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
+		initContainerRadiusSearch(%obj.getPosition(), 2.5, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
 		while(%scan = containerSearchNext())
 		{
 			// If the player is near the ritual and the ritual is not complete, give a message.
-			if((%scan.getType() & $TypeMasks::PlayerObjectType) && isObject(%scan.client) && isObject(Eventide_MinigameGroup) && Eventide_MinigameGroup.getCount() < 10)
+			if((%scan.getType() & $TypeMasks::PlayerObjectType)&& isObject(Eventide_MinigameGroup) && Eventide_MinigameGroup.getCount() < 10)
 			{
-				%scan.client.centerprint("\c3Drop your ritual items on the ritual to complete it!",1);
+				%this.BrickText(%obj,"Rituals needed: " @ 10-%obj.ritualsPlaced, "0.8 0.1 0.75", "20");
 				continue;
 			}
 

@@ -60,14 +60,13 @@ package Eventide_Player
 		%obj.getMountedObject(%i).delete();
 	}
 
-	function Player::ActivateStuff(%player)
+	function Player::ActivateStuff (%player)
 	{
-		if(!isObject(%player) || !%player.getState() !$= "Dead") return;
 		Parent::ActivateStuff(%player);
 		
-		if(isFunction(%player.getDataBlock().getName(),onActivate)) 
+		if(isObject(%player) && %player.getState() !$= "Dead" && isFunction(%player.getDataBlock().getName(),onActivate)) 
 		return %player.getDataBlock().onActivate(%player);
-	}	
+	}
 };
 
 // In case the package is already activated, deactivate it first before reactivating it
