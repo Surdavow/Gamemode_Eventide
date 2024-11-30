@@ -547,14 +547,13 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
 	//Pseudo health for the fighter class, gives the player a temporary health boost until they are hurt again
-	if(%obj.pseudoHealth)
+	if(%obj.pseudoHealth > 0)
 	{
 		%obj.pseudoHealth -= %damage;
 		%obj.addhealth(mAbs(%damage)*2);
 		%obj.mountimage("HealImage",3);
 		
-		if(isObject(%obj.client))
-		%obj.client.play2D("printfiresound");				
+		if(isObject(%obj.client)) %obj.client.play2D("printfiresound");				
 	}
 
 	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
