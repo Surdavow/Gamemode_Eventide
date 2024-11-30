@@ -68,13 +68,18 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %class $= "") return;
 
-	%obj.client.centerprintall("<font:impact:40>\c3Your class is" SPC %class @ "!",2);
+	%obj.client.centerprint("<font:impact:40>\c3Your class is" SPC %class @ "!",3);
 
 	switch$(%class)
 	{
-		case "mender":  %obj.tool[%obj.currTool] = ZombieMedpackItem.getID();
-         				messageClient(%obj.client,'MsgItemPickup','',%obj.currTool,ZombieMedpackItem.getID());
-		case "runner": 	%obj.setTempSpeed(2);						
+		case "mender":  %healitem = (getRandom(1)) ? GauzeItem.getID() : ZombieMedpackItem.getID();
+						%obj.tool[0] = %healitem;
+         				messageClient(%obj.client,'MsgItemPickup','',0,%healitem);
+
+		case "runner": 	%obj.setTempSpeed(1.25);
+						%obj.tool[0] = SodaItem.getID();
+         				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
+
 		case "hoarder": %obj.setScale("0.5 0.5 0.5");
 		case "fighter":
 		case "tinkerer":
