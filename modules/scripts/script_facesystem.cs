@@ -614,8 +614,18 @@ package Gamemode_Eventide_FaceSystem
         parent::onNewDataBlock(%this, %player);
         if(isObject(%player.client) && !%player.getDataBlock().isKiller)
         {
+            if(isObject(%obj.victimreplicatedclient))
+            {
+                //Skinwalker support: Need to pull the face appearance from the victim's client, not the skinwalker's.
+                %client = %obj.victimreplicatedclient;
+            }
+            else
+            {
+                %client = %player.client;
+            }
+
             //Curvy chest = female, blocky chest = male.
-            %player.createFaceConfig((%player.client.chest ? $Eventide_FacePacks["female"] : $Eventide_FacePacks["male"]));
+            %player.createFaceConfig((%client.chest ? $Eventide_FacePacks["female"] : $Eventide_FacePacks["male"]));
         }
     }
     function EventidePlayer::onDisabled(%this, %player, %state)
