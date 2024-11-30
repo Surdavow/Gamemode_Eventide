@@ -37,7 +37,7 @@ package Eventide_Minigame
 			for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
 			%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = 0;
 
-			%minigame.assignSurvivorClasses();
+			%minigame.schedule(33,assignSurvivorClasses);
 			
 			// Remove the Eventide music emitter if it exists and reset the music level
 			if (isObject(%client.EventidemusicEmitter))
@@ -113,25 +113,35 @@ function MiniGameSO::assignSurvivorClasses(%minigame)
 	return;
 	
 	// Create a temporary simset to hold the team members
-	if(!isObject(Eventide_MemberSet)) %memberSet = new SimSet(Eventide_MemberSet);
+	%memberSet = new SimSet();
 
 	// Loop through each team and add the team members to the temporary simset
 	for(%i = 0; %i < %teams.getCount(); %i++)
-	if(isObject(%team = %teams.getObject(%i) && strlwr(%team.name $= "survivors")))
+	if(isObject(%team = %teams.getObject(%i)) && strlwr(%team.name $= "survivors"))
 	{
 		for(%j = 0; %j < %team.numMembers; %j++) if(isObject(%team.member[%j].player))
-		%memberSet.add(%team.member[%j].player);		
+		%memberSet.add(%team.member[%j]);	
+	}
+
+	// Return if there are no team members
+	if(!%memberset.getCount())
+	{
+		%memberset.delete();
+		return;
 	}
 
 	// Assign the survivor classes to a random team member, preventing duplicates
 	for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
 	{
 		%randomMember = %memberSet.getObject(getRandom(0,%memberSet.getCount()-1));
-		if(%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] == %randomMember || %randommember.survivorClass = getWord($Eventide_SurvivorClasses,%i)) 
+		if(%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] == %randomMember || %randommember.player.survivorClass !$= "") 
 		continue;
 
+		%randomMember.player.survivorClass = getWord($Eventide_SurvivorClasses,%i);
 		%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = %randomMember;
-		%randomMember.player.assignClass(%obj,getWord($Eventide_SurvivorClasses,%i));
+
+		if(%randomMember.player.getdataBlock().getName() $= "EventidePlayer")
+		%randomMember.player.getDatablock().assignClass(%randomMember.player,getWord($Eventide_SurvivorClasses,%i));
 	}
 
 	// Delete the temporary simset
