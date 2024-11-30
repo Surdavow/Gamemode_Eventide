@@ -552,6 +552,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		%obj.pseudoHealth -= %damage;
 		%obj.addhealth(mAbs(%damage)*2);
 		%obj.mountimage("HealImage",3);
+		%obj.setwhiteout(0.1);
 		
 		if(isObject(%obj.client)) %obj.client.play2D("printfiresound");				
 	}
