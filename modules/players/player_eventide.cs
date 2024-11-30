@@ -68,11 +68,15 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %class $= "") return;
 
+	%obj.client.centerprintall("<font:impact:40>\c3Your class is" SPC %class @ "!",2);
+
 	switch$(%class)
 	{
-		case "mender": %obj.setScale("1.15 1.15 1.15");
-		case "runner": %obj.setTempSpeed(2);
-		case "hoarder": %obj.setNodeColor("ALL","1 1 1 1");
+		case "mender":  %obj.tool[%obj.currTool] = "ZombieMedpackItem";
+         				messageClient(%obj.client,'MsgItemPickup','',%obj.currTool,"ZombieMedpackItem");
+		case "runner": 	%obj.setTempSpeed(2);						
+		case "hoarder": %obj.setDatablock("PlayerSkullwolf");
+						%obj.setScale("2 2 2");
 		case "fighter":
 		case "tinkerer":
 	}
