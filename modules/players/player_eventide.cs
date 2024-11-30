@@ -293,7 +293,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 								%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
 		
 								if(%hit == %obj || isObject(%obscure) || %dot < 0.5) continue;
-								if(%hit.getState() $= "Dead" || %hit.getDatablock().resistMelee) continue;
+								if(%hit.getState() $= "Dead") continue;
 
 								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
 								%hit.playThread(3,"jump");
