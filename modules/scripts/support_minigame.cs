@@ -7,14 +7,7 @@ package Eventide_Minigame
 		// Disable local chat at the end of the round, let everyone banter at the end.
 		$MinigameLocalChat = false;
 		%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
-		
-		// Loop through all minigame members to play the round end sound
-		for (%i = 0; %i < %minigame.numMembers; %i++) 
-		{
-    		%member = %minigame.member[%i];
-    		if (isObject(%member) && %member.getClassName() $= "GameConnection")
-        	%member.play2d("round_end_sound");
-		}
+		%minigame.playSound("round_end_sound");
 	}
 
     function MiniGameSO::Reset(%minigame,%client)
@@ -23,9 +16,7 @@ package Eventide_Minigame
   		{
 			if ($Pref::Server::MapRotation::ResetCount >= $Pref::Server::MapRotation::minreset) 
 			{
-				for(%i=0;%i<%minigame.numMembers;%i++) if(isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
-				%client.play2d("item_get_sound");		 			
-			
+				%minigame.playSound("item_get_sound");			
 				nextMap("\c3" SPC $Pref::Server::MapRotation::minreset SPC "rounds have passed, loading the next map!");
    				$Pref::Server::MapRotation::ResetCount = 0;
 			}
@@ -42,6 +33,11 @@ package Eventide_Minigame
 		{
 			// Reset the escape flag
 			%client.escaped = 0;
+
+			for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
+			%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = 0;
+
+			%minigame.assignSurvivorClasses();
 			
 			// Remove the Eventide music emitter if it exists and reset the music level
 			if (isObject(%client.EventidemusicEmitter))
@@ -106,4 +102,38 @@ function MiniGameSO::playSound(%minigame,%datablock)
 	
 	for(%i = 0; %i < %minigame.numMembers; %i++)
 	if(isObject(%member = %minigame.member[%i])) %member.play2D(%datablock);	
+}
+
+$Eventide_SurvivorClasses = "mender runner hoarder fighter tinkerer";
+
+function MiniGameSO::assignSurvivorClasses(%minigame)
+{	
+	// Return if there are no teams
+	if(!isObject(%teams = %minigame.teams) || !%teams.getCount())
+	return;
+	
+	// Create a temporary simset to hold the team members
+	if(!isObject(Eventide_MemberSet)) %memberSet = new SimSet(Eventide_MemberSet);
+
+	// Loop through each team and add the team members to the temporary simset
+	for(%i = 0; %i < %teams.getCount(); %i++)
+	if(isObject(%team = %teams.getObject(%i) && strlwr(%team.name $= "survivors")))
+	{
+		for(%j = 0; %j < %team.numMembers; %j++) if(isObject(%team.member[%j].player))
+		%memberSet.add(%team.member[%j].player);		
+	}
+
+	// Assign the survivor classes to a random team member, preventing duplicates
+	for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
+	{
+		%randomMember = %memberSet.getObject(getRandom(0,%memberSet.getCount()-1));
+		if(%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] == %randomMember || %randommember.survivorClass = getWord($Eventide_SurvivorClasses,%i)) 
+		continue;
+
+		%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = %randomMember;
+		%randomMember.player.assignClass(%obj,getWord($Eventide_SurvivorClasses,%i));
+	}
+
+	// Delete the temporary simset
+	%memberSet.delete();
 }

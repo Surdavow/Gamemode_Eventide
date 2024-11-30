@@ -64,9 +64,17 @@ function EventidePlayer::PulsingScreen(%this,%obj)
 	%obj.PulsingScreen = %this.schedule(850,PulsingScreen,%obj);
 }
 
+function EventidePlayer::assignClass(%this,%obj,%class)
+{
+	if(!isObject(%obj) || !isObject(%obj.client) || %class $= "") return;
+	talk("Assigning class" SPC %class);
+	//Work in progress
+}
+
 function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
+
 	%obj.schedule(1,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 

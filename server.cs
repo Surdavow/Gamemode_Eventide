@@ -1,6 +1,5 @@
 if(ForceRequiredAddOn("Brick_Halloween") == $Error::AddOn_NotFound) return error("Brick_Halloween is required for Gamemode_Eventide to work");
 if(ForceRequiredAddOn("Gamemode_Slayer") == $Error::AddOn_NotFound) return error("Gamemode_Slayer is required for Gamemode_Eventide to work");
-else $isSlayerEnabled = true;
 
 // Execute essential scripts and preferences first
 exec("./prefs.cs");
