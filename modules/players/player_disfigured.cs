@@ -32,7 +32,7 @@ datablock PlayerData(PlayerDisfigured : PlayerRenowned)
 	leftclickicon = "color_melee";	
 
 	rechargeRate = 0.3;
-	runForce = 810;
+	runForce = 950;
 	maxTools = 0;
 	maxWeapons = 0;
 	maxForwardSpeed = 7.7;

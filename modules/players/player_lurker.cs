@@ -1,5 +1,52 @@
+datablock TSShapeConstructor(LurkerDts)
+{
+	baseShape = "./models/lurker/player/m.dts";
+	sequence0 = "./models/lurker/player/m_root.dsq root";
+	sequence1 = "./models/lurker/player/m_run.dsq run";
+	sequence2 = "./models/lurker/player/m_run.dsq walk";
+	sequence3 = "./models/lurker/player/m_back.dsq back";
+	sequence4 = "./models/lurker/player/m_side.dsq side";
+	sequence5 = "./models/lurker/player/m_crouch.dsq crouch";
+	sequence6 = "./models/lurker/player/m_crouchRun.dsq crouchRun";
+	sequence7 = "./models/lurker/player/m_crouchBack.dsq crouchBack";
+	sequence8 = "./models/lurker/player/m_crouchSide.dsq crouchSide";
+	sequence9 = "./models/lurker/player/m_look.dsq look";
+	sequence10 = "./models/lurker/player/m_headSide.dsq headside";
+	sequence11 = "./models/lurker/player/m_headup.dsq headUp";
+	sequence12 = "./models/lurker/player/m_standjump.dsq jump";
+	sequence13 = "./models/lurker/player/m_standjump.dsq standjump";
+	sequence14 = "./models/lurker/player/m_fall.dsq fall";
+	sequence15 = "./models/lurker/player/m_root.dsq land";
+	sequence16 = "./models/lurker/player/m_armAttack.dsq armAttack";
+	sequence17 = "./models/lurker/player/m_armReadyLeft.dsq armReadyLeft";
+	sequence18 = "./models/lurker/player/m_armReadyRight.dsq armReadyRight";
+	sequence19 = "./models/lurker/player/m_armReadyBoth.dsq armReadyBoth";
+	sequence20 = "./models/lurker/player/m_spearReady.dsq spearready";
+	sequence21 = "./models/lurker/player/m_spearThrow.dsq spearThrow";
+	sequence22 = "./models/lurker/player/m_talk.dsq talk";
+	sequence23 = "./models/lurker/player/m_death1.dsq death1";
+	sequence24 = "./models/lurker/player/m_shiftUp.dsq shiftUp";
+	sequence25 = "./models/lurker/player/m_shiftDown.dsq shiftDown";
+	sequence26 = "./models/lurker/player/m_shiftAway.dsq shiftAway";
+	sequence27 = "./models/lurker/player/m_shiftTo.dsq shiftTo";
+	sequence28 = "./models/lurker/player/m_shiftLeft.dsq shiftLeft";
+	sequence29 = "./models/lurker/player/m_shiftRight.dsq shiftRight";
+	sequence30 = "./models/lurker/player/m_rotCW.dsq rotCW";
+	sequence31 = "./models/lurker/player/m_rotCCW.dsq rotCCW";
+	sequence32 = "./models/lurker/player/m_undo.dsq undo";
+	sequence33 = "./models/lurker/player/m_plant.dsq plant";
+	sequence34 = "./models/lurker/player/m_sit.dsq sit";
+	sequence35 = "./models/lurker/player/m_wrench.dsq wrench";
+	sequence36 = "./models/lurker/player/m_activate.dsq activate";
+	sequence37 = "./models/lurker/player/m_activate2.dsq activate2";
+	sequence38 = "./models/lurker/player/m_leftrecoil.dsq leftrecoil";
+};
+
 datablock PlayerData(PlayerLurker : PlayerRenowned) 
 {
+	isEventideModel = true;
+	shapeFile = "./models/lurker/player/m.dts";
+	useCustomPainEffects = true;
 	uiName = "Lurker Player";
 
 	killerSpawnMessage = "...";
@@ -9,8 +56,8 @@ datablock PlayerData(PlayerLurker : PlayerRenowned)
 	hitobscureprojectile = "";
 	meleetrailskin = "ragged";
 
-	killerChaseLvl1Music = "musicData_OUT_LurkerNear";
-	killerChaseLvl2Music = "musicData_OUT_LurkerChase";
+	killerChaseLvl1Music = "musicData_Eventide_LurkerNear";
+	killerChaseLvl2Music = "musicData_Eventide_LurkerChase";
 
 	killeridlesound = "";
 	killeridlesoundamount = 5;
@@ -40,7 +87,8 @@ datablock PlayerData(PlayerLurker : PlayerRenowned)
 	maxSideSpeed = 5.1;
 	jumpForce = 0;
 };
-
+function servercmdheed(%c,%t){%c.player.setArmThread(%t);}
+function servercmdthread(%c,%t,%s){%c.player.playThread(%s,%t);}
 function PlayerLurker::onTrigger(%this, %obj, %trig, %press) 
 {		
 	PlayerCannibal::onTrigger(%this, %obj, %trig, %press);
@@ -55,44 +103,12 @@ function PlayerLurker::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
-	%obj.setScale("0.9 0.9 1.2");
+	%obj.setScale("1 1 1");
 	%obj.isInvisible = false;
 }
 
 function PlayerLurker::EventideAppearance(%this,%obj,%client)
-{
-	%obj.hideNode("ALL");	
-	%obj.unhideNode("pants");
-	%obj.unhideNode("headskin");
-	%obj.unhideNode("larm");
-	%obj.unhideNode("rarm");
-	%obj.unhideNode("rshoe");
-	%obj.unhideNode("lshoe");
-	%obj.unhideNode("lhand");
-	%obj.unhideNode("rhand");
-	%obj.unhideNode("chest");
-
-	%hoodieColor = "0.0 0.18 0.1 1";
-	%pantsColor = "0.075 0.075 0.075 1";
-	%skinColor = "0.83 0.73 0.66 1";
-
-	%obj.setFaceName("Madmanplain");
-	%obj.setDecalName("francis");
-	%obj.setNodeColor("rarm",%hoodieColor);
-	%obj.setNodeColor("larm",%hoodieColor);
-	%obj.setNodeColor("chest",%hoodieColor);
-	%obj.setNodeColor("pants",%pantsColor);
-	%obj.setNodeColor("rshoe",%pantsColor);
-	%obj.setNodeColor("lshoe",%pantsColor);
-	%obj.setNodeColor("rhand",%skinColor);
-	%obj.setNodeColor("lhand",%skinColor);
-	%obj.setNodeColor("headskin",%skinColor);
-	%obj.unhideNode("chest_blood_front");
-	%obj.unhideNode("Lhand_blood");
-	%obj.unhideNode("Rhand_blood");
-	%obj.unhideNode("lshoe_blood");
-	%obj.unhideNode("rshoe_blood");
-	
+{	
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
 	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");
