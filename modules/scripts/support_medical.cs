@@ -21,6 +21,7 @@ package Eventide_Medical_Package
     				%obj.tool[%bandageSlot] = 0;
     				%obj.weaponCount--;
     				%obj.setDatablock("EventidePlayer");
+					if(%obj.survivorclass $= "fighter") %obj.pseudoHealth = 75;
     
     				if(isObject(%client))
     				{
@@ -95,6 +96,7 @@ package Eventide_Medical_Package
                     %obj.downedamount = 0;
     				%obj.tool[%bandageSlot] = 0;
     				%obj.weaponCount--;
+					if(%obj.survivorclass $= "fighter") %obj.pseudoHealth = 75;
     
     				if(isObject(%client))
     				{
