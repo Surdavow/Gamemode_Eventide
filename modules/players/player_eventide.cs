@@ -297,7 +297,10 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 
 								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
 								%hit.playThread(3,"jump");
-								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),"1250"),"0 0 375"));
+
+								%zimpulse = (%obj.survivorclass $= "fighter") ? 1250 : 800;
+								%forwardimpulse = (%obj.survivorclass $= "fighter") ? 375 : 250;
+								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),%forwardimpulse),"0 0 " @ %zimpulse));
 							}												
 						}
 					
