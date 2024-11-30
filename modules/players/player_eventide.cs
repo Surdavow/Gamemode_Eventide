@@ -80,9 +80,9 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 						%obj.tool[0] = SodaItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
 
-		case "hoarder": %obj.setScale("0.5 0.5 0.5");
-		case "fighter":
-		case "tinkerer":
+		case "hoarder": // New slot
+		case "fighter":	%obj.pseudoHealth = 50;// More health, make it fake
+		case "tinkerer": %obj.isTinkerer = 1;//Done with events use the variable survivorClass in VCE
 	}
 }
 
@@ -515,7 +515,8 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 }
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
-{			
+{
+	//If we receive too much damage and we're not already incapacitated, check some conditions to see if we should be incapacitated.
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
     {        
         %obj.setDatablock("EventidePlayerDowned");
@@ -545,7 +546,22 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
-	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward if enough damage has been received.
+	//Pseudo health for the fighter class, gives the player a temporary health boost until they are hurt again
+	if(%obj.pseudoHealth)
+	{
+		%obj.pseudoHealth -= %damage;
+		%obj.addhealth(mAbs(%damage)*2);
+		%obj.mountimage("HealImage",3);
+		
+		if(isObject(%obj.client))
+		{
+			%obj.client.play2D("printfiresound");
+			%obj.client.centerprint("<font:impact:20>\c3Health boost left: " @ %obj.pseudoHealth,3);
+		}			
+	}
+
+	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
+	//if enough damage has been received.
 	if(isObject(%obj.faceConfig))
 	{
 		if(%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")
