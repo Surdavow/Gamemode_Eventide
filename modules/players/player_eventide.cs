@@ -81,7 +81,7 @@ function EventidePlayer::assignClass(%this,%obj,%class)
          				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
 
 		case "hoarder": // New slot
-		case "fighter":	%obj.pseudoHealth = 50;// More health, make it fake
+		case "fighter":	%obj.pseudoHealth = 100;// More health, make it fake
 		case "tinkerer": %obj.isTinkerer = 1;//Done with events use the variable survivorClass in VCE
 	}
 }
@@ -554,10 +554,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		%obj.mountimage("HealImage",3);
 		
 		if(isObject(%obj.client))
-		{
-			%obj.client.play2D("printfiresound");
-			%obj.client.centerprint("<font:impact:20>\c3Health boost left: " @ %obj.pseudoHealth,3);
-		}			
+		%obj.client.play2D("printfiresound");				
 	}
 
 	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
