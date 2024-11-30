@@ -289,8 +289,8 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 							initContainerRadiusSearch(%pos,%radius,%mask);
 							while(%hit = containerSearchNext())
 							{
-								%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-								%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
+								%obscure = containerRayCast(%obj.getEyePoint(),%hit.getHackPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+								%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%obj.getHackPosition())));
 		
 								if(%hit == %obj || isObject(%obscure) || %dot < 0.5) continue;
 								if(%hit.getState() $= "Dead") continue;
