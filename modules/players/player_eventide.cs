@@ -72,8 +72,8 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 
 	switch$(%class)
 	{
-		case "mender":  %obj.tool[%obj.currTool] = "ZombieMedpackItem";
-         				messageClient(%obj.client,'MsgItemPickup','',%obj.currTool,"ZombieMedpackItem");
+		case "mender":  %obj.tool[%obj.currTool] = ZombieMedpackItem.getID();
+         				messageClient(%obj.client,'MsgItemPickup','',%obj.currTool,ZombieMedpackItem.getID());
 		case "runner": 	%obj.setTempSpeed(2);						
 		case "hoarder": %obj.setDatablock("PlayerSkullwolf");
 						%obj.setScale("2 2 2");
