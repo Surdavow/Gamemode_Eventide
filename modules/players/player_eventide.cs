@@ -67,8 +67,15 @@ function EventidePlayer::PulsingScreen(%this,%obj)
 function EventidePlayer::assignClass(%this,%obj,%class)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %class $= "") return;
-	talk("Assigning class" SPC %class);
-	//Work in progress
+
+	switch$(%class)
+	{
+		case "mender": %obj.setScale("1.15 1.15 1.15");
+		case "runner": %obj.setTempSpeed(2);
+		case "hoarder": %obj.setNodeColor("ALL","1 1 1 1");
+		case "fighter":
+		case "tinkerer":
+	}
 }
 
 function EventidePlayer::onNewDatablock(%this,%obj)
