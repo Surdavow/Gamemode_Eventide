@@ -134,7 +134,7 @@ function MiniGameSO::assignSurvivorClasses(%minigame)
 	for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
 	{
 		%randomMember = %memberSet.getObject(getRandom(0,%memberSet.getCount()-1));
-		if(%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] == %randomMember || %randommember.player.survivorClass !$= "") 
+		if(%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] || %randommember.player.survivorClass !$= "") 
 		continue;
 
 		%randomMember.player.survivorClass = getWord($Eventide_SurvivorClasses,%i);
