@@ -329,7 +329,8 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			EventidePlayer_SaveCounterPrint(%victim.client,%obj.savevictimcounter);
 
 			cancel(%obj.SaveVictimSched);
-			%obj.SaveVictimSched = %this.schedule(1000,SaveVictim,%obj,%victim,%bool);
+			%time = (%obj.survivorClass $= "mender") ? 500 : 1000;
+			%obj.SaveVictimSched = %this.schedule(%time,SaveVictim,%obj,%victim,%bool);
 		}
 		else
 		{
