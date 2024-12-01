@@ -2,7 +2,7 @@ registerOutputEvent("GameConnection", "Escape", "", false);
 
 function Player::SetSpeedModifier(%obj,%a)
 {
-	if(%obj.Speed_Modifier $= "") %obj.Speed_Modifier = 1;	
+	%obj.Speed_Modifier = (%obj.Speed_Modifier $= "") ? 1 : %obj.Speed_Modifier;
 
 	if(!%a) return;	
 
@@ -22,7 +22,7 @@ function Player::SetSpeedModifier(%obj,%a)
 
 function Player::AddMoveSpeedModifier(%obj,%a)
 {
-	if(%obj.Speed_Modifier $= "") %obj.Speed_Modifier = 1;	
+	%obj.Speed_Modifier = (%obj.Speed_Modifier $= "") ? 1 : %obj.Speed_Modifier;
 
 	%obj.SetSpeedModifier(%obj.Speed_Modifier + %a);
 }
@@ -185,7 +185,7 @@ function Armor::EventideAppearance(%this,%obj,%client)
 function GameConnection::Escape(%client)
 {
 	if(!isObject(%minigame = getMinigameFromObject(%client))) return %client.centerprint("This only works in minigames!",1);
-	if(strlwr(%client.slyrTeam.name) !$= "survivors") return %client.centerprint("Only survivors can escape the map!",1);
+	if(strlwr(%client.slyrTeam.name) !$= "survivors") return %client.centerprint("Only survivors can escape!",1);
 	
 	%client.escaped = true;
 

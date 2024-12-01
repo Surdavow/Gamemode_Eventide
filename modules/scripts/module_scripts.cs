@@ -1,12 +1,10 @@
 exec("./support_extraresources.cs");
 exec("./support_ghostingUtils.cs");
 exec("./support_bricks.cs");
-exec("./support_bricktext.cs");
 exec("./support_centerprintmenusystem.cs");
 exec("./support_client.cs");
 exec("./support_datainstance.cs");
 exec("./support_items.cs");
-exec("./support_main.cs");
 exec("./support_blood.cs");
 exec("./support_medical.cs");
 exec("./support_minigame.cs");

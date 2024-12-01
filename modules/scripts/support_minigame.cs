@@ -12,48 +12,7 @@ package Eventide_Minigame
 
     function MiniGameSO::Reset(%minigame,%client)
 	{
-		if (ClientGroup.getCount() && $Pref::Server::MapRotation::enabled)
-  		{
-			if ($Pref::Server::MapRotation::ResetCount >= $Pref::Server::MapRotation::minreset) 
-			{
-				%minigame.playSound("item_get_sound");			
-				nextMap("\c3" SPC $Pref::Server::MapRotation::minreset SPC "rounds have passed, loading the next map!");
-   				$Pref::Server::MapRotation::ResetCount = 0;
-			}
-
-			$Pref::Server::MapRotation::ResetCount++;
-			%minigame.chatMsgAll("\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minreset);
-		}
-
 		Parent::Reset(%minigame, %client);
-		
-		// Loop through all minigame members to perform some actions
-		for (%i=0;%i<%minigame.numMembers;%i++)
-		if (isObject(%client = %minigame.member[%i]) && %client.getClassName() $= "GameConnection") 
-		{
-			// Reset the escape flag
-			%client.escaped = 0;
-
-			for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
-			%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = 0;
-
-			%minigame.schedule(33,assignSurvivorClasses);
-			
-			// Remove the Eventide music emitter if it exists and reset the music level
-			if (isObject(%client.EventidemusicEmitter))
-			{
-				%client.EventidemusicEmitter.delete();
-				%client.musicChaseLevel = 0;
-			}
-
-			// Play the round start sound and announce the minigame
-			if (strlwr(%minigame.title) $= "eventide") 
-			{
-				%minigame.centerprintall("<font:impact:40>\c3Eventide: The Hunt",2);
-				%minigame.bottomprintall("<font:impact:20>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
-				%client.play2d("round_start_sound");
-			}
-		}
 
 		if(isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
 		
@@ -64,10 +23,33 @@ package Eventide_Minigame
 			$EventideRitualBrick.candlecount = 0;
 		}
 
-		%minigame.randomizeEventideItems(true);
+		for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
+		%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = 0;
+		
+		// Loop through all minigame members to perform some actions
+		for (%i=0;%i<%minigame.numMembers;%i++) if (isObject(%client = %minigame.member[%i])) 
+		{
+			// Reset the escape flag
+			%client.escaped = 0;
+			
+			// Remove the Eventide music emitter if it exists and reset the music level
+			if (isObject(%client.EventidemusicEmitter))
+			{
+				%client.EventidemusicEmitter.delete();
+				%client.musicChaseLevel = 0;
+			}
+		}
 
-		if (strlwr(%minigame.title) $= "eventide" && $Pref::Server::ChatMod::lchatEnabled) 
-		$MinigameLocalChat = true;
+		// Play the round start sound and announce the minigame
+		if (strlwr(%minigame.title) $= "eventide") 
+		{
+			%minigame.schedule(33,assignSurvivorClasses);
+			%minigame.randomizeEventideItems(true);
+			%minigame.bottomprintall("<font:impact:30>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
+			%minigame.playSound("round_start_sound");
+						
+			if (strlwr(%minigame.title) $= "eventide" && $Pref::Server::ChatMod::lchatEnabled) $MinigameLocalChat = true;
+		}
     }
 
     function MinigameSO::endGame(%minigame,%client)
@@ -76,7 +58,7 @@ package Eventide_Minigame
 
 		//Disable local chat
 		$MinigameLocalChat = false;
-		%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
+		%minigame.bottomprintall("<font:impact:30>\c3Local chat disabled",4);
 
         for(%i=0;%i<%minigame.numMembers;%i++)
         if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter)) 

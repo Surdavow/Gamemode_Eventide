@@ -1,3 +1,69 @@
+package Eventide_LocalChat
+{
+    function ServerCmdStartTalking(%client)
+	{
+		if($MinigameLocalChat) return;
+		else parent::ServerCmdStartTalking(%client);
+	}
+
+    function serverCmdMessageSent(%client,%message)
+	{
+		%client.clanSuffix = "";
+		%color = (%client.customtitlecolor $= "") ? "FFFFFF" : %client.customtitlecolor;
+        %bitmap = (%client.customtitlebitmap $= "") ? "" : %client.customtitlebitmap;
+
+		if (%client.customtitle !$= "") 
+		%client.clanPrefix = %bitmap @ "<color:" @ %color @ ">" @ %client.customtitle SPC "";
+		
+		else %client.clanPrefix = (%client.customtitlebitmap !$= "") ? (%bitmap @ "") : "";
+
+		if(!$MinigameLocalChat)
+		{
+			Parent::ServerCmdMessageSent(%client, %message);
+			return;
+		}
+
+		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
+		if(%message !$= "") ChatMod_LocalChat(%client, %message);		
+
+		%client.lastMessageSent = %message;
+		echo(%client.name @ ": " @ getSubStr(%message, 0, strlen(%message)));		
+	}
+
+	function ServerCmdTeamMessageSent(%client, %message)
+	{
+		%client.clanSuffix = "";
+		if(!$MinigameLocalChat)
+		{
+			Parent::ServerCmdTeamMessageSent(%client, %message);
+			return;
+		}
+
+		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
+		if(%message $= "0") return;
+		
+		if(isObject(%client.player))
+		{
+			%client.player.playThread(3,talk);
+			%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+
+			if(%client.player.radioEquipped) 
+			{
+				ChatMod_RadioMessage(%client, %message);
+				ChatMod_LocalChat(%client, %message);
+			}
+
+			else messageClient(%client,'',"\c5You need to find a radio to use team chat.");		
+		}
+		else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
+		%client.lastMessageSent = %client;			
+	}
+};
+
+// In case the package is already activated, deactivate it first before reactivating it
+if(isPackage(Eventide_LocalChat)) deactivatePackage(Eventide_LocalChat);
+activatePackage(Eventide_LocalChat);
+
 function chatMessageClientRP(%target,%pre,%name,%suf,%text)
 {
     %msgString = '\c7%1\c3%2\c7%3\c6: %4';

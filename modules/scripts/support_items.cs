@@ -4,7 +4,7 @@ package Eventide_Items
 	{
 		if(!%obj.getDataBlock().isEventideModel && !isObject(getMinigameFromObject(%obj))) 
 		{
-			Parent::Pickup(%obj,%item);
+			Parent::onCollision(%this, %obj, %col, %vec, %speed);
 			return;
 		}
 
@@ -18,12 +18,6 @@ package Eventide_Items
 		%obj.pickup(%col);
 	}
 
-	function Player::addItem(%player, %image, %client)
-	{
-		if(!%obj.isSkinwalker)
-		Parent::addItem(%player, %image, %client);		
-    }
-
 	function ItemData::onPickup(%this, %obj, %user, %amount)
 	{
 		if(!%obj.getDataBlock().isEventideModel && !isObject(getMinigameFromObject(%obj))) 
@@ -33,8 +27,7 @@ package Eventide_Items
 		}
 
 		if (!%obj.canPickup || !isObject(%client = %user.client) || getSimTime() - %client.lastF8Time < 5000)
-		return;
-		
+		return;		
 
 		%inventoryToolCount = (%user.hoarderToolCount) ? %user.hoarderToolCount : %user.getDataBlock().maxTools;
 		%canUse = miniGameCanUse(%user, %obj) ? 1 : 0;
@@ -82,15 +75,14 @@ package Eventide_Items
 	
 	function Player::Pickup(%obj,%item)
 	{		
-		if(!%obj.getDataBlock().isEventideModel && !isObject(getMinigameFromObject(%obj))) 
-		{
-			Parent::Pickup(%obj,%item);
-			return;
-		}		
+		if (!%obj.getDataBlock().isEventideModel && !isObject(getMinigameFromObject(%obj))) 
+		return Parent::Pickup(%obj,%item);
+
 
 		// Skinwalker players and killers can't pick up items
 		if (%obj.isSkinwalker || %obj.getDataBlock().isKiller) return;
 
+		// Hoarder class support
 		%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
 
 		// Check if the player already has the item
@@ -99,17 +91,14 @@ package Eventide_Items
 
 		// Check for an available slot in the inventory
 		for (%i = 0; %i < %inventoryToolCount; %i++)
+		if (!isObject(%obj.tool[%i])) 
 		{
-			if (!isObject(%obj.tool[%i])) // If the slot is empty
-			{
-				%item.canPickup = false;
-				%obj.tool[%i] = %item.getDataBlock();
-				messageClient(%obj.client, 'MsgItemPickup', '', %i, %item.getDataBlock());
-				%item.spawnBrick.setEmitter();
-				%item.delete();
-	
-				return;
-			}
+			%item.canPickup = false;
+			%obj.tool[%i] = %item.getDataBlock();
+			messageClient(%obj.client, 'MsgItemPickup', '', %i, %item.getDataBlock());
+			%item.spawnBrick.setEmitter();
+			%item.delete();	
+			return;
 		}
 
 		// Return if no slots are available (inventory is full)
@@ -137,21 +126,19 @@ package Eventide_Items
 		}
 		Eventide_MinigameGroup.add(%obj);
 
-		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount()))
-		return;
+		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount())) return;
 		else return Parent::schedulePop(%obj);		
 	}	
 
 	// Item ammo support
-	function serverCmdLight(%c)
+	function serverCmdLight(%client)
 	{
-		%p = %c.player;
-		if(isObject(%p) && ItemAmmo_Unload(%p))
+		if(isObject(%client.player) && ItemAmmo_Unload(%client.player))
 		{
-			%p.setImageLoaded(0,ItemAmmo_HasAmmo(%p));
+			%client.player.setImageLoaded(0,ItemAmmo_HasAmmo(%client.player));
 			return "";
 		}
-		parent::serverCmdLight(%c);
+		parent::serverCmdLight(%client);
 	}
 };
 

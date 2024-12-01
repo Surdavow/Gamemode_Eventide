@@ -1,5 +1,40 @@
 package Eventide_Killers
 {
+	function Player::addItem(%player, %image, %client)
+	{
+		if(!%obj.isSkinwalker)
+		Parent::addItem(%player, %image, %client);		
+    }
+
+	function serverCmdLight(%client)
+	{
+		if(isObject(%client.player) && %client.player.getdataBlock().isKiller) return;
+		Parent::serverCmdLight(%client);		
+	}
+
+	function ServerCmdPlantBrick (%client)
+	{		
+		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
+		{	
+			if(%client.puppetnumber $= "") %client.puppetnumber = 0;
+
+			if(isObject(Eventide_MinigameGroup.getObject(%client.puppetnumber))) 
+			{
+				%client.getcontrolObject().schedule(1500,setActionThread,sit,1);
+				%client.setcontrolobject(Eventide_MinigameGroup.getObject(%client.puppetnumber));
+				%client.puppetnumber++;
+			}
+			else
+			{
+				%client.getcontrolObject().schedule(1500,setActionThread,sit,1);
+				%client.setcontrolobject(%client.player);
+				%client.puppetnumber = 0;
+			}			
+		}
+
+		Parent::ServerCmdPlantBrick(%client);
+	}
+
 	function MiniGameSO::Reset(%obj, %client)
 	{
 		parent::Reset(%obj, %client);
