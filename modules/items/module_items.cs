@@ -30,6 +30,7 @@ exec("./item_radio.cs");
 exec("./item_radio.cs");
 exec("./item_rope.cs");
 exec("./item_soda.cs");
+exec("./item_wrench.cs");
 exec("./weapon_barstool.cs");
 exec("./weapon_bottle.cs");
 exec("./weapon_chainsaw.cs");
