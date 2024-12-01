@@ -26,7 +26,6 @@ function EventidePickupItem(%obj, %item)
     return;
 }
 
-
 package Eventide_Items
 {
 	function Player::addItem(%player, %image, %client)
