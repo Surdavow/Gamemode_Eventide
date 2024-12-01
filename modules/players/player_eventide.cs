@@ -81,7 +81,7 @@ function EventidePlayer::assignClass(%this,%obj,%class)
          				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
 
 		case "hoarder": %obj.hoarderToolCount = 5;
-						commandToClient(%client, 'PlayGui_CreateToolHud', %obj.hoarderToolCount);
+						commandToClient(%obj.client, 'PlayGui_CreateToolHud', %obj.hoarderToolCount);
 
 		case "fighter":	%obj.pseudoHealth = 75;// More health, make it fake
 						%obj.tool[0] = sm_poolCueItem.getID();
