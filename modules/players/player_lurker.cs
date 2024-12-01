@@ -29,7 +29,7 @@ datablock PlayerData(PlayerLurker : PlayerRenowned)
 	
 	killerlight = "NoFlarePLight";
 
-	rightclickicon = "color_handaxe";
+	rightclickicon = "";
 	leftclickicon = "color_melee";
 
 	rechargeRate = 0.3;
@@ -53,7 +53,7 @@ function PlayerLurker::onPeggFootstep(%this,%obj)
 
 function PlayerLurker::onNewDatablock(%this,%obj)
 {
-	%obj.createEmptyFaceConfig($Eventide_FacePacks["knight"]);
+	%obj.createEmptyFaceConfig($Eventide_FacePacks["lurker"]);
 	%facePack = %obj.faceConfig.getFacePack();
 	%obj.faceConfig.face["Neutral"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Neutral"));
 	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
@@ -67,8 +67,77 @@ function PlayerLurker::onNewDatablock(%this,%obj)
 	%obj.faceConfigShowFaceTimed("Neutral", -1);
 }
 
-function PlayerLurker::EventideAppearance(%this,%obj,%client)
+function PlayerLurker::EventideAppearance(%this,%obj,%funcclient)
 {	
+	%obj.hideNode("ALL");
+	%obj.unHideNode((%funcclient.chest ? "femChest" : "chest"));	
+	%obj.unHideNode((%funcclient.rhand ? "rhook" : "rhand"));
+	%obj.unHideNode((%funcclient.lhand ? "lhook" : "lhand"));
+	%obj.unHideNode((%funcclient.rarm ? "rarmSlim" : "rarm"));
+	%obj.unHideNode((%funcclient.larm ? "larmSlim" : "larm"));
+	%obj.unHideNode("headskin");
+
+	if($pack[%funcclient.pack] !$= "none")
+	{
+		%obj.unHideNode($pack[%funcclient.pack]);
+		%obj.setNodeColor($pack[%funcclient.pack],%funcclient.packColor);
+	}
+	if($secondPack[%funcclient.secondPack] !$= "none")
+	{
+		%obj.unHideNode($secondPack[%funcclient.secondPack]);
+		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
+	}
+
+	if(%funcclient.hat)
+	{
+		%hatName = $hat[%funcclient.hat];
+		%funcclient.hatString = %hatName;
+
+		if(%funcclient.hat == 1)
+		{
+			if(%funcclient.accent) %newhat = "helmet";
+			else %newhat = "hoodie1";
+			%obj.unHideNode(%newhat);
+			%obj.setNodeColor(%newhat,%funcclient.hatColor);
+		}
+		else
+		{
+			%obj.unHideNode(%hatName);
+			%obj.setNodeColor(%hatName,%funcclient.hatColor);
+		}			
+	}
+	
+	if(%funcclient.hip)
+	{
+		%obj.unHideNode("skirt");
+	}
+	else
+	{
+		%obj.unHideNode("pants");
+		%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
+		%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));
+	}
+	
+	%obj.setDecalName(%funcclient.decalName);
+
+	%obj.setNodeColor("headskin",%funcclient.headColor);	
+	%obj.setNodeColor("chest",%funcclient.chestColor);
+	%obj.setNodeColor("femChest",%funcclient.chestColor);
+	%obj.setNodeColor("pants",%funcclient.hipColor);
+	%obj.setNodeColor("skirt",%funcclient.hipColor);	
+	%obj.setNodeColor("rarm",%funcclient.rarmColor);
+	%obj.setNodeColor("larm",%funcclient.larmColor);
+	%obj.setNodeColor("rarmSlim",%funcclient.rarmColor);
+	%obj.setNodeColor("larmSlim",%funcclient.larmColor);
+	%obj.setNodeColor("rhand",%funcclient.rhandColor);
+	%obj.setNodeColor("lhand",%funcclient.lhandColor);
+	%obj.setNodeColor("rhook",%funcclient.rhandColor);
+	%obj.setNodeColor("lhook",%funcclient.lhandColor);	
+	%obj.setNodeColor("rshoe",%funcclient.rlegColor);
+	%obj.setNodeColor("lshoe",%funcclient.llegColor);
+	%obj.setNodeColor("rpeg",%funcclient.rlegColor);
+	%obj.setNodeColor("lpeg",%funcclient.llegColor);
+	
 	//Set blood colors.
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
 	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");

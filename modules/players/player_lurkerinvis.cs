@@ -19,7 +19,7 @@ datablock PlayerData(PlayerLurkerInvis : PlayerRenowned)
 	
 	killerlight = "NoFlarePLight";
 
-	rightclickicon = "color_handaxe";
+	rightclickicon = "";
 	leftclickicon = "color_melee";
 
 	rechargeRate = 0.3;
@@ -41,7 +41,7 @@ function PlayerLurkerInvis::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);
 	%obj.isInvisible = true;	
-	%obj.setScale("1 1 1");
+	%obj.setScale("1.2 1.2 1.2");
 }
 
 function PlayerLurkerInvis::EventideAppearance(%this,%obj,%client)
