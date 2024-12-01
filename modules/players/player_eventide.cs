@@ -68,31 +68,35 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %class $= "") return;
 
-	%obj.client.centerprint("<font:impact:40>\c3Your class is" SPC %class @ "!",3);
+	commandToClient(%obj.client,'PlayGui_CreateToolHud',(%class $= "hoarder") ? 5 : %this.maxTools);	
 
 	switch$(%class)
 	{
 		case "mender":  %healitem = (getRandom(1)) ? GauzeItem.getID() : ZombieMedpackItem.getID();
 						%obj.tool[0] = %healitem;
          				messageClient(%obj.client,'MsgItemPickup','',0,%healitem);
+						%obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Mender <br>You acquired a medical item and can revive survivors faster!",4);
 
 		case "runner": 	%obj.setTempSpeed(1.07);
 						%obj.tool[0] = SodaItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
+						%obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Runner <br>You acquired a soda and can run slightly faster!",4);
 
 		case "hoarder": %obj.hoarderToolCount = 5;
-						commandToClient(%obj.client,'PlayGui_CreateToolHud',%obj.hoarderToolCount);
 						%obj.tool[0] = DCamera.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,DCamera.getID());
+						%obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Hoarder <br>You acquired a camera and have 5 slots!",4);
 
 		case "fighter":	%obj.pseudoHealth = 75;// More health, make it fake
 						%obj.tool[0] = sm_poolCueItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,sm_poolCueItem.getID());
+						%obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Fighter <br>You acquired a pool cue, can shove further and can take 1 hit before getting damaged!",4);
 
 		case "tinkerer": %obj.tool[0] = MonkeyWrench.getID();
          				 messageClient(%obj.client,'MsgItemPickup','',0,MonkeyWrench.getID());
 						 %obj.tool[1] = StunGun.getID();
          				 messageClient(%obj.client,'MsgItemPickup','',1,StunGun.getID());
+						 %obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Runner <br>You acquired a monkey wrench, stungun, use the wrench to repair generators faster!",4);
 	}
 }
 
@@ -100,7 +104,7 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 
-	%obj.schedule(1,setEnergyLevel,0);
+	%obj.schedule(33,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 
 	//Create the billboard bot

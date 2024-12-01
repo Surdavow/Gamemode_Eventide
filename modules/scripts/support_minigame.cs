@@ -45,10 +45,9 @@ package Eventide_Minigame
 		{
 			%minigame.schedule(33,assignSurvivorClasses);
 			%minigame.randomizeEventideItems(true);
-			%minigame.bottomprintall("<font:impact:30>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
-			%minigame.playSound("round_start_sound");
-						
-			if (strlwr(%minigame.title) $= "eventide" && $Pref::Server::ChatMod::lchatEnabled) $MinigameLocalChat = true;
+			%minigame.bottomprintall("<font:impact:25>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
+			%minigame.playSound("round_start_sound");						
+			$MinigameLocalChat = ($Pref::Server::ChatMod::lchatEnabled) ? true : false;
 		}
     }
 
@@ -112,18 +111,20 @@ function MiniGameSO::assignSurvivorClasses(%minigame)
 		return;
 	}
 
+	// Shuffle the survivor class list
+	%newClassList = shuffleWords($Eventide_SurvivorClasses);
+
 	// Assign the survivor classes to a random team member, preventing duplicates
-	for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
+	for(%i = 0; %i < getWordCount(%newClassList); %i++)
 	{
 		%randomMember = %memberSet.getObject(getRandom(0,%memberSet.getCount()-1));
-		if(%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] || %randommember.player.survivorClass !$= "") 
-		continue;
+		if(%minigame.survivorClass[getWord(%newClassList,%i)] || %randommember.player.survivorClass !$= "") continue;
 
-		%randomMember.player.survivorClass = getWord($Eventide_SurvivorClasses,%i);
-		%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = %randomMember;
+		%randomMember.player.survivorClass = getWord(%newClassList,%i);
+		%minigame.survivorClass[getWord(%newClassList,%i)] = %randomMember;
 
-		if(%randomMember.player.getdataBlock().getName() $= "EventidePlayer")
-		%randomMember.player.getDatablock().assignClass(%randomMember.player,getWord($Eventide_SurvivorClasses,%i));
+		if(%randomMember.player.getdataBlock().getName() $= "EventidePlayer") 
+		%randomMember.player.getDatablock().assignClass(%randomMember.player,getWord(%newClassList,%i));
 	}
 
 	// Delete the temporary simset

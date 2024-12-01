@@ -1,5 +1,3 @@
-if(LoadRequiredAddOn("Item_Medical") != $Error::None) return;
-
 package Eventide_Medical_Package
 {
     function ZombieMedpackImage::healLoop(%this, %obj)
