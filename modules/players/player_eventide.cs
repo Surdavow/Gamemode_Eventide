@@ -80,15 +80,17 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 						%obj.tool[0] = SodaItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
 
-		case "hoarder": // New slot
+		case "hoarder": %obj.hoarderToolCount = 5;
+						commandToClient(%client, 'PlayGui_CreateToolHud', %obj.hoarderToolCount);
+
 		case "fighter":	%obj.pseudoHealth = 75;// More health, make it fake
 						%obj.tool[0] = sm_poolCueItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,sm_poolCueItem.getID());
-		case "tinkerer": %obj.isTinkerer = 1;//Done with events use the variable survivorClass in VCE
-						%obj.tool[0] = MonkeyWrench.getID();
-         				messageClient(%obj.client,'MsgItemPickup','',0,MonkeyWrench.getID());
-						%obj.tool[1] = StunGun.getID();
-         				messageClient(%obj.client,'MsgItemPickup','',1,StunGun.getID());
+
+		case "tinkerer": %obj.tool[0] = MonkeyWrench.getID();
+         				 messageClient(%obj.client,'MsgItemPickup','',0,MonkeyWrench.getID());
+						 %obj.tool[1] = StunGun.getID();
+         				 messageClient(%obj.client,'MsgItemPickup','',1,StunGun.getID());
 	}
 }
 
