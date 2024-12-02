@@ -32,7 +32,7 @@ function Player::SetTempSpeed(%obj,%speedMultiplier)
 	if(!isObject(%obj) || %obj.getstate() $= "Dead") return;
 
 	if (%speedMultiplier $= "") %speedMultiplier = 1;
-	if(%obj.survivorclass $= "runner" && %speedMultiplier > 1) %speedMultiplier = 1.07
+	if(%obj.survivorclass $= "runner" && %speedMultiplier > 1) %speedMultiplier = 1.1;
 
 	%this = %obj.getDataBlock();
 

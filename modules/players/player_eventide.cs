@@ -80,7 +80,7 @@ function EventidePlayer::assignClass(%this,%obj,%class)
          				messageClient(%obj.client,'MsgItemPickup','',0,%healitem);
 						%obj.client.centerprint(%formatString @ "Class: Mender <br>" @ %firstString SPC "medical item and can revive survivors faster!",4);
 
-		case "runner": 	%obj.setTempSpeed(1.07);
+		case "runner": 	%obj.setTempSpeed();
 						%obj.tool[0] = SodaItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
 						%obj.client.centerprint(%formatString @ "Class: Runner <br>" @ %firstString SPC "soda and can run slightly faster!",4);
