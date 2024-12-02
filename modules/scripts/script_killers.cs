@@ -503,6 +503,7 @@ function GameConnection::StopChaseMusic(%client)
     %client.musicChaseLevel = 0;
 }
 
+
 function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
 {
 	%shape = new StaticShape()

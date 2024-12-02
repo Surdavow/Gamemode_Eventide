@@ -1,21 +1,21 @@
-datablock ItemData(CRadioItem)
+datablock ItemData(RadioItem)
 {
 	category = "Tools";
 	className = "Weapon";
 	shapeFile = "./models/radio.dts";
 	uiName = "Radio";
-	image = CRadioImage;
+	image = RadioImage;
 	canDrop = true;
 };
 
-datablock ShapeBaseImageData(CRadioImage)
+datablock ShapeBaseImageData(RadioImage)
 {
 	className = "WeaponImage";
 	projectileType = "Projectile";
 	projectile = "";
-	item = "CRadioItem";
+	item = "RadioItem";
 	mountpoint = 0;
-	shapefile = CRadioItem.shapeFile;
+	shapefile = RadioItem.shapeFile;
 	stateName[0] = "Activate";
 	stateTimeoutValue[0] = "0";
 	stateTransitionOnTimeout[0] = "Ready";	
@@ -35,22 +35,7 @@ datablock ShapeBaseImageData(CRadioImage)
 	stateSequence[3] = "Ready";
 };
 
-function CRadioImage::onMount(%this,%obj,%slot)
+function RadioImage::onMount(%this,%obj,%slot)
 {	
-	if(!isObject(%obj) || %obj.radioEquipped) return;
-
-	if(isObject(%obj.client))
-	{
-		%obj.client.centerPrint("\c4Radio is now equipped, use team chat to broadcast to other survivors.",4);
-
-		for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
-		if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;		
-
-		%obj.tool[%itemslot] = 0;
-		messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
-	}
-
 	%obj.playaudio(3,"radio_change_sound");
-	%obj.radioEquipped = true;
-	%obj.unmountImage(%this.mountPoint);
 }

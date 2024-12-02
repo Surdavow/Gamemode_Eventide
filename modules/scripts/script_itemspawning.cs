@@ -24,7 +24,7 @@ function MiniGameSO::randomizeEventideItems(%minigame)
 
             case "_item":   switch(getRandom(1,9))
                             {
-                                case 1: %brick.setItem("CRadioItem");
+                                case 1: %brick.setItem("RadioItem");
                                 case 2: %brick.setItem("ZombieMedpackItem");
                                 case 3: %brick.setItem("SodaItem");
                                 case 4: %brick.setItem("FlareItem");

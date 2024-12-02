@@ -76,8 +76,7 @@ package Eventide_Items
 	function Player::Pickup(%obj,%item)
 	{		
 		if (!%obj.getDataBlock().isEventideModel && !isObject(getMinigameFromObject(%obj))) 
-		return Parent::Pickup(%obj,%item);
-
+		return Parent::Pickup(%obj,%item);		
 
 		// Skinwalker players and killers can't pick up items
 		if (%obj.isSkinwalker || %obj.getDataBlock().isKiller) return;
@@ -93,11 +92,14 @@ package Eventide_Items
 		for (%i = 0; %i < %inventoryToolCount; %i++)
 		if (!isObject(%obj.tool[%i])) 
 		{
+			if(%item.getDataBlock().getName() $= "CRadioItem") 
+			%obj.client.centerPrint("\c4Radio equipped, keep it in your inventory to chat with other survivors.",4);
+			
 			%item.canPickup = false;
 			%obj.tool[%i] = %item.getDataBlock();
 			messageClient(%obj.client, 'MsgItemPickup', '', %i, %item.getDataBlock());
 			%item.spawnBrick.setEmitter();
-			%item.delete();	
+			%item.delete();
 			return;
 		}
 

@@ -8,20 +8,11 @@ package Eventide_LocalChat
 
     function serverCmdMessageSent(%client,%message)
 	{
-		%client.clanSuffix = "";
-		%color = (%client.customtitlecolor $= "") ? "FFFFFF" : %client.customtitlecolor;
-        %bitmap = (%client.customtitlebitmap $= "") ? "" : %client.customtitlebitmap;
-
-		if (%client.customtitle !$= "") 
-		%client.clanPrefix = %bitmap @ "<color:" @ %color @ ">" @ %client.customtitle SPC "";
-		
-		else %client.clanPrefix = (%client.customtitlebitmap !$= "") ? (%bitmap @ "") : "";
+        %client.clanPrefix = "";
+        %client.clanSuffix = "";
 
 		if(!$MinigameLocalChat)
-		{
-			Parent::ServerCmdMessageSent(%client, %message);
-			return;
-		}
+		return Parent::ServerCmdMessageSent(%client, %message);
 
 		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
 		if(%message !$= "") ChatMod_LocalChat(%client, %message);		
@@ -32,31 +23,31 @@ package Eventide_LocalChat
 
 	function ServerCmdTeamMessageSent(%client, %message)
 	{
-		%client.clanSuffix = "";
+		%client.clanPrefix = "";
+        %client.clanSuffix = "";
+
 		if(!$MinigameLocalChat)
-		{
-			Parent::ServerCmdTeamMessageSent(%client, %message);
-			return;
-		}
+		return Parent::ServerCmdTeamMessageSent(%client, %message);
+
+        %client.lastMessageSent = %client;
 
 		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
-		if(%message $= "0") return;
+		if(!%message) return;
 		
 		if(isObject(%client.player))
-		{
-			%client.player.playThread(3,talk);
-			%client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
-
-			if(%client.player.radioEquipped) 
+		{        
+			for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%obj.tool[%i]) && %obj.tool[%i].getName() == RadioItem.getID())
 			{
 				ChatMod_RadioMessage(%client, %message);
 				ChatMod_LocalChat(%client, %message);
+                %client.player.playThread(3,talk);
+			    %client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+                return;
 			}
-
-			else messageClient(%client,'',"\c5You need to find a radio to use team chat.");		
+            
+			return messageClient(%client,'',"\c5Find a radio to use team chat.");		
 		}
-		else messageClient(%client,'',"\c5You are dead. You must respawn to use team chat.");
-		%client.lastMessageSent = %client;			
+		else return messageClient(%client,'',"\c5Respawn and find a radio to use team chat.");	
 	}
 };
 
@@ -225,7 +216,7 @@ function ChatMod_RadioMessage(%client, %message)
 	%message = "\c4" @ %message;
 
 	for(%i = 0; %i < clientGroup.getCount(); %i++)
-    if(isObject(%target = clientGroup.getObject(%i)) && isObject(%target.player) && %target.player.radioEquipped)
+    if(isObject(%target = clientGroup.getObject(%i)) && isObject(%target.player))
     {
         %target.player.playaudio(3,"radio_message_sound");
         chatMessageClientRP(%target,%pre,%name,"",%message);		

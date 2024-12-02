@@ -31,5 +31,6 @@ exec("./script_distantSounds.cs");
 exec("./script_saveloadstats.cs");
 exec("./script_shopsystem.cs");
 
+// Face system
 exec("./script_facesystem.cs");
 parseFacePacks("Add-Ons/Gamemode_Eventide/modules/players/faces");
