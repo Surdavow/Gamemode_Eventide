@@ -70,6 +70,7 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 
 	commandToClient(%obj.client,'PlayGui_CreateToolHud',(%class $= "hoarder") ? 5 : %this.maxTools);
 
+	%formatString = "<font:impact:40><color:FFFF00>";
 	%firstString = "You acquired a";
 
 	switch$(%class)
@@ -77,28 +78,28 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 		case "mender":  %healitem = (getRandom(1)) ? GauzeItem.getID() : ZombieMedpackItem.getID();
 						%obj.tool[0] = %healitem;
          				messageClient(%obj.client,'MsgItemPickup','',0,%healitem);
-						%obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Mender <br>" @ %firstString SPC "medical item and can revive survivors faster!",4);
+						%obj.client.centerprint(%formatString @ "Class: Mender <br>" @ %firstString SPC "medical item and can revive survivors faster!",4);
 
 		case "runner": 	%obj.setTempSpeed(1.07);
 						%obj.tool[0] = SodaItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
-						%obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Runner <br>" @ %firstString SPC "soda and can run slightly faster!",4);
+						%obj.client.centerprint(%formatString @ "Class: Runner <br>" @ %firstString SPC "soda and can run slightly faster!",4);
 
 		case "hoarder": %obj.hoarderToolCount = 5;
 						%obj.tool[0] = DCamera.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,DCamera.getID());
-						%obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Hoarder <br>" @ %firstString SPC "camera and have 5 slots!",4);
+						%obj.client.centerprint(%formatString @ "Class: Hoarder <br>" @ %firstString SPC "camera and have 5 slots!",4);
 
 		case "fighter":	%obj.pseudoHealth = 75;
 						%obj.tool[0] = sm_poolCueItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,sm_poolCueItem.getID());
-						%obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Fighter <br>" @ %firstString SPC "pool cue, can shove further and can take 1 hit before getting damaged!",4);
+						%obj.client.centerprint(%formatString @ "Class: Fighter <br>" @ %firstString SPC "pool cue, can shove further and can take 1 hit before getting damaged!",4);
 
 		case "tinkerer": %obj.tool[0] = MonkeyWrench.getID();
          				 messageClient(%obj.client,'MsgItemPickup','',0,MonkeyWrench.getID());
 						 %obj.tool[1] = StunGun.getID();
          				 messageClient(%obj.client,'MsgItemPickup','',1,StunGun.getID());
-						 %obj.client.centerprint("<font:impact:40><color:FFFF00>Class: Runner <br>" @ %firstString SPC "monkey wrench, stungun, use the wrench to repair generators faster!",4);
+						 %obj.client.centerprint(%formatString @ "Class: Runner <br>" @ %firstString SPC "monkey wrench, stungun, use the wrench to repair generators faster!",4);
 	}
 }
 
