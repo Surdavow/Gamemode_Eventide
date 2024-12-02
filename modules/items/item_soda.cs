@@ -62,12 +62,12 @@ function sodaImage::OnOpen(%data,%obj,%slot)
 
 function SpeedEffect::Spawn(%e,%obj)
 {
-	%obj.AddMoveSpeedModifier(%e.mod);
+	%obj.setTempSpeed(1.25);
 }
 
 function SpeedEffect::Despawn(%e,%obj)
 {
-	%obj.AddMoveSpeedModifier(-%e.mod);
+	%obj.setTempSpeed();
 }
 
 function sodaImage::OnDrink(%data,%obj,%slot)
