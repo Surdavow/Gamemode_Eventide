@@ -99,7 +99,7 @@ function EventidePlayer::assignClass(%this,%obj,%class)
          				 messageClient(%obj.client,'MsgItemPickup','',0,MonkeyWrench.getID());
 						 %obj.tool[1] = StunGun.getID();
          				 messageClient(%obj.client,'MsgItemPickup','',1,StunGun.getID());
-						 %obj.client.centerprint(%formatString @ "Class: Runner <br>" @ %firstString SPC "monkey wrench, stungun, use the wrench to repair generators faster!",4);
+						 %obj.client.centerprint(%formatString @ "Class: Tinkerer <br>" @ %firstString SPC "monkey wrench, stungun, use the wrench to repair generators faster!",4);
 	}
 }
 
