@@ -52,20 +52,13 @@ datablock ProjectileData(airhornProjectile)
    directDamageType    = $DamageType::Airhorn;
    radiusDamageType    = $DamageType::Airhorn;
 
-   brickExplosionRadius = 1;
-   brickExplosionImpact = true;          //destroy a brick if we hit it directly?
-   brickExplosionForce  = 1;
-   brickExplosionMaxVolume = 0;          //max volume of bricks that we can destroy
-   brickExplosionMaxVolumeFloating = 1;  //max volume of bricks that we can destroy if they aren't connected to the ground
-
+   brickExplosionImpact = false;
    impactImpulse	     = 1000;
    verticalImpulse	  = 600;
    explosion           = airhornExplosion;
-   particleEmitter     = ""; //bulletTrailEmitter;
-
+   particleEmitter     = "";
    muzzleVelocity      = 90;
    velInheritFactor    = 1;
-
    armingDelay         = 00;
    lifetime            = 80;
    fadeDelay           = 3500;
@@ -73,17 +66,14 @@ datablock ProjectileData(airhornProjectile)
    bounceFriction      = 0.20;
    isBallistic         = false;
    gravityMod = 0.0;
-
    hasLight    = false;
-
    uiName = "Airhorn Blast";
 };
 
 datablock ItemData(AirhornItem)
 {
-	category = "Weapon";  // Mission editor category
-	className = "Weapon"; // For inventory system
-
+	category = "Weapon";
+	className = "Weapon";
 	shapeFile = "./models/airhorn/airhorn.dts";
 	rotate = false;
 	mass = 1;
@@ -91,66 +81,59 @@ datablock ItemData(AirhornItem)
 	elasticity = 0.2;
 	friction = 0.6;
 	emap = true;
-
-	//gui stuff
 	uiName = "Air horn";
 	iconName = "./models/airhorn/icon_airhorn";
 	doColorShift = false;
 	colorShiftColor = "0.25 0.25 0.25 1.000";
-
 	image = airhornImage;
 	canDrop = true;
 };
 
 datablock ShapeBaseImageData(airhornImage)
 {
-   shapeFile = "./models/airhorn/airhorn.dts";
-   emap = true;
-   mountPoint = 0;
-   offset = "0 0 0";
-   eyeOffset = 0; //"0.7 1.2 -0.5";
-   rotation = eulerToMatrix( "0 0 0" );
-   correctMuzzleVector = true;
-   className = "WeaponImage";
-   item = BowItem;
-   ammo = " ";
-   projectile = airhornProjectile;
-   projectileType = Projectile;
+	shapeFile = "./models/airhorn/airhorn.dts";
+	emap = true;
+	mountPoint = 0;
+	offset = "0 0 0";
+	eyeOffset = 0;
+	rotation = eulerToMatrix( "0 0 0" );
+	correctMuzzleVector = true;
+	className = "WeaponImage";
+	item = AirhornItem;
+	ammo = " ";
+	projectile = airhornProjectile;
+	projectileType = Projectile;
 
-	stateName[0]                     = "Activate";
-	stateTimeoutValue[0]             = 0.15;
-	stateTransitionOnTimeout[0]       = "Ready";
-	stateSound[0]					= weaponSwitchSound;
-
-	stateName[1]                     = "Ready";
-	stateTransitionOnTriggerDown[1]  = "Fire";
-	stateAllowImageChange[1]         = true;
-	stateSequence[1]	= "Ready";
-
-	stateName[2]                    = "Fire";
-	stateTransitionOnTimeout[2]     = "Smoke";
-	stateTimeoutValue[2]            = 0.55;
-	stateFire[2]                    = true;
-	stateAllowImageChange[2]        = false;
-	stateSequence[2]                = "Fire";
-	stateScript[2]                  = "onFire";
-	stateWaitForTimeout[2]			= true;
-	stateEmitter[2]					= airhornFlashEmitter;
-	stateEmitterTime[2]				= 0.55;
-	stateEmitterNode[2]				= "muzzleNode";
-	stateSound[2]					= "airhornShot_sound";
-	stateEjectShell[2]       = true;
-
-	stateName[3] = "Smoke";
-	stateEmitterTime[3]				= 0.05;
-	stateEmitterNode[3]				= "muzzleNode";
-	stateTimeoutValue[3]            = 0.01;
-	stateTransitionOnTimeout[3]     = "Reload";
-
-	stateName[4]			= "Reload";
-	stateSequence[4]                = "Reload";
-	stateTransitionOnTriggerUp[4]     = "Ready";
-	stateSequence[4]	= "Ready";
+	stateName[0]                     	= "Activate";
+	stateTimeoutValue[0]             	= 0.15;
+	stateTransitionOnTimeout[0]       	= "Ready";
+	stateSound[0]						= weaponSwitchSound;
+	stateName[1]                     	= "Ready";
+	stateTransitionOnTriggerDown[1]  	= "Fire";
+	stateAllowImageChange[1]         	= true;
+	stateSequence[1]					= "Ready";
+	stateName[2]                    	= "Fire";
+	stateTransitionOnTimeout[2]     	= "Smoke";
+	stateTimeoutValue[2]            	= 0.55;
+	stateFire[2]                    	= true;
+	stateAllowImageChange[2]        	= false;
+	stateSequence[2]                	= "Fire";
+	stateScript[2]                  	= "onFire";
+	stateWaitForTimeout[2]				= true;
+	stateEmitter[2]						= airhornFlashEmitter;
+	stateEmitterTime[2]					= 0.55;
+	stateEmitterNode[2]					= "muzzleNode";
+	stateSound[2]						= "airhornShot_sound";
+	stateEjectShell[2]       			= true;
+	stateName[3] 						= "Smoke";
+	stateEmitterTime[3]					= 0.05;
+	stateEmitterNode[3]					= "muzzleNode";
+	stateTimeoutValue[3]            	= 0.01;
+	stateTransitionOnTimeout[3]     	= "Reload";
+	stateName[4]						= "Reload";
+	stateSequence[4]               	 	= "Reload";
+	stateTransitionOnTriggerUp[4]     	= "Ready";
+	stateSequence[4]					= "Ready";
 
 };
 

@@ -22,7 +22,7 @@ package Eventide_Items
 	{
 		if(!%obj.getDataBlock().isEventideModel && !isObject(getMinigameFromObject(%obj))) 
 		{
-			Parent::Pickup(%obj,%item);
+			Parent::onPickup(%this, %obj, %user, %amount);
 			return;
 		}
 
