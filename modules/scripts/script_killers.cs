@@ -43,39 +43,29 @@ package Eventide_Killers
 	
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
 	{		
-		if(isObject(%client = %obj.getControllingClient ()) && isObject(%player = %client.Player)) 
-		if(%player.stunned) return;
+		if (%obj.getControllingClient().player.stunned) return; 		
 		
 		Parent::onTrigger (%this, %obj, %trigger, %state);
-	}
-
-	function player::setDamageFlash(%obj,%value)
-	{
-		if(!isObject(%obj.getControllingClient())) return;
-		
-		if(!%obj.ShireBlind && %value > 0.2) %value = 0.2;
-		Parent::setDamageFlash(%obj,%value);
 	}
 
 	function Armor::onNewDatablock(%this,%obj)
 	{		
 		Parent::onNewDatablock(%this,%obj);
-
-		%this.schedule(100,KillerCheck,%obj);
+		
+		if(%this.isEventideModel) %this.schedule(100,KillerCheck,%obj);
 	}
 
 	function Armor::onDisabled(%this, %obj, %state)
 	{
         Parent::onDisabled(%this, %obj, %state);
 		
-		if(isObject(%killer = %obj.killer))
-		{
-			%killer.ChokeAmount = 0;
-			%killer.victim = 0;
-			%killer.playthread(3,"activate2");
-			%obj.dismount();
-			%obj.setVelocity(vectorscale(vectorAdd(%killer.getForwardVector(),"0 0 0.25"),15));		
-		}
+		if (!isObject(%killer = %obj.killer)) return;
+		
+		%killer.ChokeAmount = 0;
+		%killer.victim = 0;
+		%killer.playthread(3,"activate2");
+		%obj.dismount();
+		%obj.setVelocity(vectorscale(vectorAdd(%killer.getForwardVector(),"0 0 0.25"),15));		
     }
 };
 
@@ -90,8 +80,10 @@ function getCurrentKiller()
 
 function KillerSpawnMessage(%obj)
 {
+	// Skip if invalid object, minigame, or first message has already been sent
 	if(!isObject(%obj) || !isObject(%minigame = getMiniGameFromObject(%obj)) || %obj.firstMessageSpawn) return;
 	
+	// Randomize the message
 	switch(getRandom(1,4))
 	{
 		case 1: %message = "The hunter has arrived.";
@@ -103,6 +95,7 @@ function KillerSpawnMessage(%obj)
 	%minigame.chatmsgall("<font:Impact:30>\c0" @ %message);
 	%minigame.playSound("round_start_sound");	
 
+	// Set the flag to prevent the message from being sent again
 	%obj.firstMessageSpawn = true;
 
 	//Stuff for the distant sound system.
@@ -117,16 +110,9 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		%obj.lastclawed = getSimTime();	
 		%obj.setEnergyLevel(%obj.getEnergyLevel()-%dataBlock.maxEnergy/6);						
 				
-		if(%datablock.shapeFile $= EventideplayerDts.baseShape) %meleeAnim = getRandom(1,4);
-		else %meleeAnim = getRandom(1,2);
-
-		switch(%meleeAnim)
-		{
-			case 1: %meleetrailangle = %datablock.meleetrailangle1;
-			case 2: %meleetrailangle = %datablock.meleetrailangle2;
-			case 3: %meleetrailangle = %datablock.meleetrailangle3;
-			case 4: %meleetrailangle = %datablock.meleetrailangle4;
-		}
+		%meleeAnim = (%datablock.shapeFile $= EventideplayerDts.baseShape) ? getRandom(1,4) : getRandom(1,2);
+		%meleetrailangle = %datablock.meleetrailangle[%meleeAnim];
+		%obj.playthread(2,"melee" @ %meleeAnim);
 				
 		if(%datablock.meleetrailskin !$= "") 
 		%obj.spawnKillerTrail(%datablock.meleetrailskin,%datablock.meleetrailoffset,%meleetrailangle,%datablock.meleetrailscale);
@@ -135,16 +121,15 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		serverPlay3D(%datablock.killermeleesound @ getRandom(1,%datablock.killermeleesoundamount) @ "_sound",%obj.getWorldBoxCenter());
 
 		if(%datablock.killerweaponsound !$= "") 
-		serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());
-		
-		%obj.playthread(2,"melee" @ %meleeAnim);
+		serverPlay3D(%datablock.killerweaponsound @ getRandom(1,%datablock.killerweaponsoundamount) @ "_sound",%obj.getWorldBoxCenter());		
 
 		initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
 		while(%hit = containerSearchNext())
 		{
 			if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius) continue;
 
-			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			%typemasks = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
+			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),%typemasks, %obj);
 			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));				
 
 			if(isObject(%obscure) && %dataBlock.hitobscureprojectile !$= "" && %dot > 0.85)
@@ -164,7 +149,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 			if(%dot < 0.6) continue;		
 
-			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == true)								
+			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))								
 			{
 				switch$(%obj.getdataBlock().getName())
 				{
@@ -195,8 +180,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 														%datablock.schedule(2250,EventideAppearance,%obj,%obj.client);
 														return;
 													}
-													else continue;
-													
+													else continue;													
 												}
 
 					case "PlayerSkullwolf":	if(%hit.getDamagePercent() > 0.25 && %hit.getdataBlock().isDowned)
@@ -243,21 +227,14 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 function Armor::KillerCheck(%this,%obj)
 {	
-	if(%this.isKiller == true) 
-	{
-		%this.onKillerLoop(%obj);		
-		if(isObject(%obj.getMountedImage(2))) %obj.unmountImage(2);
-		if(isObject(%client = %obj.client)) %this.EventideAppearance(%obj,%client);
-		%obj.KillerGhostLightCheck();
-	}
+	if(!%this.isKiller) return;
+
+	%this.onKillerLoop(%obj);		
+	if(isObject(%obj.getMountedImage(2))) %obj.unmountImage(2);
+	if(isObject(%obj.client)) %this.EventideAppearance(%obj,%obj.client);
+	%obj.KillerGhostLightCheck();
 }
 
-// Function that activates if a killer is chasing or not chasing someone.
-// Params:
-// %this = datablock
-// %obj = object
-// %chasing = victim object
-// Currently nothing is performed because it is meant for custom actions determined by killer
 function Armor::onKillerChase(%this,%obj,%chasing)
 {
 	//Hello world
@@ -326,20 +303,17 @@ function Armor::onKillerLoop(%this, %obj)
                 // Update victim's face
                 if(isObject(%victim.faceConfig))
                 {
-                    if(%victim.faceConfig.subCategory $= "" && 
-                       $Eventide_FacePacks[%victim.faceConfig.category, "Scared"] !$= "")
-                    {
-                        %victim.createFaceConfig($Eventide_FacePacks[%victim.faceConfig.category, "Scared"]);
-                    }
-                    if(%victim.faceConfig.isFace("Scared"))
-                    {
-                        %victim.faceConfig.dupeFaceSlot("Neutral", "Scared");
-                    }
+					if(%victim.faceConfig.subCategory $= "" && $Eventide_FacePacks[%victim.faceConfig.category, "Scared"] !$= "")                    
+					%victim.createFaceConfig($Eventide_FacePacks[%victim.faceConfig.category, "Scared"]);
+
+                    if(%victim.faceConfig.isFace("Scared")) 
+					%victim.faceConfig.dupeFaceSlot("Neutral", "Scared");
+                    
                 }
             }		
             else // If we cannot see the victim, stop music and perform some actions
             {
-                // Update victim's chase state
+                // Update victim's chase state after 6 seconds
                 if (isObject(%victim.client) && %victim.TimeSinceChased + 6000 < getSimTime())
                 {
                 	// Reset victim's face
@@ -360,21 +334,20 @@ function Armor::onKillerLoop(%this, %obj)
                 }
 
 				// Update killer's chase state
-                if (!%obj.isChasing)
+                if (!%obj.isChasing && $Pref::Server::Eventide::chaseMusicEnabled)
                 {
-					if($Pref::Server::Eventide::chaseMusicEnabled)
+					%this.onKillerChase(%obj, false);
+
+					// Update killer's chase state
+					if(isObject(%obj.client) && !%chasingVictims)
 					{
-                    	%this.onKillerChase(%obj, false);
-                    	if(isObject(%obj.client) && !%chasingVictims)
-                    	{
-                    	    if(%obj.chaseLevel != 1)
-                    	    {
-                    	        %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
-                    	        %obj.chaseLevel = 1;
-                    	    }
-                    	    cancel(%obj.client.StopChaseMusic);
-                    	    %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
-                    	}
+						if(%obj.chaseLevel != 1)
+						{
+							%obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+							%obj.chaseLevel = 1;
+						}
+						cancel(%obj.client.StopChaseMusic);
+						%obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
 					}
                 }
 				
@@ -402,7 +375,7 @@ function Armor::onKillerLoop(%this, %obj)
 			    }
 			}
 
-			// Handle arm-raising logic
+			// If the player is chasing and the arms are not raised, raise them
 			if (%obj.isChasing && !%obj.raiseArms && %this.killerRaiseArms) 
 			{
 			    %obj.playThread(1, "armReadyBoth");
@@ -417,8 +390,10 @@ function Armor::onKillerLoop(%this, %obj)
     }
 
     // Update UI and schedule next loop
-    if (isObject(%obj.client)) %this.bottomprintgui(%obj, %obj.client);
+    if (isObject(%obj.client)) 
+	%this.bottomprintgui(%obj, %obj.client);
 
+	// Schedule next loop, preventing duplication
     cancel(%obj.onKillerLoop);
     %obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
 }
@@ -448,7 +423,7 @@ function Player::KillerGhostLightCheck(%obj)
 	
 	if(!%obj.isInvisible)
 	{
-		%obj.light = new fxLight ("")
+		%obj.light = new fxLight()
 		{
 			dataBlock = %obj.getdataBlock().killerlight;
 			source = %obj;
@@ -491,10 +466,8 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
     MissionCleanup.add(%client.EventidemusicEmitter);
     %client.EventidemusicEmitter.scopeToClient(%client);
 		
-	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer" && %client.player.tunnelvision == 0)
-	{
-		%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);
-	}
+	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer" && !%client.player.tunnelvision)
+	%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);	
 }
 
 function GameConnection::PlaySkullFrames(%client,%frame)
@@ -518,25 +491,18 @@ function GameConnection::StopChaseMusic(%client)
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
 	{
 		// Reset tunnelvision
-		if(%client.player.tunnelvision > 0) 
+		if(%client.player.tunnelvision) 
 		%client.player.getdataBlock().TunnelVision(%client.player,false);
 
 		//Face system functionality. Make the victim return to calm facial expressions when they are no longer being chased.
 		if(isObject(%client.player.faceConfig) && %client.player.faceConfig.subCategory $= "Scared")
-		{
-			%client.player.createFaceConfig($Eventide_FacePacks[%client.player.faceConfig.category]);
-		}
+		%client.player.createFaceConfig($Eventide_FacePacks[%client.player.faceConfig.category]);		
 	}
 
     %client.player.chaseLevel = 0;
     %client.musicChaseLevel = 0;
 }
 
-/// @param	this	player
-/// @param	skin	string
-/// @param	offset	3-element position
-/// @param	angle	3-element euler rotation (in degrees)
-/// @param	scale	3-element vector
 function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
 {
 	%shape = new StaticShape()
@@ -547,13 +513,10 @@ function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
 	
 	if(isObject(%shape))
 	{
-		MissionCleanup.add(%shape);
-		
 		%shape.setSkinName(%skin);
 		
 		%rotation = relativeVectorToRotation(%this.getLookVector(), %this.getUpVector());
-		%clamped = mClampF(firstWord(%rotation), -89.9, 89.9) SPC restWords(%rotation);
-		
+		%clamped = mClampF(firstWord(%rotation), -89.9, 89.9) SPC restWords(%rotation);		
 		%local = %this.getHackPosition() SPC %clamped;
 		%combined = %offset SPC eulerToQuat(%angle);
 		%actual = matrixMultiply(%local, %combined);
@@ -561,5 +524,6 @@ function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
 		%shape.setTransform(%actual);
 		%shape.playThread(0, "rotate");
 		%shape.schedule(1000, delete);
+		MissionCleanup.add(%shape);		
 	}
 }
