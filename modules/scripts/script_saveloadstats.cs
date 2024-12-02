@@ -36,3 +36,22 @@ function Eventide_loadEventideStats(%client)
 	%readfile.close();
 	%readfile.delete();
 }
+
+package Eventide_SaveLoadStats
+{
+	function gameConnection::autoAdminCheck(%client) 
+	{		
+		Parent::autoAdminCheck(%client);
+		scheduleNoQuota(1000,0,Eventide_loadEventideStats,%client);
+	}
+
+	function GameConnection::onClientLeaveGame(%client)
+	{
+		parent::onClientLeaveGame(%client);
+		Eventide_storeEventideStats(%client);	
+	}
+};
+
+// In case the package is already activated, deactivate it first before reactivating it
+if(isPackage(Eventide_SaveLoadStats)) deactivatePackage(Eventide_SaveLoadStats);
+activatePackage(Eventide_SaveLoadStats);

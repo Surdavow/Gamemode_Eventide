@@ -1,3 +1,25 @@
+function shuffleWords(%wordString) 
+{
+    // Convert string to an array
+    %wordCount = getWordCount(%wordString);
+    for(%i = 0; %i < %wordCount; %i++) %words[%i] = getWord(%wordString, %i);
+    
+    // Fisher-Yates shuffle algorithm
+    for(%i = %wordCount - 1; %i > 0; %i--) 
+	{
+        %j = getRandom(0, %i);
+        %temp = %words[%i];
+        %words[%i] = %words[%j];
+        %words[%j] = %temp;
+    }
+    
+    // Reconstruct shuffled string
+    %shuffledString = "";
+    for(%i = 0; %i < %wordCount; %i++) %shuffledString = %shuffledString @ %words[%i] @ " ";    
+    
+    return trim(%shuffledString);
+}
+
 function getString(%s,%sep,%a)
 {
 	for(%i = 0; %i <= %a; %i++) %s = nextToken(%s,"t",%sep);

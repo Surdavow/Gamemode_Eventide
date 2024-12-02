@@ -74,3 +74,68 @@ function LoadLevel(%filename)
 }
 
 BuildMapLists();
+
+package Eventide_MapRotation
+{
+	function MiniGameSO::Reset(%minigame,%client)
+	{
+		if (ClientGroup.getCount() && $Pref::Server::MapRotation::enabled)
+  		{
+			if ($Pref::Server::MapRotation::ResetCount >= $Pref::Server::MapRotation::minreset) 
+			{
+				%minigame.playSound("item_get_sound");			
+				nextMap("\c3" SPC $Pref::Server::MapRotation::minreset SPC "rounds have passed, loading the next map!");
+   				$Pref::Server::MapRotation::ResetCount = 0;
+			}
+
+			$Pref::Server::MapRotation::ResetCount++;
+			%minigame.chatMsgAll("\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minreset);
+		}
+
+		Parent::Reset(%minigame, %client);
+	}
+
+	function gameConnection::spawnPlayer(%client)
+	{
+		Parent::spawnPlayer(%client);
+
+		if ($Pref::Server::MapRotation::MapChange) return;	
+		%client.hasVoted = false;
+	}
+	
+	function onMissionEnded(%this, %a, %b, %c, %d)
+	{
+		$PFGlassInit = false;
+		$PFRTBInit = false;
+		return Parent::onMissionEnded(%this, %a, %b, %c, %d);
+	}
+
+	function getBrickGroupFromObject(%obj)
+	{
+		if(isObject(%obj) && %obj.getClassName() $= "AIPlayer")		
+		switch$(%obj.getDataBlock().getName())			
+		{
+			case "ShireZombieBot": return %obj.ghostclient.brickgroup;
+			case "PuppetMasterPuppet": return %obj.client.brickgroup;
+		}		
+
+		Parent::getBrickGroupFromObject(%obj);
+	}
+
+	function ServerLoadSaveFile_End()
+	{
+		$Pref::Server::MapRotation::MapChange = false;
+
+		for(%a = 0; %a < ClientGroup.getCount(); %a++)
+		{
+			%client = ClientGroup.getObject(%a);
+			%client.spawnPlayer();
+		}
+
+		Parent::ServerLoadSaveFile_End();
+	}	
+};
+
+// In case the package is already activated, deactivate it first before reactivating it
+if(isPackage(Eventide_MapRotation)) deactivatePackage(Eventide_MapRotation);
+activatePackage(Eventide_MapRotation);

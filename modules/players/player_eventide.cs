@@ -64,10 +64,50 @@ function EventidePlayer::PulsingScreen(%this,%obj)
 	%obj.PulsingScreen = %this.schedule(850,PulsingScreen,%obj);
 }
 
+function EventidePlayer::assignClass(%this,%obj,%class)
+{
+	if(!isObject(%obj) || !isObject(%obj.client) || %class $= "") return;
+
+	commandToClient(%obj.client,'PlayGui_CreateToolHud',(%class $= "hoarder") ? 5 : %this.maxTools);
+
+	%formatString = "<font:impact:40><color:FFFF00>";
+	%firstString = "You acquired a";
+
+	switch$(%class)
+	{
+		case "mender":  %healitem = (getRandom(1)) ? GauzeItem.getID() : ZombieMedpackItem.getID();
+						%obj.tool[0] = %healitem;
+         				messageClient(%obj.client,'MsgItemPickup','',0,%healitem);
+						%obj.client.centerprint(%formatString @ "Class: Mender <br>" @ %firstString SPC "medical item and can revive survivors faster!",4);
+
+		case "runner": 	%obj.setTempSpeed(1.07);
+						%obj.tool[0] = SodaItem.getID();
+         				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
+						%obj.client.centerprint(%formatString @ "Class: Runner <br>" @ %firstString SPC "soda and can run slightly faster!",4);
+
+		case "hoarder": %obj.hoarderToolCount = 5;
+						%obj.tool[0] = DCamera.getID();
+         				messageClient(%obj.client,'MsgItemPickup','',0,DCamera.getID());
+						%obj.client.centerprint(%formatString @ "Class: Hoarder <br>" @ %firstString SPC "camera and have 5 slots!",4);
+
+		case "fighter":	%obj.pseudoHealth = 75;
+						%obj.tool[0] = sm_poolCueItem.getID();
+         				messageClient(%obj.client,'MsgItemPickup','',0,sm_poolCueItem.getID());
+						%obj.client.centerprint(%formatString @ "Class: Fighter <br>" @ %firstString SPC "pool cue, can shove further and can take 1 hit before getting damaged!",4);
+
+		case "tinkerer": %obj.tool[0] = MonkeyWrench.getID();
+         				 messageClient(%obj.client,'MsgItemPickup','',0,MonkeyWrench.getID());
+						 %obj.tool[1] = StunGun.getID();
+         				 messageClient(%obj.client,'MsgItemPickup','',1,StunGun.getID());
+						 %obj.client.centerprint(%formatString @ "Class: Tinkerer <br>" @ %firstString SPC "monkey wrench, stungun, use the wrench to repair generators faster!",4);
+	}
+}
+
 function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
-	%obj.schedule(1,setEnergyLevel,0);
+
+	%obj.schedule(33,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 
 	//Create the billboard bot
@@ -266,15 +306,18 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 							initContainerRadiusSearch(%pos,%radius,%mask);
 							while(%hit = containerSearchNext())
 							{
-								%obscure = containerRayCast(%obj.getEyePoint(),%hit.getWorldBoxCenter(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-								%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getposition(),%obj.getposition())));
+								%obscure = containerRayCast(%obj.getEyePoint(),%hit.getHackPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+								%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%obj.getHackPosition())));
 		
 								if(%hit == %obj || isObject(%obscure) || %dot < 0.5) continue;
-								if(%hit.getState() $= "Dead" || %hit.getDatablock().resistMelee) continue;
+								if(%hit.getState() $= "Dead") continue;
 
 								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
 								%hit.playThread(3,"jump");
-								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),"1250"),"0 0 375"));
+
+								%forwardimpulse = (%obj.survivorclass $= "fighter") ? 950 : 800;
+								%zimpulse = (%obj.survivorclass $= "fighter") ? 325 : 200;
+								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),%forwardimpulse),"0 0 " @ %zimpulse));
 							}												
 						}
 					
@@ -306,15 +349,17 @@ function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
 			EventidePlayer_SaveCounterPrint(%victim.client,%obj.savevictimcounter);
 
 			cancel(%obj.SaveVictimSched);
-			%obj.SaveVictimSched = %this.schedule(1000,SaveVictim,%obj,%victim,%bool);
+			%time = (%obj.survivorClass $= "mender") ? 250 : 1000;
+			%obj.SaveVictimSched = %this.schedule(%time,SaveVictim,%obj,%victim,%bool);
 		}
 		else
 		{
 			%obj.savevictimcounter = 0;
 			if(isObject(%obj.client)) %obj.client.centerprint("<color:FFFFFF><font:impact:40>You revived" SPC %victim.client.name,1);
 			if(isObject(%victim.client)) %victim.client.centerprint("<color:FFFFFF><font:impact:40>You were revived by" SPC %obj.client.name,1);
-			%victim.setHealth(75);			
-			%victim.setDatablock("EventidePlayer");						
+			%victim.setHealth(75);
+			if(%victim.survivorclass $= "fighter") %victim.pseudoHealth = 75;
+			%victim.setDatablock("EventidePlayer");					
 
 			%victim.playthread(0,"root");
 			if(%victim.downedamount >= 1) %victim.getdataBlock().PulsingScreen(%victim);
@@ -492,7 +537,8 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 }
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
-{			
+{
+	//If we receive too much damage and we're not already incapacitated, check some conditions to see if we should be incapacitated.
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
     {        
         %obj.setDatablock("EventidePlayerDowned");
@@ -522,7 +568,19 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
-	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward if enough damage has been received.
+	//Pseudo health for the fighter class, gives the player a temporary health boost until they are hurt again
+	if(%obj.pseudoHealth > 0)
+	{
+		%obj.pseudoHealth -= %damage;
+		%obj.addhealth(mAbs(%damage)*2);
+		%obj.mountimage("HealImage",3);
+		%obj.setwhiteout(0.1);
+		
+		if(isObject(%obj.client)) %obj.client.play2D("printfiresound");				
+	}
+
+	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
+	//if enough damage has been received.
 	if(isObject(%obj.faceConfig))
 	{
 		if(%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")

@@ -42,6 +42,8 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 
 function PlayerHuntress::onTrigger(%this, %obj, %trig, %press, %client) 
 {	
+	Parent::onTrigger(%this, %obj, %trig, %press, %client);
+	
 	if(%press) switch(%trig)
 	{
 		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);

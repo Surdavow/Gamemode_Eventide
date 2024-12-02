@@ -222,6 +222,7 @@ function brickEventideRitual::onRemove(%this, %obj)
 {	
 	Parent::onRemove(%this,%obj);
 	
+	if(isObject(%brick.interactiveshape)) %brick.interactiveshape.delete();
 	if(isObject(%obj.ritualshape)) %obj.ritualshape.delete();
 	if(isObject(%obj.bookshape)) %obj.bookshape.delete();
 	if(isObject(%obj.daggershape)) %obj.daggershape.delete();

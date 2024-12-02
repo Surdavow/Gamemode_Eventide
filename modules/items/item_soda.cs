@@ -34,7 +34,7 @@ datablock shapeBaseImageData(SodaImage)
 	doColorShift = FlareGunItem.doColorShift;
 	colorShiftColor = FlareGunItem.colorShiftColor;
 
-	item = FlareGunItem;
+	item = SodaItem;
 
 	stateName[$c++] = "ready";
 	stateTransitionOnTriggerDown[$c] = "fire";
