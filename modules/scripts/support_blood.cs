@@ -33,7 +33,7 @@ package Eventide_DSBloodPackage
 				if (isObject(%source.client)) %source.client.applyBodyParts();
 			}
 
-			if (getRandom(1, 2) == 1)
+			if (getRandom(1))
 			{
 				%obj.bloody["chest_"@ (%dot > 0? "back": "front")] = true;
 				if (isObject(%obj.client)) %obj.client.applyBodyParts();
@@ -51,14 +51,12 @@ package Eventide_DSBloodPackage
 
 		if ($Blood::SprayOnDamage && !%fatal) 
 		{
-			if ($Blood::Effects) 
-			createBloodSplatterExplosion(%pos, %norm, "1 1 1");
+			if ($Blood::Effects) createBloodSplatterExplosion(%pos, %norm, "1 1 1");
 			%obj.doSplatterBlood(getRandom(1, 4), %pos, %vector);
 		}
 		else if ($Blood::SprayOnDeath)
 		{
-			if ($Blood::Effects)
-			createBloodSplatterExplosion(%pos, %norm, "1 1 1");
+			if ($Blood::Effects) createBloodSplatterExplosion(%pos, %norm, "1 1 1");
 			%obj.doSplatterBlood(7, %pos, %vector);
 		}
 
@@ -67,8 +65,7 @@ package Eventide_DSBloodPackage
 
 	function Armor::onEnterLiquid(%data, %obj, %coverage, %type)
 	{
-        if(%obj.getdatablock().getName() $= "PlayerRender" || !isObject(%obj.client)) 
-        return Parent::onEnterLiquid(%data, %obj, %coverage, %type);
+        if(%obj.getdatablock().getName() $= "PlayerRender" || !isObject(%obj.client)) return Parent::onEnterLiquid(%data, %obj, %coverage, %type);
 
 		%obj.bloody["lshoe"] = false;
 		%obj.bloody["rshoe"] = false;

@@ -32,13 +32,13 @@ datablock ShapeBaseImageData(MonkeyWrenchImage)
 	doColorShift = false;
 	
 	stateName[0]					= "Activate";
-	//stateSound[0]					= weaponSwitchSound;
+	stateSound[0]					= weaponSwitchSound;
 	stateTimeoutValue[0]			= 0.15;
 	stateSequence[0]				= "Ready";
 	stateTransitionOnTimeout[0]		= "Ready";
 
 	stateName[1]					= "Ready";
-	stateAllowImageChange[1]		= true; //false?
+	stateAllowImageChange[1]		= true;
 	stateScript[1]					= "onReady";
 	stateTransitionOnTriggerDown[1]	= "Use";
 	
@@ -47,16 +47,18 @@ datablock ShapeBaseImageData(MonkeyWrenchImage)
 	stateTransitionOnTriggerUp[2]	= "Ready";
 };
 
+function MonkeyWrenchImage::onUse(%this,%obj,%slot)
+{
+	%obj.activateStuff();
+}
 
 function MonkeyWrenchImage::onMount(%this,%obj,%slot)
 {
-	%pl = %obj;
-	%pl.playThread(0,"armReady");
+	%obj.playThread(0,"armReady");
 }
 
 function MonkeyWrenchImage::onUnMount(%this,%obj,%slot)
 {
-	%pl = %obj;
-	%pl.playThread(0,"root");
+	%obj.playThread(0,"root");
 }
 

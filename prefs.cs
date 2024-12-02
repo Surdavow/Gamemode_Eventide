@@ -1,6 +1,6 @@
 if($RTB::Hooks::ServerControl)
-{            
-	RTB_registerPref("Enable local chat (Minigame Only)",	"Eventide","$Pref::Server::ChatMod::lchatEnabled",	"bool","Gamemode_Eventide","0","0","0","");
+{
+	RTB_registerPref("Enable local chat (minigame Only)",	"Eventide","$Pref::Server::ChatMod::lchatEnabled",	"bool","Gamemode_Eventide","0","0","0","");
 	RTB_registerPref("Enable chase music",	"Eventide","$Pref::Server::Eventide::chaseMusicEnabled",	"bool","Gamemode_Eventide","1","0","0","");
 	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Gamemode_Eventide",false,false,false);
 	RTB_registerPref("After how many rounds to load next?","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Gamemode_Eventide",5,false,true);	
