@@ -346,30 +346,36 @@ function Armor::onKillerLoop(%this, %obj)
 					if(isObject(%victim.faceConfig) && %victim.faceConfig.face["Neutral"].faceName $= "Scared") 
 					%victim.faceConfig.resetFaceSlot("Neutral");                    
 					
-					if(%victim.chaseLevel != 1)
-                    {
-                        %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
-                        %victim.chaseLevel = 1;
-                    }
+					if($Pref::Server::Eventide::chaseMusicEnabled)
+					{
+						if(%victim.chaseLevel != 1)
+                    	{
+                    	    %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+                    	    %victim.chaseLevel = 1;
+                    	}
 
-                    cancel(%victim.client.StopChaseMusic);
-                    %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
+                    	cancel(%victim.client.StopChaseMusic);
+                    	%victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
+					}
                 }
 
 				// Update killer's chase state
                 if (!%obj.isChasing)
                 {
-                    %this.onKillerChase(%obj, false);
-                    if(isObject(%obj.client) && !%chasingVictims)
-                    {
-                        if(%obj.chaseLevel != 1)
-                        {
-                            %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
-                            %obj.chaseLevel = 1;
-                        }
-                        cancel(%obj.client.StopChaseMusic);
-                        %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
-                    }
+					if($Pref::Server::Eventide::chaseMusicEnabled)
+					{
+                    	%this.onKillerChase(%obj, false);
+                    	if(isObject(%obj.client) && !%chasingVictims)
+                    	{
+                    	    if(%obj.chaseLevel != 1)
+                    	    {
+                    	        %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+                    	        %obj.chaseLevel = 1;
+                    	    }
+                    	    cancel(%obj.client.StopChaseMusic);
+                    	    %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+                    	}
+					}
                 }
 				
                 %obj.isChasing = false;
