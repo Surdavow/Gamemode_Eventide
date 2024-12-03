@@ -77,7 +77,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 
 					for (%i = 0; %i < Eventide_MinigameGroup.getCount(); %i++) 
 					{
-						if(isObject(Eventide_MinigameGroup.getObject(%i)) && Eventide_MinigameGroup.gettObject(%i).getDataBlock().getName() $= "PuppetMasterPuppet")
+						if(isObject(Eventide_MinigameGroup.getObject(%i)) && Eventide_MinigameGroup.getObject(%i).getDataBlock().getName() $= "PuppetMasterPuppet")
 						%puppetcount++;						
 					}
 
