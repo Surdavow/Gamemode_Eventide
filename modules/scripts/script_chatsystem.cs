@@ -36,7 +36,7 @@ package Eventide_LocalChat
 		
 		if(isObject(%client.player))
 		{        
-			for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%obj.tool[%i]) && %obj.tool[%i].getName() $= "RadioItem")
+			for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%client.player.tool[%i]) && %client.player.tool[%i].getName() $= "RadioItem")
 			{
 				ChatMod_RadioMessage(%client, %message);
 				ChatMod_LocalChat(%client, %message);
