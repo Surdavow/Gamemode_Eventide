@@ -706,8 +706,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		%obj.schedule(1,delete);
 	}
 
-	for (%i = 0; i < 4; %i++) 
-	%obj.unmountimage(%i);				
+	for (%j = 0; %j < 4; %j++) 
+	%obj.unmountimage(%j);				
 
 	if(isObject(%funcclient))
 	for(%i = 0; %i < %obj.getDatablock().maxTools; %i++) if(isObject(%item = %obj.tool[%i]))
@@ -720,7 +720,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		{
 			dataBlock = %item;
 			position = %obj.getPosition();
-			velocity = vectorAdd(%obj.getVelocity(),getRandom(-8,8) SPC getRandom(-8,8) SPC 10);
+			velocity = %obj.getVelocity();
 			BL_ID = %funcclient.BL_ID;
 			minigame = %minigame;
 			spawnBrick = 0;
