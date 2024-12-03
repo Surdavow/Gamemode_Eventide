@@ -707,10 +707,12 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	}
 
 	for (%j = 0; %j < 4; %j++) 
-	%obj.unmountimage(%j);				
+	%obj.unmountimage(%j);
+
+	%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
 
 	if(isObject(%funcclient))
-	for(%i = 0; %i < %obj.getDatablock().maxTools; %i++) if(isObject(%item = %obj.tool[%i]))
+	for(%i = 0; %i < %inventoryToolCount; %i++) if(isObject(%item = %obj.tool[%i]))
 	{
 		//Play a sound for the radio being dropped
 		if(%obj.tool[%i].getName() == RadioItem.getID()) 

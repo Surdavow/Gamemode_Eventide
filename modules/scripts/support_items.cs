@@ -92,7 +92,7 @@ package Eventide_Items
 		for (%i = 0; %i < %inventoryToolCount; %i++)
 		if (!isObject(%obj.tool[%i])) 
 		{
-			if(%item.getName() $= "RadioItem") 
+			if(%item.getDataBlock().getName() $= "RadioItem") 
 			%obj.client.centerPrint("\c4Radio equipped, keep it in your inventory to chat with other survivors.",4);
 			
 			%item.canPickup = false;
