@@ -319,9 +319,10 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
 								%hit.playThread(3,"jump");
 								
+								if(!%obj.shoveForce) %obj.shoveForce = 1;
 								%exhausted = (%obj.staminaCount >= 5) ? 2 : 1;
-								%forwardimpulse = ((%obj.survivorclass $= "fighter") ? 950 : 800) / %exhausted;
-								%zimpulse = ((%obj.survivorclass $= "fighter") ? 325 : 200) / %exhausted;
+								%forwardimpulse = (((%obj.survivorclass $= "fighter") ? 950 : 800) / %exhausted) * %obj.shoveForce;
+								%zimpulse = (((%obj.survivorclass $= "fighter") ? 325 : 200) / %exhausted) * %obj.shoveForce;
 								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),%forwardimpulse),"0 0 " @ %zimpulse));
 							}												
 						}

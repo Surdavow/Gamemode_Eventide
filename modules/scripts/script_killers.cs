@@ -17,14 +17,10 @@ package Eventide_Killers
 	    // Ensure the player is valid and is the Puppet Master
 	    if (isObject(%client.player) && %client.player.getDataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
 	    {
-	        // Temporary puppet array and counter
-	        %puppetCount = 0;
-
 	        // Populate the temporary puppet list
 	        for (%i = 0; %i < Eventide_MinigameGroup.getCount(); %i++)
 	        {
-	            %puppet = Eventide_MinigameGroup.getObject(%i);
-	            if (isObject(%puppet) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")
+	            if (isObject(%puppet = Eventide_MinigameGroup.getObject(%i)) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")
 	            {
 	                %puppet[%puppetCount] = %puppet;
 	                %puppetCount++;
@@ -32,19 +28,19 @@ package Eventide_Killers
 	        }
 
 	        // Ensure the current puppet index is valid
-	        if (%client.puppetIndex $= "" || %client.puppetIndex >= %puppetCount)
-	        %client.puppetIndex = 0;	        
+	        if (%client.player.puppetIndex $= "" || %client.player.puppetIndex >= %puppetCount)
+	        %client.player.puppetIndex = 0;	        
 
 	        // Handle switching control
-	        if (%puppetCount > 0 && %client.puppetIndex < %puppetCount)
+	        if (%puppetCount > 0 && %client.player.puppetIndex < %puppetCount)
 	        {
-	            %currentPuppet = %puppet[%client.puppetIndex];
+	            %currentPuppet = %puppet[%client.player.puppetIndex];
 	            if (isObject(%currentPuppet))
 	            {
 	                // Switch control to the current puppet
 	                %client.getControlObject().schedule(1500, setActionThread, sit, 1);
 	                %client.setControlObject(%currentPuppet);
-	                %client.puppetIndex++;
+	                %client.player.puppetIndex++;
 	            }
 	        }
 	        else
@@ -52,7 +48,7 @@ package Eventide_Killers
 	            // Reset control to the player if no puppets remain
 	            %client.getControlObject().schedule(1500, setActionThread, sit, 1);
 	            %client.setControlObject(%client.player);
-	            %client.puppetIndex = 0;
+	            %client.player.puppetIndex = 0;
 	        }
 	    }
 

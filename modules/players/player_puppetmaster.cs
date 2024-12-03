@@ -83,7 +83,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 
 					if(%puppetcount < 3)
 					{
-						%puppet = new Player()
+						%puppet = new AIPlayer()
 						{
 							dataBlock = "PuppetMasterPuppet";
 							source = %obj;
