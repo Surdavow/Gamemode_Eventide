@@ -12,27 +12,52 @@ package Eventide_Killers
 		Parent::serverCmdLight(%client);		
 	}
 
-	function ServerCmdPlantBrick (%client)
-	{		
-		if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
-		{	
-			if(%client.puppetnumber $= "") %client.puppetnumber = 0;
+	function ServerCmdPlantBrick(%client)
+	{
+	    // Ensure the player is valid and is the Puppet Master
+	    if (isObject(%client.player) && %client.player.getDataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
+	    {
+	        // Temporary puppet array and counter
+	        %puppetCount = 0;
 
-			if(isObject(Eventide_MinigameGroup.getObject(%client.puppetnumber))) 
-			{
-				%client.getcontrolObject().schedule(1500,setActionThread,sit,1);
-				%client.setcontrolobject(Eventide_MinigameGroup.getObject(%client.puppetnumber));
-				%client.puppetnumber++;
-			}
-			else
-			{
-				%client.getcontrolObject().schedule(1500,setActionThread,sit,1);
-				%client.setcontrolobject(%client.player);
-				%client.puppetnumber = 0;
-			}			
-		}
+	        // Populate the temporary puppet list
+	        for (%i = 0; %i < Eventide_MinigameGroup.getCount(); %i++)
+	        {
+	            %puppet = Eventide_MinigameGroup.getObject(%i);
+	            if (isObject(%puppet) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")
+	            {
+	                %puppet[%puppetCount] = %puppet;
+	                %puppetCount++;
+	            }
+	        }
 
-		Parent::ServerCmdPlantBrick(%client);
+	        // Ensure the current puppet index is valid
+	        if (%client.puppetIndex $= "" || %client.puppetIndex >= %puppetCount)
+	        %client.puppetIndex = 0;	        
+
+	        // Handle switching control
+	        if (%puppetCount > 0 && %client.puppetIndex < %puppetCount)
+	        {
+	            %currentPuppet = %puppet[%client.puppetIndex];
+	            if (isObject(%currentPuppet))
+	            {
+	                // Switch control to the current puppet
+	                %client.getControlObject().schedule(1500, setActionThread, sit, 1);
+	                %client.setControlObject(%currentPuppet);
+	                %client.puppetIndex++;
+	            }
+	        }
+	        else
+	        {
+	            // Reset control to the player if no puppets remain
+	            %client.getControlObject().schedule(1500, setActionThread, sit, 1);
+	            %client.setControlObject(%client.player);
+	            %client.puppetIndex = 0;
+	        }
+	    }
+
+	    // Call the parent function
+	    Parent::ServerCmdPlantBrick(%client);
 	}
 
 	function MiniGameSO::Reset(%obj, %client)
