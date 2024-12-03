@@ -99,6 +99,7 @@ datablock ShapeBaseImageData(airhornImage)
 	rotation = eulerToMatrix( "0 0 0" );
 	correctMuzzleVector = true;
 	className = "WeaponImage";
+	armReady = true;
 	item = AirhornItem;
 	ammo = " ";
 	projectile = airhornProjectile;
