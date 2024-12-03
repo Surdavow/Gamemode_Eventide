@@ -32,7 +32,7 @@ package Eventide_LocalChat
         %client.lastMessageSent = %client;
 
 		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
-		if(!%message) return;
+		if(%message $= "0") return;
 		
 		if(isObject(%client.player))
 		{        

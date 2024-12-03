@@ -715,7 +715,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	for(%i = 0; %i < %inventoryToolCount; %i++) if(isObject(%item = %obj.tool[%i]))
 	{
 		//Play a sound for the radio being dropped
-		if(%obj.tool[%i].getName() == RadioItem.getID()) 
+		if(%obj.tool[%i].getName() $= "RadioItem") 
 		serverPlay3d("radio_unmount_sound",%obj.getPosition());	
 
 		%item = new Item()
