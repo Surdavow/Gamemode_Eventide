@@ -175,31 +175,35 @@ function EventidePlayer::onActivate(%this,%obj)
 	%triggerTime = getSimTime();
 	%obj.setEnergyLevel(%obj.getEnergyLevel()-4);
 
-	if(%triggerTime - %obj.laststaminatime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
+	// Reset the delay if the player waits long enough, 3.5 seconds
+	if(%triggerTime - %obj.staminaTime > 3500) 
 	{
-		%obj.laststaminacount = 0;
-		%obj.laststaminatime = 0;
-	}	
-
-	%obj.laststaminacount += 0.25;
-	%obj.laststaminatime = (%triggerTime+200)+(10*%obj.laststaminacount);
-
-	if(%obj.laststaminacount >= 5) 
+		%obj.staminaCount = 0;
+		%obj.staminaTime = 0;
+	}
+	else
 	{
-		if(%obj.laststaminacount == 5) 
-		%this.TunnelVision(%obj,true);
+		%obj.staminaCount += 0.25;
+		%obj.staminaTime = (%triggerTime+200)+(10*%obj.staminaCount);
 
-		cancel(%obj.resetStamina);
-		//%obj.setTempSpeed(0.75);	
-		%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+		// Show the vignette when the player is is exhausted
+		if(%obj.staminaCount >= 5) 
+		{
+			// Only enable the tunnel vision once
+			if(%obj.staminaCount == 5) %this.tunnelVision(%obj,true);
+
+			// Reset the stamina after 4 seconds, cancel first to avoid double scheduling
+			cancel(%obj.resetStamina);
+			%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+		}		
 	}
 
-
+	// When the player is possessed by the renowned, perform some actions
 	if(%obj.isPossessed) 
 	{		
-		%obj.AntiPossession = mClampF(%obj.AntiPossession+1, 0, 15);
-		EventidePlayer_BreakFreePrint(%obj.client,%obj.AntiPossession/2);
 		%obj.playthread(3,"activate2");
+		%obj.AntiPossession = mClampF(%obj.AntiPossession+1, 0, 15);
+		EventidePlayer_BreakFreePrint(%obj.client,%obj.AntiPossession/2);		
 
 		if(%obj.AntiPossession >= 15)
 		{
@@ -208,6 +212,7 @@ function EventidePlayer::onActivate(%this,%obj)
 				%obj.Possesser.client.Camera.setMode("Corpse", %obj.Possesser);
 				%obj.Possesser.client.setControlObject(%obj.Possesser.client.camera);
 				%obj.Possesser.client.centerprint("<color:FFFFFF><font:Impact:40>Your victim broke free!",2);
+
 				cancel(%obj.Possesser.returnObserveSchedule);
 				%obj.Possesser.returnObserveSchedule = %obj.Possesser.schedule(4000,ClearRenownedEffect);
 				
@@ -227,9 +232,9 @@ function EventidePlayer::resetStamina(%this,%obj)
 {
 	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
 
-	%obj.laststaminacount = 0;
-	%obj.laststaminatime = 0;
-	%this.TunnelVision(%obj,false);
+	%obj.staminaCount = 0;
+	%obj.staminaTime = 0;
+	%this.tunnelVision(%obj,false);
 }
 
 function EventidePlayer::onTrigger(%this, %obj, %trig, %press) 
@@ -264,32 +269,31 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 					{
 						%triggerTime = getSimTime();
 
-						if(%triggerTime - %obj.laststaminatime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
+						if(%triggerTime - %obj.staminaTime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
                     	{
-                        	%obj.laststaminacount = 0;
-	                        %obj.laststaminatime = 0;
+                        	%obj.staminaCount = 0;
+	                        %obj.staminaTime = 0;
 						}
 
-						if(%obj.laststaminatime < %triggerTime && %obj.getEnergyLevel() >= %this.maxEnergy/4)//Shoving
+						if(%obj.staminaTime < %triggerTime && %obj.getEnergyLevel() >= %this.maxEnergy/4)//Shoving
 						{
 							%obj.setEnergyLevel(%obj.getEnergyLevel()-20);
-							%obj.laststaminacount++;
-							%obj.laststaminatime = (%triggerTime+400)+(40*%obj.laststaminacount);
+							%obj.staminaCount++;
+							%obj.staminaTime = (%triggerTime+400)+(40*%obj.staminaCount);
 							%soundpitch = getRandom(50,125);
 
-							if(%obj.laststaminacount == 5)
-							{							
-								%this.TunnelVision(%obj,true);
-								///%obj.setTempSpeed(0.75);	
-								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
-							}
-
-							if(%obj.laststaminacount >= 5)
+							if(%obj.staminaCount >= 5)
 							{
 								cancel(%obj.resetStamina);
 								%soundpitch = getRandom(50,80);
 								if(getRandom(1,4) == 1) %obj.playaudio(3,"PainCrySound");
 								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+
+								if(%obj.staminaCount == 5)
+								{							
+									%this.tunnelVision(%obj,true);
+									%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+								}								
 							}
 							
 							%obj.playthread(3,"activate2");
@@ -314,9 +318,10 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 
 								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
 								%hit.playThread(3,"jump");
-
-								%forwardimpulse = (%obj.survivorclass $= "fighter") ? 950 : 800;
-								%zimpulse = (%obj.survivorclass $= "fighter") ? 325 : 200;
+								
+								%exhausted = (%obj.staminaCount >= 5) ? 2 : 1;
+								%forwardimpulse = ((%obj.survivorclass $= "fighter") ? 950 : 800) / %exhausted;
+								%zimpulse = ((%obj.survivorclass $= "fighter") ? 325 : 200) / %exhausted;
 								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),%forwardimpulse),"0 0 " @ %zimpulse));
 							}												
 						}
@@ -495,11 +500,11 @@ function EventidePlayerDowned::EventideAppearance(%this,%obj,%funcclient)
 	EventidePlayer::EventideAppearance(%this,%obj,%funcclient);
 }
 
-function EventidePlayer::TunnelVision(%this,%obj,%bool)
+function EventidePlayer::tunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
 
-	//if(%obj.tunnelvision == 0)
+	//if(!%obj.tunnelVision)
 	//{
 	//	//FOV hasn't been changed yet, store it.
 	//	%obj.originalFOV = %this.getControlCameraOriginalFov(%obj);
@@ -511,19 +516,19 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 
 	if(%bool) 
 	{		
-		%obj.tunnelvision = mClampF(%obj.tunnelvision + 0.1, 0, 1);
-		commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
+		%obj.tunnelVision = mClampF(%obj.tunnelVision + 0.1, 0, 1);
+		commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelVision);
 		//%obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV--, 50, %tunnelVisionFOV));
 
-		if (%obj.tunnelvision >= 1) return;
+		if (%obj.tunnelVision >= 1) return;
 	}
 	else if (!%obj.chaseLevel)
 	{
-		if(%obj.tunnelvision > 0)
+		if(%obj.tunnelVision > 0)
 		{
-			%obj.tunnelvision = mClampF(%obj.tunnelvision - 0.1, 0, 1);
+			%obj.tunnelVision = mClampF(%obj.tunnelVision - 0.1, 0, 1);
 		    //%obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV++, 50, %tunnelVisionFOV));
-		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelvision);
+		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelVision);
 		}
 		else
 		{
@@ -533,12 +538,12 @@ function EventidePlayer::TunnelVision(%this,%obj,%bool)
 		}
 	}
 
-	%obj.tunnelvisionsched = %this.schedule(50, TunnelVision, %obj, %bool);	
+	%obj.tunnelVisionsched = %this.schedule(50, tunnelVision, %obj, %bool);	
 }
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {
-	//If we receive too much damage and we're not already incapacitated, check some conditions to see if we should be incapacitated.
+	// If the damage received too much damage and the player is not already incapacitated, check some conditions to see if they should be
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
     {        
         %obj.setDatablock("EventidePlayerDowned");
@@ -563,6 +568,8 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 				if(!%livingcount) %minigame.endRound(%hunterteam);
 			}
 		}
+
+		// Return here, or else the player will die after this condition is met
         return;
     }
 
@@ -578,26 +585,29 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		
 		if(isObject(%obj.client)) %obj.client.play2D("printfiresound");				
 	}
+	
+	if(%damage && %obj.isSkinwalker) 
+	{
+		%obj.setHealth(%this.maxDamage);
+
+		//Uh oh, the disguise is about to be broken, now that the player has been hurt.
+		if(getRandom(1,4) == 1) 
+		{
+			%obj.playaudio(3,"skinwalker_pain_sound");
+			if(!isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule)) PlayerSkinwalker.monstertransform(%obj,true);
+		}
+	}
 
 	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
 	//if enough damage has been received.
 	if(isObject(%obj.faceConfig))
 	{
 		if(%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")
-		{
-			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
-		}
+		%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);		
 
-		if(%obj.faceConfig.isFace("Pain"))
-		{
-			%obj.schedule(33, "faceConfigShowFace", "Pain"); //This needs to be delayed for whatever reason. Blinking doesn't start otherwise.
-		}
-	}
-
-	if(%obj.isSkinwalker) 
-	{
-		%obj.setHealth(%this.maxDamage);
-		if(getRandom(1,4) == 1) %obj.playaudio(3,"skinwalker_pain_sound");
+		if(%obj.faceConfig.isFace("Pain"))		
+		%obj.schedule(33, "faceConfigShowFace", "Pain"); //This needs to be delayed for whatever reason. Blinking doesn't start otherwise.
+		
 	}
 }
 
@@ -689,49 +699,42 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			%obj.schedule(1,delete);
 		}		
 	}
-	if(%obj.radioEquipped) serverPlay3d("radio_unmount_sound",%obj.getPosition());	
+
 	if(%obj.markedforRenderDeath)
 	{
 		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 		%obj.schedule(1,delete);
 	}
 
-	if(isObject(%minigame = getMinigamefromObject(%obj)))
-	{
-		%obj.unmountimage(0);
-		%obj.unmountimage(1);
-		if(isObject(%funcclient))
-		for(%i=0;%i<%obj.getDatablock().maxTools;%i++) if(isObject(%item = %obj.tool[%i]))
-		{						
-			%pos = %obj.getPosition();
-			%posX = getWord(%pos,0);
-			%posY = getWord(%pos,1);
-			%posZ = getWord(%pos,2);
-			%vec = %obj.getVelocity();
-			%vecX = getWord(%vec,0);
-			%vecY = getWord(%vec,1);
-			%vecZ = getWord(%vec,2);
-			%item = new Item()
-			{
-				dataBlock = %item;
-				position = %pos;
-			};
-			%itemVec = %vec;
-			//%itemVec = vectorAdd(%itemVec,getRandom(-8,8) SPC getRandom(-8,8) SPC 10);
-			%item.BL_ID = %funcclient.BL_ID;
-			%item.minigame = %minigame;
-			%item.spawnBrick = -1;
-			%item.setVelocity(%itemVec);						
+	for (%i = 0; i < 4; %i++) 
+	%obj.unmountimage(%i);				
 
-			if(!isObject(Eventide_MinigameGroup))
-			{
-				new SimGroup(Eventide_MinigameGroup);
-				missionCleanUp.add(Eventide_MinigameGroup);
-			}
-			Eventide_MinigameGroup.add(%item);
-		}		
-		
-		for(%i = 0; %i < %minigame.numMembers; %i++)
-		if(isObject(%member = %minigame.member[%i]) && %obj.markedforRenderDeath) %member.play2D("render_kill_sound");
+	if(isObject(%funcclient))
+	for(%i = 0; %i < %obj.getDatablock().maxTools; %i++) if(isObject(%item = %obj.tool[%i]))
+	{
+		//Play a sound for the radio being dropped
+		if(%obj.tool[%i].getName() == RadioItem.getID()) 
+		serverPlay3d("radio_unmount_sound",%obj.getPosition());	
+
+		%item = new Item()
+		{
+			dataBlock = %item;
+			position = %obj.getPosition();
+			velocity = vectorAdd(%obj.getVelocity(),getRandom(-8,8) SPC getRandom(-8,8) SPC 10);
+			BL_ID = %funcclient.BL_ID;
+			minigame = %minigame;
+			spawnBrick = 0;
+		};			
+
+		if(!isObject(Eventide_MinigameGroup))
+		{
+			new SimGroup(Eventide_MinigameGroup);
+			missionCleanUp.add(Eventide_MinigameGroup);
+		}
+
+		Eventide_MinigameGroup.add(%item);
 	}	
+
+	if(isObject(%minigame = getMinigamefromObject(%obj))) for(%i = 0; %i < %minigame.numMembers; %i++)
+	if(isObject(%member = %minigame.member[%i]) && %obj.markedforRenderDeath) %member.play2D("render_kill_sound");		
 }
