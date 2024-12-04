@@ -81,7 +81,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 						%puppetcount++;						
 					}
 
-					if(%puppetcount < 3)
+					if(%puppetcount < 4)
 					{
 						%puppet = new AIPlayer()
 						{
@@ -99,12 +99,10 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 						%puppet.setVelocity(vectorscale(%obj.getEyeVector(),25));
 						%puppet.position = %obj.getmuzzlePoint(1);
 						%puppet.schedule(2000,setActionThread,sit,1);
-						%obj.client.centerprint("<color:FFFFFF><font:impact:30>Press your plant brick key to control the puppet!" ,3);
+						%obj.client.centerprint("<font:impact:20>\c2Press your plant brick key to control the puppet!" ,3);
 						%obj.setEnergyLevel(0);
 					}
-					else %obj.client.centerprint("<color:FFFFFF><font:impact:30>Only 3 puppets can be placed." ,3);
-				}
-				else %obj.client.centerprint("<color:FFFFFF><font:impact:30>You need more energy to summon a puppet." ,3);
+				}			
 
 		default:
 	}

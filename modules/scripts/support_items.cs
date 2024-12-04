@@ -110,6 +110,8 @@ package Eventide_Items
 	function ItemData::onAdd(%this, %obj)	
 	{				
 		if(!%obj.static) itemEmitterLoop(%obj);
+		if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+		Eventide_MinigameGroup.add(%obj);
 		parent::onAdd(%this,%obj);
 	}
 
@@ -119,15 +121,8 @@ package Eventide_Items
 		parent::onRemove(%this,%obj);
 	}	
 
-	function Item::schedulePop (%obj)
+	function Item::schedulePop(%obj)
 	{
-		if(!isObject(Eventide_MinigameGroup))
-		{
-			new SimGroup(Eventide_MinigameGroup);
-			missionCleanUp.add(Eventide_MinigameGroup);
-		}
-		Eventide_MinigameGroup.add(%obj);
-
 		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount())) return;
 		else return Parent::schedulePop(%obj);		
 	}	

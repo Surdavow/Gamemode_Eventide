@@ -18,14 +18,9 @@ package Eventide_Killers
 	    if (isObject(%client.player) && %client.player.getDataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
 	    {
 	        // Populate the temporary puppet list
-	        for (%i = 0; %i < Eventide_MinigameGroup.getCount(); %i++)
-	        {
-	            if (isObject(%puppet = Eventide_MinigameGroup.getObject(%i)) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")
-	            {
-	                %puppet[%puppetCount] = %puppet;
-	                %puppetCount++;
-	            }
-	        }
+	        for (%i = 0; %i < Eventide_MinigameGroup.getCount(); %i++)	        
+			if (isObject(%puppet = Eventide_MinigameGroup.getObject(%i)) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")	            
+			%puppet[%puppetCount++] = %puppet;	    
 
 	        // Ensure the current puppet index is valid
 	        if (%client.player.puppetIndex $= "" || %client.player.puppetIndex >= %puppetCount)
