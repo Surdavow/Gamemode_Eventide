@@ -32,7 +32,7 @@ datablock ShapeBaseImageData(MonkeyWrenchImage)
 	doColorShift = false;
 	
 	stateName[0]					= "Activate";
-	stateSound[0]					= weaponSwitchSound;
+	stateSound[0]					= "weaponSwitchSound";
 	stateTimeoutValue[0]			= 0.15;
 	stateSequence[0]				= "Ready";
 	stateTransitionOnTimeout[0]		= "Ready";

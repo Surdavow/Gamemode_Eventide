@@ -63,7 +63,6 @@ AddDamageType("Chainsaw",   '<bitmap:base/client/ui/CI/generic> %1',    '%2 <bit
 
 datablock ShapeBaseImageData(ChainsawImage)
 {
-   // Basic Item properties
    	shapeFile = "./models/Chainsaw/Chainsaw.dts";
    	emap = true;
    	mountPoint = 0;
@@ -72,8 +71,7 @@ datablock ShapeBaseImageData(ChainsawImage)
    	rotation = eulerToMatrix( "0 0 0" );
 	correctMuzzleVector = true;
    	className = "WeaponImage";
-
-   	// Projectile && Ammo.
+   	
    	item = "";
    	ammo = " ";
    	projectile = chainsawProjectile;
@@ -92,7 +90,6 @@ datablock ShapeBaseImageData(ChainsawImage)
    	doColorShift = true;
    	colorShiftColor = (180/255) SPC (180/255) SPC (180/255) SPC (255/255);
 
-   // Initial start up state
 	stateName[0]                    = "Activate";
 	stateTimeoutValue[0]            = 0.15;
 	stateTransitionOnTimeout[0]     = "Ready";

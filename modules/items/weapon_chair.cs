@@ -1,3 +1,4 @@
+AddDamageType("Chair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_chair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_chair> %1',1,1); 
 datablock DebrisData(sm_chairSeat1Debris)
 {
 	shapeFile 			= "./models/d_chairSeat1.dts";

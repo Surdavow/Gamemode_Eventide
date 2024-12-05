@@ -1,3 +1,5 @@
+AddDamageType("PoolCue",'<bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_poolCue> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_poolCue> %1',1,1); 
+
 datablock DebrisData(sm_poolCueGripDebris)
 {
 	shapeFile 			= "./models/d_poolCueGrip.dts";

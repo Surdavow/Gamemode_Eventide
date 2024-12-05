@@ -35,8 +35,6 @@ $EnvGuiServer::GroundScrollY 0
 $EnvGuiServer::VignetteMultiply 0
 $EnvGuiServer::VignetteColor 0.000000 0.000000 0.000000 0
 
-
-
 //minigame rules
 $MiniGame::Enabled 1
 $MiniGame::GameColor 0
@@ -77,9 +75,6 @@ $MiniGame::StartEquipName4 0
 
 $MiniGame::TimeLimit 240
 
-
-
-//server settings
 $Server::Quota::Schedules 9999
 $Server::Quota::Misc 999
 $Server::Quota::Projectile 999

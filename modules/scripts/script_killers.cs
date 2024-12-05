@@ -231,7 +231,7 @@ function Armor::onKillerLoop(%this, %obj)
     // Skip if invalid state
     if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj))) return;
 
-    if(%obj.getDataBlock().isKiller)
+    if(%this.isKiller)
     {
 		// Skip if invalid object, minigame, or first message has already been sent
 		if(!%obj.firstMessageSpawn)
@@ -244,7 +244,7 @@ function Armor::onKillerLoop(%this, %obj)
 				case 1: %message = "The hunter has arrived.";
 				case 2: %message = "Ready yourselves, the hunter has arrived.";
 				case 3: %message = "Prepare yourselves, it is coming.";
-				case 4: %message = %obj.getdataBlock().killerSpawnMessage;
+				case 4: %message = %this.killerSpawnMessage;
 			}
 
 			%minigame.chatMsgAll("<font:Impact:30>\c0" @ %message);

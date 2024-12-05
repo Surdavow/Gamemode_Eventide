@@ -46,7 +46,7 @@ function PlayerHuntress::onTrigger(%this, %obj, %trig, %press, %client)
 	{
 		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4);
 		
-		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy/1)
+		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy/2)
 				{
 					%obj.setEnergyLevel(0);
 					%obj.playThread(2,"armReadyRight");
@@ -81,6 +81,7 @@ function PlayerHuntress::EventideAppearance(%this,%obj,%client)
 	%obj.unhideNode("rhand");
 	%obj.unhideNode("femchest");
 
+	// Uniform colorss
 	%hoodieColor = "0.35 0 0.13 1";
 	%pantsColor = "0.075 0.075 0.075 1";
 	%skinColor = "0.83 0.73 0.66 1";
@@ -117,5 +118,5 @@ function PlayerHuntress::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
 
-	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"huntress_pain" @ getRandom(1, 1) @ "_sound");
+	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"huntress_pain1_sound");
 }

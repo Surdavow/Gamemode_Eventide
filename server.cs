@@ -1,3 +1,4 @@
+//Thanks Robbin
 if(ForceRequiredAddOn("Support_CustomCDN") == $Error::AddOn_NotFound) return error("Support_CustomCDN is required for Gamemode_Eventide to work");
 $CustomCDN::CDN_to_clients = "http://borrowedtime.online/blobs";
 

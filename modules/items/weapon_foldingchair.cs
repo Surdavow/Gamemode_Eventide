@@ -1,3 +1,4 @@
+AddDamageType("FoldingChair",'<bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_foldingChair> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_foldingChair> %1',1,1);
 datablock ParticleData(sm_foldingChairExplosionParticle)
 {
 	dragCoefficient      = 1;

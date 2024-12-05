@@ -1,3 +1,5 @@
+AddDamageType("Bottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_bottle> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_bottle> %1',1,1); 
+AddDamageType("BrokenBottle",'<bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_bottle_broken> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_bottle_broken> %1',1,1); 
 datablock DebrisData(bottleShard1Debris)
 {
 	shapeFile 			= "./models/d_glassShard1.dts";

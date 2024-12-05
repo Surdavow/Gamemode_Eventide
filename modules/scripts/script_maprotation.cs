@@ -1,4 +1,4 @@
-if (!isFile("saves/EventideMapRotation/README.txt")) 
+if (!isFile("saves/EventideMapRotation/README.txt"))
 {	
 	%file = new FileObject();
 

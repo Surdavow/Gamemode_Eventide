@@ -5,24 +5,20 @@ while(%file !$= "")
 {
     %soundName = strreplace(filename(strlwr(%file)), ".wav", "");
 
-	// Automatic sound instancing based on name of the sound, self explanatory names.
-	if(strstr(%file,"normal") != -1) 
-	eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClose3d; filename = \"" @ %file @ "\"; };");	
-	if(strstr(%file,"quiet") != -1) 
-	eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClosest3d; filename = \"" @ %file @ "\"; };");	
-	if(strstr(%file,"loud") != -1) 
-	eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioDefault3d; filename = \"" @ %file @ "\"; };");
+	// Automatic sound instancing based on name of the sound
+	%description = strstr(%file, "normal") != -1 ? "AudioClose3d" :
+    	           strstr(%file, "quiet") != -1  ? "AudioClosest3d" :
+        	       strstr(%file, "loud") != -1   ? "AudioDefault3d" : "";
 
-	//Footsteps only
-	if(strstr(%file,"sounds/footsteps/") != -1)
-	{
-		if(strstr(%file,"walk") != -1) 
-		eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
-		else if(strstr(%file,"swim") != -1) 
-		eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
-		else if(strstr(%file,"run") != -1) 
-		eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSRun; filename = \"" @ %file @ "\"; };");		
-	}
+	// Footsteps only
+	if (strstr(%file, "sounds/footsteps/") != -1) 
+    %description = strstr(%file, "walk") != -1 ? "AudioFSWalk" :
+                   strstr(%file, "swim") != -1 ? "AudioFSWalk" :
+                   strstr(%file, "run")  != -1 ? "AudioFSRun" : "";
+
+	// Continue if no description
+	if (%description $= "") continue;			   
+	eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = " @ %description @ "; filename = \"" @ %file @ "\"; };");
 
 	%file = findNextFile(%pattern);
 }

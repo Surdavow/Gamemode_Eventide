@@ -1,25 +1,5 @@
-datablock AudioDescription(AudioFSRun)
-{
-	volume = 0.85;
-	isLooping = false;
-	is3D = 1;
-	ReferenceDistance = 10;
-	maxDistance = 40;
-	type = $SimAudioType;
-};
-
-datablock AudioDescription(AudioFSWalk)
-{
-	volume = 0.65;
-	isLooping = false;
-	is3D = 1;
-	ReferenceDistance = 5;
-	maxDistance = 15;
-	type = $SimAudioType;
-};
-
-%pattern = "./*.wav";
-%file = findFirstFile(%pattern);
+%soundfolder = "./*.wav";
+%file = findFirstFile(%soundfolder);
 while(%file !$= "")
 {
     %soundName = strreplace(filename(strlwr(%file)), ".wav", "");
@@ -30,10 +10,9 @@ while(%file !$= "")
         	       strstr(%file, "loud") != -1   ? "AudioDefault3d" : "";
 
 	// Continue if no description
-	if (%description $= "") continue;
+	if (%description $= "") continue;  
 
     eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = " @ %description @ "; filename = \"" @ %file @ "\"; };");
 
-
-	%file = findNextFile(%pattern);
+	%file = findNextFile(%soundfolder);
 }

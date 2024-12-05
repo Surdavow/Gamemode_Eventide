@@ -1,3 +1,4 @@
+AddDamageType("BarStool",'<bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_barStool> %1','%2 <bitmap:Add-Ons/Gamemode_Eventide/modules/items/icons/ci_barStool> %1',1,1); 
 datablock DebrisData(sm_barStoolLegDebris)
 {
 	shapeFile 			= "./models/d_barStoolLeg.dts";

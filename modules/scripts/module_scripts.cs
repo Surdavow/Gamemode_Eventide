@@ -10,7 +10,6 @@ exec("./script_itemspawning.cs");
 exec("./support_blood.cs");
 exec("./support_medical.cs");
 exec("./support_minigame.cs");
-exec("./support_player.cs");
 exec("./support_statuseffect.cs");
 exec("./support_stringutilities.cs");
 exec("./support_vectorutilities.cs");

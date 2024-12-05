@@ -107,10 +107,7 @@ function PlayerLurker::EventideAppearance(%this,%obj,%funcclient)
 		}			
 	}
 	
-	if(%funcclient.hip)
-	{
-		%obj.unHideNode("skirt");
-	}
+	if(%funcclient.hip) %obj.unHideNode("skirt");
 	else
 	{
 		%obj.unHideNode("pants");

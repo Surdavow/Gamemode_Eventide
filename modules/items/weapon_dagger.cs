@@ -175,32 +175,31 @@ function daggerImage::onFire(%this, %obj, %slot)
 
 	%obj.playthread(1, "shiftTo");
 	%startpos = %obj.getMuzzlePoint(0);
-	%endpos = vectorAdd(%startpos,VectorScale(%obj.getMuzzleVector(0),2.5));
+	%endpos = %obj.getMuzzleVector(0);
 	%typemasks = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
 	
-	%hit = containerRayCast(%startpos,%endpos,%typemasks,%obj);
+	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,4)),%typemasks,%obj);
 	if(isObject(%hit))
 	{
-		%hitpos = posFromRaycast(%hit);
-		serverPlay3D("sworddaggerhitEnv" @ getRandom(1,2) @ "_sound",%hitpos);
-		
 		%p = new Projectile()
 		{
 			dataBlock = "daggerProjectile";
 			initialPosition = %hitpos;
 			sourceObject = %obj;
 			client = %obj.client;
-		};
-		MissionCleanup.add(%p);
-		%p.explode();			
+		}.explode();// Explode immediately after creation		
 		
-		if((%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
+		%hitpos = posFromRaycast(%hit);
+		serverPlay3D("sworddaggerhitEnv" @ getRandom(1,2) @ "_sound",%hitpos);
+
+		// Hit player? Push them back and do damage, play aa sound too
+		if(%hit.getType() & $TypeMasks::PlayerObjectType && minigameCanDamage(%obj,%hit))
 		{						
-			%hit.Damage(%obj, %hit.getPosition(), 40, $DamageType::barStool);
-			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));
+			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),500),"0 0 500"));
+			%hit.Damage(%obj, %hit.getPosition(), 40, $DamageType::Default);
 			serverPlay3D("sworddaggerhitPL" @ getRandom(1,2) @ "_sound",%hitpos);
 		}
-	}		
+	}
 }
 
 function daggerImage::onPreFire(%this, %obj, %slot)
