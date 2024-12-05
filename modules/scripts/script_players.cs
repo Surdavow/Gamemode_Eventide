@@ -185,32 +185,35 @@ function Armor::EventideAppearance(%this,%obj,%client)
 
 function GameConnection::Escape(%client)
 {
-	if(!isObject(%minigame = getMinigameFromObject(%client))) return %client.centerprint("This only works in minigames!",1);
-	if(strlwr(%client.slyrTeam.name) !$= "survivors") return %client.centerprint("Only survivors can escape!",1);
-	
-	%client.escaped = true;
+    if (!isObject(%minigame = getMinigameFromObject(%client))) 
+        return %client.centerprint("This only works in minigames!", 1);
+    if (strlwr(%client.slyrTeam.name) !$= "survivors") 
+        return %client.centerprint("Only survivors can escape!", 1);
 
-	// Iterate through each member of the survivor's team
-	for (%i = 0; %i < %client.slyrTeam.numMembers; %i++) 
-	{
-    	if (!isObject(%member = %client.slyrTeam.member[%i])) continue;
-
-    	%living += isObject(%member.player) ? 1 : 0;
-    	%escaped += %member.escaped ? 1 : 0;
-	}
-
-	//Announce the escape and award points
-	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
+    if (%client.escaped) return; // Prevent double escape
+    %client.escaped = true;
 	%client.incscore(10);
-	
-	// Kill the player
-	%client.player.delete();
-	%client.lives = 0;
-	%client.setdead(1);
 
-	// Force the player into spectator mode
-	%client.camera.setmode("Spectator",%client);
-	%client.setcontrolobject(%client.camera);	
+    // Update counts
+    %minigame.escapedCount++;
+    %minigame.livingCount--; // Escaped players are no longer "living"
+    %minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");    
 
-	if(%escaped >= %living) return %minigame.endRound(%client.slyrTeam);
+    // Kill the player
+    if (isObject(%client.player)) %client.player.delete();
+    %client.lives = 0;
+    %client.setdead(1);
+
+    // Force the player into spectator mode
+    %client.camera.setmode("Spectator", %client);
+    %client.setcontrolobject(%client.camera);
+
+    // Debugging messages (optional)
+    echo("Living count: " @ %minigame.livingCount @ ", Escaped count: " @ %minigame.escapedCount);
+
+    // Check if all survivors have escaped or died
+    if (%minigame.escapedCount >= %minigame.slyrTeam.numMembers) 
+	{
+        %minigame.endRound(%client.slyrTeam);
+    }
 }

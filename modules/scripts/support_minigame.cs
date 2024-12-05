@@ -27,6 +27,9 @@ package Eventide_Minigame
 			$EventideRitualBrick.candlecount = 0;
 		}
 
+		%minigame.escapedCount = 0;
+    	%minigame.livingCount = 0; 
+
 		for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
 		%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = 0;
 		
@@ -34,7 +37,7 @@ package Eventide_Minigame
 		for (%i=0;%i<%minigame.numMembers;%i++) if (isObject(%client = %minigame.member[%i])) 
 		{
 			// Reset the escape flag
-			%client.escaped = 0;
+			%client.escaped = false;
 			
 			// Remove the Eventide music emitter if it exists and reset the music level
 			if (isObject(%client.EventidemusicEmitter))

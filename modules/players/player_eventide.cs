@@ -608,7 +608,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		{
 			if(isObject(%obj.billboardbot.light))
 			{
-				%obj.billboardbot.lightschedule1 = %obj.billboardbot.light.schedule(425,setdatablock,"redLight");
+				%obj.billboardbot.lightschedule1 = %obj.billboardbot.light.schedule(440,setdatablock,"redLight");
 				%obj.billboardbot.lightschedule1 = %obj.billboardbot.light.schedule(450,setdatablock,"downedBillboard");				
 				%obj.billboardbot.lightschedule2 = %obj.billboardbot.light.schedule(400,setdatablock,"blankBillboard");
 			} 			
