@@ -28,7 +28,7 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 	killerlight = "NoFlarePLight";
 	
 	leftclickicon = "color_melee";
-	rightclickicon = "";
+	rightclickicon = "color_random_item";
 
 	rechargeRate = 0.3;
 	maxTools = 1;

@@ -29,7 +29,7 @@ datablock PlayerData(PlayerNightmare : PlayerRenowned)
 	
 	killerlight = "NoFlarePLight";
 
-	rightclickicon = "";
+	rightclickicon = "color_teleport";
 	leftclickicon = "color_melee";	
 
 	rechargeRate = 0.3;

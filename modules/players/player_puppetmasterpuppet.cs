@@ -61,7 +61,7 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 						%obj.setEnergyLevel(0);
 						%obj.playthread(3,"rightrecoil");
 						serverPlay3d("puppet_jump_sound", %obj.getEyePoint());
-						%obj.setVelocity(vectorscale(%obj.getEyeVector(),30));
+						%obj.setVelocity(vectorscale(%obj.getEyeVector(),16));
 					}
 				}
 		default:
