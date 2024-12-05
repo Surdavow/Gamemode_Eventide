@@ -132,7 +132,7 @@ function EventidePlayer::createBillboard(%this,%obj)
 		};
 
 		%obj.billboardbot.light.setTransform(%obj.billboardbot.getTransform());
-		%obj.billboardbot.light.attachToObject(%obj.billboardbot);		
+		%obj.billboardbot.light.attachToObject(%obj.billboardbot);
 
 		// Force the light to be visible only to the survivors, and not the killers
 		for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client.player))		
