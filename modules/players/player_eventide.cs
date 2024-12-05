@@ -108,35 +108,53 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 
 	%obj.schedule(33,setEnergyLevel,0);
-	%obj.setScale("1 1 1");	
+	%obj.setScale("1 1 1");
+	%this.scheduleNoQuota(33,createBillboard,%obj);	
+}
 
+function EventidePlayer::createBillboard(%this,%obj)
+{
 	if(!isObject(%obj.billboardbot))
 	{
+		if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+
 		%obj.billboardbot = new Player() 
 		{ 
 			dataBlock = "EmptyPlayer";
-			source = %obj;
-			slotToMountBot = 5;
-			light = "blankBillboard";
+			source = %obj;		
 		};
 
-		if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
-		Eventide_MinigameGroup.add(%obj.billboardbot);
+		%obj.mountObject(%obj.billboardbot,5);
 
-		//Make it only visible to the survivors
-		for(%i = 0; %i < clientgroup.getCount(); %i++) 
-		if(isObject(%client = clientgroup.getObject(%i)) && isObject(%cobj = %client.player)) 
+		%obj.billboardbot.light = new fxLight()
 		{
-			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller) %obj.billboardbot.light.ScopeToClient(%client);
-			else %obj.billboardbot.light.clearScopeToClient(%client);			
+			dataBlock = "blankBillboard";
+		};
+
+		%obj.billboardbot.light.setTransform(%obj.billboardbot.getTransform());
+		%obj.billboardbot.light.attachToObject(%obj.billboardbot);		
+
+		// Force the light to be visible only to the survivors, and not the killers
+		for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client.player))		
+		{
+			if(isObject(%client = clientgroup.getObject(%i))) 
+			%obj.billboardbot.light.ScopeToClient(%client);
+
+			else if (%client.player.getdataBlock().isKiller || %client.player $= %obj) 
+			%obj.billboardbot.light.ClearScopeToClient(%client);
 		}
+
+		Eventide_MinigameGroup.add(%obj.billboardbot.light);
+		Eventide_MinigameGroup.add(%obj.billboardbot);
 	}
-	else if(isObject(%obj.billboardbot.light)) //Just cancel the schedules and set the datablock to blank
+	
+	else
 	{
+		cancel(%obj.billboardbot.lightschedule0);
 		cancel(%obj.billboardbot.lightschedule1);
 		cancel(%obj.billboardbot.lightschedule2);
 		%obj.billboardbot.light.setdatablock("blankBillboard");
-	}	
+	}
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -608,7 +626,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		{
 			if(isObject(%obj.billboardbot.light))
 			{
-				%obj.billboardbot.lightschedule1 = %obj.billboardbot.light.schedule(440,setdatablock,"redLight");
+				%obj.billboardbot.lightschedule0 = %obj.billboardbot.light.schedule(440,setdatablock,"redLight");
 				%obj.billboardbot.lightschedule1 = %obj.billboardbot.light.schedule(450,setdatablock,"downedBillboard");				
 				%obj.billboardbot.lightschedule2 = %obj.billboardbot.light.schedule(400,setdatablock,"blankBillboard");
 			} 			
