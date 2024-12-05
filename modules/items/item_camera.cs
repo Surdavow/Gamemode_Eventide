@@ -105,11 +105,9 @@ function DCameraImage::onDetonate(%this, %obj, %slot)
         if(isObject(%nearbyplayer = clientgroup.getObject(%i).player))
         {    
             if(%nearbyplayer.getClassName() !$= "Player" || VectorDist(%nearbyplayer.getPosition(), %obj.getPosition()) > 15) 
-            continue;         
+            continue;
 
-            if(%nearbyplayer == %obj) continue;
-
-            if(%nearbyplayer.getDataBlock().isKiller) %nearbyplayer.setwhiteout(15);                        
+            %nearbyplayer.setwhiteout(15);                        
         }
     }      
 }
