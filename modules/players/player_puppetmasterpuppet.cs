@@ -26,7 +26,7 @@ datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
 	maxForwardSpeed = 10.47;
 	maxBackwardSpeed = 5.98;
 	maxSideSpeed = 8.58;
-	maxDamage = 10;
+	maxDamage = 50;
 	jumpforce = 0;
 	showenergybar = false;
 };
@@ -50,7 +50,7 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 				if(%press)
 				{
 					%obj.casttime = getSimTime();
-					%obj.chargejumpsound = %obj.schedule(1,playaudio,1,"puppet_jumpCharge_sound");
+					%obj.chargejumpsound = %obj.schedule(350,playaudio,1,"puppet_jumpCharge_sound");
 				}
 				else
 				{
@@ -61,11 +61,16 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 						%obj.setEnergyLevel(0);
 						%obj.playthread(3,"rightrecoil");
 						serverPlay3d("puppet_jump_sound", %obj.getEyePoint());
-						%obj.setVelocity(vectorscale(%obj.getForwardVector(),30));
+						%obj.setVelocity(vectorscale(%obj.getEyeVector(),30));
 					}
 				}
 		default:
 	}
+}
+
+function PuppetMasterPuppet::onImpact(%this, %obj, %col, %vec, %force)
+{
+	return;
 }
 
 function PuppetMasterPuppet::onDisabled(%this,%obj)
@@ -73,15 +78,9 @@ function PuppetMasterPuppet::onDisabled(%this,%obj)
 	Parent::onDisabled(%this,%obj);
 	
 	%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
-	%obj.schedule(1,delete);
-}
-
-function PuppetMasterPuppet::onRemove(%this,%obj)
-{
-	%obj.sourceclient.setcontrolobject(%obj);
+	%obj.sourceclient.setcontrolobject(%obj.source);
 	%obj.source.mountimage("sm_stunImage",2);
-
-	Parent::onRemove(%this,%obj);	
+	%obj.delete();
 }
 
 function PuppetMasterPuppet::EventideAppearance(%this,%obj,%client)

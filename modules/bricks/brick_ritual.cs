@@ -81,24 +81,19 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 		initContainerRadiusSearch(%obj.getPosition(), 2.5, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
 		while(%scan = containerSearchNext())
 		{
-			// If the player is near the ritual and the ritual is not complete, give a message.
+			// If the player is near the ritual and the ritual is not complete, change the brick text to show how many rituals are left
 			if((%scan.getType() & $TypeMasks::PlayerObjectType)&& isObject(Eventide_MinigameGroup) && Eventide_MinigameGroup.getCount() < 10)
 			{
 				%this.BrickText(%obj,"Rituals needed: " @ 10-%obj.ritualsPlaced, "0.8 0.1 0.75", "20");
 				continue;
 			}
 
-			// Make sure the item is above the ritual
-			if(getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2)) continue;
-
 			%itemimage = %scan.getdatablock().image;
-			if(!%itemimage.isRitual) continue;			
 
-			if(!isObject(Eventide_MinigameGroup))
-			{
-				new ScriptGroup(Eventide_MinigameGroup);
-				missionCleanup.add(Eventide_MinigameGroup);
-			}
+			// Make sure the item is above the ritual's position
+			if(!%itemimage.isRitua || getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2)) continue;
+
+			if(!isObject(Eventide_MinigameGroup)) missionCleanup.add(new ScriptGroup(Eventide_MinigameGroup));
 
 			if(%itemimage.isGemRitual)		
 			{
@@ -144,33 +139,28 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 												Eventide_MinigameGroup.add(%interactiveshape);													
 			}
 
-			//Trigger an event if the eventide console exists
-			if(isObject($EventideEventCaller))
-			{
-				$InputTarget_["Self"] = $EventideEventCaller;
-				$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.getGroup().client);
-				$EventideEventCaller.processInputEvent("onRitualPlaced", $EventideEventCaller.getGroup().client);
-			}
-
 			%obj.ritualsPlaced++;
 			%scan.delete();
 
 			if(%obj.ritualsPlaced >= 10)
 			{
 				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
-				%minigame.playSound("round_start_sound");				
-
-				if(isObject($EventideEventCaller))
-				{
-					$InputTarget_["Self"] = $EventideEventCaller;		
-					$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.getGroup().client);
-					$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.getGroup().client);
-				}
+				%minigame.playSound("round_start_sound");						
 			}
+
+			if(isObject($EventideEventCaller))
+			{
+				$InputTarget_["Self"] = $EventideEventCaller;
+				$InputTarget_["MiniGame"] = getMiniGameFromObject($EventideEventCaller.getGroup().client);
+				$EventideEventCaller.processInputEvent("onRitualPlaced", $EventideEventCaller.getGroup().client);
+
+				if(%obj.ritualsPlaced >= 10)
+				$EventideEventCaller.processInputEvent("onAllRitualsPlaced",$EventideEventCaller.getGroup().client);
+			}			
 		}
 	}
 
-	// Cancel the ritual check to prevent duplicate calls.
+	// Cancel the ritual check to prevent duplicate calls
 	cancel(%obj.ritualCheck);
 	%obj.ritualCheck = %this.schedule(500,ritualCheck,%obj);
 }

@@ -47,7 +47,6 @@ function PlayerNightmare::onNewDatablock(%this,%obj)
 	%obj.mountImage("ChainsawImage",0);
 	%obj.schedule(10,onKillerLoop);
 	%obj.setScale("1 1 1");
-	KillerSpawnMessage(%obj);
 }
 
 function PlayerNightmare::onTrigger(%this, %obj, %trig, %press) 

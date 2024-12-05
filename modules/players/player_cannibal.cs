@@ -74,7 +74,6 @@ function PlayerCannibal::onNewDatablock(%this,%obj)
 	%obj.mountImage("meleeKnifeImage",0);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1 1 1");
-	KillerSpawnMessage(%obj);
 }
 
 function PlayerCannibal::EventideAppearance(%this,%obj,%client)

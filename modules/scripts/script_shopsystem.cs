@@ -46,8 +46,6 @@ function openOptionShop(%client,%menu,%option)
     %client.startCenterprintMenu(%type);
 }
 
-
-
 if(isObject(EventideInstrumentsShopMenu)) EventideInstrumentsShopMenu.delete();
 new ScriptObject(EventideInstrumentsShopMenu)
 {
@@ -94,8 +92,6 @@ function serverCmdInstrument(%client,%instrument)
     messageClient(%client, '', "<tab:280>\c6None");
     %client.player.unmountImage(0);
 }
-
-
 
 if(isObject(EventideTitlesShopMenu)) EventideTitlesShopMenu.delete();
 new ScriptObject(EventideTitlesShopMenu)

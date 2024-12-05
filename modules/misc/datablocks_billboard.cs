@@ -1,19 +1,20 @@
 datablock fxLightData(blankBillboard)
 {
 	LightOn = false;
+
 	flareOn = true;
-	ConstantSizeOn = true;
 	flarebitmap = "base/data/shapes/blank.png";
-	ConstantSize = 2;    
-	nearSize = 2;
-	farSize = 2;
-	farDistance = 9999;
+	ConstantSize = 1.5;
+    ConstantSizeOn = true;
+    FadeTime = inf;
+
 	LinkFlare = false;
-	AnimOffsets = false;
-    FadeTime = 99999;
-	
 	blendMode = 1;
-	flareColor = "1 1 1 1";	
+	flareColor = "1 1 1 1";
+
+	AnimOffsets = true;
+	startOffset = "0 0 0";
+	endOffset = "0 0 0";
 };
 
 datablock fxLightData(downedBillboard : blankBillboard)

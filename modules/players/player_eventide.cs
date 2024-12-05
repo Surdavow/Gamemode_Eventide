@@ -110,7 +110,6 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%obj.schedule(33,setEnergyLevel,0);
 	%obj.setScale("1 1 1");	
 
-	//Create the billboard bot
 	if(!isObject(%obj.billboardbot))
 	{
 		%obj.billboardbot = new Player() 
@@ -118,30 +117,26 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 			dataBlock = "EmptyPlayer";
 			source = %obj;
 			slotToMountBot = 5;
-			lightToMount = "blankBillboard";
+			light = "blankBillboard";
 		};
+
+		if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+		Eventide_MinigameGroup.add(%obj.billboardbot);
 
 		//Make it only visible to the survivors
 		for(%i = 0; %i < clientgroup.getCount(); %i++) 
 		if(isObject(%client = clientgroup.getObject(%i)) && isObject(%cobj = %client.player)) 
 		{
-			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller) %obj.billboardbot.lightToMount.ScopeToClient(%client);
-			else %obj.billboardbot.lightToMount.clearScopeToClient(%client);			
+			if(%cobj == %client.player && !%cobj.getdataBlock().isKiller) %obj.billboardbot.light.ScopeToClient(%client);
+			else %obj.billboardbot.light.clearScopeToClient(%client);			
 		}
 	}
-	else if(isObject(%obj.billboardbot.lightToMount)) //Just cancel the schedules and set the datablock to blank
+	else if(isObject(%obj.billboardbot.light)) //Just cancel the schedules and set the datablock to blank
 	{
 		cancel(%obj.billboardbot.lightschedule1);
 		cancel(%obj.billboardbot.lightschedule2);
-		%obj.billboardbot.lightToMount.setdatablock("blankBillboard");
-	}
-}
-
-function EventidePlayer::getControlCameraOriginalFov(%this,%obj)
-{
-	if(!isObject(%obj.client)) return;
-
-	%obj.originalFOV = %obj.client.getControlCameraFov();
+		%obj.billboardbot.light.setdatablock("blankBillboard");
+	}	
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -262,8 +257,8 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 
 			case 4: if(%obj.isSkinwalker)
 					{
-						if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))
-						PlayerSkinwalker.monstertransform(%obj,true);
+						if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule))
+						PlayerSkinwalker.monsterTransform(%obj,true);
 					}		
 					else
 					{
@@ -414,8 +409,7 @@ function EventidePlayer::EventideAppearance(%this,%obj,%funcclient)
 
 		if(%funcclient.hat == 1)
 		{
-			if(%funcclient.accent) %newhat = "helmet";
-			else %newhat = "hoodie1";
+			%newhat = (%funcclient.accent ? "helmet" : "hoodie1");
 			%obj.unHideNode(%newhat);
 			%obj.setNodeColor(%newhat,%funcclient.hatColor);
 		}
@@ -426,10 +420,7 @@ function EventidePlayer::EventideAppearance(%this,%obj,%funcclient)
 		}			
 	}
 	
-	if(%funcclient.hip)
-	{
-		%obj.unHideNode("skirt");
-	}
+	if(%funcclient.hip) %obj.unHideNode("skirt");
 	else
 	{
 		%obj.unHideNode("pants");
@@ -505,21 +496,12 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 {
 	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
 
-	//if(!%obj.tunnelVision)
-	//{
-	//	//FOV hasn't been changed yet, store it.
-	//	%obj.originalFOV = %this.getControlCameraOriginalFov(%obj);
-	//}
-
-	//%tunnelVisionFOV = %obj.originalFOV + %this.tunnelFOVIncrease;
-
 	if(!%obj.TunnelFOV) %obj.TunnelFOV = %tunnelVisionFOV;
 
 	if(%bool) 
 	{		
 		%obj.tunnelVision = mClampF(%obj.tunnelVision + 0.1, 0, 1);
 		commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelVision);
-		//%obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV--, 50, %tunnelVisionFOV));
 
 		if (%obj.tunnelVision >= 1) return;
 	}
@@ -528,13 +510,11 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 		if(%obj.tunnelVision > 0)
 		{
 			%obj.tunnelVision = mClampF(%obj.tunnelVision - 0.1, 0, 1);
-		    //%obj.client.setControlCameraFOV(mClampF(%obj.TunnelFOV++, 50, %tunnelVisionFOV));
 		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelVision);
 		}
 		else
 		{
 			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
-			//%obj.setTempSpeed(1);
 			return;
 		}
 	}
@@ -577,7 +557,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
 	//Pseudo health for the fighter class, gives the player a temporary health boost until they are hurt again
-	if(%obj.pseudoHealth > 0)
+	if(%obj.pseudoHealth)
 	{
 		%obj.pseudoHealth -= %damage;
 		%obj.addhealth(mAbs(%damage)*2);
@@ -595,7 +575,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		if(getRandom(1,4) == 1) 
 		{
 			%obj.playaudio(3,"skinwalker_pain_sound");
-			if(!isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule)) PlayerSkinwalker.monstertransform(%obj,true);
+			if(!isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule)) PlayerSkinwalker.monsterTransform(%obj,true);
 		}
 	}
 
@@ -617,7 +597,7 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 	Parent::onNewDataBlock(%this,%obj);
 	
 	%this.DownLoop(%obj);
-    %obj.playthread(0,sit);	
+    %obj.playthread(0,sit);
 }
 
 function EventidePlayerDowned::DownLoop(%this,%obj)
@@ -626,15 +606,15 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		if(!%obj.isBeingSaved)
 		{
-			//Billboard bot functionality, just constantly switching between downed and blank billboard
-			if(isObject(%obj.billboardbot.lightToMount))
+			if(isObject(%obj.billboardbot.light))
 			{
-				%obj.billboardbot.lightschedule1 = %obj.billboardbot.lightToMount.schedule(500,setdatablock,"downedBillboard");
-				%obj.billboardbot.lightschedule2 = %obj.billboardbot.lightToMount.schedule(400,setdatablock,"blankBillboard");
-			} 
-				
-			%obj.addhealth(-1);
-			%obj.setdamageflash(0.25);
+				%obj.billboardbot.lightschedule1 = %obj.billboardbot.light.schedule(425,setdatablock,"redLight");
+				%obj.billboardbot.lightschedule1 = %obj.billboardbot.light.schedule(450,setdatablock,"downedBillboard");				
+				%obj.billboardbot.lightschedule2 = %obj.billboardbot.light.schedule(400,setdatablock,"blankBillboard");
+			} 			
+
+			%obj.addHealth(-1);
+			%obj.setDamageFlash(0.25);
 
 			if(%obj.lastcry+10000 < getsimtime())
 			{
@@ -658,86 +638,70 @@ function EventidePlayer::onDisabled(%this,%obj)
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {
 	Parent::onDisabled(%this,%obj);
+		
+	for (%j = 0; %j < 4; %j++) %obj.unmountimage(%j); // Remove all mounted images
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
+	if(isObject(%obj.billboardbot)) %obj.billboardbot.delete();
 
-	if(isObject(%killer = getCurrentKiller())) 
+	// Let the killer know that a survivor has been killed
+	if(isObject(%killer = getCurrentKiller().client)) 
 	{
 		%killer.client.PlaySkullFrames();
 		%killer.client.play2D("elimination_sound");
-	}
-
-	//Delete the billboard bot
-	if(isObject(%obj.billboardbot)) %obj.billboardbot.delete();
-
-	if(isObject(%funcclient = %obj.client))
-	{
-		%obj.ghostclient = %funcclient;
-		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
-		
-		//if(%obj.originalFOV)
-		//%obj.client.setcontrolcamerafov(%obj.originalFOV);
-
-		if(%obj.markedForShireZombify && isObject(%funcclient.minigame))
-		{
-			%bot = new AIPlayer()
-			{
-				dataBlock = "ShireZombieBot";
-				minigame = %obj.ghostClient.minigame;
-				ghostclient = %obj.ghostclient;
-			};
-
-			%bot.setTransform(%obj.getTransform());
-			%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
-
-			if(!isObject(Eventide_MinigameGroup))
-			{
-    			new SimGroup(Eventide_MinigameGroup);
-    			missionCleanup.add(Eventide_MinigameGroup);
-				Eventide_MinigameGroup.add(%bot);
-			}
-			else if(!Eventide_MinigameGroup.isMember(%bot)) Eventide_MinigameGroup.add(%bot);
-
-			%obj.schedule(1,delete);
-		}		
-	}
-
-	if(%obj.markedforRenderDeath)
-	{
-		%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
-		%obj.schedule(1,delete);
-	}
-
-	for (%j = 0; %j < 4; %j++) 
-	%obj.unmountimage(%j);
-
-	%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
-
-	if(isObject(%funcclient))
-	for(%i = 0; %i < %inventoryToolCount; %i++) if(isObject(%item = %obj.tool[%i]))
-	{
-		//Play a sound for the radio being dropped
-		if(%obj.tool[%i].getName() $= "RadioItem") 
-		serverPlay3d("radio_unmount_sound",%obj.getPosition());	
-
-		%item = new Item()
-		{
-			dataBlock = %item;
-			position = %obj.getPosition();
-			velocity = %obj.getVelocity();
-			BL_ID = %funcclient.BL_ID;
-			minigame = %minigame;
-			spawnBrick = 0;
-		};			
-
-		if(!isObject(Eventide_MinigameGroup))
-		{
-			new SimGroup(Eventide_MinigameGroup);
-			missionCleanUp.add(Eventide_MinigameGroup);
-		}
-
-		Eventide_MinigameGroup.add(%item);
 	}	
 
-	if(isObject(%minigame = getMinigamefromObject(%obj))) for(%i = 0; %i < %minigame.numMembers; %i++)
-	if(isObject(%member = %minigame.member[%i]) && %obj.markedforRenderDeath) %member.play2D("render_kill_sound");		
+	// Only do this if the client exists
+	if(isObject(%obj.client))
+	{
+		%funcclient = (isObject(%obj.ghostclient)) ? %obj.ghostclient : %obj.client;
+		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);	
+		
+		if(isObject(%minigame = getMinigamefromObject(%obj)))
+		{
+			// Drop all of the player's tools
+			%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
+			for(%i = 0; %i < %inventoryToolCount; %i++) if(isObject(%item = %obj.tool[%i]))
+			{
+				//Play a sound for the radio being dropped
+				if(%obj.tool[%i].getName() $= "RadioItem") 
+				serverPlay3d("radio_unmount_sound",%obj.getPosition());	
+
+				%item = new Item()
+				{
+					dataBlock = %item;
+					position = %obj.getPosition();
+					velocity = %obj.getVelocity();
+					BL_ID = %funcclient.BL_ID;
+					minigame = %minigame;
+					spawnBrick = 0;
+				};			
+
+				if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+				Eventide_MinigameGroup.add(%item);
+			}
+
+			// Varying conditions on how the player was killed, do not return on either condition if the player is already marked for death
+			if(%obj.markedforRenderDeath || %obj.markedForShireZombify)
+			{
+				if(%obj.markedforRenderDeath) %minigame.playSound("render_kill_sound");
+	
+				if(%obj.markedForShireZombify)
+				{
+					%bot = new AIPlayer()
+					{
+						dataBlock = "ShireZombieBot";
+						minigame = %obj.ghostClient.minigame;
+						ghostclient = %obj.ghostclient;
+					};				
+	
+					if(!isObject(Eventide_MinigameGroup)) missionCleanup.add(new SimGroup(Eventide_MinigameGroup));
+					Eventide_MinigameGroup.add(%bot);
+					%bot.setTransform(%obj.getTransform());
+				}
+	
+				%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
+				%obj.schedule(33,delete);
+			}
+		}
+	}	
 }

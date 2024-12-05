@@ -8,20 +8,18 @@ package Eventide_DSBloodPackage
 		if (isObject(DecalGroup)) DecalGroup.deleteAll();		
 	}
 	
-	function Armor::damage(%this, %obj, %src, %pos, %damage, %type) 
+	function Armor::damage(%this, %obj, %source, %pos, %damage, %type) 
     {
-		if ((getSimTime() - %obj.spawnTime < $Game::PlayerInvulnerabilityTime) || (%src == %obj && %type != $DamageType::Fall && %type != $DamageType::Impact))
-		return Parent::damage(%this, %obj, %src, %pos, %damage, %type);
+		if ((getSimTime() - %obj.spawnTime < $Game::PlayerInvulnerabilityTime) || (%source == %obj && %type != $DamageType::Fall && %type != $DamageType::Impact))
+		return Parent::damage(%this, %obj, %source, %pos, %damage, %type);
 
 		if (!%damage) return;
 
-		if (isObject(%src))
+		if (isObject(%source))
 		{
-			%source = %src;
-
-			if (isObject(%src.sourceObject)) %source = %src.sourceObject;
-			if (%pos $= "") %pos = %obj.getHackPosition();
-			%vector = (%src.getType() & $TypeMasks::PlayerObjectType) ? %src.getForwardVector() : vectorScale(%src.normal, - 1);
+			if (isObject(%source.sourceObject)) %source = %source.sourceObject;
+			%pos = (%pos $= "") ? %obj.getHackPosition() : %pos;
+			%vector = (%source.getType() & $TypeMasks::PlayerObjectType) ? %source.getForwardVector() : vectorScale(%source.normal, - 1);
 			%norm = vectorNormalize(vectorSub(%pos, %source.getEyePoint()));
 			%dot = vectorDot(%obj.getForwardVector(), %vector);
 
@@ -35,7 +33,7 @@ package Eventide_DSBloodPackage
 
 			if (getRandom(1))
 			{
-				%obj.bloody["chest_"@ (%dot > 0? "back": "front")] = true;
+				%obj.bloody["chest_" @ (%dot > 0 ? "back": "front")] = true;
 				if (isObject(%obj.client)) %obj.client.applyBodyParts();
 			}
 		}
@@ -60,7 +58,7 @@ package Eventide_DSBloodPackage
 			%obj.doSplatterBlood(7, %pos, %vector);
 		}
 
-		Parent::damage(%this, %obj, %src, %pos, %damage, %type);
+		Parent::damage(%this, %obj, %source, %pos, %damage, %type);
 	}
 
 	function Armor::onEnterLiquid(%data, %obj, %coverage, %type)
@@ -81,4 +79,4 @@ package Eventide_DSBloodPackage
 	}
 };
 if (isPackage(DSBloodPackage)) deactivatePackage("DSBloodPackage");
-if ($Blood::doDamageCheck == true) activatePackage("Eventide_DSBloodPackage");
+if ($Blood::doDamageCheck) activatePackage("Eventide_DSBloodPackage");

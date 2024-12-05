@@ -1,5 +1,4 @@
 eval("chainsaw_sawing_sound.description = \"AudioDefaultLooping3D\";");
-AddDamageType("HammerDirect", '<bitmap:base/client/ui/ci/hammer> %1', '%2 <bitmap:base/client/ui/ci/hammer> %1', 0, 1);
 
 datablock ExplosionData(chainsawExplosion : hammerExplosion)
 {

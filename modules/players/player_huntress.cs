@@ -4,7 +4,6 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 
 	killerSpawnMessage = "...";
 	
-	// Weapon: Axe
 	hitprojectile = KillerSharpHitProjectile;
 	hitobscureprojectile = KillerAxeClankProjectile;
 	
@@ -36,7 +35,6 @@ datablock PlayerData(PlayerHuntress : PlayerRenowned)
 	maxForwardSpeed = 6.25;
 	maxBackwardSpeed = 3.57;
 	maxSideSpeed = 5.36;
-	//+5% Speed
 	PainSound = "huntress_pain";
 };
 
@@ -68,7 +66,6 @@ function PlayerHuntress::onNewDatablock(%this,%obj)
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.15 1.15 1.15");
 	%obj.mountImage("meleeAxeLImage",1);
-	KillerSpawnMessage(%obj);
 }
 
 function PlayerHuntress::EventideAppearance(%this,%obj,%client)

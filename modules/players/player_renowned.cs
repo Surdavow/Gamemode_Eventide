@@ -82,7 +82,6 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 	%obj.schedule(1, setEnergyLevel, 0);
 	%obj.setScale("1.05 1.05 1.05");
 	%obj.mountImage("renownedeyesimage",2);
-	KillerSpawnMessage(%obj);
 }
 
 function PlayerRenowned::bottomprintgui(%this,%obj,%client)

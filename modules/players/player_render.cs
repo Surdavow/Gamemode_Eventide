@@ -136,7 +136,6 @@ function PlayerRender::onNewDatablock(%this,%obj)
 	if(isObject(%obj.light)) %obj.light.delete();
 	%this.EventideAppearance(%obj);
 	%this.Prepperizer(%obj);
-	KillerSpawnMessage(%obj);
 }
 
 function PlayerRender::EventideAppearance(%this,%obj)

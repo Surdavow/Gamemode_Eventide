@@ -1,36 +1,3 @@
-datablock AudioDescription(AudioFSRun)
-{
-	volume = 0.85;
-	isLooping = false;
-	is3D = 1;
-	ReferenceDistance = 10;
-	maxDistance = 40;
-	type = $SimAudioType;
-};
-
-datablock AudioDescription(AudioFSWalk)
-{
-	volume = 0.65;
-	isLooping = false;
-	is3D = 1;
-	ReferenceDistance = 5;
-	maxDistance = 15;
-	type = $SimAudioType;
-};
-
-%pattern = "./*.wav";
-%file = findFirstFile(%pattern);
-while(%file !$= "")
-{
-    %soundName = strreplace(filename(strlwr(%file)), ".wav", "");
-
-	if(strstr(%file,"normal") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClose3d; filename = \"" @ %file @ "\"; length =" SPC alxGetWaveLen(%file) @ "; };");
-	if(strstr(%file,"quiet") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClosest3d; filename = \"" @ %file @ "\"; length =" SPC alxGetWaveLen(%file) @ "; };");	
-	if(strstr(%file,"loud") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioDefault3d; filename = \"" @ %file @ "\"; length =" SPC alxGetWaveLen(%file) @ "; };");
-
-	%file = findNextFile(%pattern);
-}
-
 datablock DebrisData(sm_woodFragDebris)
 {
 	shapeFile 			= "./models/wood_fragment.dts";
@@ -119,7 +86,7 @@ function sm_stunImage::onMount(%this,%obj)
 
 	switch$(%obj.getclassName())
 	{
-		case "Player": %obj.client.setControlObject(%obj.client.camera);
+		case "Player": 	%obj.client.setControlObject(%obj.client.camera);
 						%obj.client.camera.setMode("Corpse",%obj);
 		case "AIPlayer": %obj.stopholeloop();
 	}
@@ -130,6 +97,7 @@ function sm_stunImage::onunMount(%this,%obj)
 	%obj.stunned = 0;
 	%obj.playThread(3,"undo");
 	%obj.setactionthread("root",1);
+	
 	switch$(%obj.getclassName())
 	{
 		case "Player": 	%obj.client.setControlObject(%obj);
@@ -137,73 +105,3 @@ function sm_stunImage::onunMount(%this,%obj)
 		case "AIPlayer": %obj.startholeloop();
 	}
 }
-
-datablock ParticleData(BleedParticle)
-{
-   dragCoefficient = 3;
-   gravityCoefficient = 0.5;
-   inheritedVelFactor = 0.3;
-   constantAcceleration = 0;
-   lifetimeMS         = 100;
-   lifetimeVarianceMS = 50;
-   textureName = "base/data/particles/cloud";
-   spinSpeed     = 0;
-   spinRandomMin = -20;
-   spinRandomMax = 20;
-   colors[0] = "0.6 0 0 1";
-   colors[1] = "0.5 0 0 0.3 ";
-   colors[2] = "0.4 0 0 0";
-   sizes[0] = 0.12;
-   sizes[1] = 0.4;
-   sizes[2] = 0.08;
-   times[1] = 0.5;
-   times[2] = 1;
-   useInvAlpha = true;
-};
-
-datablock ParticleEmitterData(BleedEmitter)
-{
-   ejectionPeriodMS = 50;
-   periodVarianceMS = 0;
-   ejectionVelocity = 1;
-   velocityVariance = 0;
-   ejectionOffset   = 0;
-   thetaMin = 0;
-   thetaMax = 180;
-   phiReferenceVel = 0;
-   phiVariance     = 360;
-   overrideAdvance = false;
-   particles = "BleedParticle";
-
-   uiName = "";
-};
-
-datablock ShapeBaseImageData(BleedImage) 
-{
-	shapeFile			= "base/data/shapes/empty.dts";
-	mountPoint			= 2;
-	offset = "-0.5 0.05 -0.45";
-	correctMuzzleVector	= false;
-	stateName[0]				= "Bleed";
-	stateEmitter[0]				= BleedEmitter;
-	stateEmitterTime[0]			= 1000;
-	stateWaitForTimeout[0]		= true;
-	stateTimeoutValue[0]		= 1000;
-	stateTransitionOnTimeout[0]	= "Bleed";
-	stateScript[0]				= "onBleed";
-};
-
-datablock ShapeBaseImageData(FogImage) 
-{
-	shapeFile			= "base/data/shapes/empty.dts";
-	mountPoint			= 2;
-	offset = "0 -0.5 -0.25";
-	correctMuzzleVector	= false;
-	stateName[0]				= "Fog";
-	stateEmitter[0]				= FogEmitter;
-	stateEmitterTime[0]			= 1000;
-	stateWaitForTimeout[0]		= true;
-	stateTimeoutValue[0]		= 1000;
-	stateTransitionOnTimeout[0]	= "Fog";
-	stateScript[0]				= "onFog";
-};

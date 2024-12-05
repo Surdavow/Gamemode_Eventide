@@ -35,17 +35,18 @@ package Eventide_LocalChat
 		if(%message $= "0") return;
 		
 		if(isObject(%client.player))
-		{        
-            %inventoryToolCount = (%client.player.hoarderToolCount) ? %client.player.hoarderToolCount : %client.player.getDataBlock().maxTools;
+		{
+            %client.player.playThread(3,talk);
+            %client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+
+            %inventoryToolCount = (%client.player.hoarderToolCount) ? %client.player.hoarderToolCount : %client.player.getDataBlock().maxTools;            
 			for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%client.player.tool[%i]) && %client.player.tool[%i].getName() $= "RadioItem")
 			{
-				ChatMod_RadioMessage(%client, %message);
-				ChatMod_LocalChat(%client, %message);
-                %client.player.playThread(3,talk);
-			    %client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
+				ChatMod_RadioMessage(%client,%client.player,%message);
+				ChatMod_LocalChat(%client, %message);                
                 return;
 			}
-            
+
 			return messageClient(%client,'',"\c5Find a radio to use team chat.");		
 		}
 		else return messageClient(%client,'',"\c5Respawn and find a radio to use team chat.");	
@@ -203,23 +204,26 @@ function ChatMod_LocalChat(%client, %message)
     }
 }
 
-function ChatMod_RadioMessage(%client, %message)
+function ChatMod_RadioMessage(%client,%player,%message)
 {
 	//If the player is a skinwalker, use the victim replicated client instead for impersonation
-	if(isObject(%player = %client.player) && isObject(%player.victimreplicatedclient)) %tempclient = %player.victimreplicatedclient;
-	else %tempclient = %client;
+    %tempclient = (isObject(%player.victimreplicatedclient)) ? %player.victimreplicatedclient : %client;
     
     //If the player doesn't have a radio ID, generate one
-    if(!%client.player.radioID) %client.player.radioID = getRandom(100, 10000);
+    if(!%player.radioID) %player.radioID = getRandom(100, 10000);
 
-	%pre = "\c4[Radio] ";	
-	%name = getSubStr(%tempclient.name, 0, 1) @ "." @ %client.player.radioID;
+	%pre = "\c4[Radio] ";
+	%name = getSubStr(%tempclient.name, 0, 1) @ "." @ %player.radioID;
 	%message = "\c4" @ %message;
 
-	for(%i = 0; %i < clientGroup.getCount(); %i++)
-    if(isObject(%target = clientGroup.getObject(%i)) && isObject(%target.player))
+	for(%i = 0; %i < ClientGroup.getCount(); %i++)
+    if(isObject(%target = ClientGroup.getObject(%i)) && isObject(%target.player))
     {
-        %target.player.playaudio(3,"radio_message_sound");
-        chatMessageClientRP(%target,%pre,%name,"",%message);		
+        %inventoryToolCount = (%target.player.hoarderToolCount) ? %target.player.hoarderToolCount : %target.player.getDataBlock().maxTools;            
+        for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%target.player.tool[%i]) && %target.player.tool[%i].getName() $= "RadioItem")
+        {
+            %target.player.playaudio(3,"radio_message_sound");
+            chatMessageClientRP(%target,%pre,%name,"",%message);		
+        }        
     }
 }

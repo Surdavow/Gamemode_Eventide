@@ -37,5 +37,6 @@ datablock ShapeBaseImageData(RadioImage)
 
 function RadioImage::onMount(%this,%obj,%slot)
 {	
+	%obj.client.centerPrint("<font:Impact:30>\c3Keep the radio in your inventory to broadcast to other survivors!",3);
 	%obj.playaudio(3,"radio_change_sound");
 }

@@ -6,16 +6,22 @@ while(%file !$= "")
     %soundName = strreplace(filename(strlwr(%file)), ".wav", "");
 
 	// Automatic sound instancing based on name of the sound, self explanatory names.
-	if(strstr(%file,"normal") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClose3d; filename = \"" @ %file @ "\"; };");	
-	if(strstr(%file,"quiet") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClosest3d; filename = \"" @ %file @ "\"; };");	
-	if(strstr(%file,"loud") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioDefault3d; filename = \"" @ %file @ "\"; };");
+	if(strstr(%file,"normal") != -1) 
+	eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClose3d; filename = \"" @ %file @ "\"; };");	
+	if(strstr(%file,"quiet") != -1) 
+	eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioClosest3d; filename = \"" @ %file @ "\"; };");	
+	if(strstr(%file,"loud") != -1) 
+	eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioDefault3d; filename = \"" @ %file @ "\"; };");
 
-	//Unique condition for footsteps
+	//Footsteps only
 	if(strstr(%file,"sounds/footsteps/") != -1)
 	{
-		if(strstr(%file,"walk") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
-		else if(strstr(%file,"swim") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
-		else if(strstr(%file,"run") != -1) eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSRun; filename = \"" @ %file @ "\"; };");		
+		if(strstr(%file,"walk") != -1) 
+		eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
+		else if(strstr(%file,"swim") != -1) 
+		eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSWalk; filename = \"" @ %file @ "\"; };");
+		else if(strstr(%file,"run") != -1) 
+		eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = AudioFSRun; filename = \"" @ %file @ "\"; };");		
 	}
 
 	%file = findNextFile(%pattern);
@@ -110,7 +116,6 @@ exec("./player_knight.cs");
 exec("./player_lurker.cs");
 exec("./player_lurkerinvis.cs");
 exec("./player_nightmare.cs");
-exec("./player_nightmareTeleport.cs");
 exec("./player_puppetmaster.cs");
 exec("./player_puppetmasterpuppet.cs");
 exec("./player_render.cs");

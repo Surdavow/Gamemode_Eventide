@@ -4,10 +4,14 @@ package Eventide_Minigame
 	{
 		Parent::endRound(%minigame, %winner, %resetTime);
 
-		// Disable local chat at the end of the round, let everyone banter at the end.
-		$MinigameLocalChat = false;
-		%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
 		%minigame.playSound("round_end_sound");
+
+		// Disable local chat at the end of the round, let everyone banter at the end.
+		if($MinigameLocalChat)
+		{
+			$MinigameLocalChat = false;
+			%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
+		}
 	}
 
     function MiniGameSO::Reset(%minigame,%client)
@@ -47,7 +51,7 @@ package Eventide_Minigame
 			%minigame.randomizeEventideItems(true);
 			%minigame.bottomprintall("<font:impact:25>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
 			%minigame.playSound("round_start_sound");						
-			$MinigameLocalChat = ($Pref::Server::ChatMod::lchatEnabled) ? true : false;
+			$MinigameLocalChat = $Pref::Server::ChatMod::lchatEnabled;
 		}
     }
 
@@ -56,8 +60,11 @@ package Eventide_Minigame
         Parent::endGame(%minigame,%client);
 
 		//Disable local chat
-		$MinigameLocalChat = false;
-		%minigame.bottomprintall("<font:impact:30>\c3Local chat disabled",4);
+		if($MinigameLocalChat)
+		{
+			$MinigameLocalChat = false;
+			%minigame.bottomprintall("<font:impact:30>\c3Local chat disabled",4);
+		}
 
         for(%i=0;%i<%minigame.numMembers;%i++)
         if(isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter)) 

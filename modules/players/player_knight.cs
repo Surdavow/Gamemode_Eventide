@@ -57,7 +57,6 @@ function PlayerKnight::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.2 1.2 1.2");
-	KillerSpawnMessage(%obj);
 	%obj.mountImage("ZweihanderImage",0);
 }
 

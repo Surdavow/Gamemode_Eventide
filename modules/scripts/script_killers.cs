@@ -8,47 +8,38 @@ package Eventide_Killers
 
 	function serverCmdLight(%client)
 	{
-		if(isObject(%client.player) && %client.player.getdataBlock().isKiller) return;
-		Parent::serverCmdLight(%client);		
-	}
+		if(!isObject(%client.player)) return;
 
-	function ServerCmdPlantBrick(%client)
-	{
-	    // Ensure the player is valid and is the Puppet Master
-	    if (isObject(%client.player) && %client.player.getDataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
+		// Ensure the player is valid and is the Puppet Master
+	    if (%client.player.getDataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
 	    {
+			if(isObject(%client.player.getMountedImage(2)) && %client.player.getMountedImage(2).getName() $= "sm_stunImage")
+			return;
+
 	        // Populate the temporary puppet list
 	        for (%i = 0; %i < Eventide_MinigameGroup.getCount(); %i++)	        
-			if (isObject(%puppet = Eventide_MinigameGroup.getObject(%i)) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")	            
-			%puppet[%puppetCount++] = %puppet;	    
-
-	        // Ensure the current puppet index is valid
-	        if (%client.player.puppetIndex $= "" || %client.player.puppetIndex >= %puppetCount)
-	        %client.player.puppetIndex = 0;	        
-
-	        // Handle switching control
-	        if (%puppetCount > 0 && %client.player.puppetIndex < %puppetCount)
+			if (isObject(%puppet = Eventide_MinigameGroup.getObject(%i)) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")
+			%puppetList[%puppetCount++] = %puppet;	
+	        	        
+			if (%client.player.puppetIndex <= %puppetCount)
 	        {
-	            %currentPuppet = %puppet[%client.player.puppetIndex];
-	            if (isObject(%currentPuppet))
-	            {
-	                // Switch control to the current puppet
-	                %client.getControlObject().schedule(1500, setActionThread, sit, 1);
-	                %client.setControlObject(%currentPuppet);
-	                %client.player.puppetIndex++;
-	            }
+	            %currentPuppet = %puppetList[%client.player.puppetIndex];
+				%client.getControlObject().schedule(1500, setActionThread, sit, 1);
+				%client.setControlObject(%currentPuppet);
+				%client.player.puppetIndex++;
 	        }
-	        else
-	        {
-	            // Reset control to the player if no puppets remain
-	            %client.getControlObject().schedule(1500, setActionThread, sit, 1);
-	            %client.setControlObject(%client.player);
-	            %client.player.puppetIndex = 0;
-	        }
+			else
+			{				
+				%client.player.puppetIndex = 1;				
+				%client.getControlObject().schedule(1500, setActionThread, sit, 1);
+				%client.setControlObject(%client.player);
+			}
+
+			return;
 	    }
+		else if(%client.player.getdataBlock().isKiller) return;
 
-	    // Call the parent function
-	    Parent::ServerCmdPlantBrick(%client);
+		Parent::serverCmdLight(%client);		
 	}
 
 	function MiniGameSO::Reset(%obj, %client)
@@ -68,7 +59,8 @@ package Eventide_Killers
 	{		
 		Parent::onNewDatablock(%this,%obj);
 		
-		if(%this.isEventideModel) %this.schedule(100,KillerCheck,%obj);
+		if(%this.isEventideModel) 
+		%this.schedule(33,KillerCheck,%obj);
 	}
 
 	function Armor::onDisabled(%this, %obj, %state)
@@ -92,31 +84,6 @@ activatePackage(Eventide_Killers);
 function getCurrentKiller()
 {
 	return $Eventide_currentKiller;
-}
-
-function KillerSpawnMessage(%obj)
-{
-	// Skip if invalid object, minigame, or first message has already been sent
-	if(!isObject(%obj) || !isObject(%minigame = getMiniGameFromObject(%obj)) || %obj.firstMessageSpawn) return;
-	
-	// Randomize the message
-	switch(getRandom(1,4))
-	{
-		case 1: %message = "The hunter has arrived.";
-		case 2: %message = "Ready yourselves, the hunter has arrived.";
-		case 3: %message = "Prepare yourselves, it is coming.";
-		case 4: %message = %obj.getdataBlock().killerSpawnMessage;
-	}
-
-	%minigame.chatmsgall("<font:Impact:30>\c0" @ %message);
-	%minigame.playSound("round_start_sound");	
-
-	// Set the flag to prevent the message from being sent again
-	%obj.firstMessageSpawn = true;
-
-	//Stuff for the distant sound system.
-	$Eventide_currentKiller = %obj;
-	%obj.distantSoundData['initialized'] = true;
 }
 
 function Player::KillerMelee(%obj,%datablock,%radius)
@@ -144,11 +111,11 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 		{
 			if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius) continue;
 
-			%typemasks = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
+			%typemasks = $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
 			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),%typemasks, %obj);
-			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getPosition(),%obj.getPosition())));				
+			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%obj.getPosition())));				
 
-			if(isObject(%obscure) && %dataBlock.hitobscureprojectile !$= "" && %dot > 0.85)
+			if(isObject(%obscure) && %dataBlock.hitobscureprojectile !$= "")
 			{								
 				%c = new Projectile()
 				{
@@ -163,7 +130,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				return;
 			}
 
-			if(%dot < 0.6) continue;		
+			if(%dot < 0.4) continue;		
 
 			if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))								
 			{
@@ -214,10 +181,7 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 				{
 					%obj.stopaudio(3);
 					%obj.playaudio(3,%datablock.killermeleehitsound @ getRandom(1,%datablock.killermeleehitsoundamount) @ "_sound");		
-				}						
-				
-				%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
-				%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);					
+				}
 
 				if(%datablock.hitprojectile !$= "")
 				{
@@ -234,6 +198,10 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 					%effect.explode();
 				}
 
+				
+				%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
+				%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);					
+				
 				%obj.setTempSpeed(0.3);	
 				%obj.schedule(2500,setTempSpeed,1);
 			}			
@@ -243,12 +211,13 @@ function Player::KillerMelee(%obj,%datablock,%radius)
 
 function Armor::KillerCheck(%this,%obj)
 {	
-	if(!%this.isKiller) return;
+	if(!isObject(%obj) || !%this.isKiller) return;
 
-	%this.onKillerLoop(%obj);		
-	if(isObject(%obj.getMountedImage(2))) %obj.unmountImage(2);
+	for (%j = 0; %j < 4; %j++) %obj.unmountimage(%j);
 	if(isObject(%obj.client)) %this.EventideAppearance(%obj,%obj.client);
+	
 	%obj.KillerGhostLightCheck();
+	%this.onKillerLoop(%obj);
 }
 
 function Armor::onKillerChase(%this,%obj,%chasing)
@@ -260,10 +229,32 @@ function Armor::onKillerChase(%this,%obj,%chasing)
 function Armor::onKillerLoop(%this, %obj)
 {
     // Skip if invalid state
-    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj))) return;
+    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj))) return;
 
     if(%obj.getDataBlock().isKiller)
     {
+		// Skip if invalid object, minigame, or first message has already been sent
+		if(!%obj.firstMessageSpawn)
+		{
+			// Set the flag to prevent the message from being sent again
+			%obj.firstMessageSpawn = true;
+
+			switch(getRandom(1,4))
+			{
+				case 1: %message = "The hunter has arrived.";
+				case 2: %message = "Ready yourselves, the hunter has arrived.";
+				case 3: %message = "Prepare yourselves, it is coming.";
+				case 4: %message = %obj.getdataBlock().killerSpawnMessage;
+			}
+
+			%minigame.chatMsgAll("<font:Impact:30>\c0" @ %message);
+			%minigame.playSound("round_start_sound");	
+
+			//Stuff for the distant sound system.
+			$Eventide_currentKiller = %obj;
+			%obj.distantSoundData['initialized'] = true;
+		}
+
         %chasingVictims = 0;
         initContainerRadiusSearch(%obj.getMuzzlePoint(0), 40, $TypeMasks::PlayerObjectType);
 
@@ -439,28 +430,27 @@ function Player::KillerGhostLightCheck(%obj)
 	
 	if(!%obj.isInvisible)
 	{
-		%obj.light = new fxLight()
+		if(!isObject(%obj.light))
 		{
-			dataBlock = %obj.getdataBlock().killerlight;
-			source = %obj;
-		};
+			%obj.light = new fxLight()
+			{
+				dataBlock = %obj.getdataBlock().killerlight;
+				source = %obj;
+			};
 
-		if(!isObject(Eventide_MinigameGroup))
-		{
-			new SimGroup(Eventide_MinigameGroup);
-			missionCleanUp.add(Eventide_MinigameGroup);
+			%obj.light.attachToObject(%obj);		
+			%obj.light.setNetFlag(6,true);			
+
+			for(%i = 0; %i < clientgroup.getCount(); %i++) 
+			if(isObject(%client = clientgroup.getObject(%i))) 
+			{
+				if(%obj == %client.player) %obj.light.ScopeToClient(%client);
+				else %obj.light.clearScopeToClient(%client);
+			}			
 		}
-		Eventide_MinigameGroup.add(%obj.light);
-		
-		%obj.light.attachToObject(%obj);		
-		%obj.light.setNetFlag(6,true);
 
-		for(%i = 0; %i < clientgroup.getCount(); %i++) 
-		if(isObject(%client = clientgroup.getObject(%i))) 
-		{
-			if(%obj == %client.player) %obj.light.ScopeToClient(%client);
-			else %obj.light.clearScopeToClient(%client);
-		}			
+		if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+		Eventide_MinigameGroup.add(%obj.light);
 	}
 	else if(isObject(%obj.light)) %obj.light.delete();	
 }

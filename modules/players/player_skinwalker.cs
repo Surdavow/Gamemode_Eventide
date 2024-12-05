@@ -94,30 +94,25 @@ function PlayerSkinwalker::bottomprintgui(%this,%obj,%client)
 
 function PlayerSkinwalker::onNewDatablock(%this,%obj)
 {
-	Parent::onNewDatablock(%this,%obj);    	
+	Parent::onNewDatablock(%this,%obj);
+
 	%obj.setScale("1.2 1.2 1.2");
-
-    %obj.stopaudio(0);
-    %obj.playthread(0,"roar");
-    
-    %obj.schedule(1,playaudio,0,"skinwalker_roar_sound");
-    %obj.schedule(1, setEnergyLevel,0);    
+    %obj.playthread(0,"roar");    
+    %obj.playaudioplayaudio(0,"skinwalker_roar_sound");
+    %obj.schedule(1, setEnergyLevel,0);
 	for(%i = 0; %i < getRandom(1,2); %i++) %obj.schedule(50,spawnExplosion,"goryExplosionProjectile",%obj.getScale());   
-
-	KillerSpawnMessage(%obj);
     %obj.isSkinwalker = true;
 }
 
 function PlayerSkinwalker::EventideAppearance(%this,%obj,%client)
 {
-    if(isObject(%obj.victimreplicatedclient)) %clientappearance = %obj.victimreplicatedclient;
-    else %clientappearance = %client;
+    %clientappearance = isObject(%obj.victimreplicatedclient) ? %obj.victimreplicatedclient : %client;
 
     %obj.unHideNode("ALL");
-    %obj.setNodeColor($hat[$clientappearance.hat],%client.hatColor);
+    %obj.setNodeColor($hat[$clientappearance.hat],%clientappearance.hatColor);
 	%obj.setFaceName(%clientappearance.faceName);
 	%obj.setDecalName(%clientappearance.decalName);
-	%obj.setNodeColor("head",%clientappearance.headColor);	
+	%obj.setNodeColor("head",%clientappearance.headColor);
 	%obj.setNodeColor("chestskinwalker",%clientappearance.chestColor);
 	%obj.setNodeColor("pants",%clientappearance.hipColor);
 	%obj.setNodeColor("rarm",%clientappearance.rarmColor);
@@ -135,8 +130,8 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 		case 0: if(%obj.getEnergyLevel() <= 25) return;
 				%obj.KillerMelee(%this, 4);
 
-		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monstertransformschedule))				
-				%this.monstertransform(%obj, false);			
+		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule))				
+				%this.monsterTransform(%obj, false);	
 	}
 
 	Parent::onTrigger(%this, %obj, %trig, %press);
@@ -148,7 +143,7 @@ function PlayerSkinwalker::onPeggFootstep(%this,%obj)
 	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
 
-function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
+function PlayerSkinwalker::monsterTransform(%this,%obj,%bool,%count)
 {
     if(!isObject(%obj)) return;
 
@@ -161,16 +156,15 @@ function PlayerSkinwalker::monstertransform(%this,%obj,%bool,%count)
         }
 
         %obj.playthread(0,"plant");
-        %obj.monstertransformschedule = %this.schedule(100,monstertransform,%obj,%bool,%count+1);
+        %obj.monsterTransformschedule = %this.schedule(100,monsterTransform,%obj,%bool,%count+1);
     }
     else 
     {
         switch(%bool)
         {
             case true: %obj.setdatablock("PlayerSkinwalker");
-            case false: if(isObject(%obj.lightbot.light)) %obj.lightbot.light.delete();
-                        if(isObject(%obj.lightbot)) %obj.lightbot.delete();	
-                        %obj.setdatablock("EventidePlayer");
+            case false: %obj.setdatablock("EventidePlayer");
+						if(isObject(%obj.light)) %obj.light.delete();                        
         }
 		
         %obj.changeaudio = false;

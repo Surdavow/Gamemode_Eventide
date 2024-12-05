@@ -59,6 +59,8 @@ datablock StaticShapeData(AnglerHookRope)
 	isHookRope = true;
 };
 
+
+// Thank you Nozero
 datablock ProjectileData(AnglerHookProjectile)
 {
 	projectileShapeName = "./models/anglerhookproj.dts";
@@ -131,7 +133,6 @@ function PlayerAngler::onNewDatablock(%this,%obj)
 	%obj.schedule(1, setEnergyLevel, 0);
 	%obj.setScale("1.2 1.2 1.2");
 	%obj.unHideNode("ALL");
-	KillerSpawnMessage(%obj);
 }
 
 function PlayerAngler::EventideAppearance(%this,%obj,%client)
@@ -262,10 +263,10 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 		return;
 	}
 
-	if(%end.getType() & $TypeMasks::ProjectileObjectType) %endpos = %end.getPosition();//Should only be a projectile when the rope is currently launched
+	if(%end.getType() & $TypeMasks::ProjectileObjectType) %endpos = %end.getPosition();// Should only be a projectile when the rope is currently launched
 	else if(%end.getType() & $TypeMasks::PlayerObjectType)
 	{
-		if(vectorDist(%end.getposition(),%source.getposition()) > 2.5)//Adjust the end's velocity to move to the source
+		if(vectorDist(%end.getposition(),%source.getposition()) > 2.5)// Adjust the end's velocity to move to the source
 		{ 
 			if(getWord(%end.getVelocity(), 2) <= 0.75 && !%obj.hitMusic) %end.playthread(1,"activate2");
 
@@ -282,14 +283,14 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 
 			%end.setVelocity(getWords(%newvelocity, 0, 1) SPC %zinfluence);
 
-			if(%end.lastchokecough+getrandom(250,500) < getsimtime())//Originally part of the L4B Smoker, just some sounds
+			if(%end.lastchokecough+getrandom(250,500) < getsimtime())// Originally part of the L4B Smoker, just some sounds
 			{			
 				%source.playaudio(0,"angler_melee" @ getRandom(0,2) @ "_sound");
 				%source.playthread(2,"leftrecoil");
 				%source.playthread(3,"jump");
 				%end.lastchokecough = getsimtime();
 
-				if(getWord(%end.getVelocity(), 2) >= 0.75)//If victim is being lifted up for too long, this function will eventually ebgin to damage the victim
+				if(getWord(%end.getVelocity(), 2) >= 0.75)//If victim is being lifted up for too long, this function will eventually begin to damage the victim
 				{					
 					if(%source.lastdamage+getRandom(500,100) < getsimtime())
 					{
@@ -311,7 +312,6 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 		%endpos = vectorSub(%end.getmuzzlePoint(2),"0 0 0.2");
 	} 
 
-	//Adjust the rope stringe
 	%head = %source.getmuzzlePoint(1);
 	%vector = vectorNormalize(vectorSub(%endpos,%head));
 	%relative = "0 1 0";

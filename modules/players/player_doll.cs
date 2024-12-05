@@ -53,7 +53,6 @@ function PlayerDoll::onNewDatablock(%this,%obj)
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("0.9 0.9 0.9");
 	%obj.schedule(1,setEnergyLevel,0);
-	KillerSpawnMessage(%obj);
 }
 
 function PlayerDoll::onTrigger(%this, %obj, %trig, %press) 

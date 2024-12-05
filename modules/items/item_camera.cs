@@ -9,7 +9,7 @@ datablock ItemData(DCamera)
 	emap = false;
 	
 	uiName = "Camera";
-	iconName = "";
+	iconName = "./icons/icon_camera";
 	doColorShift = false;
 	
 	image = DCameraImage;

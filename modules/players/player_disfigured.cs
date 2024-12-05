@@ -1,3 +1,73 @@
+datablock ParticleData(Disfigured_BleedParticle)
+{
+   dragCoefficient = 3;
+   gravityCoefficient = 0.5;
+   inheritedVelFactor = 0.3;
+   constantAcceleration = 0;
+   lifetimeMS         = 100;
+   lifetimeVarianceMS = 50;
+   textureName = "base/data/particles/cloud";
+   spinSpeed     = 0;
+   spinRandomMin = -20;
+   spinRandomMax = 20;
+   colors[0] = "0.6 0 0 1";
+   colors[1] = "0.5 0 0 0.3 ";
+   colors[2] = "0.4 0 0 0";
+   sizes[0] = 0.12;
+   sizes[1] = 0.4;
+   sizes[2] = 0.08;
+   times[1] = 0.5;
+   times[2] = 1;
+   useInvAlpha = true;
+};
+
+datablock ParticleEmitterData(Disfigured_BleedEmitter)
+{
+   ejectionPeriodMS = 50;
+   periodVarianceMS = 0;
+   ejectionVelocity = 1;
+   velocityVariance = 0;
+   ejectionOffset   = 0;
+   thetaMin = 0;
+   thetaMax = 180;
+   phiReferenceVel = 0;
+   phiVariance     = 360;
+   overrideAdvance = false;
+   particles = "Disfigured_BleedParticle";
+
+   uiName = "";
+};
+
+datablock ShapeBaseImageData(Disfigured_BleedImage) 
+{
+	shapeFile			= "base/data/shapes/empty.dts";
+	mountPoint			= 2;
+	offset = "-0.5 0.05 -0.45";
+	correctMuzzleVector	= false;
+	stateName[0]				= "Disfigured_Bleed";
+	stateEmitter[0]				= Disfigured_BleedEmitter;
+	stateEmitterTime[0]			= 1000;
+	stateWaitForTimeout[0]		= true;
+	stateTimeoutValue[0]		= 1000;
+	stateTransitionOnTimeout[0]	= "Disfigured_Bleed";
+	stateScript[0]				= "onDisfigured_Bleed";
+};
+
+datablock ShapeBaseImageData(Disfigured_FogImage) 
+{
+	shapeFile			= "base/data/shapes/empty.dts";
+	mountPoint			= 2;
+	offset = "0 -0.5 -0.25";
+	correctMuzzleVector	= false;
+	stateName[0]				= "Fog";
+	stateEmitter[0]				= FogEmitter;
+	stateEmitterTime[0]			= 1000;
+	stateWaitForTimeout[0]		= true;
+	stateTimeoutValue[0]		= 1000;
+	stateTransitionOnTimeout[0]	= "Fog";
+	stateScript[0]				= "onFog";
+};
+
 datablock PlayerData(PlayerDisfigured : PlayerRenowned) 
 {
 	uiName = "Disfigured Player";
@@ -56,9 +126,8 @@ function PlayerDisfigured::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.1 1.1 1.1");
-	%obj.mountImage("BleedImage",0);
-	%obj.mountImage("FogImage",1);
-	KillerSpawnMessage(%obj);
+	%obj.mountImage("Disfigured_BleedImage",0);
+	%obj.mountImage("Disfigured_FogImage",1);
 }
 
 function PlayerDisfigured::EventideAppearance(%this,%obj,%client)

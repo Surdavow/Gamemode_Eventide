@@ -1,6 +1,6 @@
 function MiniGameSO::randomizeEventideItems(%minigame)
 {	    
-    if(!isObject(EventideItemSpawnSet) || !EventideItemSpawnSet.getCount()) return;
+    if(!isObject(Eventide_ItemSpawns) || !Eventide_ItemSpawns.getCount()) return;
 
     %rsg = new ScriptGroup();
     %rbs = new SimSet();
@@ -12,14 +12,15 @@ function MiniGameSO::randomizeEventideItems(%minigame)
     %rsg.add(new ScriptObject("script_daggerItem"));
         
     //Main function to spawn items, clear effects and prepare ritual brick for the next condition check
-    for(%g = 0; %g < EventideItemSpawnSet.getCount(); %g++) if(isObject(%brick = EventideItemSpawnSet.getObject(%g)))
+    for(%g = 0; %g < Eventide_ItemSpawns.getCount(); %g++) if(isObject(%brick = Eventide_ItemSpawns.getObject(%g)))
     {
-        %brick.setItem("none");        
+        %brick.setItem("none");
         %brick.setEmitter("none");
 
         switch$(strlwr(%brick.getname()))
         {
-            case "_ritual": //This main loop only iterates through one brick at a time which causes problems if we try to randomize ritual spawns, only add it to the simset for the next loop
+            case "_ritual": //This main loop only iterates through one brick at a time which causes problems 
+                            //if we try to randomize ritual spawns, only add it to the simset for the next loop
                             %rbs.add(%brick);
 
             case "_item":   switch(getRandom(1,9))

@@ -1,4 +1,4 @@
-datablock DebrisData(sm_bottleShard1Debris)
+datablock DebrisData(bottleShard1Debris)
 {
 	shapeFile 			= "./models/d_glassShard1.dts";
 	lifetime 			= 2.8;
@@ -13,17 +13,17 @@ datablock DebrisData(sm_bottleShard1Debris)
 	fade 				= true;
 	gravModifier 		= 4;
 };
-datablock DebrisData(sm_bottleShard2Debris : sm_bottleShard1Debris)
+datablock DebrisData(bottleShard2Debris : bottleShard1Debris)
 {
 	shapeFile 			= "./models/d_glassShard2.dts";
 };
-datablock DebrisData(sm_bottleShard3Debris : sm_bottleShard1Debris)
+datablock DebrisData(bottleShard3Debris : bottleShard1Debris)
 {
 	shapeFile 			= "./models/d_glassShard3.dts";
 };
-datablock ExplosionData(sm_bottleShard1Explosion)
+datablock ExplosionData(bottleShard1Explosion)
 {
-	debris 					= sm_bottleShard1Debris;
+	debris 					= bottleShard1Debris;
 	debrisNum 				= 8;
 	debrisNumVariance 		= 1;
 	debrisPhiMin 			= 0;
@@ -33,17 +33,17 @@ datablock ExplosionData(sm_bottleShard1Explosion)
 	debrisVelocity 			= 5;
 	debrisVelocityVariance 	= 2;
 };
-datablock ExplosionData(sm_bottleShard2Explosion : sm_bottleShard1Explosion)
+datablock ExplosionData(bottleShard2Explosion : bottleShard1Explosion)
 {
-	debris 					= sm_bottleShard2Debris;
+	debris 					= bottleShard2Debris;
 	debrisNum 				= 32;
 	debrisNumVariance 		= 3;
 	debrisVelocity 			= 12;
 	debrisVelocityVariance 	= 6;
 };
-datablock ExplosionData(sm_bottleSmashExplosion)
+datablock ExplosionData(bottleSmashExplosion)
 {
-	debris 					= sm_bottleShard3Debris;
+	debris 					= bottleShard3Debris;
 	debrisNum 				= 18;
 	debrisNumVariance 		= 8;
 	debrisPhiMin 			= 0;
@@ -54,8 +54,8 @@ datablock ExplosionData(sm_bottleSmashExplosion)
 	debrisVelocityVariance 	= 6;
 	explosionShape 			= "";
 	lifeTimeMS 				= 150;
-	subExplosion[0] 		= sm_bottleShard1Explosion;
-	subExplosion[1] 		= sm_bottleShard2Explosion;
+	subExplosion[0] 		= bottleShard1Explosion;
+	subExplosion[1] 		= bottleShard2Explosion;
 	faceViewer     			= true;
 	explosionScale 			= "1 1 1";
 	shakeCamera 			= true;
@@ -64,15 +64,15 @@ datablock ExplosionData(sm_bottleSmashExplosion)
 	camShakeDuration 		= 0.1;
 	camShakeRadius 			= 10.0;
 };
-datablock ProjectileData(sm_bottleSmashProjectile)
+datablock ProjectileData(bottleSmashProjectile)
 {
-	explosion = sm_bottleSmashExplosion;
+	explosion = bottleSmashExplosion;
 };
-datablock ProjectileData(sm_bottleMiniSmashProjectile)
+datablock ProjectileData(bottleMiniSmashProjectile)
 {
-	explosion = sm_bottleShard2Explosion;
+	explosion = bottleShard2Explosion;
 };
-datablock ParticleData(sm_bottleExplosionParticle)
+datablock ParticleData(bottleExplosionParticle)
 {
 	dragCoefficient      = 3;
 	gravityCoefficient   = 0.4;
@@ -92,7 +92,7 @@ datablock ParticleData(sm_bottleExplosionParticle)
 	useInvAlpha = true;
 };
 
-datablock ParticleEmitterData(sm_bottleExplosionEmitter)
+datablock ParticleEmitterData(bottleExplosionEmitter)
 {
 	ejectionPeriodMS	= 1;
 	periodVarianceMS	= 0;
@@ -104,11 +104,11 @@ datablock ParticleEmitterData(sm_bottleExplosionEmitter)
 	phiReferenceVel		= 0;
 	phiVariance			= 360;
 	overrideAdvance		= false;
-	particles			= sm_bottleExplosionParticle;
+	particles			= bottleExplosionParticle;
 };
-datablock ExplosionData(sm_bottleHitExplosion)
+datablock ExplosionData(bottleHitExplosion)
 {
-	debris 					= sm_bottleShard3Debris;
+	debris 					= bottleShard3Debris;
 	debrisNum 				= 5;
 	debrisNumVariance 		= 3;
 	debrisPhiMin 			= 0;
@@ -118,7 +118,7 @@ datablock ExplosionData(sm_bottleHitExplosion)
 	debrisVelocity 			= 12;
 	debrisVelocityVariance 	= 6;
 	explosionShape 			= "";
-	particleEmitter 		= sm_bottleExplosionEmitter;
+	particleEmitter 		= bottleExplosionEmitter;
 	particleDensity 		= 10;
 	particleRadius 			= 0.2;
 	lifeTimeMS 				= 150;
@@ -130,11 +130,11 @@ datablock ExplosionData(sm_bottleHitExplosion)
 	camShakeDuration 		= 0.1;
 	camShakeRadius 			= 20.0;
 };
-datablock ProjectileData(sm_bottleHitProjectile)
+datablock ProjectileData(bottleHitProjectile)
 {
-	explosion = sm_bottleHitExplosion;
+	explosion = bottleHitExplosion;
 };
-datablock ItemData(sm_bottleItem)
+datablock ItemData(bottleItem)
 {
 	category 			= "Weapon";
 	className 			= "Weapon";
@@ -152,12 +152,12 @@ datablock ItemData(sm_bottleItem)
 	doColorShift 		= true;
 	colorShiftColor 	= "0.4 0.2 0 1";
 
-	image 				= sm_bottleImage;
+	image 				= bottleImage;
 	canDrop 			= true;
 };
-datablock ShapeBaseImageData(sm_bottleImage)
+datablock ShapeBaseImageData(bottleImage)
 {
-	shapeFile 			= sm_bottleItem.shapeFile;
+	shapeFile 			= bottleItem.shapeFile;
 	emap 				= true;
 
 	mountPoint 			= 0;
@@ -166,10 +166,10 @@ datablock ShapeBaseImageData(sm_bottleImage)
 	rotation 			= "1 0 0 180";
 	correctMuzzleVector = false;
 
-	doColorShift 		= sm_bottleItem.doColorShift;
-	colorShiftColor 	= sm_bottleItem.colorShiftColor;
+	doColorShift 		= bottleItem.doColorShift;
+	colorShiftColor 	= bottleItem.colorShiftColor;
 	className 			= "WeaponImage";
-	item 				= sm_bottleItem;
+	item 				= bottleItem;
 	armReady 			= true;
 	melee				= true;
 	
@@ -193,12 +193,15 @@ datablock ShapeBaseImageData(sm_bottleImage)
 	stateTimeoutValue[3] 			= 0.38;
 };
 
-function sm_bottleImage::onSwing(%db,%pl)
+function bottleImage::onSwing(%this,%obj)
 {
-	%pl.playThread(2,"shiftTo");
-	serverPlay3D("tanto_swing_sound",%pl.getMuzzlePoint(0));
+	%obj.playThread(2,"shiftTo");
+	$oldTimescale = getTimescale();
+	setTimescale((getRandom(75,150)*0.01) * $oldTimescale);
+	serverPlay3D("melee_swing_sound",%obj.getMuzzlePoint(0));
+	setTimescale($oldTimescale);
 }
-function sm_bottleImage::onFire(%this,%obj,%slot)
+function bottleImage::onFire(%this,%obj,%slot)
 {
 	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
 	%startpos = %obj.getMuzzlePoint(0);
@@ -220,7 +223,7 @@ function sm_bottleImage::onFire(%this,%obj,%slot)
 				if(%obj.bottlehit < 3) %hit.Damage(%obj, %hit.getPosition(), 10, $DamageType::Bottle);
 				else
 				{
-					%hit.mountimage("sm_stunImage",2);
+					%hit.mountimage("stunImage",2);
 					%hit.Damage(%obj, %hit.getPosition(), 20, $DamageType::BottleBroken);
 				}
 				
@@ -233,7 +236,7 @@ function sm_bottleImage::onFire(%this,%obj,%slot)
 			serverPlay3D("bottle_hitplayer" @ getRandom(1,2) @ "_sound",%hitpos);
 			%p = new Projectile()
 			{
-				dataBlock = "sm_bottleHitProjectile";
+				dataBlock = "bottleHitProjectile";
 				initialPosition = %hitpos;
 				sourceObject = %obj;
 				client = %obj.client;
@@ -246,7 +249,7 @@ function sm_bottleImage::onFire(%this,%obj,%slot)
 			serverPlay3D("bottle_smash_sound",%hitpos);
 			%p = new Projectile()
 			{
-				dataBlock = "sm_bottleSmashProjectile";
+				dataBlock = "bottleSmashProjectile";
 				initialPosition = %hitpos;
 				sourceObject = %obj;
 				client = %obj.client;

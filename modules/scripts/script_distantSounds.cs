@@ -2,35 +2,12 @@
 // Support functions.
 //
 
+// Converts the angle to a 0-360 range and returns the "quadrant" (0-3) of the angle in the circle.
+// 0 = 0-90, 1 = 90-180, 2 = 180-270, 3 = 270-360.
 function mQuadrant(%angle)
 {
-    if(%angle < 0)
-    {
-        //Convert negative values to positive, and normalize.
-        %angle = (%angle % 360) + 360;
-    }
-    else
-    {
-        //Normalize the angle to be between 0 and 360 degrees.
-        %angle = %angle % 360;
-    }
-    
-    if(%angle < 90)
-    {
-        return 0; //First quadrant (0° - 90°).
-    }
-    else if(%angle < 180)
-    {
-        return 1; //Second quadrant (90° - 180°).
-    }
-    else if (%angle < 270)
-    {
-        return 2; //Third quadrant (180° - 270°).
-    }
-    else
-    {
-        return 3; //Fourth quadrant (270° - 360°).
-    }
+    %angle = (%angle % 360) + (360 * (%angle < 0));
+    return mFloor(%angle / 90) % 4;
 }
 
 //
@@ -51,16 +28,16 @@ function Player::playDistantSound(%player, %audioProfile)
     };
     MissionCleanup.add(%audioEmitter);
 
-    adjustObjectScopeToAll(%audioEmitter, false, %player.client); //Make sure only the target player hears it.
+    adjustObjectScopeToAll(%audioEmitter, false, %player.client); // Make sure only the target player hears it.
 
-    //Get the millisecond length of the sound file, then divide it against 360 to make that the time needed to complete a rotation around the player.
+    // Get the millisecond length of the sound file, then divide it against 360 to make that the time needed to complete a rotation around the player.
     %soundLength = alxGetWaveLen(%audioEmitter.profile.fileName);
     %rotationSpeed = 360 / (%soundLength / 1000);
     %tickRate = 50;
 
     %distantSoundDataObject = new ScriptObject()
     {
-        radius = "9e6"; //Impossible to run past an AudioEmitter this far away. Could be further, but higher values are bug-prone.
+        radius = "9e6"; // Impossible to run past an AudioEmitter this far away. Could be further, but higher values are bug-prone.
         rotationSpeed = %rotationSpeed;
         lastQuadrant = 0;
         player = %player;
@@ -73,7 +50,7 @@ function Player::playDistantSound(%player, %audioProfile)
     {
         %player.schedule(%i, "_distantSoundTick", %distantSoundDataObject);
     }
-    //Delete this stuff once we're done with them.
+    // Delete this stuff once we're done with them.
     scheduleNoQuota((getSimTime() + %soundLength), %dsdo.audioEmitter, "delete");
     scheduleNoQuota((getSimTime() + %soundLength), %dsdo, "delete");
 
