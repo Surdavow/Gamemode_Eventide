@@ -83,19 +83,18 @@ function DCameraImage::onDetonate(%this, %obj, %slot)
 {
 	serverPlay3D("camera_flash_sound",%obj.getPosition());
 
-    for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
-	if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
-
     %obj.cameraLightBot = new Player() { datablock = "emptyPlayer";};
     %obj.mountobject(%obj.cameraLightBot,0);
     %obj.light = new fxLight() { datablock = "brightLight"; };
     %obj.light.attachtoObject(%obj.cameraLightBot);
 
-    %obj.light.schedule(66,delete);
-    %obj.cameraLightBot.schedule(99,delete);
+    %obj.light.schedule(100,delete);
+    %obj.cameraLightBot.schedule(150,delete);
 
     if(isObject(%obj.client))
     {
+        for(%i = 0; %i <= %obj.getDataBlock().maxTools; %i++)
+	    if(%obj.tool[%i] $= %this.item.getID()) %itemslot = %i;
         %obj.tool[%itemslot] = 0;
         messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
     }
