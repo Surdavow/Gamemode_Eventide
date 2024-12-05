@@ -14,4 +14,4 @@
 Muna, Davow, Robbinson Block  
 
 ### Contributions by:
-Darksaber2213, Trogtor, Nozero, Monoblaster
+Darksaber2213, Trogtor, Nozero, Monoblaster, Conan
