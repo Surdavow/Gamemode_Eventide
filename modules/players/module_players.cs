@@ -1,26 +1,43 @@
 // Load sounds
 %pattern = "./*.wav";
 %file = findFirstFile(%pattern);
-while(%file !$= "")
+
+while (%file !$= "") 
 {
     %soundName = strreplace(filename(strlwr(%file)), ".wav", "");
 
-	// Automatic sound instancing based on name of the sound
-	%description = strstr(%file, "normal") != -1 ? "AudioClose3d" :
-    	           strstr(%file, "quiet") != -1  ? "AudioClosest3d" :
-        	       strstr(%file, "loud") != -1   ? "AudioDefault3d" : "";
+    // Automatic sound instancing based on name of the sound
+    if (strstr(%file, "normal") != -1) {
+        %description = "AudioClose3d";
+    } else if (strstr(%file, "quiet") != -1) {
+        %description = "AudioClosest3d";
+    } else if (strstr(%file, "loud") != -1) {
+        %description = "AudioDefault3d";
+    } else {
+        %description = ""; // Default to empty
+    }
 
-	// Footsteps only
-	if (strstr(%file, "sounds/footsteps/") != -1) 
-    %description = strstr(%file, "walk") != -1 ? "AudioFSWalk" :
-                   strstr(%file, "swim") != -1 ? "AudioFSWalk" :
-                   strstr(%file, "run")  != -1 ? "AudioFSRun" : "";
+    // Special handling for footsteps
+    if (strstr(%file, "sounds/footsteps/") != -1) {
+        if (strstr(%file, "walk") != -1 || strstr(%file, "swim") != -1) {
+            %description = "AudioFSWalk";
+        } else if (strstr(%file, "run") != -1) {
+            %description = "AudioFSRun";
+        } else {
+            %description = ""; // No match for footsteps
+        }
+    }
 
-	// Continue if no description
-	if (%description $= "") continue;			   
-	eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = " @ %description @ "; filename = \"" @ %file @ "\"; };");
+    // Skip if no valid description
+    if (%description $= "") {
+        %file = findNextFile(%pattern);
+        continue;
+    }
 
-	%file = findNextFile(%pattern);
+    // Create AudioProfile datablock
+    eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = " @ %description @ "; filename = \"" @ %file @ "\"; };");
+
+    %file = findNextFile(%pattern);
 }
 
 // Icons

@@ -54,14 +54,17 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	uiName = "";
 };
 
-function EventidePlayer::PulsingScreen(%this,%obj)
+function EventidePlayer::pulsingScreen(%this,%obj)
 {
-	if((!isObject(%obj) || %obj.getclassname() !$= "Player" || %obj.getState() $= "Dead") || %obj.getdamageLevel() < 25)
-	return;	
+	// If any of these are met, do not continue
+	if((!isObject(%obj) || %obj.getclassname() !$= "Player" || %obj.getState() $= "Dead") || %obj.getDamageLevel() < 25) return;
 
 	if(isObject(%obj.client)) %obj.client.play2D("survivor_heartbeat_sound");
 	%obj.setdamageflash(0.125);
-	%obj.PulsingScreen = %this.schedule(850,PulsingScreen,%obj);
+
+	// Prevent multiple schedules
+	cancel(%obj.pulsingScreenSched);
+	%obj.pulsingScreenSched = %this.schedule(850,pulsingScreen,%obj);
 }
 
 function EventidePlayer::assignClass(%this,%obj,%class)
@@ -80,7 +83,7 @@ function EventidePlayer::assignClass(%this,%obj,%class)
          				messageClient(%obj.client,'MsgItemPickup','',0,%healitem);
 						%obj.client.centerprint(%formatString @ "Class: Mender <br>" @ %firstString SPC "medical item and can revive survivors faster!",4);
 
-		case "runner": 	%obj.setTempSpeed();
+		case "runner": 	%obj.setTempSpeed(); // Reset the player's speed to the new class default
 						%obj.tool[0] = SodaItem.getID();
          				messageClient(%obj.client,'MsgItemPickup','',0,SodaItem.getID());
 						%obj.client.centerprint(%formatString @ "Class: Runner <br>" @ %firstString SPC "soda and can run slightly faster!",4);
@@ -112,75 +115,19 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 	%this.scheduleNoQuota(33,createBillboard,%obj);	
 }
 
-function EventidePlayer::createBillboard(%this,%obj)
-{
-	if(!isObject(%obj.billboardbot))
-	{
-		if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
-
-		%obj.billboardbot = new Player() 
-		{ 
-			dataBlock = "EmptyPlayer";
-			source = %obj;		
-		};
-
-		%obj.mountObject(%obj.billboardbot,5);
-
-		%obj.billboardbot.light = new fxLight()
-		{
-			dataBlock = "blankBillboard";
-		};
-
-		%obj.billboardbot.light.setTransform(%obj.billboardbot.getTransform());
-		%obj.billboardbot.light.attachToObject(%obj.billboardbot);
-
-		// Force the light to be visible only to the survivors, and not the killers
-		for(%i = 0; %i < clientgroup.getCount(); %i++) if(isObject(%client.player))		
-		{
-			if(isObject(%client = clientgroup.getObject(%i))) 
-			%obj.billboardbot.light.ScopeToClient(%client);
-
-			else if (%client.player.getdataBlock().isKiller || %client.player $= %obj) 
-			%obj.billboardbot.light.ClearScopeToClient(%client);
-		}
-
-		Eventide_MinigameGroup.add(%obj.billboardbot.light);
-		Eventide_MinigameGroup.add(%obj.billboardbot);
-	}
-	
-	else
-	{
-		cancel(%obj.billboardbot.lightschedule0);
-		cancel(%obj.billboardbot.lightschedule1);
-		cancel(%obj.billboardbot.lightschedule2);
-		%obj.billboardbot.light.setdatablock("blankBillboard");
-	}
-}
-
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
-{
-	if(%obj.getState() !$= "Dead") 
-	{				
-		%zvector = getWord(%vec,2);
-		if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"plant");
+{	
+	%zvector = getWord(%vec,2);	
 
-		if(%zvector > %this.minImpactSpeed && %zvector < %this.minImpactSpeed+5) %force = %force*0.5;
-		else if(%zvector > %this.minImpactSpeed+5 && %zvector < %this.minImpactSpeed+20) %force = %force*1.5;
-		else %force = %force*2.5;
-	}
+	// Apply a multiplier to the impact force based on the vertical component of the impact vector, it starts by checking the highest impact force to the lowest
+	%force = (%zvector > %this.minImpactSpeed + 20)	? %force * 2.5 :
+	(%zvector > %this.minImpactSpeed + 5) ? %force * 1.5 :
+	(%zvector > %this.minImpactSpeed) ? %force * 0.5 : %force;	
 	
-	Parent::onImpact(%this, %obj, %col, %vec, mCeil(%force));	
-}
+	Parent::onImpact(%this, %obj, %col, %vec, mCeil(%force));
 
-function EventidePlayer_BreakFreePrint(%funcclient,%amount)
-{
-    if(!isobject(%funcclient)) return;
-	
-	%addsymbol = "";
-    %symbol = "|";
-	for(%i = 0; %i < %amount; %i++) %addsymbol = %addsymbol @ %symbol;
-
-    %funcclient.centerprint("<color:FFFFFF><font:impact:40> Control yourself! <br><color:00e100>" @ %addsymbol,1);
+	if(%obj.getState() $= "Dead") return;
+	if(%zvector > %this.minImpactSpeed) %obj.playthread(3,"plant");
 }
 
 function EventidePlayer::onActivate(%this,%obj)
@@ -202,10 +149,10 @@ function EventidePlayer::onActivate(%this,%obj)
 		// Show the vignette when the player is is exhausted
 		if(%obj.staminaCount >= 5) 
 		{
-			// Only enable the tunnel vision once
+			// Only enable the tunnel vision once to prevent the player from seeing the vignette multiple times 
 			if(%obj.staminaCount == 5) %this.tunnelVision(%obj,true);
 
-			// Reset the stamina after 4 seconds, cancel first to avoid double scheduling
+			// Reset the stamina after 4 seconds, this is reset if the player continues to activate this function
 			cancel(%obj.resetStamina);
 			%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
 		}		
@@ -216,7 +163,7 @@ function EventidePlayer::onActivate(%this,%obj)
 	{		
 		%obj.playthread(3,"activate2");
 		%obj.AntiPossession = mClampF(%obj.AntiPossession+1, 0, 15);
-		EventidePlayer_BreakFreePrint(%obj.client,%obj.AntiPossession/2);		
+		%this.CounterPrint(%obj,%obj.client,%obj.AntiPossession/2,"Left click to regain control!");		
 
 		if(%obj.AntiPossession >= 15)
 		{
@@ -224,7 +171,7 @@ function EventidePlayer::onActivate(%this,%obj)
 			{
 				%obj.Possesser.client.Camera.setMode("Corpse", %obj.Possesser);
 				%obj.Possesser.client.setControlObject(%obj.Possesser.client.camera);
-				%obj.Possesser.client.centerprint("<color:FFFFFF><font:Impact:40>Your victim broke free!",2);
+				%obj.Possesser.client.centerprint("<font:Impact:30>\c3Your victim broke free!",2);
 
 				cancel(%obj.Possesser.returnObserveSchedule);
 				%obj.Possesser.returnObserveSchedule = %obj.Possesser.schedule(4000,ClearRenownedEffect);
@@ -267,10 +214,10 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 					%ray = containerRayCast(%eyePoint, %endPoint,%masks,%obj);
 					if(isObject(%ray) && (%ray.getType() & $TypeMasks::PlayerObjectType) && %ray.getdataBlock().isDowned && !%ray.isBeingSaved)
 					{
-						%obj.isSaving = %ray;
 						%obj.playthread(2,"armReadyRight");
-						%ray.isBeingSaved = true;
-						%this.SaveVictim(%obj,%ray,%press);
+						%obj.isSaving = %ray;
+						%ray.isBeingSaved = true;						
+						%this.reviveDowned(%obj,%ray,%press);
 					}
 
 			case 4: if(%obj.isSkinwalker)
@@ -343,118 +290,136 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 					}
 		}
 	}
-	else if(isObject(%obj.isSaving)) %this.SaveVictim(%obj,%obj.isSaving,0);
+	else if(isObject(%obj.isSaving)) %this.reviveDowned(%obj,%obj.isSaving,false);
 }
 
-function EventidePlayer_SaveCounterPrint(%funcclient,%amount)
+function EventidePlayer::CounterPrint(%this,%obj, %client, %amount, %message)
 {
-    if(!isobject(%funcclient)) return;
-	
-	%addsymbol = "";
+    if (!isobject(%client)) return;
+
+    %addsymbol = "";
     %symbol = "|";
-	for(%i = 0; %i < %amount; %i++) %addsymbol = %addsymbol @ %symbol;
 
-    %funcclient.centerprint("<color:FFFFFF><font:impact:40> Get up! <br><color:00e100>" @ %addsymbol,1);
+    // Generate the repeated symbols
+    for (%i = 0; %i < %amount; %i++) %addsymbol = %addsymbol @ %symbol;    
+
+    // Display the custom message
+    %client.centerprint("<font:impact:40>\c3" @ %message @ " <br>\c2" @ %addsymbol, 1);
 }
 
-function EventidePlayer::SaveVictim(%this,%obj,%victim,%bool)
+function EventidePlayer::reviveDowned(%this,%obj,%victim,%bool)
 {
-	if(%bool && vectorDist(%obj.getPosition(),%victim.getPosition()) < 5)
-	{		
-		if(%obj.savevictimcounter <= 4)
+	if(%bool && vectorDist(%obj.getPosition(),%victim.getPosition()) < 3)
+	{	
+		// The victim will be saved after 4 ticks if the player is still holding left click
+		if(%obj.reviveDownedCounter <= 4)
 		{
-			%obj.savevictimcounter++;
-			EventidePlayer_SaveCounterPrint(%obj.client,%obj.savevictimcounter);
-			EventidePlayer_SaveCounterPrint(%victim.client,%obj.savevictimcounter);
+			%obj.setTempSpeed(0.25);
+			%obj.reviveDownedCounter++;
+			%this.CounterPrint(%obj,%obj.client,%obj.reviveDownedCounter,"Get up!");
+			%this.CounterPrint(%obj,%victim.client,%obj.reviveDownedCounter,"Get up!");			
 
-			cancel(%obj.SaveVictimSched);
-			%time = (%obj.survivorClass $= "mender") ? 250 : 1000;
-			%obj.SaveVictimSched = %this.schedule(%time,SaveVictim,%obj,%victim,%bool);
+			// The mender class will save the victim faster
+			cancel(%obj.reviveDownedSched);
+			%obj.reviveDownedSched = %this.schedule((%obj.survivorClass $= "mender") ? 375 : 1000,reviveDowned,%obj,%victim,%bool);
+			return;
 		}
 		else
 		{
-			%obj.savevictimcounter = 0;
-			if(isObject(%obj.client)) %obj.client.centerprint("<color:FFFFFF><font:impact:40>You revived" SPC %victim.client.name,1);
-			if(isObject(%victim.client)) %victim.client.centerprint("<color:FFFFFF><font:impact:40>You were revived by" SPC %obj.client.name,1);
-			%victim.setHealth(75);
-			if(%victim.survivorclass $= "fighter") %victim.pseudoHealth = 75;
-			%victim.setDatablock("EventidePlayer");					
+			%obj.setTempSpeed(); // Reset the player's speed
+			%obj.reviveDownedCounter = 0;
+			%victim.setHealth(%victim.getdata().maxDamage/1.3333);
+			%stringformat = "<font:impact:30>\c3";
 
-			%victim.playthread(0,"root");
-			if(%victim.downedamount >= 1) %victim.getdataBlock().PulsingScreen(%victim);
+			if(isObject(%obj.client)) %obj.client.centerprint(%stringformat @ "You revived" SPC %victim.client.name,1);
+			if(isObject(%victim.client)) 
+			{
+				%victim.client.centerprint(%stringformat @ "You were revived by" SPC %obj.client.name,1);			
+				%victim.getdataBlock().pulsingScreen(%victim);
+			}
+
+			%victim.pseudoHealth = (%victim.survivorclass $= "fighter") ? 75 : 0;
+			%victim.setDatablock("EventidePlayer");
+			%victim.playthread(0,"root");	
 			return;
 		}					
 	}
 	else
 	{
-		cancel(%obj.SaveVictimSched);
-		%obj.isSaving = 0;
-		%obj.savevictimcounter = 0;
+		cancel(%obj.reviveDownedSched);
+		%obj.isSaving = false;
 		%victim.isBeingSaved = false;
+		%obj.reviveDownedCounter = 0;
 		%obj.playthread(2,"root");
 		return;
 	}	
 }
 
-function EventidePlayer::EventideAppearance(%this,%obj,%funcclient)
+function EventidePlayer::EventideAppearance(%this,%obj,%client)
 {
-	if(%obj.isSkinwalker && isObject(%obj.victimreplicatedclient)) %funcclient = %obj.victimreplicatedclient;
-    else %funcclient = %funcclient;	
+	if(!isObject(%obj) || !isObject(%client)) return;
+
+	// Use the victim client if the player is a skinwalker and they killed someone
+	%tempclient = (%obj.isSkinwalker && isObject(%obj.victimreplicatedclient)) ? %obj.victimreplicatedclient : %client;
 	
 	%obj.hideNode("ALL");
-	%obj.unHideNode((%funcclient.chest ? "femChest" : "chest"));	
-	%obj.unHideNode((%funcclient.rhand ? "rhook" : "rhand"));
-	%obj.unHideNode((%funcclient.lhand ? "lhook" : "lhand"));
-	%obj.unHideNode((%funcclient.rarm ? "rarmSlim" : "rarm"));
-	%obj.unHideNode((%funcclient.larm ? "larmSlim" : "larm"));
+	%obj.unHideNode((%tempclient.chest 	? 	"femChest" : "chest"));	
+	%obj.unHideNode((%tempclient.rhand 	? 	"rhook" : "rhand"));
+	%obj.unHideNode((%tempclient.lhand 	? 	"lhook" : "lhand"));
+	%obj.unHideNode((%tempclient.rarm 	? 	"rarmSlim" : "rarm"));
+	%obj.unHideNode((%tempclient.larm 	? 	"larmSlim" : "larm"));
 	%obj.unHideNode("headskin");
 
-	if($pack[%funcclient.pack] !$= "none")
+	//Packs
+	if($pack[%tempclient.pack] !$= "none")
 	{
-		%obj.unHideNode($pack[%funcclient.pack]);
-		%obj.setNodeColor($pack[%funcclient.pack],%funcclient.packColor);
+		%obj.unHideNode($pack[%tempclient.pack]);
+		%obj.setNodeColor($pack[%tempclient.pack],%tempclient.packColor);
 	}
-	if($secondPack[%funcclient.secondPack] !$= "none")
+	if($secondPack[%tempclient.secondPack] !$= "none")
 	{
-		%obj.unHideNode($secondPack[%funcclient.secondPack]);
-		%obj.setNodeColor($secondPack[%funcclient.secondPack],%funcclient.secondPackColor);
+		%obj.unHideNode($secondPack[%tempclient.secondPack]);
+		%obj.setNodeColor($secondPack[%tempclient.secondPack],%tempclient.secondPackColor);
 	}
 
-	if(%funcclient.hat)
+	//Hats
+	if(%tempclient.hat)
 	{
-		%hatName = $hat[%funcclient.hat];
-		%funcclient.hatString = %hatName;
-
-		if(%funcclient.hat == 1)
+		%hatName = $hat[%tempclient.hat];
+		%tempclient.hatString = %hatName;
+		
+		// Only check if it's the first hat
+		if(%tempclient.hat == 1)
 		{
-			%newhat = (%funcclient.accent ? "helmet" : "hoodie1");
+			%newhat = (%tempclient.accent ? "helmet" : "hoodie1");
 			%obj.unHideNode(%newhat);
-			%obj.setNodeColor(%newhat,%funcclient.hatColor);
+			%obj.setNodeColor(%newhat,%tempclient.hatColor);
 		}
 		else
 		{
 			%obj.unHideNode(%hatName);
-			%obj.setNodeColor(%hatName,%funcclient.hatColor);
+			%obj.setNodeColor(%hatName,%tempclient.hatColor);
 		}			
 	}
 	
-	if(%funcclient.hip) %obj.unHideNode("skirt");
+	//Legs
+	if(%tempclient.hip) %obj.unHideNode("skirt");
 	else
 	{
 		%obj.unHideNode("pants");
-		%obj.unHideNode((%funcclient.rleg ? "rpeg" : "rshoe"));
-		%obj.unHideNode((%funcclient.lleg ? "lpeg" : "lshoe"));
+		%obj.unHideNode((%tempclient.rleg ? "rpeg" : "rshoe"));
+		%obj.unHideNode((%tempclient.lleg ? "lpeg" : "lshoe"));
 	}
 
-	%obj.setHeadUp(0);
-	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
+	%obj.setHeadUp((%tempclient.pack+%tempclient.secondPack));
 
-	if (%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
-	if (%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
-	if (%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
-	if (%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
-	if (%obj.bloody["chest_front"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_front");
-	if (%obj.bloody["chest_back"]) %obj.unHideNode((%funcclient.chest ? "fem" : "") @ "chest_blood_back");
+	//Set blood colors.
+	if(%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
+	if(%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
+	if(%obj.bloody["lhand"]) %obj.unHideNode("lhand_blood");
+	if(%obj.bloody["rhand"]) %obj.unHideNode("rhand_blood");
+	if(%obj.bloody["chest_front"]) %obj.unHideNode((%tempclient.chest ? "fem" : "") @ "chest_blood_front");
+	if(%obj.bloody["chest_back"]) %obj.unHideNode((%tempclient.chest ? "fem" : "") @ "chest_blood_back");
 
 	//Face system functionality: prevent face from being overwritten by an avatar update.
 	if(isObject(%obj.faceConfig))
@@ -465,36 +430,32 @@ function EventidePlayer::EventideAppearance(%this,%obj,%funcclient)
 			//If the player updated their avatar, give them a new face pack to reflect it.
 			%obj.createFaceConfig(%neededFacePack);
 		}
-		if(%obj.faceConfig.currentFace !$= "")
-		{
-			%obj.faceConfigShowFace(%obj.faceConfig.currentFace);
-		}
+		%obj.faceConfigShowFace((%obj.faceConfig.currentFace !$= "") ? %obj.faceConfig.currentFace : "");
 	}
-	else
-	{
-		%obj.setFaceName(%funcclient.faceName);
-	}
-	%obj.setDecalName(%funcclient.decalName);
+	else %obj.setFaceName(%tempclient.faceName); // Use the default player face if the player doesn't have a face system
+	
+	%obj.setDecalName(%tempclient.decalName);
 
-	%obj.setNodeColor("headskin",%funcclient.headColor);	
-	%obj.setNodeColor("chest",%funcclient.chestColor);
-	%obj.setNodeColor("femChest",%funcclient.chestColor);
-	%obj.setNodeColor("pants",%funcclient.hipColor);
-	%obj.setNodeColor("skirt",%funcclient.hipColor);	
-	%obj.setNodeColor("rarm",%funcclient.rarmColor);
-	%obj.setNodeColor("larm",%funcclient.larmColor);
-	%obj.setNodeColor("rarmSlim",%funcclient.rarmColor);
-	%obj.setNodeColor("larmSlim",%funcclient.larmColor);
-	%obj.setNodeColor("rhand",%funcclient.rhandColor);
-	%obj.setNodeColor("lhand",%funcclient.lhandColor);
-	%obj.setNodeColor("rhook",%funcclient.rhandColor);
-	%obj.setNodeColor("lhook",%funcclient.lhandColor);	
-	%obj.setNodeColor("rshoe",%funcclient.rlegColor);
-	%obj.setNodeColor("lshoe",%funcclient.llegColor);
-	%obj.setNodeColor("rpeg",%funcclient.rlegColor);
-	%obj.setNodeColor("lpeg",%funcclient.llegColor);
+	// Set node colors
+	%obj.setNodeColor("headskin",%tempclient.headColor);	
+	%obj.setNodeColor("chest",%tempclient.chestColor);
+	%obj.setNodeColor("femChest",%tempclient.chestColor);
+	%obj.setNodeColor("pants",%tempclient.hipColor);
+	%obj.setNodeColor("skirt",%tempclient.hipColor);	
+	%obj.setNodeColor("rarm",%tempclient.rarmColor);
+	%obj.setNodeColor("larm",%tempclient.larmColor);
+	%obj.setNodeColor("rarmSlim",%tempclient.rarmColor);
+	%obj.setNodeColor("larmSlim",%tempclient.larmColor);
+	%obj.setNodeColor("rhand",%tempclient.rhandColor);
+	%obj.setNodeColor("lhand",%tempclient.lhandColor);
+	%obj.setNodeColor("rhook",%tempclient.rhandColor);
+	%obj.setNodeColor("lhook",%tempclient.lhandColor);	
+	%obj.setNodeColor("rshoe",%tempclient.rlegColor);
+	%obj.setNodeColor("lshoe",%tempclient.llegColor);
+	%obj.setNodeColor("rpeg",%tempclient.rlegColor);
+	%obj.setNodeColor("lpeg",%tempclient.llegColor);
 
-	//Set blood colors.
+	// Set blood colors
 	%obj.setNodeColor("lshoe_blood", "0.7 0 0 1");
 	%obj.setNodeColor("rshoe_blood", "0.7 0 0 1");
 	%obj.setNodeColor("lhand_blood", "0.7 0 0 1");
@@ -516,6 +477,7 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 
 	if(!%obj.TunnelFOV) %obj.TunnelFOV = %tunnelVisionFOV;
 
+	// Start the tunnel vision effect
 	if(%bool) 
 	{		
 		%obj.tunnelVision = mClampF(%obj.tunnelVision + 0.1, 0, 1);
@@ -525,16 +487,14 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 	}
 	else if (!%obj.chaseLevel)
 	{
-		if(%obj.tunnelVision > 0)
+		// Reverse the tunnel vision effect first
+		if(%obj.tunnelVision)
 		{
 			%obj.tunnelVision = mClampF(%obj.tunnelVision - 0.1, 0, 1);
 		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelVision);
 		}
-		else
-		{
-			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
-			return;
-		}
+		// Then reset the tunnel vision effect
+		else return commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);		
 	}
 
 	%obj.tunnelVisionsched = %this.schedule(50, tunnelVision, %obj, %bool);	
@@ -543,12 +503,12 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {
 	// If the damage received too much damage and the player is not already incapacitated, check some conditions to see if they should be
-	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && %obj.downedamount < 1)
+	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && !%obj.hasBeenDowned)
     {        
         %obj.setDatablock("EventidePlayerDowned");
 		%obj.setHealth(100);
-		%obj.downedamount++;	
-			
+		%obj.hasBeenDowned = true;
+
 		if(isObject(%minigame = getMinigamefromObject(%obj))) 
 		{
 			%minigame.playSound("outofbounds_sound");
@@ -620,38 +580,39 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 
 function EventidePlayerDowned::DownLoop(%this,%obj)
 { 
-	if(isobject(%obj) && %obj.getstate() !$= "Dead" && %obj.getdataBlock().isDowned)
-	{
-		if(!%obj.isBeingSaved)
-		{
-			if(isObject(%obj.billboardbot.light))
-			{
-				%obj.billboardbot.lightschedule0 = %obj.billboardbot.light.schedule(440,setdatablock,"redLight");
-				%obj.billboardbot.lightschedule1 = %obj.billboardbot.light.schedule(450,setdatablock,"downedBillboard");				
-				%obj.billboardbot.lightschedule2 = %obj.billboardbot.light.schedule(400,setdatablock,"blankBillboard");
-			} 			
-
-			%obj.addHealth(-1);
-			%obj.setDamageFlash(0.25);
-
-			if(%obj.lastcry+10000 < getsimtime())
-			{
-				%obj.lastcry = getsimtime();
-				%obj.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
-				%obj.playthread(3,"plant");
-			}
-		}
+	if(!isobject(%obj) || %obj.getstate() $= "Dead" || %obj.getDataBlock().isDowned) return;
 	
-		cancel(%obj.downloop);
-		%obj.downloop = %this.schedule(1000,DownLoop,%obj);
+	if(!%obj.isBeingSaved)
+	{
+		if(isObject(%obj.client)) %obj.client.play2D("survivor_heartbeat_sound");
+		
+		%obj.addHealth(-1);		
+		%obj.setDamageFlash(0.25);
+
+		if(%obj.lastcall+getRandom(5000,10000) < getsimtime())
+		{
+			%obj.lastcall = getsimtime();
+			%obj.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
+			%obj.playthread(3,"plant");
+		}
 	}
-	else return;
+
+	cancel(%obj.downloop);
+	%obj.downloop = %this.schedule(1000,DownLoop,%obj);
+	
 }
 
 function EventidePlayer::onDisabled(%this,%obj)
 {
-	EventidePlayerDowned::onDisabled(%this,%obj);
+	EventidePlayerDowned::onDisabled(%this,%obj); // Call the downed handler
 }
+
+// Handler method for survivor death
+// 1. Removes mounted images and plays a death animation.
+// 2. Notifies the killer with a sound and visual effect (if applicable).
+// 3. Updates the player's client vignette settings.
+// 4. Drops the player's tools and plays sounds for specific items (e.g., a radio).
+// 5. Handles special death conditions like "render death" or zombification.
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {
@@ -659,7 +620,6 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		
 	for (%j = 0; %j < 4; %j++) %obj.unmountimage(%j); // Remove all mounted images
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
-	if(isObject(%obj.billboardbot)) %obj.billboardbot.delete();
 
 	// Let the killer know that a survivor has been killed
 	if(isObject(%killer = getCurrentKiller().client)) 
@@ -675,27 +635,27 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);	
 		
 		if(isObject(%minigame = getMinigamefromObject(%obj)))
-		{
-			// Drop all of the player's tools
+		{			
+			// Check if the player is a hoarder class for the tool count	
 			%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
 			for(%i = 0; %i < %inventoryToolCount; %i++) if(isObject(%item = %obj.tool[%i]))
 			{
+				if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+				
 				//Play a sound for the radio being dropped
-				if(%obj.tool[%i].getName() $= "RadioItem") 
-				serverPlay3d("radio_unmount_sound",%obj.getPosition());	
+				if(%obj.tool[%i].getName() $= "RadioItem") serverPlay3d("radio_unmount_sound",%obj.getPosition());
 
+				// "Drop" all of the player's tools
 				%item = new Item()
 				{
 					dataBlock = %item;
 					position = %obj.getPosition();
-					velocity = %obj.getVelocity();
+					velocity = vectorAdd(%obj.getVelocity(),getRandom(-2,2) SPC getRandom(-2,2) SPC getRandom(2,5));
 					BL_ID = %funcclient.BL_ID;
 					minigame = %minigame;
-					spawnBrick = 0;
 				};			
-
-				if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
-				Eventide_MinigameGroup.add(%item);
+				
+				Eventide_MinigameGroup.add(%item); // Add the item to the minigame group for cleanup when the minigame ends or restarts
 			}
 
 			// Varying conditions on how the player was killed, do not return on either condition if the player is already marked for death

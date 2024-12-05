@@ -176,21 +176,27 @@ function ChatMod_LocalChat(%client, %message)
     // Send messages to nearby players
     for (%i = 0; %i < ClientGroup.getCount(); %i++) 
     {
-        if (!isObject(%targetClient = ClientGroup.getObject(%i))) continue;
+        if (!isObject(%targetClient = ClientGroup.getObject(%i))) {
+            continue;
+        }
 
         %color = (%tempclient.customtitlecolor $= "") ? "FFFFFF" : %tempclient.customtitlecolor;
         %bitmap = (%tempclient.customtitlebitmap $= "") ? "" : %tempclient.customtitlebitmap;
 
-		if (%tempclient.customtitle !$= "") 
-		%prefix = %bitmap @ "<color:" @ %color @ ">" @ %tempclient.customtitle SPC "";
-		
-		else %prefix = (%tempclient.customtitlebitmap !$= "") ? (%bitmap @ "") : "";
+        if (%tempclient.customtitle !$= "") {
+            %prefix = %bitmap @ "<color:" @ %color @ ">" @ %tempclient.customtitle SPC "";
+        } else if (%tempclient.customtitlebitmap !$= "") {
+            %prefix = %bitmap @ "";
+        } else {
+            %prefix = "";
+        }
 
         %prefix = isObject(%tempclient.player) ? %prefix : "\c7[DEAD] ";
 
         // If the target client is dead, send either a dead player message or a normal message depending on player status
-        if (!isObject(%targetClient.player)) 
-        chatMessageClientRP(%targetClient, %prefix, %namePrefix @ %tempclient.name, "", %message);
+        if (!isObject(%targetClient.player)) {
+            chatMessageClientRP(%targetClient, %prefix, %namePrefix @ %tempclient.name, "", %message);
+        }
         
         
         // If the target client and player client are alive, check distance before sending a message
@@ -204,26 +210,45 @@ function ChatMod_LocalChat(%client, %message)
     }
 }
 
-function ChatMod_RadioMessage(%client,%player,%message)
+/// Broadcast a message to all players who have a radio item in their inventory within the same game mode.
+/// 
+/// This function checks each player's inventory for a radio item and sends a formatted message to those players. 
+/// If the player is a skinwalker, the message will be sent using the victim-replicated client's identity for impersonation purposes.
+///
+/// @param %client The client sending the message.
+/// @param %player The player associated with the client sending the message.
+/// @param %message The message content to be broadcasted.
+function ChatMod_RadioMessage(%client, %player, %message)
 {
-	//If the player is a skinwalker, use the victim replicated client instead for impersonation
+    // Determine the client to use for message impersonation if the player is a skinwalker.
     %tempclient = (isObject(%player.victimreplicatedclient)) ? %player.victimreplicatedclient : %client;
     
-    //If the player doesn't have a radio ID, generate one
-    if(!%player.radioID) %player.radioID = getRandom(100, 10000);
+    // Assign a random radi ID to the player if they don't have one.
+    if (!%player.radioID) %player.radioID = getRandom(100, 10000);
 
-	%pre = "\c4[Radio] ";
-	%name = getSubStr(%tempclient.name, 0, 1) @ "." @ %player.radioID;
-	%message = "\c4" @ %message;
+    // Prefix and name formatting for the radio message.
+    %pre = "\c4[Radio] ";
+    %name = getSubStr(%tempclient.name, 0, 1) @ "." @ %player.radioID;
+    %message = "\c4" @ %message;
 
-	for(%i = 0; %i < ClientGroup.getCount(); %i++)
-    if(isObject(%target = ClientGroup.getObject(%i)) && isObject(%target.player))
+    // Iterate through all clients in the game.
+    for (%i = 0; %i < ClientGroup.getCount(); %i++)
     {
-        %inventoryToolCount = (%target.player.hoarderToolCount) ? %target.player.hoarderToolCount : %target.player.getDataBlock().maxTools;            
-        for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%target.player.tool[%i]) && %target.player.tool[%i].getName() $= "RadioItem")
+        if (isObject(%target = ClientGroup.getObject(%i)) && isObject(%target.player))
         {
-            %target.player.playaudio(3,"radio_message_sound");
-            chatMessageClientRP(%target,%pre,%name,"",%message);		
-        }        
+            // Determine the tool inventory count for the target player.
+            %inventoryToolCount = (%target.player.hoarderToolCount) ? %target.player.hoarderToolCount : %target.player.getDataBlock().maxTools;
+            
+            // Check if the target player has a radio item in their inventory.
+            for (%j = 0; %j < %inventoryToolCount; %j++) 
+            {
+                if (isObject(%target.player.tool[%j]) && %target.player.tool[%j].getName() $= "RadioItem")
+                {
+                    // Play a notification sound for the radio message and send the message.
+                    %target.player.playaudio(3, "radio_message_sound");
+                    chatMessageClientRP(%target, %pre, %name, "", %message);		
+                }
+            }
+        }
     }
 }

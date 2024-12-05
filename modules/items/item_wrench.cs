@@ -9,7 +9,7 @@ datablock ItemData(MonkeyWrench)
 	emap = false;
 	
 	uiName = "Monkey Wrench";
-	iconName = "";
+	iconName = "./icons/icon_monkeywrench";
 	doColorShift = false;
 	
 	image = MonkeyWrenchImage;

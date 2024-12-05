@@ -20,20 +20,29 @@ datablock AudioDescription(AudioFSWalk)
 
 %pattern = "./*.wav";
 %file = findFirstFile(%pattern);
-while(%file !$= "")
+
+while (%file !$= "") 
 {
     %soundName = strreplace(filename(strlwr(%file)), ".wav", "");
 
-	// Automatic sound instancing based on name of the sound
-	%description = strstr(%file, "normal") != -1 ? "AudioClose3d" :
-    	           strstr(%file, "quiet") != -1  ? "AudioClosest3d" :
-        	       strstr(%file, "loud") != -1   ? "AudioDefault3d" : "";
+    // Automatic sound instancing based on name of the sound
+    if (strstr(%file, "normal") != -1) {
+        %description = "AudioClose3d";
+    } else if (strstr(%file, "quiet") != -1) {
+        %description = "AudioClosest3d";
+    } else if (strstr(%file, "loud") != -1) {
+        %description = "AudioDefault3d";
+    } else {
+        %description = ""; // No match
+    }
 
-	// Continue if no description
-	if (%description $= "") continue;
+    // Continue if no description
+    if (%description $= "") {
+        %file = findNextFile(%pattern);
+        continue;
+    }
 
     eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = " @ %description @ "; filename = \"" @ %file @ "\"; };");
 
-
-	%file = findNextFile(%pattern);
+    %file = findNextFile(%pattern);
 }
