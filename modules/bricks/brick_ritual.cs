@@ -86,9 +86,10 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			// Make sure the item is above the ritual's position
 			if(!%itemimage.isRitual || getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2)) continue;
 
-			if(!isObject(Eventide_RitualCount)) missionCleanup.add(new SimSet(Eventide_RitualCount));
+			if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+			if(!isObject(Eventide_MinigameRitualGroup)) Eventide_MinigameGroup.add(new SimGroup(Eventide_MinigameRitualGroup));
 
-			if(%itemimage.isGemRitual)		
+			if(%itemimage.isGemRitual)
 			{
 				if(%obj.gemcount <= 4 && !isObject(%obj.gemshape[%obj.gemcount+1]))
 				{	
@@ -97,7 +98,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 					%obj.gemshape[%obj.gemcount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().gempos[%obj.gemcount] SPC getWords(%obj.gettransform,3,6)));
 					%interactiveshape = %obj.gemshape[%obj.gemcount];
 					%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
-					Eventide_RitualCount.add(%interactiveshape);
+					Eventide_MinigameRitualGroup.add(%interactiveshape);
 				}
 				else continue;			
 			}
@@ -109,7 +110,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 													%obj.candleshape[%obj.candlecount] = new StaticShape() { datablock = %itemimage.staticShape; };
 													%obj.candleshape[%obj.candlecount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().candlePos[%obj.candlecount] SPC getWords(%obj.gettransform,3,6)));
 													%interactiveshape = %obj.candleshape[%obj.candlecount];
-													Eventide_RitualCount.add(%interactiveshape);
+													Eventide_MinigameRitualGroup.add(%interactiveshape);
 												}
 												else continue;
 
@@ -119,7 +120,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 												%transformdelta = %obj.ritualshape.getdatablock().bookPos SPC getWords(%obj.gettransform,3,6);
 												%obj.bookshape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
 												%interactiveshape = %obj.bookshape;
-												Eventide_RitualCount.add(%interactiveshape);
+												Eventide_MinigameRitualGroup.add(%interactiveshape);
 
 
 				case "brickdaggerStaticShape":	if(isObject(%obj.daggershape)) continue;
@@ -129,7 +130,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 												%obj.daggershape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
 												%interactiveshape = %obj.daggershape;
 												%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
-												Eventide_RitualCount.add(%interactiveshape);													
+												Eventide_MinigameRitualGroup.add(%interactiveshape);													
 			}
 
 			%obj.ritualsPlaced++;
