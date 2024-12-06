@@ -187,8 +187,8 @@ function daggerImage::onFire(%this, %obj, %slot)
 			initialPosition = %hitpos;
 			sourceObject = %obj;
 			client = %obj.client;
-		}
-		%p.explode();	
+		};
+		%p.explode();
 		
 		%hitpos = posFromRaycast(%hit);
 		serverPlay3D("sworddaggerhitEnv" @ getRandom(1,2) @ "_sound",%hitpos);

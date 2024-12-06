@@ -43,7 +43,7 @@ datablock fxLightData(RitualLight)
 	FadeTime		= 0.1;
 };
 
-function brickEventideRitual::BrickText(%this, %obj, %name, %color, %distance, %client)
+function brickEventideRitual::DisplayText(%this, %obj, %name, %color, %distance, %client)
 {
     %player = %client.player;
 
@@ -74,26 +74,19 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 {
 	if(!isObject(%obj)) return;
 
-	%this.BrickText(%obj,"Place your rituals by dropping them here!", "0.8 0.1 0.75", "25");	
+	%this.DisplayText(%obj,"Rituals needed (drop here): " @ 10-%obj.ritualsPlaced, "0.8 0.1 0.75", "20");
 
 	if(%obj.ritualsPlaced < 10 && isObject(%minigame = getMiniGameFromObject($EventideEventCaller.getGroup().client)))
 	{
 		initContainerRadiusSearch(%obj.getPosition(), 2.5, $TypeMasks::ItemObjectType | $TypeMasks::PlayerObjectType);		
 		while(%scan = containerSearchNext())
 		{
-			// If the player is near the ritual and the ritual is not complete, change the brick text to show how many rituals are left
-			if((%scan.getType() & $TypeMasks::PlayerObjectType)&& isObject(Eventide_MinigameGroup) && Eventide_MinigameGroup.getCount() < 10)
-			{
-				%this.BrickText(%obj,"Rituals needed: " @ 10-%obj.ritualsPlaced, "0.8 0.1 0.75", "20");
-				continue;
-			}
-
-			%itemimage = %scan.getdatablock().image;
+			%itemimage = %scan.getdatablock().image;		
 
 			// Make sure the item is above the ritual's position
-			if(!%itemimage.isRitua || getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2)) continue;
+			if(!%itemimage.isRitual || getWord(%scan.getPosition(),2) < getWord(%obj.getPosition(),2)) continue;
 
-			if(!isObject(Eventide_MinigameGroup)) missionCleanup.add(new ScriptGroup(Eventide_MinigameGroup));
+			if(!isObject(Eventide_RitualCount)) missionCleanup.add(new SimSet(Eventide_RitualCount));
 
 			if(%itemimage.isGemRitual)		
 			{
@@ -104,7 +97,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 					%obj.gemshape[%obj.gemcount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().gempos[%obj.gemcount] SPC getWords(%obj.gettransform,3,6)));
 					%interactiveshape = %obj.gemshape[%obj.gemcount];
 					%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
-					Eventide_MinigameGroup.add(%interactiveshape);
+					Eventide_RitualCount.add(%interactiveshape);
 				}
 				else continue;			
 			}
@@ -116,7 +109,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 													%obj.candleshape[%obj.candlecount] = new StaticShape() { datablock = %itemimage.staticShape; };
 													%obj.candleshape[%obj.candlecount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().candlePos[%obj.candlecount] SPC getWords(%obj.gettransform,3,6)));
 													%interactiveshape = %obj.candleshape[%obj.candlecount];
-													Eventide_MinigameGroup.add(%interactiveshape);
+													Eventide_RitualCount.add(%interactiveshape);
 												}
 												else continue;
 
@@ -126,7 +119,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 												%transformdelta = %obj.ritualshape.getdatablock().bookPos SPC getWords(%obj.gettransform,3,6);
 												%obj.bookshape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
 												%interactiveshape = %obj.bookshape;
-												Eventide_MinigameGroup.add(%interactiveshape);
+												Eventide_RitualCount.add(%interactiveshape);
 
 
 				case "brickdaggerStaticShape":	if(isObject(%obj.daggershape)) continue;
@@ -136,7 +129,7 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 												%obj.daggershape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
 												%interactiveshape = %obj.daggershape;
 												%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
-												Eventide_MinigameGroup.add(%interactiveshape);													
+												Eventide_RitualCount.add(%interactiveshape);													
 			}
 
 			%obj.ritualsPlaced++;
