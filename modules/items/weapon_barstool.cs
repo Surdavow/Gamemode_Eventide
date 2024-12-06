@@ -169,7 +169,6 @@ function sm_barStoolImage::onFire(%this,%obj,%slot)
 				sourceObject = %obj;
 				client = %obj.client;
 			};
-			MissionCleanup.add(%p);
 			%p.explode();			
 		}
 		else
@@ -182,7 +181,6 @@ function sm_barStoolImage::onFire(%this,%obj,%slot)
 				sourceObject = %obj;
 				client = %obj.client;
 			};
-			MissionCleanup.add(%p);
 			%p.explode();	
 
 			if(isObject(%obj.client))

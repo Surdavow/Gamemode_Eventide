@@ -134,7 +134,6 @@ function sm_foldingChairAttackImage::onFire(%this,%obj,%slot)
 			sourceObject = %obj;
 			client = %obj.client;
 		};
-		MissionCleanup.add(%p);
 		%p.explode();			
 		
 		if((%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit) == 1)

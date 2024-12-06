@@ -243,8 +243,7 @@ function bottleImage::onFire(%this,%obj,%slot)
 				sourceObject = %obj;
 				client = %obj.client;
 			};
-			MissionCleanup.add(%p);
-			%p.explode();			
+			%p.explode();
 		}
 		else
 		{
