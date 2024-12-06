@@ -425,8 +425,7 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 	if(isObject(%obj.faceConfig))
 	{
 		%neededFacePack = (%obj.client.chest ? $Eventide_FacePacks["female"] : $Eventide_FacePacks["male"]);
-		if(%obj.faceConfig.getFacePack() !$= %neededFacePack)
-		{
+		if(%obj.faceConfig.getFacePack() !$= %neededFacePack) {		
 			//If the player updated their avatar, give them a new face pack to reflect it.
 			%obj.createFaceConfig(%neededFacePack);
 		}
@@ -473,9 +472,9 @@ function EventidePlayerDowned::EventideAppearance(%this,%obj,%funcclient)
 
 function EventidePlayer::tunnelVision(%this,%obj,%bool)
 {
-	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") return;
-
-	if(!%obj.TunnelFOV) %obj.TunnelFOV = %tunnelVisionFOV;
+	if(!isObject(%obj) || !isObject(%obj.client) || %obj.getState() $= "Dead") {
+		return;
+	}
 
 	// Start the tunnel vision effect
 	if(%bool) 
@@ -483,7 +482,9 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 		%obj.tunnelVision = mClampF(%obj.tunnelVision + 0.1, 0, 1);
 		commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelVision);
 
-		if (%obj.tunnelVision >= 1) return;
+		if (%obj.tunnelVision >= 1) {
+			return;
+		}
 	}
 	else if (!%obj.chaseLevel)
 	{
@@ -518,10 +519,17 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 			{				
 				for(%i = 0; %i < %teams.getCount(); %i++) if(isObject(%team = %teams.getObject(%i)))
 				{
-					if(strstr(strlwr(%team.name), "hunter") != -1) %hunterteam = %team;
+					if(strstr(strlwr(%team.name), "hunter") != -1) { 
+						%hunterteam = %team;
+					}
 
-					if(strstr(strlwr(%team.name), "survivor") != -1)
-					for(%j = 0; %j < %team.numMembers; %j++) if(isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) %livingcount++;
+					if(strstr(strlwr(%team.name), "survivor") != -1) {
+						for(%j = 0; %j < %team.numMembers; %j++) {							
+								if(isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) {
+									%livingcount++;
+								}
+							}
+					}
 				}
 
 				if(!%livingcount) %minigame.endRound(%hunterteam);
@@ -542,18 +550,22 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		%obj.mountimage("HealImage",3);
 		%obj.setwhiteout(0.1);
 		
-		if(isObject(%obj.client)) %obj.client.play2D("printfiresound");				
+		if(isObject(%obj.client)) {
+			%obj.client.play2D("printfiresound");
+		}
 	}
 	
 	if(%damage && %obj.isSkinwalker) 
 	{
 		%obj.setHealth(%this.maxDamage);
 
-		//Uh oh, the disguise is about to be broken, now that the player has been hurt.
+		//The disguise is about to be broken, now that the player has been hurt.
 		if(getRandom(1,4) == 1) 
 		{
 			%obj.playaudio(3,"skinwalker_pain_sound");
-			if(!isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule)) PlayerSkinwalker.monsterTransform(%obj,true);
+			if(!isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule)) { 
+				PlayerSkinwalker.monsterTransform(%obj,true);
+			}
 		}
 	}
 
@@ -561,12 +573,13 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	//if enough damage has been received.
 	if(isObject(%obj.faceConfig))
 	{
-		if(%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")
-		%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);		
+		if(%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "") {
+			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
+		}
 
-		if(%obj.faceConfig.isFace("Pain"))		
-		%obj.schedule(33, "faceConfigShowFace", "Pain"); //This needs to be delayed for whatever reason. Blinking doesn't start otherwise.
-		
+		if(%obj.faceConfig.isFace("Pain")) {
+			%obj.schedule(33, "faceConfigShowFace", "Pain"); //This needs to be delayed for whatever reason. Blinking doesn't start otherwise.
+		}		
 	}
 }
 
@@ -580,15 +593,21 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 
 function EventidePlayerDowned::DownLoop(%this,%obj)
 { 
-	if(!isobject(%obj) || %obj.getstate() $= "Dead" || %obj.getDataBlock().isDowned) return;
+	if(!isobject(%obj) || %obj.getstate() $= "Dead" || !%obj.getDataBlock().isDowned) {
+		return;
+	}
 	
+	// No savior, continue the function
 	if(!%obj.isBeingSaved)
 	{
-		if(isObject(%obj.client)) %obj.client.play2D("survivor_heartbeat_sound");
+		if(isObject(%obj.client)) {
+			%obj.client.play2D("survivor_heartbeat_sound");
+		}
 		
 		%obj.addHealth(-1);		
 		%obj.setDamageFlash(0.25);
 
+		// Scream every 5-10 seconds
 		if(%obj.lastcall+getRandom(5000,10000) < getsimtime())
 		{
 			%obj.lastcall = getsimtime();
@@ -597,9 +616,9 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		}
 	}
 
+	// Keep the loop going until the conditions above are met
 	cancel(%obj.downloop);
-	%obj.downloop = %this.schedule(1000,DownLoop,%obj);
-	
+	%obj.downloop = %this.schedule(1000,DownLoop,%obj);	
 }
 
 function EventidePlayer::onDisabled(%this,%obj)
@@ -640,10 +659,14 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
 			for(%i = 0; %i < %inventoryToolCount; %i++) if(isObject(%item = %obj.tool[%i]))
 			{
-				if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+				if(!isObject(Eventide_MinigameGroup)) {
+					missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+				}
 				
 				//Play a sound for the radio being dropped
-				if(%obj.tool[%i].getName() $= "RadioItem") serverPlay3d("radio_unmount_sound",%obj.getPosition());
+				if(%obj.tool[%i].getName() $= "RadioItem") {
+					serverPlay3d("radio_unmount_sound",%obj.getPosition());
+				}
 
 				// "Drop" all of the player's tools
 				%item = new Item()

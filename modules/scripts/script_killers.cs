@@ -248,7 +248,7 @@ function Armor::onKillerLoop(%this, %obj)
 			}
 
 			%minigame.chatMsgAll("<font:Impact:30>\c0" @ %message);
-			%minigame.playSound("round_start_sound");	
+			%minigame.playSound("round_start_sound");
 
 			//Stuff for the distant sound system.
 			$Eventide_currentKiller = %obj;

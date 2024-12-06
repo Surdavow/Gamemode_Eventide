@@ -135,16 +135,16 @@ datablock ProjectileData(flareGunProjectile : gunProjectile)
 function flareGunProjectile::onExplode(%data, %proj, %pos, %fade)
 {
 	serverPlay3d("flaregun_explosion" @ getRandom(1,2) @ "_sound",%pos);
-	return parent::onExplode(%data, %proj, %pos, %fade);
+	Parent::onExplode(%data, %proj, %pos, %fade);
 }
 
 function flareGunProjectile::onCollision(%data, %proj, %col, %fade, %pos, %normal)
 {
-	if(%col.getClassName() $= "Player")
-	{
+	Parent::onCollision(%data, %proj, %col, %fade, %pos, %normal);
+
+	if(%col.getClassName() $= "Player") {	
 		%col.setWhiteOut(10);
-	}
-	parent::onCollision(%data, %proj, %col, %fade, %pos, %normal);
+	}	
 }
 datablock ItemData(FlareGunItem)
 {
