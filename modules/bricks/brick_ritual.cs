@@ -159,15 +159,6 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 	%obj.ritualCheck = %this.schedule(500,ritualCheck,%obj);
 }
 
-function brickEventideRitual::clearRituals(%this, %obj)
-{	
-	Parent::onRemove(%this,%obj);
-	
-	%obj.ritualshape.delete();
-	%obj.bookshape.delete();
-	%obj.daggershape.delete();
-}
-
 function brickEventideRitual::onPlant(%this, %obj)
 {	
 	Parent::onPlant(%this,%obj);
