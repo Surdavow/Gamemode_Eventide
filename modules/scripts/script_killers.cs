@@ -213,7 +213,6 @@ function Armor::KillerCheck(%this,%obj)
 {	
 	if(!isObject(%obj) || !%this.isKiller) return;
 
-	for (%j = 0; %j < 4; %j++) %obj.unmountimage(%j);
 	if(isObject(%obj.client)) %this.EventideAppearance(%obj,%obj.client);
 	
 	%obj.KillerGhostLightCheck();
