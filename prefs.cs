@@ -1,8 +1,11 @@
+$CustomCDN::CDN_to_clients = "http://borrowedtime.online/blobs";
+
 // Preference support for Blockland Glass and Return to Blockland
 if($RTB::Hooks::ServerControl)
 {
-	RTB_registerPref("Enable local chat (minigame only)",	"Eventide","$Pref::Server::ChatMod::lchatEnabled",	"bool","Gamemode_Eventide","0","0","0","");
+	RTB_registerPref("Enable local chat (minigame only)",	"Eventide","$Pref::Server::ChatMod::lchatEnabled",	"bool","Gamemode_Eventide","1","0","0","");
 	RTB_registerPref("Enable chase music",	"Eventide","$Pref::Server::Eventide::chaseMusicEnabled",	"bool","Gamemode_Eventide","1","0","0","");
+	RTB_registerPref("Enable killer sounds",	"Eventide","$Pref::Server::Eventide::killerSoundsEnabled",	"bool","Gamemode_Eventide","1","0","0","");
 	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Gamemode_Eventide",false,false,false);
 	RTB_registerPref("Rounds per map","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Gamemode_Eventide",5,false,true);	
 	RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
@@ -18,9 +21,10 @@ if($RTB::Hooks::ServerControl)
 	RTB_RegisterPref("Steps on Vehicles SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::vehicleStep", "List	Default 0 Basic 1 Dirt 2 Grass 3 Metal 4 Sand 5 Snow 6 Stone 7 Water 8 Wood 9", "Gamemode_Eventide", 0, 0, 0);		
 }
 else
-{
+{	
+	if ($Pref::Server::ChatMod::lchatEnabled $= "") $Pref::Server::ChatMod::lchatEnabled = 1;
 	if ($Pref::Server::Eventide::chaseMusicEnabled $= "") $Pref::Server::Eventide::chaseMusicEnabled = 1;
-	if ($Pref::Server::ChatMod::radioNumChannels $= "") $Pref::Server::ChatMod::radioNumChannels = 1;
+	if ($Pref::Server::Eventide::killerSoundsEnabled $= "") $Pref::Server::Eventide::killerSoundsEnabled = 1;
 	if ($Pref::Server::GazeRange $= "") $Pref::Server::GazeRange = 20;
 	if ($Pref::Server::GazeEnabled $= "") $Pref::Server::GazeEnabled = 1;
 	if ($Pref::Server::PF::footstepsEnabled $= "") $Pref::Server::PF::footstepsEnabled = 1;
@@ -46,7 +50,5 @@ if ($Pref::Server::PF::brickFXsounds::unduloStep $= "") $Pref::Server::PF::undul
 
 // Always set this to 0, don't want there to be problems when the server is initialized
 $Pref::Server::MapRotation::ResetCount = 0;
-$Pref::Server::ChatMod::lchatEnabled = 0;
-
 $Pref::Server::MapRotation::cooldown = 10;
 $iconspath = "Add-ons/Gamemode_Eventide/modules/players/icons/";

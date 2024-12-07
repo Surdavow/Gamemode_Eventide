@@ -1,6 +1,6 @@
 datablock ParticleData (PortalParticle)
 {
-	textureName = "./models/portal";
+	textureName = "./particles/portal";
 	dragCoefficient = 0;
 	gravityCoefficient = 0;
 	inheritedVelFactor = 0;
@@ -44,7 +44,7 @@ datablock ParticleEmitterData (PortalEmitter)
 
 datablock ParticleData (PlayerPortalParticle)
 {
-	textureName = "./models/portal2";
+	textureName = "./particles/portal2";
 	dragCoefficient = 0;
 	gravityCoefficient = 0;
 	inheritedVelFactor = 0;

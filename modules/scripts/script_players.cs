@@ -4,34 +4,43 @@ package Eventide_Player
 	{
 		Parent::onImpact(%this, %obj, %col, %vec, %force);
 
-		if(%obj.isInvisible || !isObject(%obj)) return;
+		if(%obj.isInvisible || !isObject(%obj))
+		{
+			return;
+		}
 
-		if(%force < 40) serverPlay3D("impact_medium" @ getRandom(1,3) @ "_sound",%obj.getPosition());
-		else serverPlay3D("impact_hard" @ getRandom(1,3) @ "_sound",%obj.getPosition());
+		serverPlay3D("impact_" @ (%force < 40 ? "medium" : "hard") @ getRandom(1,3) @ "_sound",%obj.getPosition());
 
 		%oScale = getWord(%obj.getScale(),2);
 		%forcescale = %force/25 * %oscale;
 		%obj.spawnExplosion(pushBroomProjectile,%forcescale SPC %forcescale SPC %forcescale);
 
+		// Play a sound if the player is falling
 		if(%obj.getState() !$= "Dead" && getWord(%vec,2) > %obj.getdataBlock().minImpactSpeed)
-        serverPlay3D("impact_fall_sound",%obj.getPosition());		
+		{
+			serverPlay3D("impact_fall_sound",%obj.getPosition());		
+		}        
 	}
 
 	function Armor::onNewDatablock(%this,%obj)
 	{		
 		Parent::onNewDatablock(%this,%obj);
 
-		%this.GazeLoop(%obj);
+		// Initiate the gaze loop if the player is in a minigame
+		if(isObject(getMinigamefromObject(%obj))) 
+		{
+			%this.GazeLoop(%obj);
+		}
 
+		// Update the tool HUD
 		if(%this != %obj.getDatablock() && %this.maxTools != %obj.client.lastMaxTools && isObject(%obj.client))
 		{
 			%obj.client.lastMaxTools = %this.maxTools;
 			commandToClient(%obj.client,'PlayGui_CreateToolHud',%this.maxTools);
 			
-			for(%i=0;%i<%this.maxTools;%i++)
-			{
-				if(isObject(%obj.tool[%i])) messageClient(%obj.client,'MsgItemPickup',"",%i,%obj.tool[%i].getID(),1);
-				else messageClient(%obj.client,'MsgItemPickup',"",%i,0,1);
+			for(%i=0;%i<%this.maxTools;%i++) 
+			{			
+				messageClient(%obj.client,'MsgItemPickup',"",%i,isObject(%obj.tool[%i]) ? %obj.tool[%i].getID() : 0,1);
 			}
 		}
 	}
@@ -40,9 +49,13 @@ package Eventide_Player
 	{
         Parent::onDisabled(%this, %obj, %state);
 
-		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++) 
-		if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) 
-		%obj.getMountedObject(%i).delete();		
+		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++)
+		{
+			if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) 
+			{
+				%obj.getMountedObject(%i).delete();	
+			}
+		}
 
         if(isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
 		{
@@ -55,9 +68,13 @@ package Eventide_Player
 	{
 		Parent::onRemove(%this,%obj);
 
-		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++) 
-		if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) 
-		%obj.getMountedObject(%i).delete();
+		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++)
+		{
+			if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) 
+			{
+				%obj.getMountedObject(%i).delete();
+			}			
+		}
 	}
 
 	function Player::ActivateStuff (%player)
@@ -65,7 +82,10 @@ package Eventide_Player
 		Parent::ActivateStuff(%player);
 		
 		if(isObject(%player) && %player.getState() !$= "Dead" && isFunction(%player.getDataBlock().getName(),onActivate)) 
-		return %player.getDataBlock().onActivate(%player);
+		{
+			%player.getDataBlock().onActivate(%player);
+		}
+		
 	}
 };
 
@@ -77,7 +97,10 @@ function Player::SetSpeedModifier(%obj,%a)
 {
 	%obj.Speed_Modifier = (%obj.Speed_Modifier $= "") ? 1 : %obj.Speed_Modifier;
 
-	if(!%a) return;	
+	if(!%a) 
+	{
+		return;	
+	}
 
 	%prev = %obj.Speed_Modifier;
 	%curr = %obj.Speed_Modifier = %a;
@@ -102,37 +125,49 @@ function Player::AddMoveSpeedModifier(%obj,%a)
 
 function Player::SetTempSpeed(%obj,%speedMultiplier)
 {
-	if(!isObject(%obj) || %obj.getstate() $= "Dead") return;
+	if(!isObject(%obj) || %obj.getstate() $= "Dead")
+	{
+		return;
+	}
 
-	if (%speedMultiplier $= "") %speedMultiplier = 1;
-	if (%obj.survivorclass $= "runner" && %speedMultiplier > 1.25) %speedMultiplier = 1.1;
+	// If the speed multiplier is not set, reset it to 1, or 1.1 if the player is a runner class
+	if (%speedMultiplier $= "") 
+	{
+		%speedMultiplier = (%obj.survivorclass $= "runner") ? 1.1 : 1;
+	}
 
 	%this = %obj.getDataBlock();
+	
+	// Normal speed
+	%obj.setMaxForwardSpeed(%this.MaxForwardSpeed * %speedMultiplier);
+	%obj.setMaxSideSpeed(%this.MaxSideSpeed * %speedMultiplier);
+	%obj.setMaxBackwardSpeed(%this.maxBackwardSpeed * %speedMultiplier);
 
-	%obj.setMaxForwardSpeed(%this.MaxForwardSpeed*%speedMultiplier);
-	%obj.setMaxSideSpeed(%this.MaxSideSpeed*%speedMultiplier);
-	%obj.setMaxBackwardSpeed(%this.maxBackwardSpeed*%speedMultiplier);
+	// Crouch speed
+	%obj.setMaxCrouchForwardSpeed(%this.maxForwardCrouchSpeed * %speedMultiplier);
+  	%obj.setMaxCrouchBackwardSpeed(%this.maxSideCrouchSpeed * %speedMultiplier);
+  	%obj.setMaxCrouchSideSpeed(%this.maxSideCrouchSpeed * %speedMultiplier);
 
-	%obj.setMaxCrouchForwardSpeed(%this.maxForwardCrouchSpeed*%speedMultiplier);
-  	%obj.setMaxCrouchBackwardSpeed(%this.maxSideCrouchSpeed*%speedMultiplier);
-  	%obj.setMaxCrouchSideSpeed(%this.maxSideCrouchSpeed*%speedMultiplier);
-
- 	%obj.setMaxUnderwaterBackwardSpeed(%this.MaxUnderwaterBackwardSpeed*%speedMultiplier);
-  	%obj.setMaxUnderwaterForwardSpeed(%this.MaxUnderwaterForwardSpeed*%speedMultiplier);
-  	%obj.setMaxUnderwaterSideSpeed(%this.MaxUnderwaterForwardSpeed*%speedMultiplier);	
+  	// Underwater speed
+ 	%obj.setMaxUnderwaterBackwardSpeed(%this.MaxUnderwaterBackwardSpeed * %speedMultiplier);
+  	%obj.setMaxUnderwaterForwardSpeed(%this.MaxUnderwaterForwardSpeed * %speedMultiplier);
+  	%obj.setMaxUnderwaterSideSpeed(%this.MaxUnderwaterForwardSpeed * %speedMultiplier);	
 }
 
 registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClient GameConnection\tMinigame Minigame");
 function Armor::GazeLoop(%this,%obj)
 {		
 	// Some conditions to return early if one is met
-	if (!$Pref::Server::GazeEnabled || !isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj))) return;
+	if (!$Pref::Server::GazeEnabled || !isObject(%obj) || %obj.getState() $= "Dead") 
+	{
+		return;
+	}
 
 	%eye = %obj.getEyePoint();
 	%end = vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(),$Pref::Server::GazeRange));
 	%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType;
 	%hit = containerRayCast (%eye, %end, %mask, %obj);
-	%obj.gazingPlayer = false;
+	%obj.gazingPlayer = 0;
 	%obj.gazing = 0;
 	
 	if (isObject(%hit))
@@ -147,7 +182,10 @@ function Armor::GazeLoop(%this,%obj)
 		}
 
 		if(%hit.getType() & $TypeMasks::PlayerObjectType) 
-		%obj.gazingPlayer = true;
+		{
+			%obj.gazingPlayer = 0;
+		}
+		
 		%obj.gazing = %hit;
 	}	
 
@@ -196,7 +234,10 @@ function Armor::EventideAppearance(%this,%obj,%client)
 	}
 
 	%obj.setHeadUp(0);
-	if(%client.pack+%client.secondPack > 0) %obj.setHeadUp(1);
+	if(%client.pack+%client.secondPack > 0) 
+	{
+		%obj.setHeadUp(1);
+	}
 	
 	if($hat[%client.hat] $= "Helmet")
 	{
@@ -216,11 +257,21 @@ function Armor::EventideAppearance(%this,%obj,%client)
 	for (%i = 0; %i < getWordCount(%bloodyParts); %i++) 
 	{
 	    %part = getWord(%bloodyParts, %i);
-	    if (%obj.bloody[%part]) %obj.unHideNode(%part @ "_blood");
+	    if (%obj.bloody[%part]) 
+		{
+			%obj.unHideNode(%part @ "_blood");
+		}
 	}
 
-	if (%obj.bloody["chest_front"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_front");
-	if (%obj.bloody["chest_back"]) %obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_back");
+	if (%obj.bloody["chest_front"]) 
+	{
+		%obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_front");
+	}
+
+	if (%obj.bloody["chest_back"])
+	{
+		%obj.unHideNode((%client.chest ? "fem" : "") @ "chest_blood_back");
+	}
 
 	%obj.setFaceName(%client.faceName);
 	%obj.setDecalName(%client.decalName);
@@ -260,21 +311,34 @@ registerOutputEvent("GameConnection", "Escape", "", false);
 function GameConnection::Escape(%client)
 {
     if (!isObject(%minigame = getMinigameFromObject(%client))) 
-        return %client.centerprint("This only works in minigames!", 1);
-    if (strlwr(%client.slyrTeam.name) !$= "survivors") 
-        return %client.centerprint("Only survivors can escape!", 1);
+	{
+		return %client.centerprint("This only works in minigames!", 1);
+	}
+        
+    if (strlwr(%client.slyrTeam.name) !$= "survivors")
+	{
+		return %client.centerprint("Only survivors can escape!", 1);
+	}        
 
-    if (%client.escaped) return; // Prevent double escape
+    if (%client.escaped) 
+	{
+		return; // Prevent double escape
+	}
+
     %client.escaped = true;
 	%client.incscore(10);
 
     // Update counts
     %minigame.escapedCount++;
     %minigame.livingCount--; // Escaped players are no longer "living"
-    %minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");    
+    %minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
+	echo(%client.name SPC "\c3has escaped!");
 
     // Kill the player
-    if (isObject(%client.player)) %client.player.delete();
+    if (isObject(%client.player)) 
+	{
+		%client.player.delete();
+	}
     %client.lives = 0;
     %client.setdead(1);
 
@@ -287,7 +351,7 @@ function GameConnection::Escape(%client)
 
     // Check if all survivors have escaped or died
     if (%minigame.escapedCount >= %minigame.slyrTeam.numMembers) 
-	{
+	{	
         %minigame.endRound(%client.slyrTeam);
     }
 }

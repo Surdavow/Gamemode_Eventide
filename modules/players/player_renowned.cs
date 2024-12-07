@@ -13,7 +13,7 @@ datablock PlayerData(PlayerRenowned : EventidePlayer)
 	meleetrailangle2 = "0 -90 0";
 	meleetrailangle3 = "0 0 0";
 	meleetrailangle4 = "0 180 0";
-	meleetrailscale = "4 4 2";		
+	meleetrailscale = "4 4 2";
 
 	rechargeRate = 0.26;
 	maxDamage = 9999;
@@ -84,7 +84,7 @@ function PlayerRenowned::onNewDatablock(%this,%obj)
 	%obj.mountImage("renownedeyesimage",2);
 }
 
-function PlayerRenowned::bottomprintgui(%this,%obj,%client)
+function PlayerRenowned::killerGUI(%this,%obj,%client)
 {	
 	%energylevel = %obj.getEnergyLevel();
 
@@ -159,7 +159,7 @@ function PlayerRenowned::onTrigger(%this, %obj, %trig, %press)
 	
 	switch(%trig)
 	{
-		case 0: if(%press && %obj.getEnergyLevel() >= 25) return; %obj.KillerMelee(%this,4);
+		case 0: if(%press && %obj.getEnergyLevel() >= 25) return; %this.killerMelee(%obj,4);
 
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				{

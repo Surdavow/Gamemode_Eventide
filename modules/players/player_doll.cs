@@ -50,7 +50,6 @@ datablock PlayerData(PlayerDoll : PlayerRenowned)
 function PlayerDoll::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
-	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("0.9 0.9 0.9");
 	%obj.schedule(1,setEnergyLevel,0);
 }
@@ -59,8 +58,9 @@ function PlayerDoll::onTrigger(%this, %obj, %trig, %press)
 {			
 	Parent::onTrigger(%this, %obj, %trig, %press);
 
-	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
-	return %obj.KillerMelee(%this,4.5);
+	if(%press && !%trig && %obj.getEnergyLevel() >= 25) {
+		%this.killerMelee(%obj,4.5);
+	}	
 }
 
 function PlayerDoll::onPeggFootstep(%this,%obj)

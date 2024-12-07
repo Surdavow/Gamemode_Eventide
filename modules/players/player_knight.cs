@@ -55,7 +55,6 @@ function PlayerKnight::onNewDatablock(%this,%obj)
 	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
 	
 	Parent::onNewDatablock(%this,%obj);
-	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.2 1.2 1.2");
 	%obj.mountImage("ZweihanderImage",0);
 }

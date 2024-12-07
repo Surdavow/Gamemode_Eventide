@@ -70,8 +70,9 @@ datablock ParticleEmitterData(DarkBlindEmitter)
 	particles = DarkBlindParticle;
 };
 
-datablock ParticleData(GlowFaceParticle) {
-	textureName				= "./models/glowFace";
+datablock ParticleData(GlowFaceParticle) 
+{
+	textureName				= "./particles/glowFace";
 	lifetimeMS				= 500;
 	lifetimeVarianceMS		= 0;
 	dragCoefficient			= 0.0;
@@ -109,7 +110,7 @@ datablock ParticleEmitterData(GlowFaceEmitter) {
 
 datablock ParticleData(GlowFaceZombieParticle) 
 {
-	textureName				= "./models/glowFaceZombie";
+	textureName				= "./particles/glowFaceZombie";
 	lifetimeMS				= 500;
 	lifetimeVarianceMS		= 0;
 	dragCoefficient			= 0.0;
@@ -147,7 +148,7 @@ datablock ParticleEmitterData(GlowFaceZombieEmitter) {
 
 datablock ParticleData(ZombieBodyParticle) 
 {
-	textureName				= "./models/ZombieBody";
+	textureName				= "./particles/ZombieBody";
 	lifetimeMS				= 500;
 	lifetimeVarianceMS		= 0;
 	dragCoefficient			= 0.0;

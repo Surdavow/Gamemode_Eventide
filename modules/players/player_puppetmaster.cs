@@ -65,7 +65,7 @@ function PlayerPuppetMaster::onNewDatablock(%this,%obj)
 	%obj.unHideNode("ALL");
 }
 
-function PlayerPuppetMaster::bottomprintgui(%this,%obj,%client)
+function PlayerPuppetMaster::killerGUI(%this,%obj,%client)
 {	
 	%energylevel = %obj.getEnergyLevel();
 
@@ -92,7 +92,7 @@ function PlayerPuppetMaster::onTrigger(%this,%obj,%triggerNum,%bool)
 	
 	if(%bool) switch(%triggerNum)
 	{
-		case 0:	if(%obj.getEnergyLevel() >= %this.maxEnergy/4) return %obj.KillerMelee(%this,4.25);
+		case 0:	if(%obj.getEnergyLevel() >= %this.maxEnergy/4) return %this.killerMelee(%obj,4.25);
 				
 		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy/2)
 				{

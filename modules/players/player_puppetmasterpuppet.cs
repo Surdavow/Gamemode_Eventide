@@ -44,7 +44,7 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 			
 	switch(%trig)
 	{
-		case 0: %obj.KillerMelee(%this,3.5);
+		case 0: %this.killerMelee(%obj,3.5);
 		
 		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
 				if(%press)

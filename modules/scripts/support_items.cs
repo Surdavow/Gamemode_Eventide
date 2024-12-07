@@ -2,19 +2,22 @@ package Eventide_Items
 {
 	function Armor::onCollision(%this, %obj, %col, %vec, %speed)
 	{
-		if(!%obj.getDataBlock().isEventideModel && !isObject(getMinigameFromObject(%obj))) 
+		// Return to the parent function if any of these conditions are true
+		if(!isObject(getMinigameFromObject(%obj)) || !%obj.getDataBlock().isEventideModel || %obj.getState() $= "Dead" || %col.getClassName() !$= "Item") 
 		{
 			Parent::onCollision(%this, %obj, %col, %vec, %speed);
 			return;
 		}
 
-		if (%obj.getState() $= "Dead" || %col.getClassName() !$= "Item") return;	
-
-		%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
-
-		for (%i = 0; %i < %inventoryToolCount; %i++)
-		if (%obj.tool[%i] == %col.getDataBlock()) return;				
-			
+		// Return if the player already has the item in their inventory
+		for (%i = 0; %i < (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools; %i++)
+		{
+			if (%obj.tool[%i] == %col.getDataBlock())
+			{
+				return;
+			}
+		}
+					
 		%obj.pickup(%col);
 	}
 
@@ -27,7 +30,9 @@ package Eventide_Items
 		}
 
 		if (!%obj.canPickup || !isObject(%client = %user.client) || getSimTime() - %client.lastF8Time < 5000)
-		return;		
+		{
+			return;
+		}		
 
 		%inventoryToolCount = (%user.hoarderToolCount) ? %user.hoarderToolCount : %user.getDataBlock().maxTools;
 		%canUse = miniGameCanUse(%user, %obj) ? 1 : 0;

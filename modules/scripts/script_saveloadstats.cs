@@ -1,20 +1,33 @@
 $Eventide_ReferenceStats = "score customtitle customtitlebitmap customtitlecolor";
 
-for (%j = 0; %j < getWordCount($ShopInstrumentList); %j++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasInstrument" @ %j;
-for (%h = 0; %h < getWordCount($ShopTitleList); %h++) $Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasTitleAccess" @ %h;
+// Concatenate conditions for each instrument index
+for (%j = 0; %j < getWordCount($ShopInstrumentList); %j++) {
+	$Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasInstrument" @ %j;
+}
+
+// Concatenate conditions for each title setting
+for (%h = 0; %h < getWordCount($ShopTitleList); %h++) {
+	$Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasTitleAccess" @ %h;
+}
 
 $Eventide_ReferenceStatsPath = "config/server/eventide/playerstats/";	
 
 function Eventide_storeEventideStats(%client)
 {
-	if(!isObject(%client)) return;
+	if(!isObject(%client)) 
+	{
+		return;
+	}
 
 	%file = $Eventide_ReferenceStatsPath @ %client.BL_ID @ ".txt";	
 	%readfile = new fileObject();
 	%readfile.openForWrite(%file);
 
-	for(%rat = 0; %rat < getWordCount($Eventide_ReferenceStats); %rat++)
-	%readfile.writeLine(getWord($Eventide_ReferenceStats,%rat) TAB %client.getField(getWord($Eventide_ReferenceStats,%rat)));
+	for(%rat = 0; %rat < getWordCount($Eventide_ReferenceStats); %rat++) 
+	{
+		%readfile.writeLine(getWord($Eventide_ReferenceStats,%rat) TAB %client.getField(getWord($Eventide_ReferenceStats,%rat)));
+	}
+	
 
 	%readfile.close();
 	%readfile.delete();	
@@ -22,7 +35,10 @@ function Eventide_storeEventideStats(%client)
 
 function Eventide_loadEventideStats(%client)
 {
-	if(!isObject(%client) || !isFile(%file = $Eventide_ReferenceStatsPath @ %client.BL_ID @ ".txt")) return;
+	if(!isObject(%client) || !isFile(%file = $Eventide_ReferenceStatsPath @ %client.BL_ID @ ".txt")) 
+	{
+		return;
+	}
 
 	%readfile = new fileObject();
 	%readfile.openForRead(%file);
@@ -47,7 +63,7 @@ package Eventide_SaveLoadStats
 
 	function GameConnection::onClientLeaveGame(%client)
 	{
-		parent::onClientLeaveGame(%client);
+		Parent::onClientLeaveGame(%client);
 		Eventide_storeEventideStats(%client);	
 	}
 };

@@ -15,7 +15,6 @@ exec("./support_stringutilities.cs");
 exec("./support_vectorutilities.cs");
 exec("./support_billboard.cs");
 
-exec("./billboard_example.cs");
 exec("./script_chatsystem.cs");
 exec("./script_commands.cs");
 exec("./script_killers.cs");

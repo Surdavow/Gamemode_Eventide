@@ -79,7 +79,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 	{
 		case 0: if(%obj.getEnergyLevel() >= 25 && %press)
 		{
-			%obj.KillerMelee(%this,4.5);
+			%this.killerMelee(%obj,4.5);
 			%obj.faceConfigShowFace("Attack");
 			return;
 		}

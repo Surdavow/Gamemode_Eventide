@@ -46,7 +46,7 @@ function PlayerRender::onImpact(%this, %obj, %col, %vec, %force)
 	if(%force > %this.minImpactSpeed) %obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");	
 }
 
-function PlayerRender::bottomprintgui(%this,%obj,%client)
+function PlayerRender::killerGUI(%this,%obj,%client)
 {	
 	%energylevel = %obj.getEnergyLevel();
 

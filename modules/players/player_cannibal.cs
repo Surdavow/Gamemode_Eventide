@@ -46,7 +46,7 @@ function PlayerCannibal::onTrigger(%this, %obj, %trig, %press)
 		
 	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
 	{
-		%obj.KillerMelee(%this,4);
+		%this.killerMelee(%obj,4);
 		%obj.faceConfigShowFace("Attack");
 		return;
 	}
@@ -72,7 +72,6 @@ function PlayerCannibal::onNewDatablock(%this,%obj)
 	//Everything else.
 	Parent::onNewDatablock(%this,%obj);
 	%obj.mountImage("meleeKnifeImage",0);
-	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1 1 1");
 }
 

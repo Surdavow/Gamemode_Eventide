@@ -47,7 +47,6 @@ function PlayerGenocide::onTrigger(%this, %obj, %trig, %press)
 function PlayerGenocide::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
-	%obj.schedule(10,onKillerLoop);
 	%obj.mountImage("shovelImage",1);
 	%obj.setScale("1 1 1");
 }

@@ -124,7 +124,6 @@ function PlayerDisfigured::onPeggFootstep(%this,%obj)
 function PlayerDisfigured::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
-	%obj.schedule(10,onKillerLoop);	
 	%obj.setScale("1.1 1.1 1.1");
 	%obj.mountImage("Disfigured_BleedImage",0);
 	%obj.mountImage("Disfigured_FogImage",1);

@@ -10,25 +10,26 @@ datablock PlayerData(emptyPlayer : playerStandardArmor)
 	mountSound = "";
 	jumpSound = "";
 	uiName = "";
-	className = PlayerData;
+	className = "PlayerData";
 	shapeFile = "base/data/shapes/empty.dts";
 	uiName = "";
 };
 
-function emptyPlayer::onAdd(%this, %obj) 
-{
+function emptyPlayer::onAdd(%this, %obj) {
 	%obj.setDamageLevel(%this.maxDamage);	
 }
 
 function emptyPlayer::onRemove(%this, %obj)
 {
-	if(isObject(%obj.light)) %obj.light.delete();
+	if(isObject(%obj.light)) { 
+		%obj.light.delete();
+	}
 }
-function emptyPlayer::doDismount(%this, %obj, %forced) 
-{
+
+// Overwrite methods to prevent the bot from being removed
+function emptyPlayer::doDismount(%this, %obj, %forced) {
 	return;
 }
-function emptyPlayer::onDisabled(%this, %obj) 
-{
+function emptyPlayer::onDisabled(%this, %obj) {
 	return;
 }

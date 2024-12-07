@@ -39,7 +39,6 @@ datablock PlayerData(PlayerLurkerInvis : PlayerRenowned)
 function PlayerLurkerInvis::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
-	%obj.schedule(10,onKillerLoop);
 	%obj.isInvisible = true;	
 	%obj.setScale("1.2 1.2 1.2");
 }

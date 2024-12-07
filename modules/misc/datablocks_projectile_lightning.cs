@@ -7,7 +7,7 @@ datablock ParticleData(LightningArcParticle)
 	constantAcceleration = 0.0;
 	lifetimeMS           = 250;
 	lifetimeVarianceMS   = 0;
-	textureName          = "./models/lightningarc";
+	textureName          = "./particles/lightningarc";
 	spinSpeed		= 0.0;
 	spinRandomMin		= -0.0;
 	spinRandomMax		= 0.0;
@@ -77,7 +77,7 @@ datablock ParticleData(LightningArcTrailParticle)
    constantAcceleration = 0.0;
    lifetimeMS           = 125;
    lifetimeVarianceMS   = 0;
-   textureName          = "./models/lightningarc";
+   textureName          = "./particles/lightningarc";
    spinSpeed		   = 0.0;
    spinRandomMin		= 0.0;
    spinRandomMax		= 0.0;

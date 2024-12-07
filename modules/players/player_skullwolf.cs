@@ -63,7 +63,7 @@ datablock PlayerData(PlayerSkullWolf : PlayerRenowned)
 	jumpForce = 0;
 };
 
-function PlayerSkullWolf::bottomprintgui(%this,%obj,%client)
+function PlayerSkullWolf::killerGUI(%this,%obj,%client)
 {	
 	%energylevel = %obj.getEnergyLevel();
 
@@ -213,7 +213,7 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 {
 	if(%bool) switch(%triggerNum)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) return %obj.KillerMelee(%this,4.5);
+		case 0: if(%obj.getEnergyLevel() >= 25) return %this.killerMelee(%obj,4.5);
 			
 		case 4: if(!%obj.isInvisible)
 				{		

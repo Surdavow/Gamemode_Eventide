@@ -21,7 +21,6 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	showEnergyBar = false;
 	firstpersononly = false;
 	canJet = false;
-	renderFirstPerson = false;
 	tunnelFOVIncrease = 20;
 
 	rechargeRate = 0.375;

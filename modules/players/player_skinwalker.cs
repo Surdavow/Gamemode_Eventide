@@ -68,7 +68,7 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	crouchBoundingBox = "4.5 4.5 3.6";
 };
 
-function PlayerSkinwalker::bottomprintgui(%this,%obj,%client)
+function PlayerSkinwalker::killerGUI(%this,%obj,%client)
 {	
 	%energylevel = %obj.getEnergyLevel();
 
@@ -128,7 +128,7 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 	if(%press) switch(%trig)		
 	{
 		case 0: if(%obj.getEnergyLevel() <= 25) return;
-				%obj.KillerMelee(%this, 4);
+				%this.killerMelee(%obj, 4);
 
 		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule))				
 				%this.monsterTransform(%obj, false);	

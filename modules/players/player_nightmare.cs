@@ -45,7 +45,6 @@ function PlayerNightmare::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.mountImage("ChainsawImage",0);
-	%obj.schedule(10,onKillerLoop);
 	%obj.setScale("1 1 1");
 }
 
@@ -53,8 +52,9 @@ function PlayerNightmare::onTrigger(%this, %obj, %trig, %press)
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
-	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
-	return %obj.KillerMelee(%this,4);
+	if(%press && !%trig && %obj.getEnergyLevel() >= 25) {
+		return %this.killerMelee(%obj,4);
+	}		
 }
 
 function PlayerNightmare::onKillerChase(%this,%obj,%chasing)
