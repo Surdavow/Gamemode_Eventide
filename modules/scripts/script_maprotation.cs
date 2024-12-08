@@ -10,11 +10,11 @@ package Eventide_MapRotation
 				%minigame.playSound("item_get_sound");
 				%roundstring = ($Pref::Server::MapRotation::minReset == 1) ? "The round has" : $Pref::Server::MapRotation::minReset SPC "rounds have";
 				%minigame.chatMsgAll("<font:Impact:30>\c3" @ %roundstring SPC "passed, loading the next map!");
-				Eventide_loadNextMap();		
+				Eventide_loadNextMap();
+				return Parent::Reset(%minigame, %client);
 			}
 
-			$Pref::Server::MapRotation::ResetCount++;
-			%minigame.chatMsgAll("<font:Impact:30>\c3Round" SPC $Pref::Server::MapRotation::ResetCount SPC "of" SPC $Pref::Server::MapRotation::minReset);
+			%minigame.chatMsgAll("<font:Impact:30>\c3Round" SPC $Pref::Server::MapRotation::ResetCount++ SPC "of" SPC $Pref::Server::MapRotation::minReset);
 		}
 
 		Parent::Reset(%minigame, %client);
@@ -33,7 +33,7 @@ package Eventide_MapRotation
 	function ServerLoadSaveFile_End()
 	{
 		Parent::ServerLoadSaveFile_End();
-		scheduleNoQuota(2000,0,Eventide_endMapChange);
+		scheduleNoQuota(3000,0,Eventide_endMapChange);
 	}	
 };
 
@@ -47,8 +47,14 @@ function Eventide_endMapChange()
 	{
 		if (isObject(%client = ClientGroup.getObject(%a)) && isObject(getMiniGameFromObject(%client)))
 		{
+			%minigame = getMiniGameFromObject(%client);
 			%client.spawnPlayer();
 		}
+	}
+
+	if(isObject(%minigame))
+	{
+		%minigame.chatMsgAll("<font:Impact:30>\c3Round" SPC $Pref::Server::MapRotation::ResetCount++ SPC "of" SPC $Pref::Server::MapRotation::minReset);
 	}
 }
 

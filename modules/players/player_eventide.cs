@@ -508,9 +508,9 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 {
 	// If the damage received too much damage and the player is not already incapacitated, check some conditions to see if they should be
 	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && !%obj.hasBeenDowned)
-    {        
-        %obj.setDatablock("EventidePlayerDowned");
-		%obj.setHealth(100);
+    {   
+		%obj.setHealth(100);     
+        %obj.setDatablock("EventidePlayerDowned");		
 		%obj.hasBeenDowned = true;
 
 		if(isObject(%minigame = getMinigamefromObject(%obj))) 
@@ -590,6 +590,7 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 {
 	Parent::onNewDataBlock(%this,%obj);
 	
+	%obj.setActionThread((!%obj.isCrouched()) ? "sit" : "root",1);
 	%this.DownLoop(%obj);
 }
 
@@ -600,10 +601,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		return;
 	}
 
-	%time = mClampF((100-%obj.getDamageLevel()) * 15,200,1500);
-	%pulse = 0.1 + ((%obj.getDamageLevel() / 100) * 0.75);
-	
-	%obj.setActionThread((!%obj.isCrouched()) ? "sit" : "root",1);
+	%time = mClampF((100-%obj.getDamageLevel()) * 15,200,1100);
 	
 	// No savior, continue the function
 	if(!%obj.isBeingSaved)
@@ -612,13 +610,14 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		{
 			%obj.client.play2D("survivor_heartbeat_sound");
 
-			if(%obj.getDamageLevel() == 60)
+			if(%obj.getDamageLevel() >= 60)
 			{
-				%obj.client.centerprint("<font:impact:25>\c3You are about to die! Have someone help you or find a medpack!",4);
+				%obj.client.centerprint("<font:impact:25>\c3You are about to die! Have someone help you or find a medpack!",1);
 			}
 		}
 		
-		%obj.addHealth(-0.5);
+		%obj.addHealth(-1);
+		%pulse = 0.1 + ((%obj.getDamageLevel() / 100) * 0.75);
 		%obj.setDamageFlash(%pulse);
 
 		// Scream every 5-10 seconds
@@ -631,8 +630,10 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	}
 
 	// Keep the loop going until the conditions above are met
-	cancel(%obj.downloop);	
-	%obj.downloop = %this.schedule(%time,DownLoop,%obj);	
+	cancel(%obj.downloop);
+	%obj.downloop = %this.schedule(%time,DownLoop,%obj);
+	
+	%obj.setActionThread((!%obj.isCrouched()) ? "sit" : "root",1);
 }
 
 function EventidePlayer::onDisabled(%this,%obj)
