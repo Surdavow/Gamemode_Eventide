@@ -21,32 +21,36 @@ package Eventide_MapRotation
 	}
 
 	function gameConnection::spawnPlayer(%client)
-	{
-		Parent::spawnPlayer(%client);
-
+	{		
 		if ($Eventide_MapChanging) 
 		{
 			return;
 		}
+
+		Parent::spawnPlayer(%client);
 	}
 
 	function ServerLoadSaveFile_End()
 	{
 		Parent::ServerLoadSaveFile_End();
-		
-		$Eventide_MapChanging = false;
-		echo("Respawning all players...");
-		
-		// Respawn all players
-		for (%a = 0; %a < ClientGroup.getCount(); %a++)
-		{
-			if (isObject(%client = ClientGroup.getObject(%a)) && isObject(getMiniGameFromObject(%client)))
-			{
-				%client.scheduleNoQuota(2000,spawnPlayer);
-			}
-		}		
+		scheduleNoQuota(2000,0,Eventide_endMapChange);
 	}	
 };
+
+function Eventide_endMapChange()
+{
+	echo("Respawning all players...");
+	$Eventide_MapChanging = false;
+	
+	// Respawn all players
+	for (%a = 0; %a < ClientGroup.getCount(); %a++)
+	{
+		if (isObject(%client = ClientGroup.getObject(%a)) && isObject(getMiniGameFromObject(%client)))
+		{
+			%client.spawnPlayer();
+		}
+	}
+}
 
 // In case the package is already activated, deactivate it first before reactivating it
 if(isPackage(Eventide_MapRotation)) deactivatePackage(Eventide_MapRotation);

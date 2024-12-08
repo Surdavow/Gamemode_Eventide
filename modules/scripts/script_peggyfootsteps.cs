@@ -60,7 +60,7 @@ function servercmdSetFootstep(%client, %type, %sound)
 
 	if (!%match)
 	{
-		for (%a=0; %a <= %j; %a++) essageClient(%client, '', "\c5 - " @ %sounds[%a]);
+		for (%a=0; %a <= %j; %a++) messageClient(%client, '', "\c5 - " @ %sounds[%a]);
 		
 		messageClient(%client,'',"\c0There is no sound with the name '\c3" @ trim(%sound) @ "\c0'.\c6 The sounds you can choose are listed above. <color:aaaaaa>(PgUp to see all options)");
 		return;

@@ -591,24 +591,35 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 	Parent::onNewDataBlock(%this,%obj);
 	
 	%this.DownLoop(%obj);
-    %obj.playthread(0,sit);
 }
 
 function EventidePlayerDowned::DownLoop(%this,%obj)
 { 
-	if(!isobject(%obj) || %obj.getstate() $= "Dead" || !%obj.getDataBlock().isDowned) {
+	if(!isobject(%obj) || %obj.getstate() $= "Dead" || %obj.getDataBlock() != %this) 
+	{
 		return;
 	}
+
+	%time = mClampF((100-%obj.getDamageLevel()) * 15,200,1500);
+	%pulse = 0.1 + ((%obj.getDamageLevel() / 100) * 0.75);
+	
+	%obj.setActionThread((!%obj.isCrouched()) ? "sit" : "root",1);
 	
 	// No savior, continue the function
 	if(!%obj.isBeingSaved)
 	{
-		if(isObject(%obj.client)) {
+		if(isObject(%obj.client)) 
+		{
 			%obj.client.play2D("survivor_heartbeat_sound");
+
+			if(%obj.getDamageLevel() == 60)
+			{
+				%obj.client.centerprint("<font:impact:25>\c3You are about to die! Have someone help you or find a medpack!",4);
+			}
 		}
 		
-		%obj.addHealth(-1);		
-		%obj.setDamageFlash(0.25);
+		%obj.addHealth(-0.5);
+		%obj.setDamageFlash(%pulse);
 
 		// Scream every 5-10 seconds
 		if(%obj.lastcall+getRandom(5000,10000) < getsimtime())
@@ -620,8 +631,8 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	}
 
 	// Keep the loop going until the conditions above are met
-	cancel(%obj.downloop);
-	%obj.downloop = %this.schedule(1000,DownLoop,%obj);	
+	cancel(%obj.downloop);	
+	%obj.downloop = %this.schedule(%time,DownLoop,%obj);	
 }
 
 function EventidePlayer::onDisabled(%this,%obj)

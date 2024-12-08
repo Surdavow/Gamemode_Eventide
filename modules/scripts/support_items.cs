@@ -10,7 +10,8 @@ package Eventide_Items
 		}
 
 		// Return if the player already has the item in their inventory
-		for (%i = 0; %i < (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools; %i++)
+		%inventorytoolcount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %this.maxTools;
+		for (%i = 0; %i < %inventorytoolcount; %i++)
 		{
 			if (%obj.tool[%i] == %col.getDataBlock())
 			{
