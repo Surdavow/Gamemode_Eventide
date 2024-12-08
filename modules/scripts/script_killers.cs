@@ -1,5 +1,19 @@
 package Eventide_Killers
 {
+	function getBrickGroupFromObject(%obj)
+	{
+		if(isObject(%obj) && %obj.getClassName() $= "AIPlayer")
+		{
+			switch$(%obj.getDataBlock().getName())			
+			{
+				case "ShireZombieBot": return %obj.ghostclient.brickgroup;
+				case "PuppetMasterPuppet": return %obj.client.brickgroup;
+			}
+		}
+
+		Parent::getBrickGroupFromObject(%obj);
+	}
+
 	function Player::addItem(%player, %image, %client)
 	{
 		if(!%obj.isSkinwalker)

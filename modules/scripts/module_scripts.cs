@@ -18,12 +18,12 @@ exec("./support_billboard.cs");
 exec("./script_chatsystem.cs");
 exec("./script_commands.cs");
 exec("./script_killers.cs");
-exec("./script_maprotation.cs");
 exec("./script_peggyfootsteps.cs");
 exec("./script_players.cs");
 exec("./script_distantSounds.cs");
 exec("./script_saveloadstats.cs");
 exec("./script_shopsystem.cs");
+exec("./script_maprotation.cs");
 
 // Face system
 exec("./script_facesystem.cs");

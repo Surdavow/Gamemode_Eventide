@@ -494,7 +494,11 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 		    commandToClient(%obj.client, 'SetVignette', true, "0 0 0" SPC %obj.tunnelVision);
 		}
 		// Then reset the tunnel vision effect
-		else return commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);		
+		else
+		{
+			commandToClient(%obj.client, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);		
+			return;
+		}
 	}
 
 	%obj.tunnelVisionsched = %this.schedule(50, tunnelVision, %obj, %bool);	
