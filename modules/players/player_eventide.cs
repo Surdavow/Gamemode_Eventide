@@ -294,16 +294,22 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 
 function EventidePlayer::CounterPrint(%this,%obj, %client, %amount, %message)
 {
-    if (!isobject(%client)) return;
+    if (!isobject(%client)) 
+	{
+		return;
+	}
 
     %addsymbol = "";
     %symbol = "|";
 
     // Generate the repeated symbols
-    for (%i = 0; %i < %amount; %i++) %addsymbol = %addsymbol @ %symbol;    
+    for (%i = 0; %i < %amount; %i++) 
+	{
+		%addsymbol = %addsymbol @ %symbol;
+	}
 
     // Display the custom message
-    %client.centerprint("<font:impact:40>\c3" @ %message @ " <br>\c2" @ %addsymbol, 1);
+    %client.centerPrint("<font:impact:30>\c3" @ %message @ " <br>\c2" @ %addsymbol, 1);
 }
 
 function EventidePlayer::reviveDowned(%this,%obj,%victim,%bool)
@@ -507,11 +513,11 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {
 	// If the damage received too much damage and the player is not already incapacitated, check some conditions to see if they should be
-	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && !%obj.hasBeenDowned)
+	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && !%obj.wasDowned)
     {   
 		%obj.setHealth(100);     
         %obj.setDatablock("EventidePlayerDowned");		
-		%obj.hasBeenDowned = true;
+		%obj.wasDowned = true;
 
 		if(isObject(%minigame = getMinigamefromObject(%obj))) 
 		{
@@ -600,20 +606,14 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	{
 		return;
 	}
-
-	%time = mClampF((100-%obj.getDamageLevel()) * 15,200,1100);
 	
 	// No savior, continue the function
 	if(!%obj.isBeingSaved)
 	{
 		if(isObject(%obj.client)) 
 		{
-			%obj.client.play2D("survivor_heartbeat_sound");
-
-			if(%obj.getDamageLevel() >= 60)
-			{
-				%obj.client.centerprint("<font:impact:25>\c3You are about to die! Have someone help you or find a medpack!",1);
-			}
+			%heartbeatvariant = (%obj.getDamageLevel() >= 50) ? 2 : 1;
+			%obj.client.play2D("survivor_heartbeat" @ %heartbeatvariant @ "_sound");
 		}
 		
 		%obj.addHealth(-1);
@@ -621,19 +621,22 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		%obj.setDamageFlash(%pulse);
 
 		// Scream every 5-10 seconds
-		if(%obj.lastcall+getRandom(5000,10000) < getsimtime())
+		if(%obj.lastDown+getRandom(5000,10000) < getSimTime())
 		{
-			%obj.lastcall = getsimtime();
+			%obj.lastDown = getSimTime();
 			%obj.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
 			%obj.playthread(3,"plant");
 		}
 	}
 
-	// Keep the loop going until the conditions above are met
+	// Keep the loop going until the conditions above are met, the loop goes faster as the player slowly loses health
 	cancel(%obj.downloop);
-	%obj.downloop = %this.schedule(%time,DownLoop,%obj);
+	%obj.downloop = %this.schedule(mClampF((100-%obj.getDamageLevel()) * 15,200,1100),DownLoop,%obj);
 	
-	%obj.setActionThread((!%obj.isCrouched()) ? "sit" : "root",1);
+	if(!%obj.isCrouched())
+	{
+		%obj.setActionThread("sit",1);
+	}	
 }
 
 function EventidePlayer::onDisabled(%this,%obj)
@@ -652,7 +655,10 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {
 	Parent::onDisabled(%this,%obj);
 		
-	for (%j = 0; %j < 4; %j++) %obj.unmountimage(%j); // Remove all mounted images
+	for (%j = 0; %j < 4; %j++)
+	{
+		%obj.unmountimage(%j); // Remove all mounted images
+	}
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 
 	// Let the killer know that a survivor has been killed
@@ -679,7 +685,8 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 				}
 				
 				//Play a sound for the radio being dropped
-				if(%obj.tool[%i].getName() $= "RadioItem") {
+				if(%obj.tool[%i].getName() $= "RadioItem") 
+				{
 					serverPlay3d("radio_unmount_sound",%obj.getPosition());
 				}
 

@@ -579,21 +579,34 @@ function PeggFootsteps(%obj, %lastVert)
 	cancel(%obj.peggstep);
 	if(%obj.getdataBlock().getName() $= "EventidePlayer")
 	{
-		%velz = getword(%obj.getVelocity(),2);
-		if(%velz < 0) %obj.addvelocity("0 0 -0.1");
-
-		if(%velz < -15 && !%obj.isFalling)
-		{				
-			%obj.playthread(2,"side");
-			%obj.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
-			%obj.getDatablock().TunnelVision(%obj,true);
-			%obj.isFalling = true;
-		}
-		else if(%obj.isFalling && %velz >= 0)
+		%velz = getword(%obj.getVelocity(), 2);
+		if (%velz < 0)
 		{
-			%obj.playthread(2,"root");
-			%obj.getDatablock().TunnelVision(%obj,false);
-			%obj.isFalling = false;
+		    // Make the player fall faster
+			%obj.addvelocity("0 0 -0.1");
+
+		    if (%velz < -15)
+		    {
+		        if (%obj.lastFallSpamClick+getRandom(50,250) < getSimTime())
+				{
+					%obj.lastFallSpamClick = getSimTime();
+					%obj.activateStuff();
+				}
+
+		        if (!%obj.isFalling)
+		        {
+		            %obj.playthread(2, "side");
+		            %obj.playaudio(0, "norm_scream" @ getRandom(0, 4) @ "_sound");
+		            %obj.getDatablock().TunnelVision(%obj, true);
+		            %obj.isFalling = true;
+		        }
+		    }
+		}
+		else if (%obj.isFalling)
+		{
+		    %obj.playthread(2, "root");
+		    %obj.getDatablock().TunnelVision(%obj, false);
+		    %obj.isFalling = false;
 		}
 	}	
 

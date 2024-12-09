@@ -2,8 +2,12 @@ package Eventide_LocalChat
 {
     function ServerCmdStartTalking(%client)
 	{
-		if($MinigameLocalChat) return;
-		else parent::ServerCmdStartTalking(%client);
+		// This exposes who is talking, so it would be better to disable it when the minigame starts to keep it anonymous
+        if ($MinigameLocalChat)
+        {
+            return;
+        }
+		Parent::ServerCmdStartTalking(%client);
 	}
 
     function serverCmdMessageSent(%client,%message)
@@ -13,16 +17,16 @@ package Eventide_LocalChat
         %client.clanSuffix = "";
         
         // Do not continue if local chat is disabled
-		if(!$MinigameLocalChat)
+		if (!$MinigameLocalChat)
         {
             return Parent::ServerCmdMessageSent(%client, %message);
         }
 		
         // Process the message then forward it to the main chat system
 		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
-		if(%message !$= "")
+		if (%message !$= "")
         {
-            ChatMod_LocalChat(%client, %message);
+            ChatMod_LocalChat(%client,%message);
         }		
 
         // Update the last message sent and echo the message
@@ -37,17 +41,17 @@ package Eventide_LocalChat
         %client.clanSuffix = "";
 
         // Do not continue if local chat is disabled
-		if(!$MinigameLocalChat)
+		if (!$MinigameLocalChat)
         {
             return Parent::ServerCmdMessageSent(%client, %message);
         }
 
         // Update the last message sent and echo the message
 		%client.lastMessageSent = %message;
-		echo("(TEAMS)" SPC %client.name @ ": " @ getSubStr(%message, 0, strlen(%message)));        
+		echo("(TEAMS)" SPC %client.name @ ": " @ getSubStr(%message, 0, strlen(%message)));
 
 		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);		
-		if(%message !$= "" && isObject(%client.player))
+		if (%message !$= "" && isObject(%client.player))
 		{
             %client.player.playThread(3,talk);
             %client.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
@@ -67,7 +71,7 @@ package Eventide_LocalChat
 };
 
 // In case the package is already activated, deactivate it first before reactivating it
-if(isPackage(Eventide_LocalChat)) deactivatePackage(Eventide_LocalChat);
+if (isPackage(Eventide_LocalChat)) deactivatePackage(Eventide_LocalChat);
 activatePackage(Eventide_LocalChat);
 
 /// Processes a chat message for a client before it is sent to the server
@@ -77,61 +81,52 @@ activatePackage(Eventide_LocalChat);
 /// @return The processed message to be sent to the server
 function ChatMod_processMessage(%client, %message, %lastMessageSent) 
 {    
+    // Trim and clean the message
     %message = trim(stripMLControlChars(%message));
     if (%message $= "")
     {
         return false;
     }
-    
-    // Check for duplicate messages (spam)
+
+    // Handle spam or duplicate messages
     if (%message $= %lastMessageSent && !%client.isAdmin) 
     {
         messageClient(%client, '', "Do not spam.");
         return false;
     }
-    
-    // Process URLs
-    for (%i = 0; %i < getWordCount(%message); %i++) 
-    {
-        %word = getWord(%message, %i);
-        if (getSubStr(%word, 0, 7) $= "http://")
-        {
-            %message = setWord(%message, %i, "<a:" @ %word @ ">" @ %word @ "</a>");        
-        }
-    }
-    
-    //etard
-    if($Pref::Server::ETardFilter) for(%i=0; %i < getWordCount(%message); %i++)
-    {
-        %word = getWord(%message, %i);
-        for(%j=0; %j<getwordCount($Pref::Server::ETardList); %j++) 
-        {
-            if(%word $= getWord($Pref::Server::ETardList,%j))
-            {
-                %etardcheck = true;
-            }
-        }        
-    }    
 
-    //conditional check
-    if(%etardcheck || (%message $= %lastMessageSent && !%client.isAdmin) || %message $= "")
+    // Process URLs and check for restricted words (etard filter)
+    %wordCount = getWordCount(%message);
+
+    for (%i = 0; %i < %wordCount; %i++) 
     {
-        if(%etardcheck)
+        %word = getWord(%message, %i);
+
+        // Convert URLs to clickable links
+        if (strstr(%word, "://") != -1) 
         {
-            messageClient(%client, '', "This is a civilized game. Please use full words.");
+            %message = setWord(%message, %i, "<a:" @ %word @ ">" @ %word @ "</a>");
         }
-        else if(%message $= %lastMessageSent && !%client.isAdmin)
+
+        // Check against the restricted word list
+        if ($Pref::Server::ETardFilter) 
         {
-            messageClient(%client, '', "Do not spam.");        
+            for (%j = 0; %j < getWordCount($Pref::Server::ETardList); %j++) 
+            {
+                // Check if the word matches any of the restricted words
+                if (%word $= getWord($Pref::Server::ETardList, %j)) 
+                {                    
+                    messageClient(%client, '', "This is a civilized game. Please use full words.");
+                    return false;
+                }
+            }
         }
-        return false;
     }
-    
+
     return %message;
 }
 
 /// Shows a chat message as a shape name above the player's head.
-///
 /// @param player The player to show the message above
 /// @param message The message to be shown
 /// @param messageType The type of message, either 'whisper', 'shout', or 'normal'. The distance of the
@@ -160,17 +155,17 @@ function ChatMod_ShowShapeName(%player, %message, %messageType)
 function ChatMod_GetMessagePrefix(%message) 
 {   
     // Return if the message is empty
-    if(!strLen(%message)) return "" TAB "" TAB "";
+    if (!strLen(%message)) return "" TAB "" TAB "";
 
     // Global message
-    if(getSubStr(%message, 0, 1) $= "&") return "\c6[\c4GLOBAL\c6] " TAB "global" TAB getSubStr(%message, 1, strLen(%message) - 1);
+    if (getSubStr(%message, 0, 1) $= "&") return "\c6[\c4GLOBAL\c6] " TAB "global" TAB getSubStr(%message, 1, strLen(%message) - 1);
 
     // Shouting...
-    if(strstr(%message,"!") != -1 || (strCmp(%message, strUpr(%message)) == 0 && strlen(stripChars(%message, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")) != strlen(%message))) 
+    if (strstr(%message,"!") != -1 || (strCmp(%message, strUpr(%message)) == 0 && strlen(stripChars(%message, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")) != strlen(%message))) 
     return "\c3(SHOUT) " TAB "shout" TAB %message;
 
     // Whispering
-    if(strstr(%message,"...") != -1) return "\c3(whisper) " TAB "whisper" TAB %message;
+    if (strstr(%message,"...") != -1) return "\c3(whisper) " TAB "whisper" TAB %message;
 
     // Normal message
     return "" TAB "" TAB %message;
@@ -212,7 +207,7 @@ function ChatMod_LocalChat(%client, %message)
     %messageType = getField(%result, 1);
     %message = getField(%result, 2);
 
-    if(%message $= "") return;
+    if (%message $= "") return;
 
     // Global chat handling
     if (%messageType $= "global") 
@@ -235,7 +230,7 @@ function ChatMod_LocalChat(%client, %message)
     // Show the chat bubble or notification above the player
     ChatMod_ShowShapeName(%tempclient.player, %message, %messageType);
 
-    if(isObject(%tempclient.player))
+    if (isObject(%tempclient.player))
     {
         %tempclient.player.schedule(mCeil(strLen(%message)/6*300),playthread,3,root);
         %tempclient.player.playThread(3,talk);

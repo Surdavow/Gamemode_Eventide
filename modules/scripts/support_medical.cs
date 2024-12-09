@@ -4,11 +4,10 @@ package Eventide_Medical_Package
     {
 		Parent::healLoop(%this, %obj);		
 		
-		if(%obj.zombieMedpackUse >= 3.4)
+		if(%obj.zombieMedpackUse >= 3.3)
 		{
 			%obj.pseudoHealth = (%obj.survivorclass $= "fighter") ? 75 : 0;
-			%obj.setHealth(%obj.getDataBlock().maxDamage);
-			%obj.hasBeenDowned = false;
+			%obj.wasDowned = false;
 		}
     }
 
@@ -16,11 +15,10 @@ package Eventide_Medical_Package
     {
     	Parent::healLoop(%this, %obj);
     
-		if(%obj.GauzeUse >= 2.4)
+		if(%obj.GauzeUse >= 2.3)
 		{
 			%obj.pseudoHealth = (%obj.survivorclass $= "fighter") ? 75 : 0;
-			%obj.addHealth(%obj.getDataBlock().maxDamage/2);
-			%obj.hasBeenDowned = false;
+			%obj.wasDowned = false;
 		}
     }
 };

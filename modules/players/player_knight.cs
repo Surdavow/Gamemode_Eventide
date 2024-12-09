@@ -273,21 +273,18 @@ function player::knightDash(%pl,%vec,%tick)
 	if(!%pl.knightCancelDash) %pl.setVelocity(vectorAdd(%x/5 SPC %y/5 SPC (%db.knightDashZ ? %z/5 : %z),%vec));
 	%pl.knightDashSched = %pl.schedule(32,knightDash,%vec,%tick++);
 }
-package swol_knight
+
+function PlayerKnight::onDisabled(%this,%obj)
 {
-	function gameConnection::onDeath(%cl,%a,%b,%c,%d,%e)
+	Parent::onDisabled(%this,%obj);
+
+	if(%obj.isknightDash && isObject(%client = %obj.client))
 	{
-		if(isObject(%pl = %cl.player))
-		{
-			if(%pl.isknightDash)
-			{
-				%cl.setControlCameraFov(%pl.knightFov);
-				commandToClient(%cl,'setVignette',$EnvGuiServer::VignetteMultiply,$EnvGuiServer::VignetteColor);
-			}
-		}
-		return parent::onDeath(%cl,%a,%b,%c,%d,%e);
+		%client.setControlCameraFov(%obj.knightFov);
+		commandToClient(%client,'setVignette',$EnvGuiServer::VignetteMultiply,$EnvGuiServer::VignetteColor);
 	}
-};
+		
+}
 
 function PlayerKnight::EventideAppearance(%this,%obj,%client)
 {

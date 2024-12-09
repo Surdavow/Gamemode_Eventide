@@ -1,10 +1,20 @@
 package Eventide_Player
 {
+	function Player::isCrouched(%obj)
+	{
+		%parent = Parent::isCrouched(%obj);
+
+		if(%obj.getDataBlock().isDowned && !%parent) 
+		{
+			%obj.setActionThread("sit",1);
+		}
+	}
+
 	function GameConnection::setControlObject(%this,%obj)
 	{
 		Parent::setControlObject(%this,%obj);
 		
-		if(%obj == %this.player && %obj.getDatablock().maxTools != %this.lastMaxTools)
+		if (%obj == %this.player && %obj.getDatablock().maxTools != %this.lastMaxTools)
 		{
 			%this.lastMaxTools = %obj.getDatablock().maxTools;
 			commandToClient(%this,'PlayGui_CreateToolHud',%obj.getDatablock().maxTools);
@@ -16,7 +26,7 @@ package Eventide_Player
 		parent::applyBodyColors(%client);
 		
 		// Call the EventideAppearance function if the player is an Eventide player
-		if(isObject(%player = %client.player) && %player.getDataBlock().isEventideModel) 
+		if (isObject(%player = %client.player) && %player.getDataBlock().isEventideModel) 
 		%player.getDataBlock().EventideAppearance(%player,%client);
 	}
 	function gameConnection::applyBodyParts(%client) 
@@ -24,7 +34,7 @@ package Eventide_Player
 		parent::applyBodyParts(%client);
 
 		// Call the EventideAppearance function if the player is an Eventide player
-		if(isObject(%player = %client.player) && %player.getDataBlock().isEventideModel) 
+		if (isObject(%player = %client.player) && %player.getDataBlock().isEventideModel) 
 		%player.getDataBlock().EventideAppearance(%player,%client);
 	}
 
@@ -32,7 +42,7 @@ package Eventide_Player
 	{
 		Parent::onImpact(%this, %obj, %col, %vec, %force);
 
-		if(%obj.isInvisible || !isObject(%obj))
+		if (%obj.isInvisible || !isObject(%obj))
 		{
 			return;
 		}
@@ -44,7 +54,7 @@ package Eventide_Player
 		%obj.spawnExplosion(pushBroomProjectile,%forcescale SPC %forcescale SPC %forcescale);
 
 		// Play a sound if the player is falling
-		if(%obj.getState() !$= "Dead" && getWord(%vec,2) > %obj.getdataBlock().minImpactSpeed)
+		if (%obj.getState() !$= "Dead" && getWord(%vec,2) > %obj.getdataBlock().minImpactSpeed)
 		{
 			serverPlay3D("impact_fall_sound",%obj.getPosition());		
 		}        
@@ -55,18 +65,18 @@ package Eventide_Player
 		Parent::onNewDatablock(%this,%obj);
 
 		// Initiate the gaze loop if the player is in a minigame
-		if(isObject(getMinigamefromObject(%obj))) 
+		if (isObject(getMinigamefromObject(%obj))) 
 		{
 			%this.GazeLoop(%obj);
 		}
 
 		// Update the tool HUD
-		if(%this != %obj.getDatablock() && %this.maxTools != %obj.client.lastMaxTools && isObject(%obj.client))
+		if (%this != %obj.getDatablock() && %this.maxTools != %obj.client.lastMaxTools && isObject(%obj.client))
 		{
 			%obj.client.lastMaxTools = %this.maxTools;
 			commandToClient(%obj.client,'PlayGui_CreateToolHud',%this.maxTools);
 			
-			for(%i=0;%i<%this.maxTools;%i++) 
+			for (%i=0;%i<%this.maxTools;%i++) 
 			{			
 				messageClient(%obj.client,'MsgItemPickup',"",%i,isObject(%obj.tool[%i]) ? %obj.tool[%i].getID() : 0,1);
 			}
@@ -77,15 +87,15 @@ package Eventide_Player
 	{
         Parent::onDisabled(%this, %obj, %state);
 
-		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++)
+		for (%i = 0; %i < %obj.getMountedObjectCount(); %i++)
 		{
-			if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) 
+			if (isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) 
 			{
 				%obj.getMountedObject(%i).delete();	
 			}
 		}
 
-        if(isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
+        if (isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
 		{
 			%client.EventidemusicEmitter.delete();        
         	%client.musicChaseLevel = 0;		
@@ -96,9 +106,9 @@ package Eventide_Player
 	{
 		Parent::onRemove(%this,%obj);
 
-		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++)
+		for (%i = 0; %i < %obj.getMountedObjectCount(); %i++)
 		{
-			if(isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) 
+			if (isObject(%obj.getMountedObject(%i)) && (%obj.getMountedObject(%i).getDataBlock().className $= "PlayerData")) 
 			{
 				%obj.getMountedObject(%i).delete();
 			}			
@@ -109,7 +119,7 @@ package Eventide_Player
 	{
 		Parent::ActivateStuff(%player);
 		
-		if(isObject(%player) && %player.getState() !$= "Dead" && isFunction(%player.getDataBlock().getName(),onActivate)) 
+		if (isObject(%player) && %player.getState() !$= "Dead" && isFunction(%player.getDataBlock().getName(),onActivate)) 
 		{
 			%player.getDataBlock().onActivate(%player);
 		}
@@ -118,14 +128,14 @@ package Eventide_Player
 };
 
 // In case the package is already activated, deactivate it first before reactivating it
-if(isPackage(Eventide_Player)) deactivatePackage(Eventide_Player);
+if (isPackage(Eventide_Player)) deactivatePackage(Eventide_Player);
 activatePackage(Eventide_Player);
 
 function Player::SetSpeedModifier(%obj,%a)
 {
 	%obj.Speed_Modifier = (%obj.Speed_Modifier $= "") ? 1 : %obj.Speed_Modifier;
 
-	if(!%a) 
+	if (!%a) 
 	{
 		return;	
 	}
@@ -153,7 +163,7 @@ function Player::AddMoveSpeedModifier(%obj,%a)
 
 function Player::SetTempSpeed(%obj,%speedMultiplier)
 {
-	if(!isObject(%obj) || %obj.getstate() $= "Dead")
+	if (!isObject(%obj) || %obj.getstate() $= "Dead")
 	{
 		return;
 	}
@@ -200,7 +210,7 @@ function Armor::GazeLoop(%this,%obj)
 	
 	if (isObject(%hit))
 	{
-		if(%hit.getType() & $TypeMasks::FxBrickObjectType)
+		if (%hit.getType() & $TypeMasks::FxBrickObjectType)
 		{
 			$InputTarget_Self = %hit;
 			$InputTarget_Player = %obj;
@@ -209,7 +219,7 @@ function Armor::GazeLoop(%this,%obj)
 			%hit.processInputEvent("onGaze", %gazer);
 		}
 
-		if(%hit.getType() & $TypeMasks::PlayerObjectType) 
+		if (%hit.getType() & $TypeMasks::PlayerObjectType) 
 		{
 			%obj.gazingPlayer = 0;
 		}
@@ -232,23 +242,23 @@ function Armor::EventideAppearance(%this,%obj,%client)
 	%obj.unHideNode((%client.larm ? "larmSlim" : "larm"));
 	%obj.unHideNode("headskin");
 
-	if($pack[%client.pack] !$= "none")
+	if ($pack[%client.pack] !$= "none")
 	{
 		%obj.unHideNode($pack[%client.pack]);
 		%obj.setNodeColor($pack[%client.pack],%client.packColor);
 	}
 
-	if($secondPack[%client.secondPack] !$= "none")
+	if ($secondPack[%client.secondPack] !$= "none")
 	{
 		%obj.unHideNode($secondPack[%client.secondPack]);
 		%obj.setNodeColor($secondPack[%client.secondPack],%client.secondPackColor);
 	}
-	if($hat[%client.hat] !$= "none")
+	if ($hat[%client.hat] !$= "none")
 	{
 		%obj.unHideNode($hat[%client.hat]);
 		%obj.setNodeColor($hat[%client.hat],%client.hatColor);
 	}
-	if(%client.hip)
+	if (%client.hip)
 	{
 		%obj.unHideNode("skirthip");
 		%obj.unHideNode("skirttrimleft");
@@ -262,20 +272,20 @@ function Armor::EventideAppearance(%this,%obj,%client)
 	}
 
 	%obj.setHeadUp(0);
-	if(%client.pack+%client.secondPack > 0) 
+	if (%client.pack+%client.secondPack > 0) 
 	{
 		%obj.setHeadUp(1);
 	}
 	
-	if($hat[%client.hat] $= "Helmet")
+	if ($hat[%client.hat] $= "Helmet")
 	{
-		if(%client.accent == 1 && $accent[4] !$= "none")
+		if (%client.accent == 1 && $accent[4] !$= "none")
 		{
 			%obj.unHideNode($accent[4]);
 			%obj.setNodeColor($accent[4],%client.accentColor);
 		}
 	}
-	else if($accent[%client.accent] !$= "none" && strpos($accentsAllowed[$hat[%client.hat]],strlwr($accent[%client.accent])) != -1)
+	else if ($accent[%client.accent] !$= "none" && strpos($accentsAllowed[$hat[%client.hat]],strlwr($accent[%client.accent])) != -1)
 	{
 		%obj.unHideNode($accent[%client.accent]);
 		%obj.setNodeColor($accent[%client.accent],%client.accentColor);
@@ -367,6 +377,7 @@ function GameConnection::Escape(%client)
 	{
 		%client.player.delete();
 	}
+	
     %client.lives = 0;
     %client.setdead(1);
 

@@ -171,16 +171,17 @@ function daggerImage::onReady(%this, %obj, %slot)
 
 function daggerImage::onFire(%this, %obj, %slot)
 {
-	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+	if(!isObject(%obj) || %obj.getState() $= "Dead") return;	
 
 	%obj.playthread(1, "shiftTo");
-	%startpos = %obj.getMuzzlePoint(0);
-	%endpos = %obj.getMuzzleVector(0);
+	%startpos = %obj.getEyePoint();
+	%endpos = %obj.getEyeVector();
 	%typemasks = $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
 	
 	%hit = containerRayCast(%startpos,vectorAdd(%startpos,VectorScale(%endpos,4)),%typemasks,%obj);
 	if(isObject(%hit))
 	{
+		%hitpos = posFromRaycast(%hit);
 		%p = new Projectile()
 		{
 			dataBlock = "daggerProjectile";
@@ -188,17 +189,18 @@ function daggerImage::onFire(%this, %obj, %slot)
 			sourceObject = %obj;
 			client = %obj.client;
 		};
-		%p.explode();
-		
-		%hitpos = posFromRaycast(%hit);
-		serverPlay3D("sworddaggerhitEnv" @ getRandom(1,2) @ "_sound",%hitpos);
+		%p.explode();					
 
-		// Hit player? Push them back and do damage, play aa sound too
+		// Hit player? Push them back and do damage, play a sound too
 		if(%hit.getType() & $TypeMasks::PlayerObjectType && minigameCanDamage(%obj,%hit))
 		{						
-			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),500),"0 0 500"));
+			%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getEyeVector(),500),"0 0 500"));
 			%hit.Damage(%obj, %hit.getPosition(), 40, $DamageType::Default);
 			serverPlay3D("sworddaggerhitPL" @ getRandom(1,2) @ "_sound",%hitpos);
+		}
+		else
+		{
+			serverPlay3D("sworddaggerhitEnv" @ getRandom(1,2) @ "_sound",%hitpos);
 		}
 	}
 }

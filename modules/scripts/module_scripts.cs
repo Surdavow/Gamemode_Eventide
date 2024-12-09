@@ -14,7 +14,6 @@ exec("./support_stringutilities.cs");
 exec("./support_vectorutilities.cs");
 exec("./support_billboards.cs");
 exec("./script_chatsystem.cs");
-exec("./script_commands.cs");
 exec("./script_killers.cs");
 exec("./script_peggyfootsteps.cs");
 exec("./script_players.cs");
