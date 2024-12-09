@@ -66,7 +66,7 @@ function servercmdSetFootstep(%client, %type, %sound)
 		return;
 	}
 
-	switch$ ( %type )
+	switch$ (%type)
 	{
 		case "pearl": $Pref::Server::PF::brickFXsounds::pearlStep = %hit;
 		case "chrome": $Pref::Server::PF::brickFXsounds::chromeStep = %hit;

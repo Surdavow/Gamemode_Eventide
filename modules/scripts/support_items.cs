@@ -113,17 +113,10 @@ package Eventide_Items
 	function ItemData::onAdd(%this, %obj)	
 	{
 		Parent::onAdd(%this,%obj);
-		if(!%obj.static) itemEmitterLoop(%obj);
 
 		if(!isObject(Eventide_MinigameGroup)) missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
 		Eventide_MinigameGroup.scheduleNoQuota(33,add,%obj);
 	}
-
-	function ItemData::onRemove(%this, %obj)
-	{
-		if(isObject(%obj.emitter)) %obj.emitter.delete();
-		parent::onRemove(%this,%obj);
-	}	
 
 	function Item::schedulePop(%obj)
 	{		

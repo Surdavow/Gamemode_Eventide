@@ -2,7 +2,7 @@ package Eventide_MapRotation
 {
 	function MiniGameSO::Reset(%minigame,%client)
 	{
-		if (ClientGroup.getCount() && $Pref::Server::MapRotation::enabled)
+		if (ClientGroup.getCount() && $Pref::Server::MapRotation::Enabled)
   		{
 			if ($Pref::Server::MapRotation::ResetCount >= $Pref::Server::MapRotation::minReset) 
 			{
@@ -38,6 +38,23 @@ package Eventide_MapRotation
 	}	
 };
 
+// In case the package is already activated, deactivate it first before reactivating it
+if(isPackage(Eventide_MapRotation)) deactivatePackage(Eventide_MapRotation);
+activatePackage(Eventide_MapRotation);
+
+if (!isFile("saves/EventideMapRotation/README.txt"))
+{	
+	%file = new FileObject();
+
+	if (%file.openForWrite("saves/EventideMapRotation/README.txt"))
+	{
+		%file.writeLine("You need to place save files in this folder for the Map Rotation to be able to work!");
+	}
+	
+	%file.close();
+	%file.delete();
+}
+
 function Eventide_endMapChange()
 {
 	echo("Map Changer: Respawning all players...");
@@ -57,27 +74,6 @@ function Eventide_endMapChange()
 	{
 		%minigame.chatMsgAll("<font:Impact:30>\c3Round" SPC $Pref::Server::MapRotation::ResetCount++ SPC "of" SPC $Pref::Server::MapRotation::minReset);
 	}
-}
-
-// In case the package is already activated, deactivate it first before reactivating it
-if(isPackage(Eventide_MapRotation)) deactivatePackage(Eventide_MapRotation);
-activatePackage(Eventide_MapRotation);
-
-if (!isFile("saves/EventideMapRotation/README.txt"))
-{	
-	%file = new FileObject();
-
-	if (%file.openForWrite("saves/EventideMapRotation/README.txt"))
-	{
-		%file.writeLine("You need to place save files in this folder for the Map Rotation to be able to work!");
-	}	
-	else 
-	{
-		error("File is not open for writing");
-	}
-	
-	%file.close();
-	%file.delete();
 }
 
 function Eventide_loadNextMap()
@@ -124,7 +120,7 @@ function Eventide_loadNextMap()
 	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", 2, 0);
 }
 
-function BuildMapLists()
+function Eventide_loadMapList()
 {
 	%mapdir = "saves/EventideMapRotation/*.bls";	
 	$Pref::Server::MapRotation::numMap = 0;
@@ -139,4 +135,4 @@ function BuildMapLists()
 	echo($Pref::Server::MapRotation::numMap SPC "maps loaded.");
 }
 
-BuildMapLists();
+Eventide_loadMapList();

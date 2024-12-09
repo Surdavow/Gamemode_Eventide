@@ -31,8 +31,6 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	rightclickicon = "color_grab";
 	leftclickicon = "color_melee";
 
-	isKiller = true;
-
 	firstpersononly = false;
 	rechargeRate = 0.5;
 	maxTools = 0;
@@ -40,7 +38,6 @@ datablock PlayerData(PlayerGrabber : PlayerRenowned)
 	maxForwardSpeed = 6.55;
 	maxBackwardSpeed = 3.74;
 	maxSideSpeed = 5.61;
-	//+10% Speed
 	cameramaxdist = 3;
 	maxfreelookangle = 2.5;
 	jumpForce = 0;

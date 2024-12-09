@@ -6,8 +6,8 @@ if($RTB::Hooks::ServerControl)
 	RTB_registerPref("Enable local chat (minigame only)",	"Eventide","$Pref::Server::ChatMod::lchatEnabled",	"bool","Gamemode_Eventide","1","0","0","");
 	RTB_registerPref("Enable chase music",	"Eventide","$Pref::Server::Eventide::chaseMusicEnabled",	"bool","Gamemode_Eventide","1","0","0","");
 	RTB_registerPref("Enable killer sounds",	"Eventide","$Pref::Server::Eventide::killerSoundsEnabled",	"bool","Gamemode_Eventide","1","0","0","");
-	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::enabled","bool","Gamemode_Eventide",false,false,false);
-	RTB_registerPref("Rounds per map","Eventide - Map Rotation","$Pref::Server::MapRotation::minreset","int 1 10","Gamemode_Eventide",5,false,true);	
+	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::Enabled","bool","Gamemode_Eventide",false,false,false);
+	RTB_registerPref("Rounds per map","Eventide - Map Rotation","$Pref::Server::MapRotation::minReset","int 1 10","Gamemode_Eventide",5,false,true);	
 	RTB_registerPref("Allow Gaze", "Eventide - Gaze", "$Pref::Server::GazeEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
 	RTB_registerPref("Sight Range", "Eventide - Gaze", "$Pref::Server::GazeRange", "int 0 100", "Gamemode_Eventide", 20, 0, 0);
 	RTB_RegisterPref("Enable Footstep SoundFX", "Eventide - Footsteps", "$Pref::Server::PF::footstepsEnabled", "bool", "Gamemode_Eventide", 1, 0, 0);
@@ -36,8 +36,8 @@ else
 	if ($Pref::Server::PF::defaultStep $= "") $Pref::Server::PF::defaultStep = 1;
 	if ($Pref::Server::PF::terrainStep $= "") $Pref::Server::PF::terrainStep = 0;
 	if ($Pref::Server::PF::vehicleStep $= "") $Pref::Server::PF::vehicleStep = 0;	
-	if ($Pref::Server::MapRotation::enabled $= "") $Pref::Server::MapRotation::enabled = true;
-	if ($Pref::Server::MapRotation::minreset $= "") $Pref::Server::MapRotation::minreset = 5;
+	if ($Pref::Server::MapRotation::Enabled $= "") $Pref::Server::MapRotation::Enabled = true;
+	if ($Pref::Server::MapRotation::minReset $= "") $Pref::Server::MapRotation::minReset = 5;
 }
 
 if ($Pref::Server::PF::brickFXsounds::pearlStep $= "") $Pref::Server::PF::pearlStep = 4;

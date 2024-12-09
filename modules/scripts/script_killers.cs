@@ -1,7 +1,8 @@
 package Eventide_Killers
 {
 	function getBrickGroupFromObject(%obj)
-	{
+	{	
+		// Workaround for AIPlayers
 		if(isObject(%obj) && %obj.getClassName() $= "AIPlayer")
 		{
 			switch$(%obj.getDataBlock().getName())			
@@ -16,10 +17,13 @@ package Eventide_Killers
 
 	function Player::addItem(%player, %image, %client)
 	{
+		// Check if the player is not a skinwalker, only then can they pick up items
 		if(!%obj.isSkinwalker)
-		Parent::addItem(%player, %image, %client);		
+		{
+			Parent::addItem(%player, %image, %client);		
+		}
+		
     }
-
 	function serverCmdLight(%client)
 	{
 		if(!isObject(%client.player)) return;
