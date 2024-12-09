@@ -11,6 +11,7 @@ package Eventide_MapRotation
 				%roundstring = ($Pref::Server::MapRotation::minReset == 1) ? "The round has" : $Pref::Server::MapRotation::minReset SPC "rounds have";
 				%minigame.chatMsgAll("<font:Impact:30>\c3" @ %roundstring SPC "passed, loading the next map!");
 				Eventide_loadNextMap();
+				echo("Map Changer: Loading next map...");
 				return Parent::Reset(%minigame, %client);
 			}
 
@@ -39,7 +40,7 @@ package Eventide_MapRotation
 
 function Eventide_endMapChange()
 {
-	echo("Respawning all players...");
+	echo("Map Changer: Respawning all players...");
 	$Eventide_MapChanging = false;
 	
 	// Respawn all players
