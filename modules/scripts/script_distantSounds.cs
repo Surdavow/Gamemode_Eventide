@@ -197,7 +197,7 @@ package Eventide_distantSounds
 
     function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
     {
-        parent::ChatMod_RadioMessage(%client, %message, %isTeamMessage);
+        Parent::ChatMod_RadioMessage(%client, %message, %isTeamMessage);
         %killer = getCurrentKiller();
         %player = %client.player;
         if(isObject(%player) && isObject(%killer) && %player != %killer)

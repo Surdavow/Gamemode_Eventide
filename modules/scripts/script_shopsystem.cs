@@ -1,6 +1,12 @@
+// Eventide Shop System Script
+// This script implements a shop system with menus for buying titles, instruments, and customizing player features.
+// Players earn points and spend them on items in the shop. Items include titles, colors, and instruments.
+
+// Initialize variables to be used later
 $ShopInstrumentList = "GuitarImage BanjoImage HarmonicaImage ViolinImage KeytarImage FluteImage ElectricGuitarImage ElectricBassImage";
 $ShopTitleList = "Title Color Bitmap";
 
+// Create the main menu for the shop
 if(isObject(EventideShopMainMenu)) EventideShopMainMenu.delete();
 new ScriptObject(EventideShopMainMenu)
 {
@@ -162,8 +168,12 @@ function servercmdst(%client,%type,%input)
         case "color":   if(!%client.hasTitleAccess[1]) return messageClient(%client, '', "\c0You haven't purchased this ability!");
         
                         for(%i = 0; %i < strLen(strlwr(%input)); %i++)
-                        if(strStr("abcdefghijklmnopqrstuvwxyz0123456789", getSubStr(strlwr(%input), %i, 1)) == -1 || strLen(strlwr(%input)) != 6)
-                        return messageClient(%client, '', "\c0The color needs to be a HEX value!");
+                        {
+                            if(strStr("abcdefghijklmnopqrstuvwxyz0123456789", getSubStr(strlwr(%input), %i, 1)) == -1 || strLen(strlwr(%input)) != 6)
+                            {
+                                return messageClient(%client, '', "\c0The color needs to be a HEX value!");
+                            }
+                        }
 
                         if(%input !$= "")
                         {
@@ -177,7 +187,10 @@ function servercmdst(%client,%type,%input)
                         }                        
                         return;                              
 
-        case "bitmap":  if(!%client.hasTitleAccess[2]) return messageClient(%client, '', "\c0You haven't purchased this ability!");
+        case "bitmap":  if(!%client.hasTitleAccess[2])
+                        {
+                            return messageClient(%client, '', "\c0You haven't purchased this ability!");
+                        }
                         
                         return %client.startCenterprintMenu(EventideSetTitleBitmapMenu);                                   
     }

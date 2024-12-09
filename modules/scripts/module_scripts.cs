@@ -1,7 +1,6 @@
 exec("./support_extraresources.cs");
 exec("./support_ghostingUtils.cs");
 exec("./support_centerprintmenusystem.cs");
-exec("./support_client.cs");
 exec("./support_datainstance.cs");
 exec("./support_itemammo.cs");
 exec("./support_items.cs");
@@ -13,18 +12,15 @@ exec("./support_minigame.cs");
 exec("./support_statuseffect.cs");
 exec("./support_stringutilities.cs");
 exec("./support_vectorutilities.cs");
-exec("./support_billboard.cs");
-
+exec("./support_billboards.cs");
 exec("./script_chatsystem.cs");
 exec("./script_commands.cs");
 exec("./script_killers.cs");
 exec("./script_peggyfootsteps.cs");
 exec("./script_players.cs");
-exec("./script_distantSounds.cs");
 exec("./script_saveloadstats.cs");
 exec("./script_shopsystem.cs");
 exec("./script_maprotation.cs");
-
-// Face system
+exec("./script_distantSounds.cs");
 exec("./script_facesystem.cs");
 parseFacePacks("Add-Ons/Gamemode_Eventide/modules/players/faces");

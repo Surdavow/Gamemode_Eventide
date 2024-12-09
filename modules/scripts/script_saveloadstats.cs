@@ -1,48 +1,59 @@
+// Initialize variables to be used later
 $Eventide_ReferenceStats = "score customtitle customtitlebitmap customtitlecolor";
+$Eventide_ReferenceStatsPath = "config/server/eventide/playerstats/";
 
 // Concatenate conditions for each instrument index
-for (%j = 0; %j < getWordCount($ShopInstrumentList); %j++) {
+for (%j = 0; %j < getWordCount($ShopInstrumentList); %j++) 
+{
 	$Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasInstrument" @ %j;
 }
 
 // Concatenate conditions for each title setting
-for (%h = 0; %h < getWordCount($ShopTitleList); %h++) {
+for (%h = 0; %h < getWordCount($ShopTitleList); %h++) 
+{
 	$Eventide_ReferenceStats = $Eventide_ReferenceStats SPC "hasTitleAccess" @ %h;
 }
 
-$Eventide_ReferenceStatsPath = "config/server/eventide/playerstats/";	
-
-function Eventide_storeEventideStats(%client)
+/// Stores the eventide stats for a given client into a file.
+/// @param %client The client whose stats are to be stored.</param>
+function Client::storeEventideStats(%client)
 {
-	if(!isObject(%client)) 
-	{
-		return;
-	}
+    // Validate if the client object exists
+    if(!isObject(%client)) 
+    {
+        return;
+    }
 
-	%file = $Eventide_ReferenceStatsPath @ %client.BL_ID @ ".txt";	
-	%readfile = new fileObject();
-	%readfile.openForWrite(%file);
+    // Define the file path using the client's BL_ID
+    %file = $Eventide_ReferenceStatsPath @ %client.BL_ID @ ".txt";	
+    %readfile = new fileObject();
+    %readfile.openForWrite(%file);
 
-	for(%rat = 0; %rat < getWordCount($Eventide_ReferenceStats); %rat++) 
-	{
-		%readfile.writeLine(getWord($Eventide_ReferenceStats,%rat) TAB %client.getField(getWord($Eventide_ReferenceStats,%rat)));
-	}
-	
-
-	%readfile.close();
-	%readfile.delete();	
+    // Write each reference stat to the file
+    for(%rat = 0; %rat < getWordCount($Eventide_ReferenceStats); %rat++) 
+    {
+        %readfile.writeLine(getWord($Eventide_ReferenceStats,%rat) TAB %client.getField(getWord($Eventide_ReferenceStats,%rat)));
+    }
+    
+    %readfile.close();
+    %readfile.delete();	
 }
 
-function Eventide_loadEventideStats(%client)
+/// Loads the eventide stats for a given client from a file.
+/// @param %client The client whose stats are to be loaded.
+function Client::loadEventideStats(%client)
 {
+	// Validate if the client object exists
 	if(!isObject(%client) || !isFile(%file = $Eventide_ReferenceStatsPath @ %client.BL_ID @ ".txt")) 
 	{
 		return;
 	}
 
+	// Read each reference stat from the file
 	%readfile = new fileObject();
 	%readfile.openForRead(%file);
 
+	// Write each reference stat to the client
 	for(%apc = 0; %apc < getWordCount($Eventide_ReferenceStats); %apc++)
 	{
 		%line = %readfile.readLine();
@@ -58,13 +69,13 @@ package Eventide_SaveLoadStats
 	function gameConnection::autoAdminCheck(%client) 
 	{		
 		Parent::autoAdminCheck(%client);
-		scheduleNoQuota(1000,0,Eventide_loadEventideStats,%client);
+		%client.schedule(1000,loadEventideStats);
 	}
 
 	function GameConnection::onClientLeaveGame(%client)
 	{
 		Parent::onClientLeaveGame(%client);
-		Eventide_storeEventideStats(%client);	
+		%client.storeEventideStats();
 	}
 };
 

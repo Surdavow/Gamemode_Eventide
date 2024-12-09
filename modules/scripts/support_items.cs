@@ -120,8 +120,9 @@ package Eventide_Items
 
 	function Item::schedulePop(%obj)
 	{		
+		// Do not continue if there is a minigame going on, the item should not disappear
 		if(MiniGameGroup.getCount() || (isObject(Slayer_MiniGameHandlerSG) && Slayer_MiniGameHandlerSG.getCount())) return;
-		else return Parent::schedulePop(%obj);				
+		Parent::schedulePop(%obj);				
 	}
 };
 

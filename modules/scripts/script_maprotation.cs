@@ -78,21 +78,9 @@ function Eventide_endMapChange()
 
 function Eventide_loadNextMap()
 {
-	$Pref::Server::MapRotation::ResetCount = 0;
-	%nextnum = $Pref::Server::MapRotation::current+1;
-	%current = $Pref::Server::MapRotation::current;	
-
-	if($Pref::Server::MapRotation::map[%nextnum] !$= "") 
-	{
-		%filename = $Pref::Server::MapRotation::map[%nextnum];
-		$Pref::Server::MapRotation::current++;
-		
-	} 
-	else 
-	{
-		%filename = $Pref::Server::MapRotation::map0;
-		$Pref::Server::MapRotation::current = 0;
-	}
+	// Move to the next map, or wrap around to the start if we reach the end
+	$Pref::Server::MapRotation::current = ($Pref::Server::MapRotation::current + 1) % $Pref::Server::MapRotation::numMap;
+	%filename = $Pref::Server::MapRotation::map[$Pref::Server::MapRotation::current];
 
 	// Prevent players from respawning
 	$Eventide_MapChanging = true;
@@ -115,8 +103,28 @@ function Eventide_loadNextMap()
 		}
 	}
 
-	//clear all of the public bricks
-	BrickGroup_888888.chaindeleteall();	
+	// Clear all of the public bricks
+	BrickGroup_888888.chaindeleteall();
+
+   // Taken from Gamemode_Speedkart, with some modifications
+   // load environment if it exists
+	%envFile = filePath(%fileName) @ "/environment.txt"; 
+	if(isFile(%envFile))
+	{  
+		//usage: GameModeGuiServer::ParseGameModeFile(%filename, %append);
+		//if %append == 0, all minigame variables will be cleared 
+		%res = GameModeGuiServer::ParseGameModeFile(%envFile, 1);
+	
+		EnvGuiServer::getIdxFromFilenames();
+		EnvGuiServer::SetSimpleMode();
+	
+		if(!$EnvGuiServer::SimpleMode)     
+		{
+			EnvGuiServer::fillAdvancedVarsFromSimple();
+			EnvGuiServer::SetAdvancedMode();
+		}
+	}
+
 	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", 2, 0);
 }
 
@@ -132,7 +140,7 @@ function Eventide_loadMapList()
 		%file = findNextFile(%mapdir);		
 	}
 
-	echo($Pref::Server::MapRotation::numMap SPC "maps loaded.");
+	echo("Map Changer:" SPC $Pref::Server::MapRotation::numMap SPC "maps loaded.");
 }
 
 Eventide_loadMapList();

@@ -1,7 +1,6 @@
 datablock PlayerData(PlayerKnight : PlayerRenowned)
 {
 	uiName = "Knight Player";
-	isKiller = true;
 	
 	killerSpawnMessage = "An armored figure quests for blood.";
 	
@@ -23,13 +22,13 @@ datablock PlayerData(PlayerKnight : PlayerRenowned)
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
 	
-	showEnergyBar = 1;
+	showEnergyBar = true;
 	rechargeRate = 0.45;
 	maxForwardSpeed = 5.8;
 	maxBackwardSpeed = 3.2;
 	maxSideSpeed = 4.9;
 	
-	knightDash = 1;
+	knightDash = true;
 	knightDashZ = 0;
 	knightDashCost = 100;
 	knightDashDelay = 500;
@@ -42,9 +41,36 @@ datablock PlayerData(PlayerKnight : PlayerRenowned)
 	leftclickicon = "color_melee";	
 };
 
-function PlayerKnight::onTrigger(%this, %obj, %trig, %press) 
+function PlayerKnight::onImpact(%this,%obj,%hit,%vec,%force)
 {
-	PlayerCannibal::onTrigger(%this, %obj, %trig, %press);
+	if(%obj.isknightDash && (%this.knightDashZ || mAbs(getWord(%vec,2)) < %this.minImpactSpeed)) 
+	{
+		return;
+	}
+	
+	Parent::onImpact(%this,%obj,%hit,%vec,%force);
+}
+
+function PlayerKnight::onTrigger(%this, %obj, %trig, %press)
+{
+	Parent::onTrigger(%this, %obj, %trig, %press);
+		
+	if(%press)
+	{
+		switch(%trig)
+		{
+			case 0: if(%obj.getEnergyLevel() >= 25)
+					{
+						%this.killerMelee(%obj,4);
+						%obj.faceConfigShowFace("Attack");
+						return;
+					}
+			case 4: if(!isObject(%obj.getObjectMount()))
+					{
+						%obj.knightDashStart();
+					}					
+		}
+	}
 }
 
 function PlayerKnight::onNewDatablock(%this,%obj)
@@ -260,20 +286,6 @@ package swol_knight
 			}
 		}
 		return parent::onDeath(%cl,%a,%b,%c,%d,%e);
-	}
-	function Armor::onImpact(%db,%pl,%hit,%vec,%force)
-	{
-		if(%pl.isknightDash)
-		if(%db.knightDashZ || mAbs(getWord(%vec,2)) < %db.minImpactSpeed) return;
-		
-		return parent::onImpact(%db,%pl,%hit,%vec,%force);
-	}
-	function armor::onTrigger(%db,%pl,%trig,%bool)
-	{
-		if(%db.knightDash)
-		if(%trig == 4 && %bool && !isObject(%pl.getObjectMount())) %pl.knightDashStart();
-		
-		return parent::onTrigger(%db,%pl,%trig,%bool);
 	}
 };
 

@@ -107,6 +107,12 @@ function PlayerRender::onTrigger(%this, %obj, %trig, %press)
 	}	
 }
 
+// Code by Conan
+/// Schedules a function to be called every 50 milliseconds, which will slowly turn %obj in the specified direction until it has turned a 
+// total of $pi radians (180 degrees). When the turn is complete, the function will stop being called and %obj will be allowed to move again normally.
+/// @param %obj the object to turn
+/// @param %direction -1 for a left turn, 1 for a right turn, or any other number for a turn of that magnitude
+/// @param %currTotal (optional) the total amount of radians that %obj has turned so far. If not specified, defaults to 0.
 function loopTurn(%obj, %direction, %currTotal)
 {
   	cancel(%obj.loopTurnSchedule);	
@@ -131,9 +137,13 @@ function loopTurn(%obj, %direction, %currTotal)
 function PlayerRender::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
+    
+	if(isObject(%obj.light)) 
+	{
+		%obj.light.delete();
+	}
 
-    %obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
-	if(isObject(%obj.light)) %obj.light.delete();
+	%obj.spawnExplosion("PlayerSootProjectile","1.5 1.5 1.5");
 	%this.EventideAppearance(%obj);
 	%this.Prepperizer(%obj);
 }
@@ -167,12 +177,19 @@ function PlayerRender::EventideAppearance(%this,%obj)
 function PlayerRender::onRemove(%this,%obj)
 {
 	Parent::onRemove(%this,%obj);
-	if(isObject(%obj.light)) %obj.light.delete();
+	
+	if(isObject(%obj.light))
+	{
+		%obj.light.delete();
+	}
 }
 
 function Player::PrepperizerEffect(%obj)
 {
-	if (!isObject(%obj) || %obj.isInvisible) return;
+	if (!isObject(%obj) || %obj.isInvisible)
+	{
+		return;
+	}
 
 	// Set random appearance stuff
 	%obj.setScale((getRandom(70, 110) * 0.01) SPC (getRandom(70, 110) * 0.01) SPC (getRandom(100, 110) * 0.01));
@@ -204,7 +221,10 @@ function Player::PrepperizerEffect(%obj)
 
 function PlayerRender::Prepperizer(%this,%obj)
 {
-	if(!isObject(%obj) || %obj.getdataBlock() != %this) return;
+	if(!isObject(%obj) || %obj.getdataBlock() != %this)
+	{
+		return;
+	}
 
 	if(%obj.lastSearch < getSimTime())
 	{
@@ -299,7 +319,10 @@ function PlayerRender::reappear(%this,%obj,%alpha)
 
 function PlayerRender::disappear(%this,%obj,%alpha)
 {
-	if(!isObject(%obj) || isEventPending(%obj.reappearsched)) return;
+	if(!isObject(%obj) || isEventPending(%obj.reappearsched))
+	{
+		return;
+	}
 	
 	%alpha = mClampF(%alpha-0.05,0,1);
 
@@ -330,7 +353,10 @@ function PlayerRender::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
 
-	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"render_hurt" @ getRandom(1, 4) @ "_sound");
+	if(%obj.getState() !$= "Dead")
+	{
+		%obj.playaudio(0,"render_hurt" @ getRandom(1, 4) @ "_sound");
+	}
 }
 
 function PlayerRender::onDisabled(%this,%obj)

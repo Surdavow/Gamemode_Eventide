@@ -4,31 +4,23 @@ datablock TSShapeConstructor(PuppetMasterPuppetDTS)
 	sequence0 = "./models/default.dsq";
 };
 
-datablock PlayerData(PuppetMasterPuppet : EventidePlayer)
+datablock PlayerData(PuppetMasterPuppet : PlayerRenowned)
 {
 	uiName = "";
 	shapeFile = PuppetMasterPuppetDTS.baseShape;
 
-	// Weapon: Hands (no change)
-	killerHitProjectile = KillerHitProjectile;
-	
+	killerHitProjectile = KillerHitProjectile;	
 	killermeleesound = "puppetmasterpuppet_idle";
-	killermeleesoundamount = 1;
-	
+	killermeleesoundamount = 1;	
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
 
-	maxTools = 0;
-	maxWeapons = 0;
-	firstpersononly = true;
-	isKiller = true;
 	runForce = 5616;
 	maxForwardSpeed = 10.47;
 	maxBackwardSpeed = 5.98;
 	maxSideSpeed = 8.58;
 	maxDamage = 50;
-	jumpforce = 0;
-	showenergybar = false;
+	showenergybar = true;
 };
 
 function PuppetMasterPuppet::onNewDatablock(%this,%obj)

@@ -15,6 +15,15 @@ package Eventide_Killers
 		Parent::getBrickGroupFromObject(%obj);
 	}
 
+	function serverCmdUseTool(%client, %tool)
+	{	
+		// If the player is not a victim, then continue
+		if(!%client.player.victim)
+		{
+			return parent::serverCmdUseTool(%client, %tool);
+		}
+	}	
+
 	function Player::addItem(%player, %image, %client)
 	{
 		// Check if the player is not a skinwalker, only then can they pick up items
@@ -247,14 +256,26 @@ function Armor::killerMelee(%this,%obj,%radius)
 	%obj.lastMeleeTime = getSimTime();
 }
 
+/// This function is called every tick on the killer player
+/// It will check if the player is valid, dead or not a killer
+/// If the player is valid, it will update the appearance and send a message to all players
+/// It will also handle the killer's light
 function Armor::killerCheck(%this,%obj)
 {
-	if(!isObject(%obj) || %obj.getState() $= "Dead" || !%this.isKiller) return;
+	// Return early if the object is invalid, dead, or not a killer
+	if(!isObject(%obj) || %obj.getState() $= "Dead" || !%this.isKiller) 
+	{
+		return;
+	}
 
-	// Update the appearance
-	if(isObject(%obj.client)) %this.EventideAppearance(%obj,%obj.client);
+	// Update the appearance, only if the client exists
+	if(isObject(%obj.client)) 
+	{
+		%this.EventideAppearance(%obj,%obj.client);
+	}
 
-	// Handle the announcement message
+	// Send an announcement message when the killer spawns
+	// The message is sent with a chat message and a sound effect
 	if(!%obj.firstMessageSpawn && isObject(%minigame = getMinigamefromObject(%obj)))
 	{
 		switch(getRandom(1,4))
@@ -268,17 +289,16 @@ function Armor::killerCheck(%this,%obj)
 		%minigame.chatMsgAll("<font:Impact:30>\c0" @ %message);
 		%minigame.playSound("round_start_sound");
 
-		//Stuff for the distant sound system.
-		$Eventide_currentKiller = %obj;
-		%obj.distantSoundData['initialized'] = true;
-		
 		// Set the flag to prevent the message from being sent again
 		%obj.firstMessageSpawn = true;
 	}
-	
-	// Handle the light
+
+	// Handle the killer's light
+	// The killer's light is only visible to the killer itself
+	// If the killer is invisible, the light is not created
 	if(!%obj.isInvisible)
 	{
+		// If the light does not exist, create it
 		if(!isObject(%obj.light))
 		{
 			%obj.light = new fxLight()
@@ -300,20 +320,24 @@ function Armor::killerCheck(%this,%obj)
 			{
 				if(%obj != %client.player) 
 				{					
+					// Clear the scope to client for clients that are not the killer
 					%obj.light.clearScopeToClient(%client);
 				}
 			}
 		}		
-
+		
+		// If the Eventide Minigame Group does not exist, create it
 		if(!isObject(Eventide_MinigameGroup)) 
 		{
 			missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
 		}
 
+		// Add the light to the Eventide Minigame Group
 		Eventide_MinigameGroup.add(%obj.light);
 	}
 	else if(isObject(%obj.light)) 
 	{
+		// Delete the light if the killer is invisible
 		%obj.light.delete();
 	}
 
@@ -398,8 +422,7 @@ function Armor::onKillerLoop(%this, %obj)
 					%victim.createFaceConfig($Eventide_FacePacks[%victim.faceConfig.category, "Scared"]);
 
                     if(%victim.faceConfig.isFace("Scared")) 
-					%victim.faceConfig.dupeFaceSlot("Neutral", "Scared");
-                    
+					%victim.faceConfig.dupeFaceSlot("Neutral", "Scared");                    
                 }
             }		
             else // If we cannot see the victim, stop music and perform some actions
@@ -409,7 +432,9 @@ function Armor::onKillerLoop(%this, %obj)
                 {
                 	// Reset victim's face
 					if(isObject(%victim.faceConfig) && %victim.faceConfig.face["Neutral"].faceName $= "Scared") 
-					%victim.faceConfig.resetFaceSlot("Neutral");                    
+					{
+						%victim.faceConfig.resetFaceSlot("Neutral");
+					}					
 					
 					if($Pref::Server::Eventide::chaseMusicEnabled)
 					{
@@ -462,7 +487,8 @@ function Armor::onKillerLoop(%this, %obj)
 				%soundType = %obj.isChasing ? %this.killerChaseSound : %this.killerIdleSound;
                 %soundAmount = %obj.isChasing ? %this.killerChaseSoundAmount : %this.killerIdleSoundAmount;
 
-                if (%soundType !$= "") {
+                if (%soundType !$= "") 
+				{
                 	%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
                 }
 

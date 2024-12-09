@@ -1,5 +1,33 @@
 package Eventide_Player
 {
+	function GameConnection::setControlObject(%this,%obj)
+	{
+		Parent::setControlObject(%this,%obj);
+		
+		if(%obj == %this.player && %obj.getDatablock().maxTools != %this.lastMaxTools)
+		{
+			%this.lastMaxTools = %obj.getDatablock().maxTools;
+			commandToClient(%this,'PlayGui_CreateToolHud',%obj.getDatablock().maxTools);
+		}
+	}	
+	
+	function gameConnection::applyBodyColors(%client) 
+	{
+		parent::applyBodyColors(%client);
+		
+		// Call the EventideAppearance function if the player is an Eventide player
+		if(isObject(%player = %client.player) && %player.getDataBlock().isEventideModel) 
+		%player.getDataBlock().EventideAppearance(%player,%client);
+	}
+	function gameConnection::applyBodyParts(%client) 
+	{
+		parent::applyBodyParts(%client);
+
+		// Call the EventideAppearance function if the player is an Eventide player
+		if(isObject(%player = %client.player) && %player.getDataBlock().isEventideModel) 
+		%player.getDataBlock().EventideAppearance(%player,%client);
+	}
+
 	function Armor::onImpact(%this, %obj, %col, %vec, %force)
 	{
 		Parent::onImpact(%this, %obj, %col, %vec, %force);
