@@ -53,6 +53,25 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	uiName = "";
 };
 
+function EventidePlayer::killerGUI(%this,%obj,%client)
+{	
+	if(!isobject(%obj) || %obj.getState() $= "Dead" || !isObject(%client) || !%obj.isSkinwalker)
+	{
+		return;
+	}
+
+	// Some dynamic varirables	
+	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
+	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";
+
+	// Regular icons
+	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ $iconspath @ "locolor_melee>" : "";
+	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ $iconspath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
+
+	%client.bottomPrint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
+}
+
 function EventidePlayer::pulsingScreen(%this,%obj)
 {
 	// If any of these are met, do not continue
@@ -528,20 +547,27 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 			{				
 				for(%i = 0; %i < %teams.getCount(); %i++) if(isObject(%team = %teams.getObject(%i)))
 				{
-					if(strstr(strlwr(%team.name), "hunter") != -1) { 
+					if(strstr(strlwr(%team.name), "hunter") != -1) 
+					{ 
 						%hunterteam = %team;
 					}
 
-					if(strstr(strlwr(%team.name), "survivor") != -1) {
-						for(%j = 0; %j < %team.numMembers; %j++) {							
-								if(isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) {
+					if(strstr(strlwr(%team.name), "survivor") != -1) 
+					{
+						for(%j = 0; %j < %team.numMembers; %j++) 
+						{							
+								if(isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) 
+								{
 									%livingcount++;
 								}
 							}
 					}
 				}
 
-				if(!%livingcount) %minigame.endRound(%hunterteam);
+				if(!%livingcount)
+				{
+					%minigame.endRound(%hunterteam);
+				}
 			}
 		}
 
@@ -565,17 +591,18 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	}
 	
 	if(%damage && %obj.isSkinwalker) 
-	{
-		%obj.setHealth(%this.maxDamage);
-
+	{		
 		//The disguise is about to be broken, now that the player has been hurt.
 		if(getRandom(1,4) == 1) 
 		{
 			%obj.playaudio(3,"skinwalker_pain_sound");
-			if(!isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule)) { 
+			if(!isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule)) 
+			{ 
 				PlayerSkinwalker.monsterTransform(%obj,true);
 			}
 		}
+
+		%obj.setHealth(%this.maxDamage);
 	}
 
 	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 

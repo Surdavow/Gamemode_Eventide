@@ -98,7 +98,7 @@ function PlayerSkinwalker::onNewDatablock(%this,%obj)
 
 	%obj.setScale("1.2 1.2 1.2");
     %obj.playthread(0,"roar");    
-    %obj.playaudioplayaudio(0,"skinwalker_roar_sound");
+    %obj.playaudio(0,"skinwalker_roar_sound");
     %obj.schedule(1, setEnergyLevel,0);
 	for(%i = 0; %i < getRandom(1,2); %i++) %obj.schedule(50,spawnExplosion,"goryExplosionProjectile",%obj.getScale());   
     %obj.isSkinwalker = true;
