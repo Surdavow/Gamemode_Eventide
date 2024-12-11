@@ -1,6 +1,3 @@
-registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "MiniGame MiniGame");
-registerInputEvent("fxDTSBrick","onAllRitualsPlaced","Self fxDTSBrick" TAB "MiniGame MiniGame");
-
 datablock fxDTSBrickData (brickEventideEventCaller : brick2x2Data)
 {
 	uiName = "Eventide Console";

@@ -329,4 +329,3 @@ function PlayerKnight::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("chest_blood_front", "0.7 0 0 1");
 	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
 }
-activatePackage(swol_knight);

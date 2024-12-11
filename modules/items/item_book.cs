@@ -45,21 +45,8 @@ datablock ShapeBaseImageData(bookImage)
     colorShiftColor = bookItem.colorShiftColor;
 
     stateName[0]                     = "Activate";
+    stateSound[0]                    = "book_equip_sound";
 };
-
-datablock StaticShapeData(brickBookStaticShape)
-{
-	isInvincible = true;
-    isRitual = true;
-	shapeFile = "./models/book.dts";
-	placementSound = "book_place_sound";
-};
-
-function brickBookStaticShape::onAdd(%this,%obj)
-{
-	Parent::onAdd(%this,%obj);
-	%obj.schedule(33,playaudio,3,%this.placementSound);
-}
 
 function bookImage::onUnmount(%this,%obj,%slot)
 {    
@@ -71,7 +58,6 @@ function bookImage::onUnmount(%this,%obj,%slot)
 function bookImage::onMount(%this,%obj,%slot)
 {    
     Parent::onMount(%this,%obj,%slot);
-    %obj.playAudio(1,"book_equip_sound");
     %obj.playthread(1,"armReadyBoth");
     %obj.playthread(2,"plant");
 }

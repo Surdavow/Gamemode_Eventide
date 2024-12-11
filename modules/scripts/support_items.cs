@@ -82,10 +82,10 @@ package Eventide_Items
 	function Player::Pickup(%obj,%item)
 	{		
 		if (!%obj.getDataBlock().isEventideModel && !isObject(getMinigameFromObject(%obj))) 
-		return Parent::Pickup(%obj,%item);		
+		return Parent::Pickup(%obj,%item);
 
-		// Skinwalker players and killers can't pick up items
-		if (%obj.isSkinwalker || %obj.getDataBlock().isKiller) return;
+		// Skinwalker players and killers can't pick up items, or if the item can't be picked up anyway
+		if (%obj.isSkinwalker || %obj.getDataBlock().isKiller || !%item.canPickup) return;
 
 		// Hoarder class support
 		%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;

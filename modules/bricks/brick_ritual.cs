@@ -43,6 +43,9 @@ datablock fxLightData(RitualLight)
 	FadeTime		= 0.1;
 };
 
+registerInputEvent("fxDTSBrick","onRitualPlaced","Self fxDTSBrick" TAB "MiniGame MiniGame");
+registerInputEvent("fxDTSBrick","onAllRitualsPlaced","Self fxDTSBrick" TAB "MiniGame MiniGame");
+
 function brickEventideRitual::DisplayText(%this, %obj, %name, %color, %distance, %client)
 {
     %player = %client.player;
@@ -94,7 +97,14 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 				if(%obj.gemcount <= 4 && !isObject(%obj.gemshape[%obj.gemcount+1]))
 				{	
 					%obj.gemcount++;
-					%obj.gemshape[%obj.gemcount] = new StaticShape() { datablock = %itemimage.staticShape; };
+					%obj.gemshape[%obj.gemcount] = new Item() 
+					{ 
+						datablock = %scan.getdatablock(); 
+						isRitual = true;
+					};
+
+					%obj.gemshape[%obj.gemcount].schedule(33,playaudio,3,"gem_place_sound");
+					%obj.gemshape[%obj.gemcount].canPickup = false;
 					%obj.gemshape[%obj.gemcount].settransform(vectoradd(%obj.gettransform(),%obj.ritualshape.getdatablock().gempos[%obj.gemcount] SPC getWords(%obj.gettransform,3,6)));
 					%interactiveshape = %obj.gemshape[%obj.gemcount];
 					%interactiveshape.setnodecolor("ALL",%itemimage.colorShiftColor);
@@ -116,7 +126,14 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 
 				case "brickBookStaticShape":	if(isObject(%obj.bookshape)) continue;
 
-												%obj.bookshape = new StaticShape() { datablock = %itemimage.staticShape; };
+												%obj.bookshape = new Item() 
+												{ 
+													datablock = %scan.getDataBlock();
+													isRitual = true;
+												};
+
+												%obj.bookShape.schedule(33,playaudio,3,"book_place_sound");
+												%obj.bookshape.canPickup = false;
 												%transformdelta = %obj.ritualshape.getdatablock().bookPos SPC getWords(%obj.gettransform,3,6);
 												%obj.bookshape.settransform(vectoradd(%obj.gettransform(),%transformdelta));
 												%interactiveshape = %obj.bookshape;
@@ -160,10 +177,11 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 }
 
 function brickEventideRitual::onPlant(%this, %obj)
-{	
+{		
 	Parent::onPlant(%this,%obj);
 
 	%this.ritualCheck(%obj);
+	$EventideEventCaller = %obj;
 	$EventideRitualBrick = %obj;
 
 	%obj.setRendering(0);

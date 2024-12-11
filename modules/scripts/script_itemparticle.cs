@@ -26,7 +26,7 @@ $ItemEmitterDatablock = "playerTeleportEmitterB";
 function itemEmitterLoop(%obj, %emitterNode)
 {	
 	// check if the object is still valid, delete the emitter node if not
-	if (!isObject(%obj))
+	if (!isObject(%obj) || %obj.isRitual)
 	{
 		if (isObject(%emitterNode)) %emitterNode.delete();		
 		return;
