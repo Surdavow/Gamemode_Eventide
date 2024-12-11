@@ -344,29 +344,37 @@ function Armor::onKillerLoop(%this, %obj)
 		return;
 	}
 
-    if(%this.isKiller)
+    if(%obj.getDataBlock().isKiller)
     {	
         %chasingVictims = 0;
-        initContainerRadiusSearch(%obj.getMuzzlePoint(0), 40, $TypeMasks::PlayerObjectType);
+		%searchDistance = 50;
+        initContainerRadiusSearch(%obj.getMuzzlePoint(0), %searchDistance, $TypeMasks::PlayerObjectType);
 
         // Process nearby players
         while(%victim = containerSearchNext())
         {
 			// Skip invalid conditions
-			if(!isObject(getMinigamefromObject(%victim)) || %victim.getDataBlock().isKiller || containerSearchCurrDist() > 40) {
+			if(!isObject(getMinigamefromObject(%victim)) || %victim.getDataBlock().isKiller) 
+			{
 				continue;
 			}
 			
 			%typemasks = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType;
             %dot = vectorDot(%obj.getEyeVector(), vectorNormalize(vectorSub(%victim.getMuzzlePoint(2), %obj.getEyePoint())));
             %canSeeVictim = !isObject(containerRayCast(%obj.getEyePoint(), %victim.getMuzzlePoint(2), %typemasks, %obj));
+			%victimDistance = containerSearchCurrDist();
 
             // If we can see the victim, play some music and perform some actions
             if (%dot > 0.45 && %canSeeVictim && !%obj.isInvisible)
             {
                 %chasingVictims++;
                 %obj.isChasing = true;
-                %this.onKillerChase(%obj, true);
+                %this.onKillerChase(%obj, true);				 
+
+				if(%victimDistance < %searchDistance/2)
+				{
+					%victim.playthread(3,"talk");
+				}				
 
                 if($Pref::Server::Eventide::chaseMusicEnabled)
                 {
@@ -396,6 +404,15 @@ function Armor::onKillerLoop(%this, %obj)
                     }
                 }
 
+				if(%victimDistance < %searchdistance/8 && %victim.lastChaseCall < getSimTime())
+				{
+					%victim.lastChaseCall = getSimTime()+getRandom(1000,5000);
+					$oldTimescale = getTimescale();
+					setTimescale((getRandom(100,125)*0.01) * $oldTimescale);
+					%victim.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");		
+					setTimescale($oldTimescale);					
+				}
+
                 // Update victim's face
                 if(isObject(%victim.faceConfig))
                 {
@@ -406,22 +423,24 @@ function Armor::onKillerLoop(%this, %obj)
 					
                     if(%victim.faceConfig.isFace("Scared"))
 					{
-						%victim.faceConfig.dupeFaceSlot("Neutral", "Scared");                    	
+						%victim.faceConfig.dupeFaceSlot("Neutral", "Scared");					
 					}					
                 }
             }		
             else // If we cannot see the victim, stop music and perform some actions
-            {
-                // Update victim's chase state after 6 seconds
-                if (isObject(%victim.client) && %victim.TimeSinceChased + 6000 < getSimTime())
+            {                
+				// Update victim's chase state after 6 seconds
+                if (%victim.TimeSinceChased + 6000 < getSimTime())
                 {
-                	// Reset victim's face
+                	%victim.playthread(3,"root");
+
+					// Reset victim's face
 					if(isObject(%victim.faceConfig) && %victim.faceConfig.face["Neutral"].faceName $= "Scared") 
-					{
-						%victim.faceConfig.resetFaceSlot("Neutral");
-					}					
+					{						
+						%victim.faceConfig.resetFaceSlot("Neutral");					
+					}											
 					
-					if($Pref::Server::Eventide::chaseMusicEnabled)
+					if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%victim.client))
 					{
 						if(%victim.chaseLevel != 1)
                     	{
@@ -543,7 +562,7 @@ function GameConnection::SetChaseMusic(%client,%songname,%ischasing)
 		
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer" && !%client.player.tunnelvision)
 	{
-		%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);	
+		%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);
 	}	
 }
 

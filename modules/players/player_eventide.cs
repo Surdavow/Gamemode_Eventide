@@ -20,6 +20,7 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	isEventideModel = true;
 	showEnergyBar = false;
 	firstpersononly = false;
+	isKiller = false;
 	canJet = false;
 	tunnelFOVIncrease = 20;
 
@@ -178,7 +179,7 @@ function EventidePlayer::onActivate(%this,%obj)
 	// When the player is possessed by the renowned, perform some actions
 	if (%obj.isPossessed) 
 	{		
-		%obj.playthread(3,"activate2");
+		%obj.playthread(2,"activate2");
 		%obj.AntiPossession = mClampF(%obj.AntiPossession+1, 0, 15);
 		%this.CounterPrint(%obj,%obj.client,%obj.AntiPossession/2,"Left click to regain control!");		
 
@@ -273,7 +274,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 								}								
 							}
 							
-							%obj.playthread(3,"activate2");
+							%obj.playthread(2,"activate2");
 							$oldTimescale = getTimescale();
 							setTimescale((%soundpitch*0.01) * $oldTimescale);
 							serverPlay3D("melee_swing" @ getRandom(1,2) @ "_sound",%obj.getHackPosition());
@@ -294,7 +295,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 								if (%hit.getState() $= "Dead") continue;
 
 								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
-								%hit.playThread(3,"jump");
+								%hit.playThread(2,"jump");
 								
 								if (!%obj.shoveForce) %obj.shoveForce = 1;
 								%exhausted = (%obj.staminaCount >= 5) ? 2 : 1;
@@ -351,7 +352,7 @@ function EventidePlayer::reviveDowned(%this,%obj,%victim,%bool)
 		{
 			%obj.setTempSpeed(); // Reset the player's speed
 			%obj.reviveDownedCounter = 0;
-			%victim.setHealth(%victim.getdata().maxDamage/1.3333);
+			%victim.setHealth(%victim.getdatablock().maxDamage/1.3333);
 			%stringformat = "<font:impact:30>\c3";
 
 			if (isObject(%obj.client)) %obj.client.centerprint(%stringformat @ "You revived" SPC %victim.client.name,1);
