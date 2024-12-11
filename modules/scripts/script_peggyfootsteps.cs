@@ -510,7 +510,7 @@ function PeggFootsteps_getSound(%surface, %speed)
 function checkPlayback(%obj)
 {
 	%surface = (%obj.touchcolor $= "") ? %obj.surface : %obj.touchColor;
-	%speed = (%obj.isSlow == 0) ? "running" : "walking";
+	%speed = (!%obj.isSlow) ? "running" : "walking";
 
 	if(%obj.touchColor $= "") return PeggFootsteps_getSound(%surface, %speed);	
 	else

@@ -1,15 +1,5 @@
 package Eventide_Player
 {
-	function Player::isCrouched(%obj)
-	{
-		%parent = Parent::isCrouched(%obj);
-
-		if(%obj.getDataBlock().isDowned && !%parent) 
-		{
-			%obj.setActionThread("sit",1);
-		}
-	}
-
 	function GameConnection::setControlObject(%this,%obj)
 	{
 		Parent::setControlObject(%this,%obj);
