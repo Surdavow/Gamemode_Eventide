@@ -54,6 +54,8 @@ package Eventide_Player
 	{		
 		Parent::onNewDatablock(%this,%obj);
 
+		%obj.schedule(33,setActionThread,"root");
+
 		// Initiate the gaze loop if the player is in a minigame
 		if (isObject(getMinigamefromObject(%obj))) 
 		{

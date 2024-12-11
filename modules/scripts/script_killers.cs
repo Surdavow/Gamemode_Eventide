@@ -128,8 +128,8 @@ function Armor::killerMelee(%this,%obj,%radius)
 
 	if(%this.meleetrailskin !$= "") 
 	{
-		%obj.spawnKillerTrail(%this.meleetrailskin,%this.meleetrailoffset,%meleetrailangle,%this.meleetrailscale);
 		%meleetrailangle = %this.meleetrailangle[%meleeAnim];
+		%obj.spawnKillerTrail(%this.meleetrailskin,%this.meleetrailoffset,%meleetrailangle,%this.meleetrailscale);		
 	}	
 
 	if(%this.killerMeleesound !$= "") 
