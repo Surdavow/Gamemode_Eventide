@@ -49,6 +49,8 @@ if (!isFile("saves/EventideMapRotation/README.txt"))
 	if (%file.openForWrite("saves/EventideMapRotation/README.txt"))
 	{
 		%file.writeLine("You need to place save files in this folder for the Map Rotation to be able to work!");
+		%file.writeLine("Optionally, you can also drop the .ez files here to load the environment zones.");
+		%file.writeLine("The .ez and .bls file must have the same name so both can be loaded properly");
 	}
 	
 	%file.close();
@@ -74,49 +76,6 @@ function Eventide_endMapChange()
 	{
 		%minigame.chatMsgAll("<font:Impact:30>\c3Round" SPC $Pref::Server::MapRotation::ResetCount++ SPC "of" SPC $Pref::Server::MapRotation::minReset);
 	}
-}
-
-function serverCmdLoadEnvZones(%client, %f0, %f1, %f2, %f3, %f4, %f5, %f6, %f7)
-{
-	if(!%client.isAdmin){messageClient(%client, '', $EZ::AdminFailMsg); return;}
-
-	if(!$ShowEnvironmentZones)
-		showEnvironmentZones(1);
-
-	%fileName = trim(%f0 SPC %f1 SPC %f2 SPC %f3 SPC %f4 SPC %f5 SPC %f6 SPC %f7);
-	if(!strLen(%fileName))
-	{
-		messageClient(%client, '', "\c0You have to specify a name for the save file to load!");
-		return;
-	}
-
-	%allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._-()";
-	%filePath = "config/server/EnvironmentZoneSaves/" @ %fileName @ ".ez";
-	%filePath = strReplace(%filePath, ".ez.ez", ".ez");
-
-	for(%i = 0; %i < strLen(%fileName); %i++)
-	{
-		if(strStr(%allowed, getSubStr(%fileName, %i, 1)) == -1)
-		{
-			%forbidden = true;
-			break;
-		}
-	}
-
-	if(%forbidden || !strLen(%fileName) || strLen(%fileName) > 50)
-	{
-		messageClient(%client, '', "\c0The file name contains invalid characters, try again!");
-		return;
-	}
-
-	if(!isFile(%filePath))
-	{
-		messageClient(%client, '', "\c0There is no save file with that name!");
-		return;
-	}
-
-	loadEnvironmentZones(%filePath);
-	messageClient(%client, '', "\c6All zones have been loaded.");
 }
 
 function Eventide_loadNextMap()
@@ -159,10 +118,17 @@ function Eventide_loadNextMap()
 	// Clear all of the public bricks
 	BrickGroup_888888.chaindeleteall();
 
-	// Load the new map and the environment zones
-	%zonefilename = strreplace(fileName(%fileName), ".bls", "");
+	// Load the save file
 	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", 2, 0);
-	loadEnvironmentZones("config/server/EnvironmentZoneSaves/" @ fileName(%zonefilename) @ ".ez");
+
+	// Load the environment zones, if there is one
+	%zonefilename = strreplace(fileName(%fileName), ".bls", "");
+	%zonefilepath = "saves/EventideMapRotation/" @ fileName(%zonefilename) @ ".ez";
+	if(isFile(%zonefilepath))
+	{
+		loadEnvironmentZones(%zonefilepath);
+	}
+	
 }
 
 function Eventide_loadMapList()

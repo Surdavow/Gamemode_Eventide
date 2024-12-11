@@ -6,7 +6,7 @@
 0 255 25 255
 51 0 204 255
 151 2 214 255
-DIV:Mr.No ody's Standard
+DIV:Standard
 
 230 87 20 255
 230 160 20 255
