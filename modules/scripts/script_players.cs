@@ -188,7 +188,7 @@ registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClie
 function Armor::GazeLoop(%this,%obj)
 {		
 	// Some conditions to return early if one is met
-	if (!$Pref::Server::GazeEnabled || !isObject(%obj) || %obj.getState() $= "Dead" || %obj.getDataBlock() != %this) 
+	if (!$Pref::Server::GazeEnabled || !isObject(%obj) || %obj.getState() $= "Dead") 
 	{
 		return;
 	}
