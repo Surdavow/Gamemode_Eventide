@@ -188,7 +188,7 @@ registerInputEvent("fxDtsBrick", "onGaze", "Self fxDtsBrick\tPlayer Player\tClie
 function Armor::GazeLoop(%this,%obj)
 {		
 	// Some conditions to return early if one is met
-	if (!$Pref::Server::GazeEnabled || !isObject(%obj) || %obj.getState() $= "Dead") 
+	if (!$Pref::Server::GazeEnabled || !isObject(%obj) || %obj.getState() $= "Dead" || %obj.getDataBlock() != %this) 
 	{
 		return;
 	}
@@ -197,7 +197,7 @@ function Armor::GazeLoop(%this,%obj)
 	%end = vectorAdd(%obj.getEyePoint(),vectorScale(%obj.getEyeVector(),$Pref::Server::GazeRange));
 	%mask = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType | $TypeMasks::PlayerObjectType;
 	%hit = containerRayCast (%eye, %end, %mask, %obj);
-	%obj.gazingPlayer = 0;
+	%obj.gazingPlayer = false;
 	%obj.gazing = 0;
 	
 	if (isObject(%hit))
@@ -213,7 +213,7 @@ function Armor::GazeLoop(%this,%obj)
 
 		if (%hit.getType() & $TypeMasks::PlayerObjectType) 
 		{
-			%obj.gazingPlayer = 0;
+			%obj.gazingPlayer = true;
 		}
 		
 		%obj.gazing = %hit;

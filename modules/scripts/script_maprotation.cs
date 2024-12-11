@@ -50,7 +50,7 @@ if (!isFile("saves/EventideMapRotation/README.txt"))
 	{
 		%file.writeLine("You need to place save files in this folder for the Map Rotation to be able to work!");
 		%file.writeLine("Optionally, you can also drop the .ez files here to load the environment zones.");
-		%file.writeLine("The .ez and .bls file must have the same name so both can be loaded properly");
+		%file.writeLine("The .ez and .bls file must have the same name so both can be loaded properly.");
 	}
 	
 	%file.close();

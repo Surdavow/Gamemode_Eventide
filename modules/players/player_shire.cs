@@ -41,7 +41,10 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
 {
 	Parent::onCollision(%this, %obj, %col, %fade, %pos, %normal);
-    if((%col.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj.sourceObject,%col) == 1) %col.mountImage("DarkBlindPlayerImage",3);
+    if((%col.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj.sourceObject,%col) == 1) 
+	{
+		%col.mountImage("DarkBlindPlayerImage",3);
+	}
 }
 
 function DarkBlindPlayerImage::onBlind(%this, %obj, %slot)
@@ -69,6 +72,28 @@ function DarkBlindPlayerImage::onunMount(%this, %obj, %slot)
 	%obj.ShireBlind = 0;
 }
 
+function DarkBlindPlayerImage::killerGUI(%this,%obj,%client)
+{	
+	if (!isObject(%obj) || !isObject(%client))
+	{
+		return;
+	}	
+
+	// Some dynamic varirables
+	%energylevel = %obj.getEnergyLevel();
+	%leftclickstatus = (%energylevel >= %this.maxEnergy/4) ? "hi" : "lo";
+	%rightclickstatus = (%energylevel >= %this.maxEnergy/2) ? "hi" : "lo";
+	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";	
+
+	// Regular icons
+	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ $iconspath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
+	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ $iconspath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
+
+	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
+}
+
+
 function PlayerShire::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
@@ -82,13 +107,13 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 			return;
 		}
 		
-		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy)
+		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy/2)
 				if(%press)
 				{
 					%obj.mountImage(GlowFaceImage, 1);					
 					%obj.casttime = getSimTime();
-					%obj.channelcasthand = %obj.schedule(500, setNodeColor, lHand, "0.5 0.33 0.68 1");
-					%obj.channelcasthandimage = %obj.schedule(500,mountImage,DarkCastImage,2);
+					%obj.channelcasthand = %obj.schedule(250, setNodeColor, lHand, "0.5 0.33 0.68 1");
+					%obj.channelcasthandimage = %obj.schedule(250,mountImage,DarkCastImage,2);
 				}
 				else
 				{
@@ -98,32 +123,21 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 					cancel(%obj.channelcasthandimage);
 					%obj.setNodeColor(lHand, "1 1 1 1");
 			
-					if(%obj.casttime+500 < getSimTime())
+					if(%obj.casttime+250 < getSimTime())
 					{
-						%obj.setEnergyLevel(0);
+						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/2);
 						%obj.playthread(2,"leftrecoil");
 						serverPlay3d("shire_cast_sound", %obj.getEyePoint());
 			
-						%velocity = vectorAdd(vectorscale(%obj.getEyeVector(),50),"0 0 2.5");
-						%shellcount = 16;
-						for(%shell=0; %shell<%shellcount; %shell++)
+						%p = new projectile()
 						{
-							%x = (getRandom() - 0.5) * 5 * $pi * 0.005;
-							%y = (getRandom() - 0.5) * 5 * $pi * 0.005;
-							%z = (getRandom() - 0.5) * 5 * $pi * 0.005;
-							%mat = MatrixCreateFromEuler(%x @ " " @ %y @ " " @ %z);
-							%velocity = MatrixMulVector(%mat, %velocity);
-			
-							%p = new projectile()
-							{
-								dataBlock = "DarknessProjectile";
-								initialVelocity = %velocity;
-								initialPosition = vectorAdd(%obj.getEyePoint(),"0 0 0.45");
-								sourceObject = %obj;
-								client = %obj.client;
-							};
-							MissionCleanup.add(%p);
-						}
+							dataBlock = "DarknessProjectile";
+							initialVelocity = vectorScale(%obj.getEyeVector(),200);
+							initialPosition = vectorAdd(%obj.getEyePoint(),"0 0 0.45");
+							sourceObject = %obj;
+							client = %obj.client;
+						};
+						MissionCleanup.add(%p);						
 					}		
 				}
 		default:

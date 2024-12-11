@@ -128,7 +128,7 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
-
+	
 	%obj.schedule(33,setEnergyLevel,0);
 	%obj.setScale("1 1 1");
 }
