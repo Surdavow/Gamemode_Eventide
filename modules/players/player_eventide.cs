@@ -534,7 +534,13 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	// If the damage received too much damage and the player is not already incapacitated, check some conditions to see if they should be
 	if (%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && !%obj.wasDowned)
     {   
-		%obj.setHealth(100);     
+		%o = MountGroup_Create(OverheadBillboardMount, 1, 5);
+		if (isObject(%o)) 
+		{
+    		%obj.downedbillboard = %o.AVBillboard(%obj, downedAVBillboard, %obj.getID());
+		}
+
+		%obj.setHealth(100);
         %obj.setDatablock("EventidePlayerDowned");		
 		%obj.wasDowned = true;
 

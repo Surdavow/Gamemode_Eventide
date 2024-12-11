@@ -214,6 +214,7 @@ datablock fxLightData(DefaultAVBillboard)
 	classname = "AVBillboard";
 };
 
+
 function AVBillboard::OnAdd(%db,%bb)
 {
 	%bb.isAVBillboard = true; 
