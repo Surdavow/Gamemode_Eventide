@@ -62,7 +62,7 @@ function ShireZombieBot::onBotLoop(%this, %obj)
         while (%target = containerSearchNext())
         {
             // Skip invalid conditions
-            if (%target == %obj || !minigameCanDamage(%obj, %target) || %target.getDataBlock().isDowned)
+            if (%target == %obj || %target.getDataBlock().isDowned)
             {
                 continue;
             }
