@@ -61,7 +61,7 @@ function DarkBlindPlayerImage::onBlind(%this, %obj, %slot)
 function DarkBlindPlayerImage::onMount(%this, %obj, %slot)
 {
 	%obj.playaudio(3,"shire_blind_sound");	
-	%obj.markedForShireZombify = true;
+	%obj.shireZombify = true;
 	parent::onMount(%this, %obj, %slot);
 }
 

@@ -733,11 +733,11 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			}
 
 			// Varying conditions on how the player was killed, do not return on either condition if the player is already marked for death
-			if (%obj.markedforRenderDeath || %obj.markedForShireZombify)
+			if (%obj.markedforRenderDeath || %obj.shireZombify)
 			{
 				if (%obj.markedforRenderDeath) %minigame.playSound("render_kill_sound");
 	
-				if (%obj.markedForShireZombify)
+				if (%obj.shireZombify)
 				{
 					%bot = new AIPlayer()
 					{

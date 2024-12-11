@@ -41,7 +41,7 @@ function ShireZombieBot::onAdd(%this,%obj)
     %this.onBotLoop(%obj);
     %obj.mountImage("GlowFaceZombieImage",0);
 	%obj.mountImage("ZombieBodyImage",1);    
-	%obj.schedule(50,playAudio,2,"hex_ghostSpawn_sound");
+	%obj.schedule(33,playAudio,2,"hex_ghostSpawn_sound");
 }
 
 function ShireZombieBot::onBotLoop(%this, %obj)
@@ -58,8 +58,7 @@ function ShireZombieBot::onBotLoop(%this, %obj)
     {
         %obj.lastSearchTime = %currentTime + 1500; //Search every 1.5 seconds
         
-        initContainerRadiusSearch(%obj.getPosition(), 30, $TypeMasks::PlayerObjectType)
-
+        initContainerRadiusSearch(%obj.getPosition(), 30, $TypeMasks::PlayerObjectType);
         while (%target = containerSearchNext())
         {
             // Skip invalid conditions
@@ -174,7 +173,11 @@ function ShireZombieBot::onBotLoop(%this, %obj)
         // Movement update
         if(%obj.lastTargetTime < %currentTime)
         {
-            %obj.playAudio(0, "zombie_chase" @ getRandom(0, 10) @ "_sound");
+            if($Pref::Server::Eventide::killerSoundsEnabled)
+            {
+                %obj.playAudio(0, "zombie_chase" @ getRandom(0, 10) @ "_sound");
+            }
+            
             %obj.lastTargetTime = %currentTime + 3500;
             %obj.setMoveY(1);
             
@@ -199,7 +202,10 @@ function ShireZombieBot::onBotLoop(%this, %obj)
             %obj.raiseArms = false;
         }
         
-        %obj.playAudio(0, "zombie_idle" @ getRandom(0, 4) @ "_sound");
+        if($Pref::Server::Eventide::killerSoundsEnabled)
+        {
+            %obj.playAudio(0, "zombie_idle" @ getRandom(0, 4) @ "_sound");
+        }
         
         switch(getRandom(1, 4))
         {
