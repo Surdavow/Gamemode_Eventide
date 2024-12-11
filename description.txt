@@ -6,7 +6,8 @@
 - Gamemode_Slayer  
 - Event_BrickText  
 - Item_Medical  
-- Brick_Halloween  
+- Brick_Halloween
+- Server_EnvironmentZones
 
 ---
 
