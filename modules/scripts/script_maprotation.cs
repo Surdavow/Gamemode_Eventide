@@ -76,11 +76,55 @@ function Eventide_endMapChange()
 	}
 }
 
+function serverCmdLoadEnvZones(%client, %f0, %f1, %f2, %f3, %f4, %f5, %f6, %f7)
+{
+	if(!%client.isAdmin){messageClient(%client, '', $EZ::AdminFailMsg); return;}
+
+	if(!$ShowEnvironmentZones)
+		showEnvironmentZones(1);
+
+	%fileName = trim(%f0 SPC %f1 SPC %f2 SPC %f3 SPC %f4 SPC %f5 SPC %f6 SPC %f7);
+	if(!strLen(%fileName))
+	{
+		messageClient(%client, '', "\c0You have to specify a name for the save file to load!");
+		return;
+	}
+
+	%allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._-()";
+	%filePath = "config/server/EnvironmentZoneSaves/" @ %fileName @ ".ez";
+	%filePath = strReplace(%filePath, ".ez.ez", ".ez");
+
+	for(%i = 0; %i < strLen(%fileName); %i++)
+	{
+		if(strStr(%allowed, getSubStr(%fileName, %i, 1)) == -1)
+		{
+			%forbidden = true;
+			break;
+		}
+	}
+
+	if(%forbidden || !strLen(%fileName) || strLen(%fileName) > 50)
+	{
+		messageClient(%client, '', "\c0The file name contains invalid characters, try again!");
+		return;
+	}
+
+	if(!isFile(%filePath))
+	{
+		messageClient(%client, '', "\c0There is no save file with that name!");
+		return;
+	}
+
+	loadEnvironmentZones(%filePath);
+	messageClient(%client, '', "\c6All zones have been loaded.");
+}
+
 function Eventide_loadNextMap()
 {
 	// Move to the next map, or wrap around to the start if we reach the end
+	deleteAllEnvZones();
 	$Pref::Server::MapRotation::current = ($Pref::Server::MapRotation::current + 1) % $Pref::Server::MapRotation::numMap;
-	%filename = $Pref::Server::MapRotation::map[$Pref::Server::MapRotation::current];
+	%fileName = $Pref::Server::MapRotation::map[$Pref::Server::MapRotation::current];
 
 	// Prevent players from respawning
 	$Eventide_MapChanging = true;
@@ -106,24 +150,10 @@ function Eventide_loadNextMap()
 	// Clear all of the public bricks
 	BrickGroup_888888.chaindeleteall();
 
-   // Taken from Gamemode_Speedkart, with some modifications
-   // load environment if it exists
-	%envFile = filePath(%fileName) @ "/environment.txt"; 
-	if(isFile(%envFile))
-	{  
-		//usage: GameModeGuiServer::ParseGameModeFile(%filename, %append);
-		//if %append == 0, all minigame variables will be cleared 
-		%res = GameModeGuiServer::ParseGameModeFile(%envFile, 1);
-	
-		EnvGuiServer::getIdxFromFilenames();
-		EnvGuiServer::SetSimpleMode();
-	
-		if(!$EnvGuiServer::SimpleMode)     
-		{
-			EnvGuiServer::fillAdvancedVarsFromSimple();
-			EnvGuiServer::SetAdvancedMode();
-		}
-	}
+	// Load the new map and the environment zones
+	%filePath = "config/server/EnvironmentZoneSaves/" @ %fileName @ ".ez";
+	%filePath = strReplace(%filePath, ".ez.ez", ".ez");
+	loadEnvironmentZones(%filePath);
 
 	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", 2, 0);
 }

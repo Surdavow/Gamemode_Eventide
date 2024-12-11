@@ -4,6 +4,7 @@ if(ForceRequiredAddOn("Gamemode_Slayer") == $Error::AddOn_NotFound) return error
 if(ForceRequiredAddOn("Event_BrickText") == $Error::AddOn_NotFound) return error("Event_BrickText is required for Gamemode_Eventide to work");
 if(ForceRequiredAddOn("Item_Medical") == $Error::AddOn_NotFound)    return error("Item_Medical is required for Gamemode_Eventide to work");
 if(ForceRequiredAddOn("Brick_Halloween") == $Error::AddOn_NotFound) return error("Brick_Halloween is required for Gamemode_Eventide to work");
+if(ForceRequiredAddOn("Server_EnvironmentZones") == $Error::AddOn_NotFound) return error("Server_EnvironmentZones is required for Gamemode_Eventide to work");
 
 // Execute essential scripts and preferences first
 exec("./prefs.cs");
