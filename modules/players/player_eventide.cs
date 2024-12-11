@@ -577,19 +577,34 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
+	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
+	//if enough damage has been received.
+	if (isObject(%obj.faceConfig))
+	{
+		if (%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "") {
+			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
+		}
+
+		if (%obj.faceConfig.isFace("Pain")) {
+			%obj.schedule(33, "faceConfigShowFace", "Pain"); //This needs to be delayed for whatever reason. Blinking doesn't start otherwise.
+		}		
+	}
+
 	//Pseudo health for the fighter class, gives the player a temporary health boost until they are hurt again
-	if (%obj.pseudoHealth)
+	if (%obj.pseudoHealth > 0)
 	{
 		%obj.pseudoHealth -= %damage;
-		%obj.addhealth(mAbs(%damage)*2);
+		%obj.addhealth(%this.maxDamage);
 		%obj.mountimage("HealImage",3);
 		%obj.setwhiteout(0.1);
 		
-		if (isObject(%obj.client)) {
+		if (isObject(%obj.client)) 
+		{
 			%obj.client.play2D("printfiresound");
 		}
 	}
 	
+	// Condition for the skinwalker
 	if (%damage && %obj.isSkinwalker) 
 	{		
 		//The disguise is about to be broken, now that the player has been hurt.
@@ -603,19 +618,6 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		}
 
 		%obj.setHealth(%this.maxDamage);
-	}
-
-	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
-	//if enough damage has been received.
-	if (isObject(%obj.faceConfig))
-	{
-		if (%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "") {
-			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
-		}
-
-		if (%obj.faceConfig.isFace("Pain")) {
-			%obj.schedule(33, "faceConfigShowFace", "Pain"); //This needs to be delayed for whatever reason. Blinking doesn't start otherwise.
-		}		
 	}
 }
 
