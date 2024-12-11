@@ -58,7 +58,7 @@ function ShireZombieBot::onBotLoop(%this, %obj)
     {
         %obj.lastSearchTime = %currentTime + 1500; //Search every 1.5 seconds
         
-        initContainerRadiusSearch(%obj.getPosition, 30, $TypeMasks::PlayerObjectType)
+        initContainerRadiusSearch(%obj.getPosition(), 30, $TypeMasks::PlayerObjectType)
 
         while (%target = containerSearchNext())
         {
