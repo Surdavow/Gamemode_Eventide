@@ -211,10 +211,15 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 
 function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 {
+	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
+
 	if(%bool) switch(%triggerNum)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) return %this.killerMelee(%obj,4.5);
-			
+		case 0: if(%obj.getEnergyLevel() >= 25) 
+				{
+					%this.killerMelee(%obj,4.5);
+				}
+					
 		case 4: if(!%obj.isInvisible)
 				{		
 					if(%obj.getEnergyLevel() == %this.maxEnergy && !isEventPending(%obj.disappearsched)) 
@@ -229,7 +234,6 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 				}
 	}	
 
-	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
 }
 
 function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)

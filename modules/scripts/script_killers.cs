@@ -115,10 +115,12 @@ function getCurrentKiller()
 
 function Armor::killerMelee(%this,%obj,%radius)
 {
-	if(%obj.getState() $= "Dead" || %obj.isInvisible || %obj.lastMeleeTime+1250 < getSimTime() || %obj.getEnergyLevel() < %this.maxEnergy/8) {
+	if(%obj.getState() $= "Dead" || %obj.isInvisible || %obj.getEnergyLevel() < %this.maxEnergy/8 || %obj.lastMeleeTime+1250 > getSimTime()) 
+	{
 		return;
 	}
 		
+	%obj.lastMeleeTime = getSimTime();
 	%meleeAnim = (%this.shapeFile $= EventideplayerDts.baseShape) ? getRandom(1,4) : getRandom(1,2);
 	%hackPos = %obj.getHackPosition();
 	%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/6);	
@@ -251,9 +253,7 @@ function Armor::killerMelee(%this,%obj,%radius)
 			%obj.setTempSpeed(0.3);	
 			%obj.schedule(2500,setTempSpeed,1);
 		}			
-	}
-
-	%obj.lastMeleeTime = getSimTime();
+	}	
 }
 
 /// This function is called every tick on the killer player
