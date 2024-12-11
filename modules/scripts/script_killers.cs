@@ -369,11 +369,29 @@ function Armor::onKillerLoop(%this, %obj)
             {
                 %chasingVictims++;
                 %obj.isChasing = true;
-                %this.onKillerChase(%obj, true);				 
+                %this.onKillerChase(%obj, true);
+				%victimdot = vectorDot(%victim.getEyeVector(), vectorNormalize(vectorSub(%obj.getEyePoint(), %victim.getMuzzlePoint(2))));
 
-				if(%victimDistance < %searchDistance/2)
+				if(%victimDistance < %searchDistance/2.5)
 				{
 					%victim.playthread(3,"talk");
+					
+					if(%victimDistance < %searchDistance/4)
+					{				
+						// Condition for AI players, why not?
+						if(%victim.getClassName() $= "AIPlayer" && %victim.isHoleBot)
+						{
+							%victim.hRunAwayFromPlayer(%obj);
+							%victim.hspazzclick(5,1);
+						}					
+
+						// If we can see the killer or the victim is close enough, make them panic
+						if((%victimdot > 0.45 || %victimDistance < %searchdistance/6) && %victim.lastChaseCall < getSimTime())
+						{							
+							%victim.playaudio(0,"survivor_painhigh" @ getRandom(1, 4) @ "_sound");						
+							%victim.lastChaseCall = getSimTime()+getRandom(1000,5000);
+						}
+					}									
 				}				
 
                 if($Pref::Server::Eventide::chaseMusicEnabled)
@@ -402,16 +420,7 @@ function Armor::onKillerLoop(%this, %obj)
                         cancel(%obj.client.StopChaseMusic);
                         %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
                     }
-                }
-
-				if(%victimDistance < %searchdistance/8 && %victim.lastChaseCall < getSimTime())
-				{
-					%victim.lastChaseCall = getSimTime()+getRandom(1000,5000);
-					$oldTimescale = getTimescale();
-					setTimescale((getRandom(100,125)*0.01) * $oldTimescale);
-					%victim.playaudio(0,"survivor_painhigh" @ getRandom(1, 4) @ "_sound");
-					setTimescale($oldTimescale);					
-				}
+                }				
 
                 // Update victim's face
                 if(isObject(%victim.faceConfig))
