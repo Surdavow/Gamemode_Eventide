@@ -101,6 +101,48 @@ package Eventide_Minigame
 if (isPackage(Eventide_Minigame)) deactivatePackage(Eventide_Minigame);
 activatePackage(Eventide_Minigame);
 
+function MiniGameSO::checkDownedSurvivors(%minigame)
+{
+	// This will only work team based Slayer minigames, this will check if all survivors are incapacitated and end the round if they are
+	if (!isObject(%teams = %minigame.teams))
+	{
+		return;
+	}
+					
+	for (%i = 0; %i < %teams.getCount(); %i++) 
+	{
+		%team = %teams.getObject(%i);
+		if (!isObject(%team)) 
+		{
+			continue;
+		}
+		
+		%teamNameLower = strlwr(%team.name);
+		if (strstr(%teamNameLower, "hunter") != -1) 
+		{ 
+			%hunterteam = %team;
+		}
+
+		if (strstr(%teamNameLower, "survivor") != -1) 
+		{
+			for (%j = 0; %j < %team.numMembers; %j++) 
+			{
+				%member = %team.member[%j].player;
+				if (isObject(%member) && !%member.getdataBlock().isDowned) 
+				{
+					%livingcount++;
+				}
+			}
+		}
+	}
+
+	if (!%livingcount)
+	{
+		%minigame.endRound(%hunterteam);
+		return;
+	}
+}
+
 function MiniGameSO::playSound(%minigame,%datablock)
 {
 	if (!isObject(%minigame) || !isObject(%datablock)) return;

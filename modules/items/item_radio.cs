@@ -5,6 +5,10 @@ datablock ItemData(RadioItem)
 	shapeFile = "./models/radio.dts";
 	uiName = "Radio";
 	image = RadioImage;
+	mass = 1;
+	density = 0.2;
+	elasticity = 0.2;
+	friction = 0.6;
 	canDrop = true;
 };
 
@@ -17,6 +21,7 @@ datablock ShapeBaseImageData(RadioImage)
 	mountpoint = 0;
 	shapefile = RadioItem.shapeFile;
 	stateName[0] = "Activate";
+	stateSound[0] = "radio_change_sound";
 	stateTimeoutValue[0] = "0";
 	stateTransitionOnTimeout[0] = "Ready";	
 	
@@ -24,8 +29,11 @@ datablock ShapeBaseImageData(RadioImage)
 	stateTimeoutValue[1] = 0;
 };
 
-function RadioImage::onMount(%this,%obj,%slot)
+function RadioImage::onMount(%this, %obj, %slot)
 {	
-	%obj.client.centerPrint("<font:Impact:30>\c3Keep the radio in your inventory to broadcast to other survivors!",3);
-	%obj.playaudio(3,"radio_change_sound");
+	if(!%obj.radioInformed && isObject(%obj.client))
+	{
+		%obj.client.centerPrint("<font:Impact:25>\c3Keep the radio in your inventory to <br>\c3broadcast to other survivors!",3);
+		%obj.radioInformed = true;
+	}
 }

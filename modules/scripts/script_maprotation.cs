@@ -136,6 +136,7 @@ function Eventide_loadNextMap()
 		if(isObject(%client = ClientGroup.getObject(%a)))
 		{
 			// Set the camera to observer
+			%client.centerPrint();
 			%client.camera.setFlyMode();
 			%client.camera.mode = "Observer";
 			%client.setControlObject(%client.camera);			
@@ -143,6 +144,13 @@ function Eventide_loadNextMap()
 			// Delete the player
 			if(isObject(%client.player)) 
 			{
+				%inventoryToolCount = (%client.player.hoarderToolCount) ? %client.player.hoarderToolCount : %client.player.getDataBlock().maxTools;
+				for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%client.player.tool[%i]))
+				{
+					%client.player.tool[%i] = 0;
+					messageClient(%client, 'MsgItemPickup', '', %i, 0);
+				}
+
 				%client.player.delete();
 			}
 		}
@@ -153,8 +161,8 @@ function Eventide_loadNextMap()
 
 	// Load the new map and the environment zones
 	%zonefilename = strreplace(fileName(%fileName), ".bls", "");
-	loadEnvironmentZones("config/server/EnvironmentZoneSaves/" @ fileName(%zonefilename) @ ".ez");
 	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", 2, 0);
+	loadEnvironmentZones("config/server/EnvironmentZoneSaves/" @ fileName(%zonefilename) @ ".ez");
 }
 
 function Eventide_loadMapList()

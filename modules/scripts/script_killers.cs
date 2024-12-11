@@ -399,11 +399,15 @@ function Armor::onKillerLoop(%this, %obj)
                 // Update victim's face
                 if(isObject(%victim.faceConfig))
                 {
-					if(%victim.faceConfig.subCategory $= "" && $Eventide_FacePacks[%victim.faceConfig.category, "Scared"] !$= "")                    
-					%victim.createFaceConfig($Eventide_FacePacks[%victim.faceConfig.category, "Scared"]);
-
-                    if(%victim.faceConfig.isFace("Scared")) 
-					%victim.faceConfig.dupeFaceSlot("Neutral", "Scared");                    
+					if(%victim.faceConfig.subCategory $= "" && $Eventide_FacePacks[%victim.faceConfig.category, "Scared"] !$= "")
+					{
+						%victim.createFaceConfig($Eventide_FacePacks[%victim.faceConfig.category, "Scared"]);
+					}
+					
+                    if(%victim.faceConfig.isFace("Scared"))
+					{
+						%victim.faceConfig.dupeFaceSlot("Neutral", "Scared");                    	
+					}					
                 }
             }		
             else // If we cannot see the victim, stop music and perform some actions

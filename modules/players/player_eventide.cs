@@ -130,7 +130,6 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 
 	%obj.schedule(33,setEnergyLevel,0);
 	%obj.setScale("1 1 1");
-	%this.scheduleNoQuota(33,createBillboard,%obj);	
 }
 
 function EventidePlayer::onImpact(%this, %obj, %col, %vec, %force)
@@ -529,74 +528,97 @@ function EventidePlayer::tunnelVision(%this,%obj,%bool)
 	%obj.tunnelVisionsched = %this.schedule(50, tunnelVision, %obj, %bool);	
 }
 
+function EventidePlayer::dropAllTools(%this,%obj)
+{
+	if(!isObject(%obj) || !isObject(getMinigamefromObject(%obj))) return;
+
+	%obj.unmountimage(0);
+	
+	// Check if the player is a hoarder class for the tool count	
+	%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
+	for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%obj.tool[%i]))
+	{
+		// Drop all of the player's tools
+		%item = new Item()
+		{
+			dataBlock = %obj.tool[%i];
+			position = %obj.getHackPosition();	
+			BL_ID = %funcclient.BL_ID;
+			minigame = %minigame;
+		};
+		
+		%item.setVelocity(vectorAdd(%obj.getVelocity(),getRandom(-4,4) SPC getRandom(-4,4) SPC getRandom(4,8)));
+
+		if(%item.getDatablock().getName() $= "RadioItem")
+		{
+			%item.playaudio(3,"radio_unmount_sound");
+		}
+		
+		if (!isObject(Eventide_MinigameGroup)) 
+		{
+			missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
+		}				
+		Eventide_MinigameGroup.add(%item); // Add the item to the minigame group for cleanup when the minigame ends or restarts
+
+		if(isObject(%obj.client))
+		{					
+			%obj.tool[%i] = 0;
+			messageClient(%obj.client, 'MsgItemPickup', '', %i, 0);
+		}
+	}
+}
+
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {
-	// If the damage received too much damage and the player is not already incapacitated, check some conditions to see if they should be
+	// If the damage received is enough to incapacitate the player, and the player is not already incapacitated,
+	// and the damage is not too much to kill the player instantly, and the player has not been downed yet,
+	// check some conditions to see if they should be
 	if (%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && !%obj.wasDowned)
     {   
+		// Work in progress billboard for downed players, still not working :(
 		%o = MountGroup_Create(OverheadBillboardMount, 1, 5);
 		if (isObject(%o)) 
 		{
-    		%obj.downedbillboard = %o.AVBillboard(%obj, downedAVBillboard, %obj.getID());
+		    %obj.downedbillboard = %o.AVBillboard(%obj, downedbillboard, %obj.getID());
 		}
 
-		%obj.setHealth(100);
-        %obj.setDatablock("EventidePlayerDowned");		
-		%obj.wasDowned = true;
-
+		// Reset the player's health, and set the player to be downed
+		%obj.wasDowned = true; // They have been downed once, they wont be able to go down again until they are healed
+		%obj.setHealth(%this.maxDamage);
+        %obj.setDatablock("EventidePlayerDowned");
+		
+		// Minigame conditions
 		if (isObject(%minigame = getMinigamefromObject(%obj))) 
 		{
+			// Notify everyone that the player is downed
 			%minigame.playSound("outofbounds_sound");
-
-			// This will only work team based Slayer minigames.
-			if (isObject(%teams = %minigame.teams))
-			{				
-				for (%i = 0; %i < %teams.getCount(); %i++) if (isObject(%team = %teams.getObject(%i)))
-				{
-					if (strstr(strlwr(%team.name), "hunter") != -1) 
-					{ 
-						%hunterteam = %team;
-					}
-
-					if (strstr(strlwr(%team.name), "survivor") != -1) 
-					{
-						for (%j = 0; %j < %team.numMembers; %j++) 
-						{							
-								if (isObject(%member = %team.member[%j].player) && !%member.getdataBlock().isDowned) 
-								{
-									%livingcount++;
-								}
-							}
-					}
-				}
-
-				if (!%livingcount)
-				{
-					%minigame.endRound(%hunterteam);
-				}
-			}
+			%minigame.checkDownedSurvivors();
 		}
 
 		// Return here, or else the player will die after this condition is met
         return;
     }
 
+	// Continue the damage
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
-	//Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
-	//if enough damage has been received.
+	// Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
+	// if enough damage has been received.
 	if (isObject(%obj.faceConfig))
 	{
-		if (%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "") {
+		if (%obj.getDamagePercent() > 0.33 && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "") 
+		{
 			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
 		}
 
-		if (%obj.faceConfig.isFace("Pain")) {
+		if (%obj.faceConfig.isFace("Pain")) 
+		{
 			%obj.schedule(33, "faceConfigShowFace", "Pain"); //This needs to be delayed for whatever reason. Blinking doesn't start otherwise.
 		}		
 	}
 
-	//Pseudo health for the fighter class, gives the player a temporary health boost until they are hurt again
+	// Pseudo health for the fighter class, gives the player a temporary health boost until they are hurt again
+	// Not sure why just not using %obj.pseudohealth as a condition wouldnt work, so check if it is greater than 0
 	if (%obj.pseudoHealth > 0)
 	{
 		%obj.pseudoHealth -= %damage;
@@ -613,7 +635,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	// Condition for the skinwalker
 	if (%damage && %obj.isSkinwalker) 
 	{		
-		//The disguise is about to be broken, now that the player has been hurt.
+		// The disguise is about to be broken, now that the player has been hurt.
 		if (getRandom(1,4) == 1) 
 		{
 			%obj.playaudio(3,"skinwalker_pain_sound");
@@ -637,17 +659,41 @@ function EventidePlayerDowned::onNewDataBlock(%this,%obj)
 
 function EventidePlayerDowned::DownLoop(%this,%obj)
 { 
+	// Do not continue if the player is dead, invalid, or not this datablock specifically
 	if (!isobject(%obj) || %obj.getstate() $= "Dead" || %obj.getDataBlock() != %this) 
 	{
 		return;
 	}
 	
-	// No savior, continue the function
-	if (!%obj.isBeingSaved)
+	// Force the player to sit if they are not already, and and they are not crouched
+	if (!%obj.isCrouched())
 	{
+		%obj.setActionThread("sit",1);
+	}
+
+	// Update victim's face
+	if(isObject(%obj.faceConfig))
+	{
+		if(%obj.faceConfig.subCategory $= "" && $Eventide_FacePacks[%obj.faceConfig.category, "Scared"] !$= "")
+		{
+			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Scared"]);
+		}
+		
+		if(%obj.faceConfig.isFace("Scared"))
+		{
+			%obj.faceConfig.dupeFaceSlot("Neutral", "Scared");                    	
+		}					
+	}
+
+	// If the player is not being saved, then continue the down loop
+	if (!%obj.isBeingSaved && %obj.lastDownLoop < getSimTime())
+	{
+		// As the player loses health, the loop gets faster, which increases the urgency
+		%obj.lastDownLoop = getSimTime() + mClampF((100-%obj.getDamageLevel()) * 15,200,1100);
+
 		if (isObject(%obj.client)) 
 		{
-			%heartbeatvariant = (%obj.getDamageLevel() >= 50) ? 2 : 1;
+			%heartbeatvariant = (%obj.getDamageLevel() >= %this.maxDamage/2) ? 2 : 1;
 			%obj.client.play2D("survivor_heartbeat" @ %heartbeatvariant @ "_sound");
 		}
 		
@@ -656,22 +702,17 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		%obj.setDamageFlash(%pulse);
 
 		// Scream every 5-10 seconds
-		if (%obj.lastDown+getRandom(5000,10000) < getSimTime())
+		if (%obj.lastDownCall+getRandom(5000,10000) < getSimTime())
 		{
-			%obj.lastDown = getSimTime();
+			%obj.lastDownCall = getSimTime();
 			%obj.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
 			%obj.playthread(3,"plant");
 		}
 	}
 
-	// Keep the loop going until the conditions above are met, the loop goes faster as the player slowly loses health
+	// Keep the loop going unless the first condition is met
 	cancel(%obj.downloop);
-	%obj.downloop = %this.schedule(mClampF((100-%obj.getDamageLevel()) * 15,200,1100),DownLoop,%obj);
-	
-	if (!%obj.isCrouched())
-	{
-		%obj.setActionThread("sit",1);
-	}	
+	%obj.downloop = %this.schedule(100,DownLoop,%obj);
 }
 
 function EventidePlayer::onDisabled(%this,%obj)
@@ -690,10 +731,12 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {
 	Parent::onDisabled(%this,%obj);
 		
+	// Remove all mounted images
 	for (%j = 0; %j < 4; %j++)
 	{
-		%obj.unmountimage(%j); // Remove all mounted images
+		%obj.unmountimage(%j);
 	}
+	
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 
 	// Let the killer know that a survivor has been killed
@@ -711,32 +754,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		
 		if (isObject(%minigame = getMinigamefromObject(%obj)))
 		{			
-			// Check if the player is a hoarder class for the tool count	
-			%inventoryToolCount = (%obj.hoarderToolCount) ? %obj.hoarderToolCount : %obj.getDataBlock().maxTools;
-			for (%i = 0; %i < %inventoryToolCount; %i++) if (isObject(%item = %obj.tool[%i]))
-			{
-				if (!isObject(Eventide_MinigameGroup)) {
-					missionCleanUp.add(new SimGroup(Eventide_MinigameGroup));
-				}
-				
-				//Play a sound for the radio being dropped
-				if (%obj.tool[%i].getName() $= "RadioItem") 
-				{
-					serverPlay3d("radio_unmount_sound",%obj.getPosition());
-				}
-
-				// "Drop" all of the player's tools
-				%item = new Item()
-				{
-					dataBlock = %item;
-					position = %obj.getPosition();
-					velocity = vectorAdd(%obj.getVelocity(),getRandom(-2,2) SPC getRandom(-2,2) SPC getRandom(2,5));
-					BL_ID = %funcclient.BL_ID;
-					minigame = %minigame;
-				};			
-				
-				Eventide_MinigameGroup.add(%item); // Add the item to the minigame group for cleanup when the minigame ends or restarts
-			}
+			EventidePlayer.dropAllTools(%obj);
 
 			// Varying conditions on how the player was killed, do not return on either condition if the player is already marked for death
 			if (%obj.markedforRenderDeath || %obj.shireZombify)
