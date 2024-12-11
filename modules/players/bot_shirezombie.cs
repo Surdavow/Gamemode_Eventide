@@ -58,30 +58,38 @@ function ShireZombieBot::onBotLoop(%this, %obj)
     {
         %obj.lastSearchTime = %currentTime + 1500; //Search every 1.5 seconds
         
-        // Search through client group for valid targets
-        for(%i = 0; %i < ClientGroup.getCount(); %i++)
-        {
-            %nearbyPlayer = ClientGroup.getObject(%i).player;
-            if(!isObject(%nearbyPlayer) || !minigameCanDamage(%obj, %nearbyPlayer) || %nearbyPlayer.getDataBlock().getName() $= "EventidePlayerDowned")
-            continue;
-                
-            // Skip invalid targets
-            if(%nearbyPlayer == %obj || %nearbyPlayer.getDataBlock().classname $= "PlayerData" || %nearbyPlayer.getDataBlock().isKiller || VectorDist(%nearbyPlayer.getPosition(), %obj.getPosition()) > 50)
-            continue;
-            
-            // Vision check
-            %typemasks = $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType;
-            %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%nearbyPlayer.getPosition(), "0 0 1.9"),%typemasks,%obj);
+        initContainerRadiusSearch(%obj.getPosition, 30, $TypeMasks::PlayerObjectType)
 
-            %line = vectorNormalize(vectorSub(%nearbyPlayer.getPosition(), %obj.getPosition()));
+        while (%target = containerSearchNext())
+        {
+            // Skip invalid conditions
+            if (%target == %obj || !minigameCanDamage(%obj, %target) || %target.getDataBlock().isDowned)
+            {
+                continue;
+            }
+
+            // Split condition check to avoid long line
+            if (%target.getDataBlock().isKiller || %target.getDataBlock().classname $= "PlayerData")
+            {
+                continue;
+            }
+
+            // Obstruction check
+            %typemasks = $TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType;
+            %obscure = containerRayCast(%obj.getEyePoint(),vectorAdd(%target.getPosition(), "0 0 1.9"),%typemasks,%obj);
+
+            // Valid line of sight
+            %line = vectorNormalize(vectorSub(%target.getPosition(), %obj.getPosition()));
             %dot = vectorDot(%obj.getEyeVector(), %line);
             
+            // Valid target if no obstruction and is visible
             if(!isObject(%obscure) && %dot > 0.5)
             {
-                %obj.target = %nearbyPlayer;
+                %obj.target = %target;
                 %target = %obj.target;
                 break;
             }
+            
         }
     }
     
