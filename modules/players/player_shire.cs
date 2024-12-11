@@ -2,8 +2,6 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 {
 	uiName = "Shire Player";
 	isKiller = true;
-
-	killerSpawnMessage = "A hooded figure channels a blinding wrath.";
 	
 	// Weapon: Axe
 	hitprojectile = KillerSharpHitProjectile;

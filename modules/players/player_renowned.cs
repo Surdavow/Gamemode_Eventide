@@ -1,8 +1,6 @@
 datablock PlayerData(PlayerRenowned : EventidePlayer) 
 {
 	uiName = "Renowned Player";	
-
-	killerSpawnMessage = "A droll of the mind arrives with death in close pursuit.";
 	
 	// Weapon: Katana
 	hitprojectile = KillerSharpHitProjectile;

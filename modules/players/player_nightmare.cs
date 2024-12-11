@@ -1,8 +1,6 @@
 datablock PlayerData(PlayerNightmare : PlayerRenowned) 
 {
 	uiName = "Nightmare Player";
-
-	killerSpawnMessage = "...";
 	
 	// Weapon: Knife
 	hitprojectile = KillerRoughHitProjectile;

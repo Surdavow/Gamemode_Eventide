@@ -71,8 +71,6 @@ datablock ShapeBaseImageData(Disfigured_FogImage)
 datablock PlayerData(PlayerDisfigured : PlayerRenowned) 
 {
 	uiName = "Disfigured Player";
-
-	killerSpawnMessage = "...";
 	
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = "";

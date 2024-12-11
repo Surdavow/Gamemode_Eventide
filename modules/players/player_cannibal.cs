@@ -1,8 +1,6 @@
 datablock PlayerData(PlayerCannibal : PlayerRenowned) 
 {
 	uiName = "Cannibal Player";
-
-	killerSpawnMessage = "...";
 	
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = "";

@@ -1,8 +1,6 @@
 datablock PlayerData(PlayerLurker : PlayerRenowned) 
 {
 	uiName = "Lurker Player";
-
-	killerSpawnMessage = "...";
 	
 	// Weapon: Fist
 	hitprojectile = KillerRoughHitProjectile;

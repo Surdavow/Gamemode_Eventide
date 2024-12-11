@@ -1,8 +1,6 @@
 datablock PlayerData(PlayerGrabber : PlayerRenowned) 
 {
 	uiName = "Grabber Player";
-
-	killerSpawnMessage = "The masked man arrives with silence and dread.";
 	
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = KillerMacheteClankProjectile;

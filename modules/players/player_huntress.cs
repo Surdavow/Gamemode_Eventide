@@ -1,8 +1,6 @@
 datablock PlayerData(PlayerHuntress : PlayerRenowned) 
 {
 	uiName = "Huntress Player";
-
-	killerSpawnMessage = "...";
 	
 	hitprojectile = KillerSharpHitProjectile;
 	hitobscureprojectile = KillerAxeClankProjectile;

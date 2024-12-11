@@ -274,25 +274,6 @@ function Armor::killerCheck(%this,%obj)
 		%this.EventideAppearance(%obj,%obj.client);
 	}
 
-	// Send an announcement message when the killer spawns
-	// The message is sent with a chat message and a sound effect
-	if(!%obj.firstMessageSpawn && isObject(%minigame = getMinigamefromObject(%obj)))
-	{
-		switch(getRandom(1,4))
-		{
-			case 1: %message = "The hunter has arrived.";
-			case 2: %message = "Ready yourselves, the hunter has arrived.";
-			case 3: %message = "Prepare yourselves, it is coming.";
-			case 4: %message = %this.killerSpawnMessage;
-		}
-
-		%minigame.chatMsgAll("<font:Impact:30>\c0" @ %message);
-		%minigame.playSound("round_start_sound");
-
-		// Set the flag to prevent the message from being sent again
-		%obj.firstMessageSpawn = true;
-	}
-
 	// Handle the killer's light
 	// The killer's light is only visible to the killer itself
 	// If the killer is invisible, the light is not created

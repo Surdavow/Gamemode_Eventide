@@ -18,7 +18,6 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	killerlight = "NoFlareRLight";
 
 	renderFirstPerson = false;
-	killerSpawnMessage = "Blockheads are the warmest place to hide.";
 	
 	// Weapon: Claws
 	HitProjectile = KillerRoughHitProjectile;
