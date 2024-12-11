@@ -24,6 +24,11 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	canJet = false;
 	tunnelFOVIncrease = 20;
 
+	useCustomPainEffects = true;
+	jumpSound = "jumpSound";
+	PainSound		= "";
+	DeathSound		= "";
+
 	rechargeRate = 0.375;
 	maxTools = 3;
 	maxWeapons = 3;
@@ -632,21 +637,34 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 			%obj.client.play2D("printfiresound");
 		}
 	}
-	
-	// Condition for the skinwalker
-	if (%damage && %obj.isSkinwalker) 
-	{		
-		// The disguise is about to be broken, now that the player has been hurt.
-		if (getRandom(1,4) == 1) 
+		
+	if (%damage) 
+	{
+		if (%damage >= 5) %sound = "survivor_pain" @ getRandom(1, 4) @ "_sound";
+		if (%damage >= 20 || %obj.getDamagePercent() > 0.5) %sound = "survivor_painmed" @ getRandom(1, 4) @ "_sound";
+		if (%damage >= 30 || %obj.getDamagePercent() > 0.75) %sound = "survivor_painhigh" @ getRandom(1, 4) @ "_sound";
+
+		// Condition for the skinwalker
+		if (%obj.isSkinwalker)
 		{
-			%obj.playaudio(3,"skinwalker_pain_sound");
-			if (!isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule)) 
-			{ 
-				PlayerSkinwalker.monsterTransform(%obj,true);
+			// The disguise is about to be broken, now that the player has been hurt.
+			if (getRandom(1,4) == 1) 
+			{
+				%sound = "skinwalker_pain_sound";	
+				if (!isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule)) 
+				{ 
+					PlayerSkinwalker.monsterTransform(%obj,true);
+				}
 			}
+
+			%obj.setHealth(%this.maxDamage);
 		}
 
-		%obj.setHealth(%this.maxDamage);
+		if (%obj.getState() !$= "Dead" && %obj.lastDamageCall < getSimTime())
+		{
+			%obj.playaudio(0,%sound);
+			%obj.lastDamageCall = getSimTime() + getRandom(250,750);
+		}
 	}
 }
 
@@ -706,7 +724,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		if (%obj.lastDownCall+getRandom(5000,10000) < getSimTime())
 		{
 			%obj.lastDownCall = getSimTime();
-			%obj.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");
+			%obj.playaudio(0,"survivor_painhigh" @ getRandom(1, 4) @ "_sound");
 			%obj.playthread(3,"plant");
 		}
 	}
@@ -738,6 +756,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 		%obj.unmountimage(%j);
 	}
 	
+	%obj.playaudio(0,"survivor_death" @ getRandom(1, 15) @ "_sound");
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 
 	// Let the killer know that a survivor has been killed

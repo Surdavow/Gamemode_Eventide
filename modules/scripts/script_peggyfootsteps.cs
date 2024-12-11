@@ -596,7 +596,7 @@ function PeggFootsteps(%obj, %lastVert)
 		        if (!%obj.isFalling)
 		        {
 		            %obj.playthread(2, "side");
-		            %obj.playaudio(0, "norm_scream" @ getRandom(0, 4) @ "_sound");
+		            %obj.playaudio(0,"survivor_painhigh" @ getRandom(1, 4) @ "_sound");
 		            %obj.getDatablock().TunnelVision(%obj, true);
 		            %obj.isFalling = true;
 		        }

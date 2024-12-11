@@ -302,7 +302,7 @@ function AnglerHookRope::onHookLoop(%this,%obj)//General function to pull victim
 
 					if(%source.ChokeUpCount > 2)
 					{
-						%end.playaudio(0,"norm_cough" @ getrandom(1,3) @ "_sound");
+						%end.playaudio(0,"survivor_cough" @ getrandom(1,3) @ "_sound");
 						%end.playthread(2,"plant");								
 						%end.damage(%source, %end.getposition(), %end.getdataBlock().maxDamage/12.5, $DamageType::sourceConstrict);		
 					}

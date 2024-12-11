@@ -409,7 +409,7 @@ function Armor::onKillerLoop(%this, %obj)
 					%victim.lastChaseCall = getSimTime()+getRandom(1000,5000);
 					$oldTimescale = getTimescale();
 					setTimescale((getRandom(100,125)*0.01) * $oldTimescale);
-					%victim.playaudio(0,"norm_scream" @ getRandom(0,4) @ "_sound");		
+					%victim.playaudio(0,"survivor_painhigh" @ getRandom(1, 4) @ "_sound");
 					setTimescale($oldTimescale);					
 				}
 
