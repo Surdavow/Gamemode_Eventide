@@ -120,11 +120,12 @@ function serverCmdLoadEnvZones(%client, %f0, %f1, %f2, %f3, %f4, %f5, %f6, %f7)
 }
 
 function Eventide_loadNextMap()
-{
-	// Move to the next map, or wrap around to the start if we reach the end
+{	
 	deleteAllEnvZones();
+	
+	// Move to the next map, or wrap around to the start if we reach the end
 	$Pref::Server::MapRotation::current = ($Pref::Server::MapRotation::current + 1) % $Pref::Server::MapRotation::numMap;
-	%fileName = $Pref::Server::MapRotation::map[$Pref::Server::MapRotation::current];
+	%fileName = strlwr($Pref::Server::MapRotation::map[$Pref::Server::MapRotation::current]);	
 
 	// Prevent players from respawning
 	$Eventide_MapChanging = true;
@@ -151,10 +152,8 @@ function Eventide_loadNextMap()
 	BrickGroup_888888.chaindeleteall();
 
 	// Load the new map and the environment zones
-	%filePath = "config/server/EnvironmentZoneSaves/" @ %fileName @ ".ez";
-	%filePath = strReplace(%filePath, ".ez.ez", ".ez");
-	loadEnvironmentZones(%filePath);
-
+	%zonefilename = strreplace(fileName(%fileName), ".bls", "");
+	loadEnvironmentZones("config/server/EnvironmentZoneSaves/" @ fileName(%zonefilename) @ ".ez");
 	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", 2, 0);
 }
 
