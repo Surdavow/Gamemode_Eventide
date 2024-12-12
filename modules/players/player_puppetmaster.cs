@@ -75,7 +75,7 @@ function PlayerPuppetMaster::killerGUI(%this,%obj,%client)
 
 	// Some dynamic varirables
 	%leftclickstatus = (%obj.getEnergyLevel() >= %this.maxEnergy/4) ? "hi" : "lo";
-	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy/2 && !%obj.noSpawnPuppet) ? "hi" : "lo";
+	%rightclickstatus = (%obj.getEnergyLevel() >= %this.maxEnergy/2 && !%obj.noSpawnPuppet) ? "hi" : "lo";
 	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
 	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";		
 

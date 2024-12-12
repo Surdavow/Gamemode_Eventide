@@ -154,24 +154,9 @@ function sm_poolCueImage::onFire(%this,%obj,%slot)
 	if(isObject(%hit))
 	{
 		%hitpos = posFromRaycast(%hit);
-		%obj.poolcuehit++;
+		%obj.poolcuehit++;	
 
-		if(%hit.getType() & $TypeMasks::PlayerObjectType)
-		{
-			if(minigameCanDamage(%obj,%hit) == 1)
-			{
-				if(%obj.poolcuehit < 2) %hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);
-				else
-				{
-					%hit.mountimage("sm_stunImage",2);
-					%hit.Damage(%obj, %hit.getPosition(), 50, $DamageType::barStool);
-				}
-				
-				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1000),"0 0 1000"));
-			}
-		}		
-
-		if(%obj.poolcuehit < 2)
+		if(%obj.poolcuehit < 3)
 		{
 			serverPlay3D("chair_hit" @ getRandom(1,2) @ "_sound",%hitpos);
 			%p = new Projectile()
@@ -181,7 +166,13 @@ function sm_poolCueImage::onFire(%this,%obj,%slot)
 				sourceObject = %obj;
 				client = %obj.client;
 			};
-			%p.explode();			
+			%p.explode();
+
+			if((%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
+			{
+				%hit.Damage(%obj, %hit.getPosition(), 25, $DamageType::barStool);						
+				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),500),"0 0 500"));			
+			}
 		}
 		else
 		{
@@ -200,7 +191,18 @@ function sm_poolCueImage::onFire(%this,%obj,%slot)
 				%obj.tool[%itemslot] = 0;
 				messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
 			}
-			if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
+			if(isObject(%obj.getMountedImage(%this.mountPoint))) 
+			{
+				%obj.unmountImage(%this.mountPoint);
+			}
+
+			if((%hit.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))
+			{
+				%hit.mountimage("sm_stunImage",2);
+				%hit.Damage(%obj, %hit.getPosition(), 50, $DamageType::barStool);
+				%hit.applyImpulse(%hit.getposition(),vectorAdd(vectorScale(%obj.getMuzzleVector(0),1500),"0 0 750"));			
+			}			
+			
 			%obj.poolcuehit = 0;
 		}
 	}

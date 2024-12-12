@@ -374,7 +374,7 @@ function Armor::onKillerLoop(%this, %obj)
 
 				if(%victimDistance < %searchDistance/2.5)
 				{
-					%victim.playthread(3,"talk");
+					%victim.playthread(2,"talk");
 					
 					if(%victimDistance < %searchDistance/4)
 					{				
@@ -441,7 +441,7 @@ function Armor::onKillerLoop(%this, %obj)
 				// Update victim's chase state after 6 seconds
                 if (%victim.TimeSinceChased + 6000 < getSimTime())
                 {
-                	%victim.playthread(3,"root");
+                	%victim.playthread(2,"root");
 
 					// Reset victim's face
 					if(isObject(%victim.faceConfig) && %victim.faceConfig.face["Neutral"].faceName $= "Scared") 
@@ -492,9 +492,9 @@ function Armor::onKillerLoop(%this, %obj)
 		}
 
         // Handle killer sounds
-        if (%obj.lastKillerSoundTime + getRandom(7000, 10000) < getSimTime())
+        if ($Pref::Server::Eventide::killerSoundsEnabled && !%obj.isCrouched() && %obj.lastKillerSoundTime + getRandom(7000, 10000) < getSimTime())
         {                       
-			if (!%obj.isInvisible && $Pref::Server::Eventide::killerSoundsEnabled) 
+			if (!%obj.isInvisible) 
 			{
 			    // Determine if chasing or idle sounds should be played
 				%soundType = %obj.isChasing ? %this.killerChaseSound : %this.killerIdleSound;

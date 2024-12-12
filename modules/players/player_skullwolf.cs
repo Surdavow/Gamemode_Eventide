@@ -142,6 +142,11 @@ function PlayerSkullWolf::eatVictim(%this,%obj,%victim)
 
 function PlayerSkullWolf::onPeggFootstep(%this,%obj)
 {
+	if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.isSlow)
+	{
+		return;
+	}
+	
 	serverplay3d("skullwolf_walking" @ getRandom(1,6) @ "_sound", %obj.getHackPosition());
 	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
