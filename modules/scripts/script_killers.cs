@@ -354,7 +354,7 @@ function Armor::onKillerLoop(%this, %obj)
         while(%victim = containerSearchNext())
         {
 			// Skip invalid conditions
-			if(!isObject(getMinigamefromObject(%victim)) || %victim.getDataBlock().isKiller) 
+			if(!isObject(getMinigamefromObject(%victim)) || %victim.getDataBlock().isKiller || %victim.getState() $= "Dead") 
 			{
 				continue;
 			}
