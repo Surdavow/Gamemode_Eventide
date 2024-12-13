@@ -145,7 +145,7 @@ function Armor::killerMelee(%this,%obj,%radius)
 	initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
 	while(%hit = containerSearchNext())
 	{
-		if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius) 
+		if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius || %hit.stunned) 
 		{
 			continue;
 		}

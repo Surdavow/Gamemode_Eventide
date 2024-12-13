@@ -121,7 +121,6 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	%obj.ChokeAmount = 0;
 	%obj.victim.stunned = false;	
 	%obj.setEnergyLevel(0);
-	%obj.victim.stunned = false;
 	%obj.victim.unmount();
 	%obj.victim.setarmthread("look");
 	%obj.victim.playthread(0,"root");
