@@ -225,7 +225,7 @@ function bottleImage::onFire(%this,%obj,%slot)
 				if(%obj.bottlehit < 3) %hit.Damage(%obj, %hit.getPosition(), 10, $DamageType::Bottle);
 				else
 				{
-					%hit.mountimage("stunImage",2);
+					%hit.mountimage("sm_stunImage",2);
 					%hit.Damage(%obj, %hit.getPosition(), 20, $DamageType::BottleBroken);
 				}
 				
@@ -263,7 +263,10 @@ function bottleImage::onFire(%this,%obj,%slot)
 				%obj.tool[%itemslot] = 0;
 				messageClient(%obj.client,'MsgItemPickup','',%itemslot,0);
 			}
-			if(isObject(%obj.getMountedImage(%this.mountPoint))) %obj.unmountImage(%this.mountPoint);
+			if(isObject(%obj.getMountedImage(%this.mountPoint))) 
+			{
+				%obj.unmountImage(%this.mountPoint);
+			}
 			%obj.bottlehit = 0;
 		}
 	}
