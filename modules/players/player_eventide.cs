@@ -134,6 +134,7 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	
+	%obj.gender = (!%obj.client.chest) ? "male" : "female";
 	%obj.schedule(33,setEnergyLevel,0);
 	%obj.setScale("1 1 1");
 }
@@ -762,12 +763,12 @@ function EventidePlayer::onDisabled(%this,%obj)
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {
-	%genderSound = (!%obj.client.chest) ? "male" : "female";
-	%genderSoundAmount = (!%obj.client.chest) ? 4 : 2;	
+	%genderSound = (!%obj.gender) ? "male" : "female";
+	%genderSoundAmount = (!%obj) ? 4 : 2;	
 	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";	
 	
 	Parent::onDisabled(%this,%obj);
-		
+
 	// Remove all mounted images
 	for (%j = 0; %j < 4; %j++)
 	{
