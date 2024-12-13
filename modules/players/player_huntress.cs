@@ -44,7 +44,7 @@ function PlayerHuntress::onTrigger(%this, %obj, %trig, %press, %client)
 	{
 		case 0: if(%obj.getEnergyLevel() >= 25) return %this.killerMelee(%obj,4);
 		
-		case 4: if(%obj.getEnergyLevel() == %this.maxEnergy/2)
+		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy/2)
 				{
 					%obj.setEnergyLevel(0);
 					%obj.playThread(2,"armReadyRight");
