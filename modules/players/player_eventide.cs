@@ -759,8 +759,12 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	{
 		%obj.unmountimage(%j);
 	}
+
+	%genderSound = (!%obj.client.chest) ? "male" : "female";
+	%genderSoundAmount = (!%obj.client.chest) ? 4 : 2;
+	%sound = %genderSound @ "_death" @ %genderSoundAmount @ "_sound";
 	
-	%obj.playaudio(0,"survivor_death" @ getRandom(1, 15) @ "_sound");
+	%obj.playaudio(0,%sound);
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 
 	// Let the killer know that a survivor has been killed
