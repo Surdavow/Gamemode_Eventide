@@ -107,7 +107,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 			return;
 		}
 		
-		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy/2)
+		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy/1)
 				if(%press)
 				{
 					%obj.mountImage(GlowFaceImage, 1);					
@@ -125,7 +125,7 @@ function PlayerShire::onTrigger(%this, %obj, %trig, %press)
 			
 					if(%obj.casttime+250 < getSimTime())
 					{
-						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/2);
+						%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/1);
 						%obj.playthread(2,"leftrecoil");
 						serverPlay3d("shire_cast_sound", %obj.getEyePoint());
 			

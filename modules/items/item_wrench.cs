@@ -21,7 +21,7 @@ datablock ShapeBaseImageData(MonkeyWrenchImage)
 	shapeFile = "./models/Monkey_Wrench.dts";
 	emap = false;
 	mountPoint = 0;
-	offset = "-0.1 0.0 0.0";
+	offset = "0.0 0.0 0.0";
 	eyeOffset = 0;
 	rotation = eulerToMatrix("0 0 0");
 	

@@ -15,6 +15,7 @@ datablock PlayerData(PuppetMasterPuppet : PlayerRenowned)
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
 
+	rechargeRate = 0.35;
 	runForce = 5616;
 	maxForwardSpeed = 10.47;
 	maxBackwardSpeed = 5.98;
@@ -27,6 +28,7 @@ function PuppetMasterPuppet::onNewDatablock(%this,%obj)
 {
 	%obj.setScale("0.7 0.7 0.7");
 	%obj.schedule(1,setEnergyLevel,100);
+	%obj.mountImage("meleeKnifeImage",0);
 	%this.EventideAppearance(%obj,ClientGroup.getObject(getRandom(0,ClientGroup.getCount()-1)));
 }
 
@@ -42,7 +44,7 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 				if(%press)
 				{
 					%obj.casttime = getSimTime();
-					%obj.chargejumpsound = %obj.schedule(350,playaudio,1,"puppet_jumpCharge_sound");
+					%obj.chargejumpsound = %obj.schedule(33,playaudio,1,"puppet_jumpCharge_sound");
 				}
 				else
 				{
