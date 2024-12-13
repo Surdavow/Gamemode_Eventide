@@ -237,10 +237,15 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 					%ray = containerRayCast(%eyePoint, %endPoint,%masks,%obj);
 					if (isObject(%ray) && (%ray.getType() & $TypeMasks::PlayerObjectType) && %ray.getdataBlock().isDowned && !%ray.isBeingSaved)
 					{
+						%obj.setTempSpeed(0.25);
 						%obj.playthread(2,"armReadyRight");
 						%obj.isSaving = %ray;
 						%ray.isBeingSaved = true;						
 						%this.reviveDowned(%obj,%ray,%press);
+					}
+					else
+					{
+						%obj.setTempSpeed();
 					}
 
 			case 4: if (%obj.isSkinwalker)
@@ -342,8 +347,7 @@ function EventidePlayer::reviveDowned(%this,%obj,%victim,%bool)
 	{	
 		// The victim will be saved after 4 ticks if the player is still holding left click
 		if (%obj.reviveDownedCounter <= 4)
-		{
-			%obj.setTempSpeed(0.25);
+		{			
 			%obj.reviveDownedCounter++;
 			%this.CounterPrint(%obj,%obj.client,%obj.reviveDownedCounter,"Get up!");
 			%this.CounterPrint(%obj,%victim.client,%obj.reviveDownedCounter,"Get up!");			
