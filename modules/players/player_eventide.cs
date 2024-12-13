@@ -646,11 +646,6 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		%genderSound = (!%obj.client.chest) ? "male" : "female";
 		%genderSoundAmount = (!%obj.client.chest) ? 3 : 6;
 		%sound = %genderSound @ "_pain" @ getRandom(1, %genderSoundAmount) @ "_sound";
-		%obj.playaudio(0,%sound);
-		
-		//if (%damage >= 5) %sound = "survivor_pain" @ getRandom(1, 4) @ "_sound";
-		//if (%damage >= 20 || %obj.getDamagePercent() > 0.5) %sound = "survivor_painmed" @ getRandom(1, 4) @ "_sound";
-		//if (%damage >= 30 || %obj.getDamagePercent() > 0.75) %sound = "survivor_painhigh" @ getRandom(1, 4) @ "_sound";
 
 		// Condition for the skinwalker
 		if (%obj.isSkinwalker)
@@ -668,7 +663,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 			%obj.setHealth(%this.maxDamage);
 		}
 
-		if (%obj.getState() !$= "Dead" && %obj.lastDamageCall > getSimTime())
+		if (%obj.getState() !$= "Dead" && %obj.lastDamageCall < getSimTime())
 		{
 			%obj.playaudio(0,%sound);
 			%obj.lastDamageCall = getSimTime() + getRandom(250,750);
@@ -761,21 +756,7 @@ function EventidePlayer::onDisabled(%this,%obj)
 // 5. Handles special death conditions like "render death" or zombification.
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
-{
-	if(%obj.client.chest == 0)
-	{
-		%genderSound = "male";
-		%genderSoundAmount = 2;
-	}
-	else
-	{
-		%genderSound = "female";
-		%genderSoundAmount = 4;
-	}
-
-	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";	
-	%obj.playaudio(0,%sound);
-	
+{	
 	Parent::onDisabled(%this,%obj);
 
 	// Remove all mounted images
@@ -783,6 +764,11 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	{
 		%obj.unmountimage(%j);
 	}
+
+	%genderSound = (!%obj.client.chest) ? "male" : "female";
+	%genderSoundAmount = (!%obj.client.chest) ? 4 : 2;
+	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";	
+	%obj.playaudio(0,%sound);	
 		
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 
