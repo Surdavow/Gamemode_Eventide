@@ -762,6 +762,10 @@ function EventidePlayer::onDisabled(%this,%obj)
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {
+	%genderSound = (!%obj.client.chest) ? "male" : "female";
+	%genderSoundAmount = (!%obj.client.chest) ? 4 : 2;	
+	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";	
+	
 	Parent::onDisabled(%this,%obj);
 		
 	// Remove all mounted images
@@ -769,10 +773,6 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	{
 		%obj.unmountimage(%j);
 	}
-
-	%genderSound = (!%obj.client.chest) ? "male" : "female";
-	%genderSoundAmount = (!%obj.client.chest) ? 4 : 2;
-	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";
 	
 	%obj.playaudio(0,%sound);
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
