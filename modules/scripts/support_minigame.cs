@@ -65,10 +65,14 @@ package Eventide_Minigame
 		if (strlwr(%minigame.title) $= "eventide") 
 		{
 			%minigame.schedule(33,assignSurvivorClasses);
-			%minigame.randomizeEventideItems(true);
-			%minigame.bottomprintall("<font:impact:25>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
+			%minigame.randomizeEventideItems(true);						
 			%minigame.playSound("round_start_sound");						
 			$MinigameLocalChat = $Pref::Server::ChatMod::lchatEnabled;
+
+			if ($MinigameLocalChat)
+			{
+				%minigame.bottomprintall("<font:impact:25>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
+			}
 		}
     }
 
