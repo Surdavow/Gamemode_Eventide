@@ -763,9 +763,20 @@ function EventidePlayer::onDisabled(%this,%obj)
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {
-	%genderSound = (!%obj.gender) ? "male" : "female";
-	%genderSoundAmount = (!%obj.gender) ? 4 : 2;	
-	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";
+	if(%obj.gender == 0)
+	{
+		%genderSound = "male";
+		%genderSoundAmount = 2;
+	}
+	else
+	{
+		%genderSound = "female";
+		%genderSoundAmount = 4;
+	}
+	
+	talk("Gender:" SPC %genderSound);
+
+	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";	
 
 	talk(%sound);
 	
