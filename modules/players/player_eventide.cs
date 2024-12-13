@@ -134,7 +134,6 @@ function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	
-	%obj.gender = (!%obj.client.chest) ? "male" : "female";
 	%obj.schedule(33,setEnergyLevel,0);
 	%obj.setScale("1 1 1");
 }
@@ -763,7 +762,7 @@ function EventidePlayer::onDisabled(%this,%obj)
 
 function EventidePlayerDowned::onDisabled(%this,%obj)
 {
-	if(%obj.gender == 0)
+	if(%obj.client.chest == 0)
 	{
 		%genderSound = "male";
 		%genderSoundAmount = 2;
