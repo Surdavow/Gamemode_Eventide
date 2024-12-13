@@ -1,5 +1,13 @@
 package Eventide_Player
 {
+	function Player::Unmount(%obj)
+	{
+		if(!%obj.stunned) 
+		{
+			Parent::Unmount(%obj);
+		}
+	}
+	
 	function GameConnection::setControlObject(%this,%obj)
 	{
 		Parent::setControlObject(%this,%obj);

@@ -121,6 +121,7 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 	%obj.ChokeAmount = 0;
 	%obj.victim.stunned = false;	
 	%obj.setEnergyLevel(0);
+	%obj.victim.stunned = false;
 	%obj.victim.unmount();
 	%obj.victim.setarmthread("look");
 	%obj.victim.playthread(0,"root");
@@ -248,7 +249,7 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 		ServerCmdUnUseTool (%obj.client);
 		%obj.victim = %col;
 		%col.killer = %obj;
-		%col.stunned = false;
+		%col.stunned = true;
 		%obj.mountObject(%col,8);
 		%col.setarmthread("activate2");
 		PlayerGrabber.schedule(4500,"releaseVictim",%obj);
