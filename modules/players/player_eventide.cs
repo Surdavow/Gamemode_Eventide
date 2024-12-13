@@ -726,8 +726,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		// Scream every 5-10 seconds
 		if (%obj.lastDownCall+getRandom(5000,10000) < getSimTime())
 		{
-			%obj.lastDownCall = getSimTime();
-			
+			%obj.lastDownCall = getSimTime();			
 
 			%genderSound = (!%obj.client.chest) ? "male" : "female";
 			%genderSoundAmount = (!%obj.client.chest) ? 3 : 5;
@@ -768,7 +767,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	%genderSound = (!%obj.client.chest) ? "male" : "female";
 	%genderSoundAmount = (!%obj.client.chest) ? 4 : 2;
 	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";	
-	%obj.playaudio(0,%sound);	
+	%obj.playaudio(0,%sound);	4
 		
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 

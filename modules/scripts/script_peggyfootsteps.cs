@@ -595,10 +595,15 @@ function PeggFootsteps(%obj, %lastVert)
 
 		        if (!%obj.isFalling)
 		        {
-		            %obj.playthread(2, "side");
-		            %obj.playaudio(0,"survivor_painhigh" @ getRandom(1, 4) @ "_sound");
+		            %obj.playthread(2, "side");		            
 		            %obj.getDatablock().TunnelVision(%obj, true);
 		            %obj.isFalling = true;
+
+					%genderSound = (!%obj.client.chest) ? "male" : "female";
+					%genderSoundAmount = (!%obj.client.chest) ? 3 : 5;
+					%sound = %genderSound @ "_shock" @ getRandom(1, %genderSoundAmount) @ "_sound";
+
+					%obj.playaudio(0,%sound);
 		        }
 		    }
 		}
