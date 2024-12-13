@@ -389,11 +389,10 @@ function Armor::onKillerLoop(%this, %obj)
 						if((%victimdot > 0.45 || %victimDistance < %searchdistance/6) && %victim.lastChaseCall < getSimTime())
 						{							
 							
-							%genderSound = (!%obj.client.chest) ? "male" : "female";
-							%genderSoundAmount = (!%obj.client.chest) ? 3 : 5;
+							%genderSound = (!%victim.client.chest) ? "male" : "female";
+							%genderSoundAmount = (!%victim.client.chest) ? 3 : 5;
 							%sound = %genderSound @ "_shock" @ getRandom(1, %genderSoundAmount) @ "_sound";
-
-							%obj.playaudio(0,%sound);		
+							%victim.playaudio(0,%sound);		
 							%victim.lastChaseCall = getSimTime()+getRandom(1000,5000);
 						}
 					}									
