@@ -668,7 +668,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 			%obj.setHealth(%this.maxDamage);
 		}
 
-		if (%obj.getState() !$= "Dead" && %obj.lastDamageCall < getSimTime())
+		if (%obj.getState() !$= "Dead" && %obj.lastDamageCall > getSimTime())
 		{
 			%obj.playaudio(0,%sound);
 			%obj.lastDamageCall = getSimTime() + getRandom(250,750);
