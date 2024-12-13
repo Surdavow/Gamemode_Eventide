@@ -79,8 +79,9 @@ function DCameraImage::onDetonate(%this, %obj, %slot)
     serverPlay3D("camera_flash_sound",%obj.getPosition());
 
     // Flash nearby players
-    initContainerRadiusSearch(%obj.getPosition, 15, $TypeMasks::PlayerObjectType);
-    while (%nearbyplayer = containerSearchNext()) {                
+    initContainerRadiusSearch(%obj.getPosition(), 15, $TypeMasks::PlayerObjectType);
+    while (%nearbyplayer = containerSearchNext()) 
+    {                
         %nearbyplayer.setwhiteout(%nearbyplayer.getDataBlock().isKiller ? 4 : 0.375); // Flash nearby players
     }
 
