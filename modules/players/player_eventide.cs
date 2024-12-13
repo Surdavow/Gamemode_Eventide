@@ -274,7 +274,6 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 							{
 								cancel(%obj.resetStamina);
 								%soundpitch = getRandom(50,80);
-								if (getRandom(1,4) == 1) %obj.playaudio(3,"PainCrySound");
 								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
 
 								if (%obj.staminaCount == 5)
@@ -644,9 +643,14 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		
 	if (%damage) 
 	{
-		if (%damage >= 5) %sound = "survivor_pain" @ getRandom(1, 4) @ "_sound";
-		if (%damage >= 20 || %obj.getDamagePercent() > 0.5) %sound = "survivor_painmed" @ getRandom(1, 4) @ "_sound";
-		if (%damage >= 30 || %obj.getDamagePercent() > 0.75) %sound = "survivor_painhigh" @ getRandom(1, 4) @ "_sound";
+		%genderSound = (!%obj.client.chest) ? "male" : "female";
+		%genderSoundAmount = (!%obj.client.chest) ? 3 : 6;
+		%sound = %genderSound @ "_pain" @ getRandom(1, %genderSoundAmount) @ "_sound";
+		%obj.playaudio(0,%sound);
+		
+		//if (%damage >= 5) %sound = "survivor_pain" @ getRandom(1, 4) @ "_sound";
+		//if (%damage >= 20 || %obj.getDamagePercent() > 0.5) %sound = "survivor_painmed" @ getRandom(1, 4) @ "_sound";
+		//if (%damage >= 30 || %obj.getDamagePercent() > 0.75) %sound = "survivor_painhigh" @ getRandom(1, 4) @ "_sound";
 
 		// Condition for the skinwalker
 		if (%obj.isSkinwalker)
@@ -728,7 +732,13 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		if (%obj.lastDownCall+getRandom(5000,10000) < getSimTime())
 		{
 			%obj.lastDownCall = getSimTime();
-			%obj.playaudio(0,"survivor_painhigh" @ getRandom(1, 4) @ "_sound");
+			
+
+			%genderSound = (!%obj.client.chest) ? "male" : "female";
+			%genderSoundAmount = (!%obj.client.chest) ? 3 : 5;
+			%sound = %genderSound @ "_shock" @ getRandom(1, %genderSoundAmount) @ "_sound";
+
+			%obj.playaudio(0,%sound);
 			%obj.playthread(3,"plant");
 		}
 	}
@@ -762,7 +772,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 
 	%genderSound = (!%obj.client.chest) ? "male" : "female";
 	%genderSoundAmount = (!%obj.client.chest) ? 4 : 2;
-	%sound = %genderSound @ "_death" @ %genderSoundAmount @ "_sound";
+	%sound = %genderSound @ "_death" @ getRandom(1, %genderSoundAmount) @ "_sound";
 	
 	%obj.playaudio(0,%sound);
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.

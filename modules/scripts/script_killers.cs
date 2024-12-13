@@ -388,7 +388,12 @@ function Armor::onKillerLoop(%this, %obj)
 						// If we can see the killer or the victim is close enough, make them panic
 						if((%victimdot > 0.45 || %victimDistance < %searchdistance/6) && %victim.lastChaseCall < getSimTime())
 						{							
-							%victim.playaudio(0,"survivor_painhigh" @ getRandom(1, 4) @ "_sound");						
+							
+							%genderSound = (!%obj.client.chest) ? "male" : "female";
+							%genderSoundAmount = (!%obj.client.chest) ? 3 : 5;
+							%sound = %genderSound @ "_shock" @ getRandom(1, %genderSoundAmount) @ "_sound";
+
+							%obj.playaudio(0,%sound);		
 							%victim.lastChaseCall = getSimTime()+getRandom(1000,5000);
 						}
 					}									
