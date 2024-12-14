@@ -97,5 +97,8 @@ function PlayerGenocide::EventideAppearance(%this,%obj,%client)
 function PlayerGenocide::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
-	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"genocide_pain" @ getRandom(1, 11) @ "_sound");
+	if(%obj.getState() !$= "Dead")
+	{
+		%obj.playaudio(0,"genocide_pain" @ getRandom(1, 11) @ "_sound");
+	}
 }

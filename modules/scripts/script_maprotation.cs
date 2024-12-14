@@ -83,8 +83,16 @@ function Eventide_loadNextMap()
 	deleteAllEnvZones();
 	
 	// Move to the next map, or wrap around to the start if we reach the end
-	$Eventide_CurrentMap = ($Eventide_CurrentMap + 1) % $Eventide_MapsAmount;
-	%fileName = strlwr($Eventide_Maps[$Eventide_CurrentMap]);	
+	if($Eventide_CurrentMap >= $Eventide_MapsAmount) 
+	{
+		$Eventide_CurrentMap = 1;
+	}
+	else
+	{
+		$Eventide_CurrentMap++;
+	}
+	
+	%fileName = strlwr($Eventide_Maps[$Eventide_CurrentMap]);
 
 	// Prevent players from respawning
 	$Eventide_MapChanging = true;

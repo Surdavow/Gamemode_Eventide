@@ -188,8 +188,7 @@ function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 	%obj.unHideNode("rshoe");
 	%obj.unHideNode("lshoe");	
 
-	%obj.setHeadUp(0);
-	if(%funcclient.pack+%funcclient.secondPack > 0) %obj.setHeadUp(1);
+	%obj.setHeadUp((%funcclient.pack+%funcclient.secondPack > 0));
 
 	if(%obj.bloody["lshoe"]) %obj.unHideNode("lshoe_blood");
 	if(%obj.bloody["rshoe"]) %obj.unHideNode("rshoe_blood");
