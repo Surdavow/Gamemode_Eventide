@@ -83,8 +83,8 @@ function Eventide_loadNextMap()
 	deleteAllEnvZones();
 	
 	// Move to the next map, or wrap around to the start if we reach the end
-	$Pref::Server::MapRotation::current = ($Pref::Server::MapRotation::current + 1) % $Pref::Server::MapRotation::numMap;
-	%fileName = strlwr($Pref::Server::MapRotation::map[$Pref::Server::MapRotation::current]);	
+	$Eventide_CurrentMap = ($Eventide_CurrentMap + 1) % $Eventide_MapsAmount;
+	%fileName = strlwr($Eventide_Maps[$Eventide_CurrentMap]);	
 
 	// Prevent players from respawning
 	$Eventide_MapChanging = true;
@@ -134,16 +134,16 @@ function Eventide_loadNextMap()
 function Eventide_loadMapList()
 {
 	%mapdir = "saves/EventideMapRotation/*.bls";	
-	$Pref::Server::MapRotation::numMap = 0;
+	$Eventide_MapsAmount = 0;
 	
 	%file = findFirstFile(%mapdir);
 	while(%file !$= "")
 	{
-		$Pref::Server::MapRotation::map[$Pref::Server::MapRotation::numMap++] = %file;
+		$Eventide_Maps[$Eventide_MapsAmount++] = %file;
 		%file = findNextFile(%mapdir);		
 	}
 
-	echo("Map Changer:" SPC $Pref::Server::MapRotation::numMap SPC "maps loaded.");
+	echo("Map Changer:" SPC $Eventide_MapsAmount SPC "maps loaded.");
 }
 
 Eventide_loadMapList();
