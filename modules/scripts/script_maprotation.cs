@@ -42,20 +42,13 @@ package Eventide_MapRotation
 if(isPackage(Eventide_MapRotation)) deactivatePackage(Eventide_MapRotation);
 activatePackage(Eventide_MapRotation);
 
-if (!isFile("saves/EventideMapRotation/README.txt"))
-{	
-	%file = new FileObject();
-
-	if (%file.openForWrite("saves/EventideMapRotation/README.txt"))
-	{
-		%file.writeLine("You need to place save files in this folder for the Map Rotation to be able to work!");
-		%file.writeLine("Optionally, you can also drop the .ez files here to load the environment zones.");
-		%file.writeLine("The .ez and .bls file must have the same name so both can be loaded properly.");
-	}
-	
-	%file.close();
-	%file.delete();
-}
+%readme = new FileObject();
+%readme.openForWrite("saves/EventideMapRotation/README.txt");
+%readme.writeLine("You need to place save files in this folder for the Map Rotation to be able to work!");
+%readme.writeLine("Optionally, you can also drop the .ez files here to load the environment zones.");
+%readme.writeLine("The .ez and .bls file must have the same name so both can be loaded properly.");	
+%readme.close();
+%readme.delete();
 
 function Eventide_endMapChange()
 {
