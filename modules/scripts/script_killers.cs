@@ -622,7 +622,14 @@ function GameConnection::StopChaseMusic(%client)
 		//Face system functionality. Make the victim return to calm facial expressions when they are no longer being chased.
 		if(isObject(%client.player.faceConfig) && %client.player.faceConfig.subCategory $= "Scared")
 		{
-			%client.player.createFaceConfig($Eventide_FacePacks[%client.player.faceConfig.category]);		
+			if(%client.player.getDamagePercent() > 0.33 && $Eventide_FacePacks[%client.player.faceConfig.category, "Hurt"] !$= "")
+			{
+				%client.player.createFaceConfig($Eventide_FacePacks[%client.player.faceConfig.category, "Hurt"]);
+			}
+			else
+			{
+				%client.player.createFaceConfig($Eventide_FacePacks[%client.player.faceConfig.category]);
+			}		
 		}
 	}
 
