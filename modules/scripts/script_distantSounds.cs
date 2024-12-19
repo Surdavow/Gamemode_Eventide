@@ -31,19 +31,21 @@ function Player::playDistantSound(%player, %audioProfile)
     adjustObjectScopeToAll(%audioEmitter, false, %player.client); // Make sure only the target player hears it.
 
     // Get the millisecond length of the sound file, then divide it against 360 to make that the time needed to complete a rotation around the player.
-    if(fileExt(%audioEmitter.profile.fileName) $= ".wav")
+    %soundFilePath = expandFilename(%audioEmitter.profile.fileName);
+    %soundFileExtension = fileExt(%audioEmitter.profile.fileName);
+    if(%soundFileExtension $= ".wav")
     {
         //BLPython module function.
-        %soundLength = getWavLength(expandFilename(%audioEmitter.profile.fileName));
+        %soundLength = getWavLength(%soundFilePath);
     }
-    else if(fileExt(%audioEmitter.profile.fileName) $= ".ogg")
+    else if(%soundFileExtension $= ".ogg")
     {
         //BLPython module function.
-        %soundLength = getOggLength(expandFilename(%audioEmitter.profile.fileName));
+        %soundLength = getOggLength(%soundFilePath);
     }
     else
     {
-        %soundLength = 5000; //Fallback, just say 7 seconds. Maybe too long, maybe too short.
+        %soundLength = 7000; //Fallback, just say 7 seconds. Maybe too long, maybe too short.
     }
     
     %rotationSpeed = 360 / (%soundLength / 1000);
