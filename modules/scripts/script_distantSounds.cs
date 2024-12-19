@@ -31,7 +31,21 @@ function Player::playDistantSound(%player, %audioProfile)
     adjustObjectScopeToAll(%audioEmitter, false, %player.client); // Make sure only the target player hears it.
 
     // Get the millisecond length of the sound file, then divide it against 360 to make that the time needed to complete a rotation around the player.
-    %soundLength = alxGetWaveLen(%audioEmitter.profile.fileName);
+    if(fileExt(%audioEmitter.profile.fileName) $= ".wav")
+    {
+        //BLPython module function.
+        %soundLength = getWavLength(expandFilename(%audioEmitter.profile.fileName));
+    }
+    else if(fileExt(%audioEmitter.profile.fileName) $= ".ogg")
+    {
+        //BLPython module function.
+        %soundLength = getOggLength(expandFilename(%audioEmitter.profile.fileName));
+    }
+    else
+    {
+        %soundLength = 5000; //Fallback, just say 7 seconds. Maybe too long, maybe too short.
+    }
+    
     %rotationSpeed = 360 / (%soundLength / 1000);
     %tickRate = 50;
 
@@ -176,7 +190,10 @@ package Eventide_distantSounds
             default:
         }
 
-        killerPlayDistantSound(%obj, %obj.surface, %distantSound, 15000);
+        if(%obj != %killer)
+        {
+            killerPlayDistantSound(%obj, %obj.surface, %distantSound, 15000);
+        }
     }
 
     //
