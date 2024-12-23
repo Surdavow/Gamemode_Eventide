@@ -696,9 +696,9 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	// Update victim's face
 	if(isObject(%obj.faceConfig))
 	{
-		if(%obj.faceConfig.subCategory $= "" && $Eventide_FacePacks[%obj.faceConfig.category, "Scared"] !$= "")
+		if(%obj.faceConfig.subCategory $= "" && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")
 		{
-			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Scared"]);
+			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
 		}
 		
 		if(%obj.faceConfig.isFace("Scared"))
