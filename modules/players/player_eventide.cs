@@ -758,10 +758,11 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
 	Parent::onDisabled(%this,%obj);
 
-	// Remove all mounted images
+	// Remove all mounted images and stop all animation threads
 	for (%j = 0; %j < 4; %j++)
 	{
 		%obj.unmountimage(%j);
+		%obj.playThread("root");
 	}
 
 	%genderSound = (!%obj.client.chest) ? "male" : "female";
