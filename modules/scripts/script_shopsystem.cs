@@ -110,8 +110,8 @@ new ScriptObject(EventideTitlesShopMenu)
 
 for (%i = 0; %i < getWordCount($ShopTitleList); %i++) 
 {    
-    if(%i <= 1) %price = " - 25 Points";
-    else %price = " - 50 Points";
+    // Set price based on the index with the ternary operator
+    %price = (%i <= 1) ? " - 25 Points" : " - 50 Points";
     
     EventideTitlesShopMenu.menuOption[%i] = getWord($ShopTitleList,%i) @ %price;
     EventideTitlesShopMenu.menuFunction[%i] = "BuyTitle";
