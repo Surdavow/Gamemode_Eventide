@@ -762,7 +762,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	for (%j = 0; %j < 4; %j++)
 	{
 		%obj.unmountimage(%j);
-		%obj.playThread("root");
+		%obj.playThread(%j,"root");
 	}
 
 	%genderSound = (!%obj.client.chest) ? "male" : "female";
