@@ -348,49 +348,30 @@ function Armor::EventideAppearance(%this,%obj,%client)
 registerOutputEvent("GameConnection", "Escape", "", false);
 function GameConnection::Escape(%client)
 {
-    if (!isObject(%minigame = getMinigameFromObject(%client))) 
-	{
-		return %client.centerprint("This only works in minigames!", 1);
-	}
-        
-    if (strlwr(%client.slyrTeam.name) !$= "survivors")
-	{
-		return %client.centerprint("Only survivors can escape!", 1);
-	}        
+	if(!isObject(%minigame = getMinigameFromObject(%client))) return %client.centerprint("This only works in minigames!",1);
+	if(strlwr(%client.slyrTeam.name) !$= "survivors") return %client.centerprint("Only survivors can escape the map!",1);
+	
+	%client.escaped = true;
 
-    if (%client.escaped) 
+	// Iterate through each member of the survivor's team
+	for (%i = 0; %i < %client.slyrTeam.numMembers; %i++)	
+	if (isObject(%member = %client.slyrTeam.member[%i]))
 	{
-		return; // Prevent double escape
-	}
-
-    %client.escaped = true;
-	%client.incscore(10);
-
-    // Update counts
-    %minigame.escapedCount++;
-    %minigame.livingCount--; // Escaped players are no longer "living"
-    %minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
-	echo(%client.name SPC "\c3has escaped!");
-
-    // Kill the player
-    if (isObject(%client.player)) 
-	{
-		%client.player.delete();
+		// Assign variables for living and escaped players, although escaped players technically are dead too in the following lines
+		if (isObject(%member.player)) %living++;
+		if (%member.escaped) %escaped++;
 	}
 	
-    %client.lives = 0;
-    %client.setdead(1);
+	%client.player.delete();
+	%client.camera.setMode("Spectator",%client);
+	%client.setcontrolobject(%client.camera);	
+	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
+	%client.lives = 0;
+	%client.setdead(1);
 
-    // Force the player into spectator mode
-    %client.camera.setmode("Spectator", %client);
-    %client.setcontrolobject(%client.camera);
-
-    // Debugging messages (optional)
-    echo("Living count: " @ %minigame.livingCount @ ", Escaped count: " @ %minigame.escapedCount);
-
-    // Check if all survivors have escaped or died
-    if (%minigame.escapedCount >= %minigame.slyrTeam.numMembers) 
-	{	
-        %minigame.endRound(%client.slyrTeam);
-    }
+	if(%escaped >= %living)
+	{
+		%minigame.endRound(%client.slyrTeam);
+		return;
+	}	
 }
