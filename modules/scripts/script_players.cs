@@ -369,7 +369,7 @@ function GameConnection::Escape(%client)
 	%client.lives = 0;
 	%client.setdead(1);
 
-	if(%escaped >= %living)
+	if(%escaped > %living)
 	{
 		%minigame.endRound(%client.slyrTeam);
 		return;
