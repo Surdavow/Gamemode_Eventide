@@ -720,9 +720,9 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 	// Update victim's face
 	if(isObject(%obj.faceConfig))
 	{
-		if(%obj.faceConfig.subCategory $= "" && $Eventide_FacePacks[%obj.faceConfig.category, "Scared"] !$= "")
+		if(%obj.faceConfig.subCategory $= "" && $Eventide_FacePacks[%obj.faceConfig.category, "Hurt"] !$= "")
 		{
-			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Scared"]);
+			%obj.createFaceConfig($Eventide_FacePacks[%obj.faceConfig.category, "Hurt"]);
 		}
 		
 		if(%obj.faceConfig.isFace("Scared"))
@@ -782,10 +782,11 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 {	
 	Parent::onDisabled(%this,%obj);
 
-	// Remove all mounted images
+	// Remove all mounted images and stop all animation threads
 	for (%j = 0; %j < 4; %j++)
 	{
 		%obj.unmountimage(%j);
+		%obj.playThread(%j,"root");
 	}
 
 	%genderSound = (!%obj.client.chest) ? "male" : "female";
