@@ -17,6 +17,11 @@ while (%file !$= "")
 	else if (strstr(%file, "loud") != -1) 
 	{
         %description = "AudioDefault3d";
+    }
+    else if (strstr(%file, "music") != -1) 
+	{
+        %soundName = fileBase(%file);
+        %description = "AudioMusicLooping3d";
     } 
 	else 
 	{
@@ -48,6 +53,13 @@ while (%file !$= "")
     }
 
     // Create AudioProfile datablock
-    eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = " @ %description @ "; filename = \"" @ %file @ "\"; };");
+    if(%description $= "AudioMusicLooping3d")
+    {
+        eval("datablock AudioProfile(musicData_" @ %soundName @ ") { preload = true; description = " @ %description @ "; filename = \"" @ %file @ "\"; uiName=\"" @ %soundName @ "\"; };");
+    }
+    else
+    {
+        eval("datablock AudioProfile(" @ %soundName @ "_sound) { preload = true; description = " @ %description @ "; filename = \"" @ %file @ "\"; };");
+    }
     %file = findNextFile(%pattern);
 }

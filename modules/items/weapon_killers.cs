@@ -109,6 +109,12 @@ datablock ShapeBaseImageData(ShovelImage : meleeTantoImage)
    mountPoint = 1;
 };
 
+datablock ShapeBaseImageData(blackKnifeImage : meleeTantoImage)
+{
+   shapeFile = "./models/BlackKnife.dts";
+   mountPoint = 1;
+};
+
 datablock ShapeBaseImageData(ZweihanderImage : meleeTantoImage)
 {
    shapeFile = "./models/zweihander.dts";

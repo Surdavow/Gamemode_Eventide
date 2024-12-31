@@ -22,3 +22,4 @@ exec("./weapon_killers.cs");
 exec("./weapon_poolcue.cs");
 exec("./weapon_shotgun.cs");
 exec("./weapon_stungun.cs");
+exec("./weapon_homingrocket.cs");

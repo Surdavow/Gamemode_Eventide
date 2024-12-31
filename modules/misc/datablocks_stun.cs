@@ -68,11 +68,13 @@ function sm_stunImage::onMount(%this,%obj)
 	%obj.schedule(2500,unmountImage,2);
 	%obj.setactionthread("sit",1);
 	%obj.stunned = 1;
+	%playerDatablock = %obj.getDatablock();
 
 	switch$(%obj.getclassName())
 	{
 		case "Player": 	%obj.client.setControlObject(%obj.client.camera);
 						%obj.client.camera.setMode("Corpse",%obj);
+						%playerDatablock.onEnterStun(%obj);
 		case "AIPlayer": %obj.stopholeloop();
 	}
 }
@@ -82,11 +84,13 @@ function sm_stunImage::onunMount(%this,%obj)
 	%obj.stunned = 0;
 	%obj.playThread(3,"undo");
 	%obj.setactionthread("root",1);
+	%playerDatablock = %obj.getDatablock();
 	
 	switch$(%obj.getclassName())
 	{
 		case "Player": 	%obj.client.setControlObject(%obj);
 						%obj.client.camera.setMode("Observer");
+						%playerDatablock.onExitStun(%obj);
 		case "AIPlayer": %obj.startholeloop();
 	}
 }

@@ -325,14 +325,40 @@ function Armor::killerCheck(%this,%obj)
 	%this.onKillerLoop(%obj);
 }
 
-function Armor::onKillerChase(%this,%obj,%chasing)
+function Armor::onKillerChaseStart(%this, %obj)
+{
+	//Hello, World!
+}
+
+function Armor::onKillerChase(%this, %obj, %chasing)
 {
 	//Hello world
 }
 
+function Armor::onKillerChaseEnd(%this, %obj)
+{
+	//Hello, World!
+}
+
+
 function Armor::onKillerHit(%this,%obj,%hit)
 {
 	//Hello world
+}
+
+function Armor::onIncapacitateVictim(%this, %obj, %victim, %killed)
+{
+	//Hello, World!
+}
+
+function Armor::onEnterStun(%this, %obj)
+{
+	//Hello, World!
+}
+
+function Armor::onExitStun(%this, %obj)
+{
+	//Hello, World!
 }
 
 // Function that manages the behavior of the killer, handling its state, playing sounds, and scheduling future actions.
@@ -368,6 +394,10 @@ function Armor::onKillerLoop(%this, %obj)
             if (%dot > 0.45 && %canSeeVictim && !%obj.isInvisible)
             {
                 %chasingVictims++;
+				if(!%obj.isChasing)
+				{
+					%this.onKillerChaseStart(%obj);
+				}
                 %obj.isChasing = true;
                 %this.onKillerChase(%obj, true);
 				%victimdot = vectorDot(%victim.getEyeVector(), vectorNormalize(vectorSub(%obj.getEyePoint(), %victim.getMuzzlePoint(2))));
@@ -381,8 +411,8 @@ function Armor::onKillerLoop(%this, %obj)
 						// Condition for AI players, why not?
 						if(%victim.getClassName() $= "AIPlayer" && %victim.isHoleBot)
 						{
-							%victim.hRunAwayFromPlayer(%obj);
-							%victim.hspazzclick(5,1);
+							//%victim.hRunAwayFromPlayer(%obj);
+							//%victim.hspazzclick(5,1);
 						}					
 
 						// If we can see the killer or the victim is close enough, make them panic
@@ -484,6 +514,10 @@ function Armor::onKillerLoop(%this, %obj)
 					}
                 }
 				
+				if(%obj.isChasing)
+				{
+					%this.onKillerChaseEnd(%obj);
+				}
                 %obj.isChasing = false;
             }
         }
@@ -504,15 +538,13 @@ function Armor::onKillerLoop(%this, %obj)
 				%soundType = %obj.isChasing ? %this.killerChaseSound : %this.killerIdleSound;
                 %soundAmount = %obj.isChasing ? %this.killerChaseSoundAmount : %this.killerIdleSoundAmount;
 
-                if (%soundType !$= "") 
+                if(%soundType !$= "") 
 				{
                 	%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+					%obj.playThread(3, "plant");
+					%obj.lastKillerSoundTime = getSimTime();
                 }
-
-				%obj.playThread(3, "plant");
 			}
-
-			%obj.lastKillerSoundTime = getSimTime();
         }
     }
 

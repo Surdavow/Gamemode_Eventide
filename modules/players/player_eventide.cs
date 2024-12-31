@@ -611,6 +611,30 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	// Continue the damage
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
+	//New functionality for Sky Captain, or maybe other killers. Let's you play a voice line, make the killer stronger, etc.
+	%sourceDatablock = %sourceObject.getDataBlock();
+	if(%sourceDatablock.getClassName() $= "ProjectileData")
+	{
+		%sourceDatablock = %sourceObject.sourceObject.getDatablock();
+		%killerSourceObject = %sourceObject.sourceObject;
+	}
+	else
+	{
+		%killerSourceObject = %sourceObject;
+	}
+
+	if(%sourceDatablock.isKiller)
+	{
+		if(%obj.getState() $= "Dead")
+		{
+			%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, true);
+		}
+		else if(%obj.isDowned)
+		{
+			%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, false);
+		}
+	}
+
 	// Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
 	// if enough damage has been received.
 	if (isObject(%obj.faceConfig))
