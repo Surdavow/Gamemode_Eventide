@@ -436,23 +436,26 @@ function Armor::onKillerLoop(%this, %obj)
                         if(%victim.chaseLevel != 2)
                         {
                             %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, true);
-                            %victim.chaseLevel = 2;
                         }
                         %victim.TimeSinceChased = getSimTime();
                         cancel(%victim.client.StopChaseMusic);
                         %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
                     }
+					%victim.chaseLevel = 2;
 
                     // Update killer's chase state
-                    if (isObject(%obj.client) && %chasingVictims)
+                    if(%chasingVictims)
                     {
-                        if(%obj.chaseLevel != 2)
-                        {
-                            %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, false);
-                            %obj.chaseLevel = 2;
-                        }
-                        cancel(%obj.client.StopChaseMusic);
-                        %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+						if(isObject(%obj.client))
+						{	
+							if(%obj.chaseLevel != 2)
+							{
+								%obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, false);
+							}
+							cancel(%obj.client.StopChaseMusic);
+							%obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+						}
+						%obj.chaseLevel = 2;
                     }
                 }				
 
@@ -488,12 +491,12 @@ function Armor::onKillerLoop(%this, %obj)
 						if(%victim.chaseLevel != 1)
                     	{
                     	    %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
-                    	    %victim.chaseLevel = 1;
                     	}
 
                     	cancel(%victim.client.StopChaseMusic);
                     	%victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
 					}
+					%victim.chaseLevel = 1;
                 }
 
 				// Update killer's chase state
@@ -502,15 +505,18 @@ function Armor::onKillerLoop(%this, %obj)
 					%this.onKillerChase(%obj, false);
 
 					// Update killer's chase state
-					if(isObject(%obj.client) && !%chasingVictims)
+					if(!%chasingVictims)
 					{
-						if(%obj.chaseLevel != 1)
+						if(isObject(%obj.client))
 						{
-							%obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
-							%obj.chaseLevel = 1;
+							if(%obj.chaseLevel != 1)
+							{
+								%obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+							}
+							cancel(%obj.client.StopChaseMusic);
+							%obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
 						}
-						cancel(%obj.client.StopChaseMusic);
-						%obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+						%obj.chaseLevel = 1;
 					}
                 }
 				
