@@ -579,10 +579,22 @@ function EventidePlayer::dropAllTools(%this,%obj)
 
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {
+	//Some killers have projectile weapons, and this allows you to call the `onIncapacitateVictim` on them if they use one.
+	%sourceDatablock = %sourceObject.getDataBlock();
+	if(%sourceDatablock.getClassName() $= "ProjectileData")
+	{
+		%sourceDatablock = %sourceObject.sourceObject.getDatablock();
+		%killerSourceObject = %sourceObject.sourceObject;
+	}
+	else
+	{
+		%killerSourceObject = %sourceObject;
+	}
+
 	// If the damage received is enough to incapacitate the player, and the player is not already incapacitated,
 	// and the damage is not too much to kill the player instantly, and the player has not been downed yet,
 	// check some conditions to see if they should be
-	if (%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && %damage < mFloor(%this.maxDamage/1.33) && !%obj.wasDowned)
+	if (%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && !%obj.wasDowned) //%damage < mFloor(%this.maxDamage/1.33)
     {   
 		// Work in progress billboard for downed players, still not working :(
 		%o = MountGroup_Create(OverheadBillboardMount, 1, 5);
@@ -595,6 +607,12 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		%obj.wasDowned = true; // They have been downed once, they wont be able to go down again until they are healed
 		%obj.setHealth(%this.maxDamage);
         %obj.setDatablock("EventidePlayerDowned");
+
+		//New Sky Captain functionality. Execute a function on the killer after they down somebody.
+		if(%sourceDatablock.isKiller)
+		{
+			%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, false);
+		}
 		
 		// Minigame conditions
 		if (isObject(%minigame = getMinigamefromObject(%obj))) 
@@ -611,28 +629,10 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	// Continue the damage
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
 
-	//New functionality for Sky Captain, or maybe other killers. Let's you play a voice line, make the killer stronger, etc.
-	%sourceDatablock = %sourceObject.getDataBlock();
-	if(%sourceDatablock.getClassName() $= "ProjectileData")
+	//Execute the same function, but with the %killed parameter set to true. Not used as of 1/2/2015, but I wanted to future-proof.
+	if(%obj.getState() $= "Dead" && %sourceDatablock.isKiller)
 	{
-		%sourceDatablock = %sourceObject.sourceObject.getDatablock();
-		%killerSourceObject = %sourceObject.sourceObject;
-	}
-	else
-	{
-		%killerSourceObject = %sourceObject;
-	}
-
-	if(%sourceDatablock.isKiller)
-	{
-		if(%obj.getState() $= "Dead")
-		{
-			%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, true);
-		}
-		else if(%obj.isDowned)
-		{
-			%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, false);
-		}
+		%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, true);
 	}
 
 	// Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 

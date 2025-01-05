@@ -361,6 +361,11 @@ function Armor::onExitStun(%this, %obj)
 	//Hello, World!
 }
 
+function Armor::onAllRitualsPlaced(%this, %obj)
+{
+	//Hello, World!
+}
+
 // Function that manages the behavior of the killer, handling its state, playing sounds, and scheduling future actions.
 function Armor::onKillerLoop(%this, %obj)
 {

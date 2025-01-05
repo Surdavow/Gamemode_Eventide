@@ -224,84 +224,84 @@ function Projectile::homingRocketTick(%this)
 			if(!%finalVelocity)
 			{
 				%targetUpPoint = VectorAdd(%targetPosition, VectorScale(%upVector, %maximumLineDistance));
-				if(!isObject(getWord(containerRaycast(%targetPosition, %targetUpPoint, %typemask), 0)))
+				%upCollision = containerRaycast(%targetPosition, %targetUpPoint, %typemask);
+				%targetUpPoint = (%upCollision !$= "0") ? (posFromRaycast(%upCollision)) : (%targetUpPoint);
+
+				%upAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetUpPoint);
+				if(%upAttempt !$= "")
 				{
-					%upAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetUpPoint);
-					if(%upAttempt)
-					{
-						%this.pathPoint = %upAttempt;
-						%finalVelocity = VectorScale(VectorNormalize(VectorSub(%upAttempt, %currentPosition)), %muzzleVelocity);
-					}
+					%this.pathPoint = %upAttempt;
+					%finalVelocity = VectorScale(VectorNormalize(VectorSub(%upAttempt, %currentPosition)), %muzzleVelocity);
 				}
 			}
 
 			if(!%finalVelocity)
 			{
 				%targetNorthPoint = VectorAdd(%targetPosition, VectorScale(%northVector, %maximumLineDistance));
-				if(!isObject(getWord(containerRaycast(%targetPosition, %targetNorthPoint, %typemask), 0)))
+				%northCollision = containerRaycast(%targetPosition, %targetNorthPoint, %typemask);
+				%targetNorthPoint = (%northCollision !$= "0") ? (posFromRaycast(%northCollision)) : (%targetNorthPoint);
+
+				%northAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetNorthPoint);
+				if(%northAttempt)
 				{
-					%northAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetNorthPoint);
-					if(%northAttempt)
-					{
-						%this.pathPoint = %northAttempt;
-						%finalVelocity = VectorScale(VectorNormalize(VectorSub(%northAttempt, %currentPosition)), %muzzleVelocity);
-					}
+					%this.pathPoint = %northAttempt;
+					%finalVelocity = VectorScale(VectorNormalize(VectorSub(%northAttempt, %currentPosition)), %muzzleVelocity);
 				}
 			}
 			
 			if(!%finalVelocity)
 			{
 				%targetSouthPoint = VectorAdd(%targetPosition, VectorScale(%southVector, %maximumLineDistance));
-				if(!isObject(getWord(containerRaycast(%targetPosition, %targetSouthPoint, %typemask), 0)))
+				%southCollision = containerRaycast(%targetPosition, %targetSouthPoint, %typemask);
+				%targetSouthPoint = (%southCollision !$= "0") ? (posFromRaycast(%southCollision)) : (%targetSouthPoint);
+
+				%southAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetSouthPoint);
+				if(%southAttempt)
 				{
-					%southAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetSouthPoint);
-					if(%southAttempt)
-					{
-						%this.pathPoint = %southAttempt;
-						%finalVelocity = VectorScale(VectorNormalize(VectorSub(%southAttempt, %currentPosition)), %muzzleVelocity);
-					}
+					%this.pathPoint = %southAttempt;
+					%finalVelocity = VectorScale(VectorNormalize(VectorSub(%southAttempt, %currentPosition)), %muzzleVelocity);
 				}
 			}
 
 			if(!%finalVelocity)
 			{
 				%targetEastPoint = VectorAdd(%targetPosition, VectorScale(%eastVector, %maximumLineDistance));
-				if(!isObject(getWord(containerRaycast(%targetPosition, %targetEastPoint, %typemask), 0)))
+				%eastCollision = containerRaycast(%targetPosition, %targetEastPoint, %typemask);
+				%targetEastPoint = (%eastCollision !$= "0") ? (posFromRaycast(%eastCollision)) : (%targetEastPoint);
+
+				%eastAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetEastPoint);
+				if(%eastAttempt)
 				{
-					%eastAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetEastPoint);
-					if(%eastAttempt)
-					{
-						%this.pathPoint = %eastAttempt;
-						%finalVelocity = VectorScale(VectorNormalize(VectorSub(%eastAttempt, %currentPosition)), %muzzleVelocity);
-					}
+					%this.pathPoint = %eastAttempt;
+					%finalVelocity = VectorScale(VectorNormalize(VectorSub(%eastAttempt, %currentPosition)), %muzzleVelocity);
 				}
 			}
 
 			if(!%finalVelocity)
 			{
 				%targetWestPoint = VectorAdd(%targetPosition, VectorScale(%westVector, %maximumLineDistance));
-				if(!isObject(getWord(containerRaycast(%targetPosition, %targetWestPoint, %typemask), 0)))
+				%westCollision = containerRaycast(%targetPosition, %targetWestPoint, %typemask);
+				%targetWestPoint = (%westCollision !$= "0") ? (posFromRaycast(%westCollision)) : (%targetWestPoint);
+
+				%westAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetWestPoint);
+				if(%westAttempt)
 				{
-					%westAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetWestPoint);
-					if(%westAttempt)
-					{
-						%this.pathPoint = %westAttempt;
-						%finalVelocity = VectorScale(VectorNormalize(VectorSub(%westAttempt, %currentPosition)), %muzzleVelocity);
-					}
+					%this.pathPoint = %westAttempt;
+					%finalVelocity = VectorScale(VectorNormalize(VectorSub(%westAttempt, %currentPosition)), %muzzleVelocity);
 				}
 			}
 
 			if(!%finalVelocity)
 			{
 				%targetDownPoint = VectorAdd(%targetPosition, VectorScale(%downVector, %maximumLineDistance));
-				if(!isObject(getWord(containerRaycast(%targetPosition, %targetDownPoint, %typemask), 0)))
+				%downCollision = containerRaycast(%targetPosition, %targetDownPoint, %typemask);
+				%targetDownPoint = (%downCollision !$= "0") ? (posFromRaycast(%downCollision)) : (%targetDownPoint);
+
+				%downAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetDownPoint);
+				if(%downAttempt)
 				{
-					%downAttempt = getClosestIntersectionPoint(%currentPosition, %targetPosition, %targetDownPoint);
-					if(%downAttempt)
-					{
-						%this.pathPoint = %downAttempt;
-						%finalVelocity = VectorScale(VectorNormalize(VectorSub(%downAttempt, %currentPosition)), %muzzleVelocity);
-					}
+					%this.pathPoint = %downAttempt;
+					%finalVelocity = VectorScale(VectorNormalize(VectorSub(%downAttempt, %currentPosition)), %muzzleVelocity);
 				}
 			}
 		}

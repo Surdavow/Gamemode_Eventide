@@ -37,6 +37,9 @@ datablock PlayerData(PlayerCaptain : PlayerRenowned)
     killerthreatenedsound = "captain_threatened";
 	killerthreatenedsoundamount = 3;
 
+    killerdesperatesound = "captain_desperate";
+	killerdesperatesoundamount = 4;
+
     killerattackedsound = "captain_attacked";
 	killerattackedsoundamount = 6;
 
@@ -124,6 +127,7 @@ function PlayerCaptain::onNewDatablock(%this, %obj)
     %obj.gazeFullyCharged = %this.gazeFullyCharged;
     %obj.SCMissleCount = 0;
     %obj.trackingStatus = "\c0OFFLINE";
+    %obj.lastTrackingTime = 0;
     %obj.SkyCaptainGaze(%obj);
 
     //Spawn-in voice-line.
@@ -174,7 +178,7 @@ function PlayerCaptain::killerGUI(%this, %obj, %client)
     }
     else if(%obj.trackingCandidate)
     {
-        %trackingDisplay = "\c2ONLINE";
+        %trackingDisplay = "\c2ONLINE | " @ %trackingCandidateName;
     }
     else
     {
@@ -183,9 +187,9 @@ function PlayerCaptain::killerGUI(%this, %obj, %client)
 
 	// Some dynamic varirables
 	%energylevel = %obj.getEnergyLevel();
-	%leftclickstatus = (%energylevel >= 25) ? "hi" : "lo";
+	%leftclickstatus = (%energylevel >= 25 && !isObject(%obj.getMountedImage($RightHandSlot))) ? "hi" : "lo";
 	%rightclickstatus = (%energylevel == %this.maxEnergy) ? "hi" : "lo";
-	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
+	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c9[ \c6Left click \c9]" : "";
 	%trackingStatus = "<just:right>\c9[ \c6Tracking system: " @ %trackingDisplay @ " \c9]";	
 
 	// Regular icons
@@ -205,6 +209,9 @@ function PlayerCaptain::onKillerChaseStart(%this, %obj, %chasing)
     if(!isObject(%obj.incapsAchieved))
     {
         %obj.incapsAchieved = new SimSet();
+    }
+    if(!isObject(%obj.threatsRecieved))
+    {
         %obj.threatsRecieved = new SimSet();
     }
 
@@ -263,6 +270,18 @@ function Armor::onExitStun(%this, %obj)
     }
 }
 
+function Armor::onAllRitualsPlaced(%this, %obj)
+{
+    //"Will NOTHING stop you!?"
+    %soundType = %this.killerdesperatesound;
+    %soundAmount = %this.killerdesperatesoundamount;
+    if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
 //
 // Stealth and "snowball" mechanics.
 //
@@ -308,13 +327,30 @@ function PlayerCaptain::onIncapacitateVictim(%this, %obj, %victim, %killed)
     if(isObject(%obj.trackingCandidate) && %obj.trackingCandidate.getID() == %victim.getID())
     {
         %obj.trackingCandidate = "";
-        %this.killerGUI(%obj, %obj.client); //Update the killer's GUI immediately.
     }
 
+    //Update the killer's GUI immediately.
+    %this.killerGUI(%obj, %obj.client);
+
     //Mark the kill on a temporary SimSet. Used for a voice-line mechanic in `onKillerChase`.
-    if(isObject(%obj.incapsAchieved))
+    if(!isObject(%obj.incapsAchieved))
     {
-        %obj.incapsAchieved.add(%obj.client);
+        %obj.incapsAchieved = new SimSet();
+    }
+    if(isObject(%victim.client))
+    {
+        %obj.incapsAchieved.add(%victim.client);
+    }
+    else
+    {
+        //Add in a dummy object for holebot support.
+        %obj.incapsAchieved.add(
+            new ScriptObject() 
+            {
+                player = %victim;
+                name = %victim.getClassName();
+            }
+        );
     }
 
     //Play a voice-line taunting the victim.
@@ -329,7 +365,7 @@ function PlayerCaptain::onIncapacitateVictim(%this, %obj, %victim, %killed)
 
 //
 // Largely copied and pasted from script_killers. I needed to make a change so Sky Captain can melee when crouched, and instantly
-// incaps unaware players.
+// incaps unaware players. Also, reset gaze timer if he attacks before it is finished.
 function PlayerCaptain::killerMelee(%this, %obj, %radius)
 {
 	if(%obj.getState() $= "Dead" || %obj.getEnergyLevel() < %this.maxEnergy/8 || %obj.lastMeleeTime+1250 > getSimTime()) 
@@ -430,7 +466,8 @@ function PlayerCaptain::killerMelee(%this, %obj, %radius)
             else
             {
                 //Sky Captain is weaker, he does half the damage of other killers in a straight-up confrontation.
-                %hit.damage(%obj, %hit.getHackPosition(), 25*getWord(%obj.getScale(),2), $DamageType::Default);	
+                %hit.damage(%obj, %hit.getHackPosition(), 25*getWord(%obj.getScale(), 2), $DamageType::Default);	
+                %hit.timeGazedUpon = 0;
             }								
 			
 			%obj.setTempSpeed(0.3);	
@@ -441,19 +478,26 @@ function PlayerCaptain::killerMelee(%this, %obj, %radius)
 
 //
 // Make Sky Captain put away his knife when the homing rocket launcher is out. Also, another voice line.
+if(isPackage(Gamemode_Eventide_Player_Captain))
+{
+    deactivatePackage(Gamemode_Eventide_Player_Captain);
+}
 package Gamemode_Eventide_Player_Captain
 {
     function ServerCmdUseTool(%client, %slot)
     {
-        %player = %client.player;
-        if(isObject(%player) && %player.getDataBlock().getName() $= "PlayerCaptain")
-        {
-            %player.unmountImage($LeftHandSlot);
-        }
         parent::ServerCmdUseTool(%client, %slot);
+        %player = %client.player;
+        %playerDatablock = %player.getDataBlock();
+        if(!isObject(%player) || %playerDatablock.getName() !$= "PlayerCaptain")
+        {
+            return;
+        }
+
+        //Get rid of the knife.
+        %player.unmountImage($LeftHandSlot);
 
         //"Say hello to my little friend..."
-        %playerDatablock = %player.getDataBlock();
         %soundType = %playerDatablock.killerweaponchargedsound;
         %soundAmount = %playerDatablock.killerweaponchargedsoundamount;
         if(%soundType !$= "" && !%player.hasIntroducedWeapon && %player.SCMissleCount > 0) 
@@ -462,15 +506,25 @@ package Gamemode_Eventide_Player_Captain
             %player.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
             %player.lastKillerSoundTime = getSimTime();
         }
+        
+        //Update the GUI immediately, need to make the left-click icon colored again.
+        %playerDatablock.killerGUI(%client.player, %client);
     }
     function ServerCmdUnUseTool(%client)
     {
-        %player = %client.player;
-        if(isObject(%player) && %player.getDataBlock().getName() $= "PlayerCaptain")
-        {
-            %player.mountImage(%player.getDataBlock().killerweapon, $LeftHandSlot);
-        }
         parent::ServerCmdUnUseTool(%client);
+        %player = %client.player;
+        %playerDatablock = %player.getDataBlock();
+        if(!isObject(%player) || %playerDatablock.getName() !$= "PlayerCaptain")
+        {
+            return;
+        }
+
+        //Re-equip the knife.
+        %player.mountImage(%playerDatablock.killerweapon, $LeftHandSlot);
+
+        //Update the GUI immediately, need to make the left-click icon greyscale.
+        %playerDatablock.killerGUI(%player, %client);
     }
 };
 activatePackage(Gamemode_Eventide_Player_Captain);
@@ -479,6 +533,41 @@ activatePackage(Gamemode_Eventide_Player_Captain);
 // Gaze mechanic.
 //
 
+function PlayerCaptain::setTrackingTarget(%this, %obj, %trackingTarget)
+{
+    if(%obj.lastTrackingTime > getSimTime())
+    {
+        return;
+    }
+
+    %obj.trackingCandidate = %trackingTarget;
+
+    %killerClient = %obj.client;
+    %killerDatablock = %obj.getDataBlock();
+
+    //Play a tune to notify Sky Captain that homing rockets are available.
+    %killerClient.play2D("captain_trackingfinished_sound");
+
+    //Display a mini-tutorial message informing the player that homing rockets are available.
+    %killerClient.centerprint("<font:Consolas:18>\n\n\n\n\n\n\n\n\c6Homing rockets are now available.\n\c6Open your inventory to select the SC Rocket Launcher.\n\c6Gain ammo for it by getting downs or kills with your knife.", 10);
+
+    //Update the GUI immediately.
+    %killerDatablock.killerGUI(%obj, %killerClient);
+
+    %trackingUpdateDelay = 1000; //1 second.
+    %obj.lastTrackingTime = getSimTime() + %trackingUpdateDelay;
+}
+
+function PlayerCaptain::clearTrackingTarget(%this, %obj)
+{
+    if(isObject(%obj.trackingCandidate))
+    {
+        %obj.trackingCandidate.timeGazedUpon = 0;
+        %obj.trackingCandidate = "";
+        %this.killerGUI(%obj, %obj.client);
+    }
+}
+
 function Player::SkyCaptainGaze(%this, %obj)
 {
     if(!isObject(%obj) || %obj.isDisabled())
@@ -486,6 +575,7 @@ function Player::SkyCaptainGaze(%this, %obj)
         return;
     }
 
+    %foundTrackingTarget = false;
     %currentPosition = %obj.getPosition();
     %maximumDistance = $EnvGuiServer::VisibleDistance;
     %mask = $TypeMasks::PlayerObjectType;
@@ -494,15 +584,17 @@ function Player::SkyCaptainGaze(%this, %obj)
     while(%foundPlayer = ContainerSearchNext())
     {
         %killerPosition = %obj.getHackPosition();
+        %killerDatablock = %obj.getDataBlock();
         %victimPosition = %foundPlayer.getHackPosition();
+        %victimDatablock = %foundPlayer.getDataBlock();
         %obstructions = ($TypeMasks::FxBrickObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::StaticShapeObjectType);
 
-        if(%foundPlayer.isKiller || %foundPlayer.getDataBlock().isKiller)
+        if(%foundPlayer.isKiller || %victimDatablock.isKiller)
         {
             //We found ourselves, skip. Future-proofing in case multiple-killer setups become a thing.
             continue;
         }
-        else if(%foundPlayer.getDataBlock().getName() $= "EventidePlayerDowned")
+        else if(%victimDatablock.getName() $= "EventidePlayerDowned")
         {
             //Victim is downed, skip.
             continue;
@@ -515,18 +607,35 @@ function Player::SkyCaptainGaze(%this, %obj)
         else if(%obj.isChasing && %foundPlayer.chaseLevel == 2)
         {
             //Victim is someone we're in a chase with, no stealth here. Skip.
-            %obj.trackingCandidate = "";
-            %foundPlayer.timeGazedUpon = 0;
-            continue;
-        }
-        else if(isObject(%obj.trackingCandidate) && %obj.trackingCandidate.getID() == %foundPlayer.getID())
-        {
-            //We've already gazed upon this player for long enough, don't waste time.
+            %killerDatablock.clearTrackingTarget(%obj);
+
+            //Nowhere better to put this: if the player has a weapon, have Sky Captain play a voice line acknowledging it.
+            for(%i = 0; %i < %obj.threatsRecieved.getCount(); %i++)
+            {
+                if(%obj.threatsRecieved.getObject(%i).getId() == %foundPlayer.getId())
+                {
+                    continue;
+                }
+            }
+
+            %victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
+            if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.getClassName() $= "WeaponImage"))
+            {
+                //"You think that will help you!?"
+                %soundType = %killerDatablock.killerthreatenedsound;
+                %soundAmount = %killerDatablock.killerthreatenedsoundamount;
+                if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+                {
+                    %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+                    %obj.lastKillerSoundTime = getSimTime();
+                    %obj.threatsRecieved.add(%foundPlayer); //Ensure Sky Captain does not acknowledge any further weapons. Less annoying.
+                }
+            }
             continue;
         }
 
         //These vector shinnanigans are less accurate, but faster to execute than using more raycasts.
-        %maximumFOVDot = 0.95;
+        %maximumFOVDot = 0.99;
 
         %killerEyeVector = %obj.getEyeVector();
         %victimEyeVector = %foundPlayer.getEyeVector();
@@ -540,11 +649,18 @@ function Player::SkyCaptainGaze(%this, %obj)
         if(%victimEyeDot >= %maximumFOVDot)
         {
             //The victim is looking at the killer, reset their gaze and disable tracking.
-            %foundPlayer.timeGazedUpon = 0;
+            %killerDatablock.clearTrackingTarget(%obj);
         }
         else
         {
             //If the victim isn't looking at us, are we looking at them?
+
+            //First, check if we already have them as a tracking target. Then, these math is pointless.
+            if(isObject(%obj.trackingCandidate) && %obj.trackingCandidate.getId() == %foundPlayer.getId())
+            {
+                continue;
+            }
+
             %killerSightLine = VectorNormalize(VectorSub(%victimPosition, %killerPosition));
             %killerEyeDot = VectorDot(%killerEyeVector, %killerSightLine);
 
@@ -564,24 +680,16 @@ function Player::SkyCaptainGaze(%this, %obj)
                     %foundPlayer.timeGazedUpon += 50;
                 }
 
-                //Play a little beep to Sky Captain every 10 ticks, to let him know the tracking is working.
+                //Play a little beep to Sky Captain every 10 ticks (1 second), to let him know the tracking is working.
                 if((%foundPlayer.timeGazedUpon % 1000) == 0)
                 {
                     %obj.client.play2D("captain_trackingbeep_sound");
                 }
 
-                if(%foundPlayer.timeGazedUpon >= %obj.gazeFullyCharged && !isObject(%obj.trackingCandidate))
+                if(%foundPlayer.timeGazedUpon >= %obj.gazeFullyCharged)
                 {
                     //We've tracked the victim for long enough, set them as our tracking candidate for homing rockets.
-                    %obj.trackingCandidate = %foundPlayer;
-
-                    //Update the killer's GUI immediately.
-                    %obj.getDataBlock().killerGUI(%obj, %obj.client);
-
-                    //Play a tune to notify Sky Captain that homing rockets are available.
-                    %killerClient = %obj.client;
-                    %killerClient.play2D("captain_trackingfinished_sound");
-                    %killerClient.centerprint("<font:Consolas:18>\n\n\n\n\n\n\n\n\c6Homing rockets are now available.\n\c6Open your inventory to select the SC Rocket Launcher.\n\c6Gain ammo for it by getting downs or kills with your knife.", 10);
+                    %killerDatablock.setTrackingTarget(%obj, %foundPlayer);
                 }
                 else
                 {

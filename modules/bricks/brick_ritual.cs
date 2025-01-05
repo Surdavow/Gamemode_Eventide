@@ -156,7 +156,14 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 			if(%obj.ritualsPlaced >= 10)
 			{
 				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
-				%minigame.playSound("round_start_sound");						
+				%minigame.playSound("round_start_sound");
+
+				%killer = getCurrentKiller();
+				if(isObject(%killer))
+				{
+					%killerDataBlock = %killer.getDataBlock();
+					%killerDatablock.onAllRitualsPlaced(%killer);
+				}
 			}
 
 			if(isObject($EventideEventCaller))
