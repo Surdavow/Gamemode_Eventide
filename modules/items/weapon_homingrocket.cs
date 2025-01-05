@@ -120,7 +120,16 @@ package Gamemode_Eventide_Homing_Rocket
 		if(%obj.completedTrackingDelay)
 		{
 			//The homing rocket is already tracking, don't waste our time with this logic.
-			%obj.schedule(%obj.trackingTickRate, homingRocketTick);
+			if(%obj.isBouncing)
+			{
+				%killerDataBlock = %obj.sourceObject.getDataBlock();
+				%trackingDelay = (%killerDataBlock.homingRocketBounceTrackingDelay !$= "") ? %killerDataBlock.homingRocketBounceTrackingDelay : 250;
+				%obj.schedule(%trackingDelay, homingRocketTick);
+			}
+			else
+			{
+				%obj.schedule(%obj.trackingTickRate, homingRocketTick);
+			}
 			return;
 		}
 
@@ -214,7 +223,7 @@ function Projectile::homingRocketTick(%this)
 			%upVector = "0 0 1";
 			%downVector = "0 0 -1";
 
-			%maximumLineDistance = $EnvGuiServer::VisibleDistance;
+			%maximumLineDistance = 64; //128 studs.
 
 			//
 			// On each axis (the vectors above,) check if there is a clear path of intersection between it and the rocket. If so, lead the rocket there.
@@ -330,6 +339,7 @@ function Projectile::homingRocketTick(%this)
 
 		//Custom data for rocket tracking, inherited from the original rocket.
 		completedTrackingDelay = true;
+		isBouncing = false;
 		trackingDelay = %this.trackingDelay;
 		trackingTickRate = %this.trackingTickRate;
 		trackingTarget = %this.trackingTarget;
@@ -380,7 +390,8 @@ function homingRocketLauncherProjectile::onCollision(%this, %obj, %col, %fade, %
 			reflectTime = %obj.reflectTime;
 
 			//Custom data for rocket tracking, inherited from the original rocket.
-			completedTrackingDelay = false;
+			completedTrackingDelay = true;
+			isBouncing = true;
 			trackingDelay = %obj.trackingDelay;
 			trackingTickRate = %obj.trackingTickRate;
 			trackingTarget = %obj.trackingTarget;
@@ -389,6 +400,9 @@ function homingRocketLauncherProjectile::onCollision(%this, %obj, %col, %fade, %
 			bounceLimit = %obj.bounceLimit;
 		};
 		MissionCleanup.add(%newRocket);
+
+		//Play a metal clunk sound.
+		serverplay3d("rocket_impact" @ getRandom(1, 4) @ "_sound", %pos);
 	}
 	Parent::onCollision(%this, %obj, %col, %fade, %pos, %normal);
 }
@@ -409,6 +423,7 @@ datablock ShapeBaseImageData(homingRocketLauncherImage : rocketLauncherImage)
 	projectile = homingRocketLauncherProjectile;
 	shapeFile = "./models/homerocket.dts";
 	minShotTime = 3000;
+	bounceLimit = 5;
 	
 	stateTimeoutValue[0] = 0.7;
 	stateTimeoutValue[5] = 1.5;
@@ -464,6 +479,7 @@ function homingRocketLauncherImage::onFire(%this, %obj, %slot)
 		sourceSlot = %slot;
 
 		bounceCount = 0;
+
 		//Signals to the "Projectile::onAdd" package that target tracking needs to be initialized.
 		completedTrackingDelay = false;
 	};

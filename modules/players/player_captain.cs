@@ -48,6 +48,12 @@ datablock PlayerData(PlayerCaptain : PlayerRenowned)
 
     killerspawnsound = "captain_spawn";
     killerspawnsoundamount = 4;
+
+    killerwinsound = "captain_win";
+    killerwinsoundamount = 2;
+
+    killerlosesound = "captain_lose";
+    killerlosesoundamount = 2;
 	
     killerweapon = "blackKnifeImage";
 	killerweaponsound = "captain_weapon";
@@ -128,6 +134,8 @@ function PlayerCaptain::onNewDatablock(%this, %obj)
     %obj.SCMissleCount = 0;
     %obj.trackingStatus = "\c0OFFLINE";
     %obj.lastTrackingTime = 0;
+    %obj.incapsAchieved = new SimSet();
+    %obj.threatsReceived = new SimSet();
     %obj.SkyCaptainGaze(%obj);
 
     //Spawn-in voice-line.
@@ -138,6 +146,19 @@ function PlayerCaptain::onNewDatablock(%this, %obj)
         %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
         %obj.lastKillerSoundTime = getSimTime();
     }
+}
+
+function PlayerCaptain::onRemove(%this, %obj)
+{
+    if(isObject(%obj.incapsAchieved))
+    {
+        %obj.incapsAchieved.delete();
+    }
+    if(isObject(%obj.threatsReceived))
+    {
+        %obj.threatsReceived.delete();
+    }
+    parent::onRemove(%this, %obj);
 }
 
 //
@@ -210,9 +231,9 @@ function PlayerCaptain::onKillerChaseStart(%this, %obj, %chasing)
     {
         %obj.incapsAchieved = new SimSet();
     }
-    if(!isObject(%obj.threatsRecieved))
+    if(!isObject(%obj.threatsReceived))
     {
-        %obj.threatsRecieved = new SimSet();
+        %obj.threatsReceived = new SimSet();
     }
 
     %soundType = %this.killerfoundvictimsound;
@@ -224,7 +245,7 @@ function PlayerCaptain::onKillerChaseStart(%this, %obj, %chasing)
     }
 }
 
-function Armor::onKillerChase(%this, %obj, %chasing)
+function PlayerCaptain::onKillerChase(%this, %obj, %chasing)
 {
 	if(!%chasing && !%obj.isInvisible)
     {
@@ -255,10 +276,9 @@ function PlayerCaptain::onKillerChaseEnd(%this, %obj)
 
     //Need to clear the list. Deleting it is simple and safe.
     %obj.incapsAchieved.delete();
-    %obj.threatsRecieved.delete();
 }
 
-function Armor::onExitStun(%this, %obj)
+function PlayerCaptain::onExitStun(%this, %obj)
 {
     //"You DARE..."
 	%soundType = %this.killerattackedsound;
@@ -270,12 +290,24 @@ function Armor::onExitStun(%this, %obj)
     }
 }
 
-function Armor::onAllRitualsPlaced(%this, %obj)
+function PlayerCaptain::onAllRitualsPlaced(%this, %obj)
 {
     //"Will NOTHING stop you!?"
     %soundType = %this.killerdesperatesound;
     %soundAmount = %this.killerdesperatesoundamount;
     if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
+function PlayerCaptain::onRoundEnd(%this, %obj, %won)
+{
+    //Plays a taunt if Sky Captain wins, or despair if he loses.
+    %soundType = %won ? %this.killerwinsound : %this.killerlosesound;
+    %soundAmount = %won ? %this.killerwinsoundamount : %this.killerlosesoundamount;
+    if(%soundType !$= "")
     {
         %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
         %obj.lastKillerSoundTime = getSimTime();
@@ -610,16 +642,23 @@ function Player::SkyCaptainGaze(%this, %obj)
             %killerDatablock.clearTrackingTarget(%obj);
 
             //Nowhere better to put this: if the player has a weapon, have Sky Captain play a voice line acknowledging it.
-            for(%i = 0; %i < %obj.threatsRecieved.getCount(); %i++)
+            %alreadyThreatenedKiller = false;
+            for(%i = 0; %i < %obj.threatsReceived.getCount(); %i++)
             {
-                if(%obj.threatsRecieved.getObject(%i).getId() == %foundPlayer.getId())
+                if(%obj.threatsReceived.getObject(%i).getId() == %foundPlayer.getId())
                 {
-                    continue;
+                    %alreadyThreatenedKiller = true;
+                    break;
                 }
+            }
+            if(%alreadyThreatenedKiller)
+            {
+                //They already threatened us, skip playing any more voice lines.
+                continue;
             }
 
             %victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
-            if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.getClassName() $= "WeaponImage"))
+            if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage"))
             {
                 //"You think that will help you!?"
                 %soundType = %killerDatablock.killerthreatenedsound;
@@ -628,7 +667,7 @@ function Player::SkyCaptainGaze(%this, %obj)
                 {
                     %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
                     %obj.lastKillerSoundTime = getSimTime();
-                    %obj.threatsRecieved.add(%foundPlayer); //Ensure Sky Captain does not acknowledge any further weapons. Less annoying.
+                    %obj.threatsReceived.add(%foundPlayer); //Ensure Sky Captain does not acknowledge any further weapons. Less annoying.
                 }
             }
             continue;

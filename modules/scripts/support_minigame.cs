@@ -26,6 +26,16 @@ package Eventide_Minigame
 			$MinigameLocalChat = false;
 			%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
 		}
+		
+		%killer = getCurrentKiller();
+		%killerTeam = %killer.getTeam();
+		%killerClient = %killer.client;
+		if(isObject(%killer) && isObject(%killerClient))
+		{
+			%won = (%winner.getClassName() $= "Slayer_TeamSO" && %winner.getId() == %killerTeam.getId()) || (%winner.getClassName() $= "GameConnection" && %winner.getId() == %killerClient.getId());
+			%killerDataBlock = %killer.getDataBlock();
+			%killerDatablock.onRoundEnd(%killer, %won);
+		}
 	}
 
     function MiniGameSO::Reset(%minigame,%client)

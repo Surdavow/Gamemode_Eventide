@@ -366,6 +366,11 @@ function Armor::onAllRitualsPlaced(%this, %obj)
 	//Hello, World!
 }
 
+function Armor::onRoundEnd(%this, %obj, %won)
+{
+	//Hello, World!
+}
+
 // Function that manages the behavior of the killer, handling its state, playing sounds, and scheduling future actions.
 function Armor::onKillerLoop(%this, %obj)
 {
