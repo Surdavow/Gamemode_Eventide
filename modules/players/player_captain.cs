@@ -70,6 +70,16 @@ datablock PlayerData(PlayerCaptain : PlayerRenowned)
     airControl = 1.0;
 	jumpForce = 0;
 
+    //
+    //Sky Captain can really fly! Just enough to clear a 5x height brick. 
+    //The idea behind this is that Sky Captain can use the vertical mobility to climb on top of obstacles or access areas no other killer can.
+    //Maps need to be changed to accomodate this, but it will help with stealth, and I believe it will add another layer of gameplay 
+    //for both the killer and the survivors.
+    //
+    canJet = 1;
+    minJetEnergy = 2;
+	jetEnergyDrain = 2;
+
     //Crouching speed that's fast, but slow enough to not to chase people with.
     maxForwardCrouchSpeed = 5.88;
 	maxBackwardCrouchSpeed = 5.88;
@@ -332,6 +342,16 @@ function PlayerCaptain::onTrigger(%this, %obj, %trig, %press)
     else if(%trig == 3 && !%press)
     {
         %obj.isInvisible = false;
+    }
+
+    //Add jetting sounds for Sky Captain, if he has enough charge.
+    if(%trig == 4 && %press && %obj.getEnergyLevel() > %this.minJetEnergy)
+    {
+        %obj.playAudio(3, "jet_loop_sound");
+    }
+    else if(%trig == 4 && !%press)
+    {
+        %obj.playAudio(3, "jet_end_sound");
     }
 	
     //Slight edit to make it so Sky Captain can't melee with an item (homing rocket launcher) out.
@@ -626,7 +646,7 @@ function Player::SkyCaptainGaze(%this, %obj)
             //We found ourselves, skip. Future-proofing in case multiple-killer setups become a thing.
             continue;
         }
-        else if(%victimDatablock.getName() $= "EventidePlayerDowned")
+        else if(%victimDatablock.isDowned)
         {
             //Victim is downed, skip.
             continue;

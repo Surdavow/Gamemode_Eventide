@@ -22,7 +22,19 @@ while (%file !$= "")
 	{
         %soundName = fileBase(%file);
         %description = "AudioMusicLooping3d";
+    }
+    else if (strstr(%file, "normal_loop") != -1) 
+	{
+        %description = "AudioCloseLooping3d";
+    }
+    else if (strstr(%file, "quiet_loop") != -1) 
+	{
+        %description = "AudioClosestLooping3d";
     } 
+    else if (strstr(%file, "loud_loop") != -1) 
+	{
+        %description = "AudioDefaultLooping3d";
+    }
 	else 
 	{
         %description = ""; // No match, do not create datablock
