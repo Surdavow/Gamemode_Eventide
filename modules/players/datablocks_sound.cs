@@ -18,11 +18,6 @@ while (%file !$= "")
 	{
         %description = "AudioDefault3d";
     }
-    else if (strstr(%file, "music") != -1) 
-	{
-        %soundName = fileBase(%file);
-        %description = "AudioMusicLooping3d";
-    }
     else if (strstr(%file, "normal_loop") != -1) 
 	{
         %description = "AudioCloseLooping3d";
@@ -34,6 +29,11 @@ while (%file !$= "")
     else if (strstr(%file, "loud_loop") != -1) 
 	{
         %description = "AudioDefaultLooping3d";
+    }
+    else if (strstr(%file, "music") != -1) 
+	{
+        %soundName = fileBase(%file);
+        %description = "AudioMusicLooping3d";
     }
 	else 
 	{

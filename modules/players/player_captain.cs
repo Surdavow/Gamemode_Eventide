@@ -144,6 +144,7 @@ function PlayerCaptain::onNewDatablock(%this, %obj)
     %obj.SCMissleCount = 0;
     %obj.trackingStatus = "\c0OFFLINE";
     %obj.lastTrackingTime = 0;
+    %obj.justIncapped = false;
     %obj.incapsAchieved = new SimSet();
     %obj.threatsReceived = new SimSet();
     %obj.SkyCaptainGaze(%obj);
@@ -156,6 +157,10 @@ function PlayerCaptain::onNewDatablock(%this, %obj)
         %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
         %obj.lastKillerSoundTime = getSimTime();
     }
+
+    //Remind Sky Captain that he can stay stealthy by crouching, and benefits from doing so.
+    %obj.client.schedule(33, "centerprint", "<font:Consolas:18>\n\n\n\n\n\n\n\n\c6Crouch for enhanced stealth capability.\n\c6You are much stronger while going unnoticed.\n\c6Use your jets to access unusual places and vantage points.", 10);
+    //%obj.client.centerprint(, 10);
 }
 
 function PlayerCaptain::onRemove(%this, %obj)
@@ -196,12 +201,21 @@ function PlayerCaptain::killerGUI(%this, %obj, %client)
 
     if(%obj.SCMissleCount < 1)
     {
-        %ammoDisplay = "\c0" @ %obj.SCMissleCount;
+        %ammoDisplayColorCode = "\c0";
     }
     else
     {
-        %ammoDisplay = "\c3" @ %obj.SCMissleCount;
+        if(%obj.justIncapped)
+        {
+            %ammoDisplayColorCode = "\c2";
+            %obj.justIncapped = false;
+        }
+        else
+        {
+            %ammoDisplayColorCode = "\c3";
+        }
     }
+    %ammoDisplay = %ammoDisplayColorCode @ %obj.SCMissleCount;
 
     if(%obj.isTracking)
     {
@@ -384,6 +398,10 @@ function PlayerCaptain::onIncapacitateVictim(%this, %obj, %victim, %killed)
     //Update the killer's GUI immediately.
     %this.killerGUI(%obj, %obj.client);
 
+    //Flag to make Sky Captain's GUI flash green when he get's a kill. Not put before the forced GUI update, since the schedule loop
+    //Would make the indicator appear inconsistently.
+    %obj.justIncapped = true;
+
     //Mark the kill on a temporary SimSet. Used for a voice-line mechanic in `onKillerChase`.
     if(!isObject(%obj.incapsAchieved))
     {
@@ -538,26 +556,36 @@ package Gamemode_Eventide_Player_Captain
 {
     function ServerCmdUseTool(%client, %slot)
     {
-        parent::ServerCmdUseTool(%client, %slot);
         %player = %client.player;
         %playerDatablock = %player.getDataBlock();
         if(!isObject(%player) || %playerDatablock.getName() !$= "PlayerCaptain")
         {
+            parent::ServerCmdUseTool(%client, %slot);
             return;
         }
 
         //Get rid of the knife.
         %player.unmountImage($LeftHandSlot);
 
-        //"Say hello to my little friend..."
-        %soundType = %playerDatablock.killerweaponchargedsound;
-        %soundAmount = %playerDatablock.killerweaponchargedsoundamount;
-        if(%soundType !$= "" && !%player.hasIntroducedWeapon && %player.SCMissleCount > 0) 
+        //Gotta get rid of the knife before calling this, or both arms get raised.
+        parent::ServerCmdUseTool(%client, %slot);
+
+        %tool = %player.tool[%slot];
+        if(%tool > 0 && %tool.image.getId() == homingRocketLauncherImage.getId())
         {
-            %player.hasIntroducedWeapon = true;
-            %player.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
-            %player.lastKillerSoundTime = getSimTime();
+            //"Say hello to my little friend..."
+            %soundType = %playerDatablock.killerweaponchargedsound;
+            %soundAmount = %playerDatablock.killerweaponchargedsoundamount;
+            if(%soundType !$= "" && !%player.hasIntroducedWeapon && %player.SCMissleCount > 0) 
+            {
+                %player.hasIntroducedWeapon = true;
+                %player.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+                %player.lastKillerSoundTime = getSimTime();
+            }
         }
+
+        //Set the rocket launcher's ammo to the Player object's missle count.
+        %player.setImageAmmo(%tool.image.mountPoint, mClamp(%player.SCMissleCount, 0, 999));
         
         //Update the GUI immediately, need to make the left-click icon colored again.
         %playerDatablock.killerGUI(%client.player, %client);
@@ -566,11 +594,11 @@ package Gamemode_Eventide_Player_Captain
     {
         parent::ServerCmdUnUseTool(%client);
         %player = %client.player;
-        %playerDatablock = %player.getDataBlock();
-        if(!isObject(%player) || %playerDatablock.getName() !$= "PlayerCaptain")
+        if(!isObject(%player) || %player.getDataBlock().getName() !$= "PlayerCaptain")
         {
             return;
         }
+        %playerDatablock = %player.getDataBlock();
 
         //Re-equip the knife.
         %player.mountImage(%playerDatablock.killerweapon, $LeftHandSlot);
@@ -598,7 +626,7 @@ function PlayerCaptain::setTrackingTarget(%this, %obj, %trackingTarget)
     %killerDatablock = %obj.getDataBlock();
 
     //Play a tune to notify Sky Captain that homing rockets are available.
-    %killerClient.play2D("captain_trackingfinished_sound");
+    %killerClient.playSound("captain_trackingfinished_sound");
 
     //Display a mini-tutorial message informing the player that homing rockets are available.
     %killerClient.centerprint("<font:Consolas:18>\n\n\n\n\n\n\n\n\c6Homing rockets are now available.\n\c6Open your inventory to select the SC Rocket Launcher.\n\c6Gain ammo for it by getting downs or kills with your knife.", 10);
@@ -617,6 +645,13 @@ function PlayerCaptain::clearTrackingTarget(%this, %obj)
         %obj.trackingCandidate.timeGazedUpon = 0;
         %obj.trackingCandidate = "";
         %this.killerGUI(%obj, %obj.client);
+
+        //Play an error sound effect on Sky Captain to let him know his calibration progress was reset.
+        //Only if the gaze timer is zero, to prevent spam.
+        if(isObject(%obj.client))
+        {
+            %obj.client.playSound("captain_trackingreset_sound");
+        }
     }
 }
 
@@ -742,7 +777,7 @@ function Player::SkyCaptainGaze(%this, %obj)
                 //Play a little beep to Sky Captain every 10 ticks (1 second), to let him know the tracking is working.
                 if((%foundPlayer.timeGazedUpon % 1000) == 0)
                 {
-                    %obj.client.play2D("captain_trackingbeep_sound");
+                    %obj.client.playSound("captain_trackingbeep_sound");
                 }
 
                 if(%foundPlayer.timeGazedUpon >= %obj.gazeFullyCharged)
