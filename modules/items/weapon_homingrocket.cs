@@ -137,7 +137,7 @@ datablock ParticleEmitterData(homingRocketFizzleOutExplosionEmitter)
 {
 	lifetimeMS = 2000;
 	ejectionPeriodMS = 50;
-	periodVarianceMS = 50;
+	periodVarianceMS = 25;
 	ejectionVelocity = 1.0;
 	velocityVariance = 1.0;
 	ejectionOffset = 0.2;
@@ -203,7 +203,7 @@ datablock ProjectileData(homingRocketLauncherDudProjectile)
 	projectileShapeName = "Add-Ons/Projectile_GravityRocket/RocketGravityProjectile.dts";
 	explosion           = "";
 	bounceExplosion     = "";
-	particleEmitter     = gunSmokeParticle;
+	particleEmitter     = gunSmokeEmitter;
 	explodeOnDeath = true;
 
 	brickExplosionRadius = 0;

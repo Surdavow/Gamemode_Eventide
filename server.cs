@@ -9,6 +9,7 @@ if(ForceRequiredAddOn("Server_EnvironmentZones") == $Error::AddOn_NotFound) retu
 //Some things needed for Sky Captain's weapons.
 if(ForceRequiredAddOn("Weapon_Rocket_Launcher") == $Error::AddOn_NotFound) return error("Weapon_Rocket_Launcher is required for Gamemode_Eventide to work");
 if(ForceRequiredAddOn("Projectile_GravityRocket") == $Error::AddOn_NotFound) return error("Projectile_GravityRocket is required for Gamemode_Eventide to work");
+if(ForceRequiredAddOn("Weapon_Gun") == $Error::AddOn_NotFound) return error("Weapon_Gun is required for Gamemode_Eventide to work");
 
 // Execute essential scripts and preferences first
 exec("./prefs.cs");
