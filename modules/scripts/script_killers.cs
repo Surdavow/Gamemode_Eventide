@@ -422,14 +422,13 @@ function Armor::onKillerLoop(%this, %obj)
 						// Condition for AI players, why not?
 						if(%victim.getClassName() $= "AIPlayer" && %victim.isHoleBot)
 						{
-							//%victim.hRunAwayFromPlayer(%obj);
-							//%victim.hspazzclick(5,1);
+							%victim.hRunAwayFromPlayer(%obj);
+							%victim.hspazzclick(5,1);
 						}					
 
 						// If we can see the killer or the victim is close enough, make them panic
 						if((%victimdot > 0.45) && %victim.lastChaseCall < getSimTime())
-						{							
-							
+						{														
 							%genderSound = (!%victim.client.chest) ? "male" : "female";
 							%genderSoundAmount = (!%victim.client.chest) ? 3 : 5;
 							%sound = %genderSound @ "_shock" @ getRandom(1, %genderSoundAmount) @ "_sound";
@@ -448,6 +447,7 @@ function Armor::onKillerLoop(%this, %obj)
                         {
                             %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, true);
                         }
+
                         %victim.TimeSinceChased = getSimTime();
                         cancel(%victim.client.StopChaseMusic);
                         %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
@@ -522,10 +522,12 @@ function Armor::onKillerLoop(%this, %obj)
 						{
 							if(%obj.chaseLevel != 1)
 							{
-								%obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+								cancel(%obj.client.changeChaseMusic);
+								%obj.client.changeChaseMusic = %obj.client.schedule(2000, changeChaseMusic);
 							}
+
 							cancel(%obj.client.StopChaseMusic);
-							%obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+							%obj.client.StopChaseMusic = %obj.client.schedule(8000, StopChaseMusic);
 						}
 						%obj.chaseLevel = 1;
 					}
