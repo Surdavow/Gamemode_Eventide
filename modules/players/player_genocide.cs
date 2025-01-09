@@ -11,17 +11,47 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 	killerChaseLvl1Music = "musicData_Eventide_GenocideNear";
 	killerChaseLvl2Music = "musicData_Eventide_GenocideChase";
 
-	killeridlesound = "genocide_idle";
-	killeridlesoundamount = 19;
+	killeridlesound = "";
+	killeridlesoundamount = 1;
 
-	killerchasesound = "genocide_chase";
-	killerchasesoundamount = 18;
+	killerchasesound = "";
+	killerchasesoundamount = 1;
 
 	killermeleesound = "genocide_attack";
 	killermeleesoundamount = 5;	
 
-	killermeleehitsound = "genocide_hit";
+	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
+	
+    killernearsound = "genocide_looking";
+	killernearsoundamount = 7;
+
+    killertauntsound = "genocide_kill";
+    killertauntsoundamount = 7;
+
+	killerfoundvictimsound = "genocide_foundvictim";
+	killerfoundvictimsoundamount = 5;
+
+    killerlostvictimsound = "genocide_lostvictim";
+	killerlostvictimsoundamount = 5;
+
+    killerthreatenedsound = "genocide_threatened";
+	killerthreatenedsoundamount = 3;
+
+    killerdesperatesound = "genocide_desperate";
+	killerdesperatesoundamount = 3;
+
+    killerattackedsound = "genocide_attacked";
+	killerattackedsoundamount = 5;
+
+    killerspawnsound = "genocide_spawn";
+    killerspawnsoundamount = 3;
+
+    killerwinsound = "genocide_win";
+    killerwinsoundamount = 3;
+
+    killerlosesound = "genocide_lose";
+    killerlosesoundamount = 2;
 	
 	killerlight = "NoFlarePLight";
 	
@@ -94,11 +124,117 @@ function PlayerGenocide::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("chest_blood_back", "0.7 0 0 1");
 }
 
+//
+// Voice-line handlers.
+//
+
+function PlayerGenocide::onKillerChaseStart(%this, %obj, %chasing)
+{
+    //Mark kills for the below end-of-chase voice line.
+    if(!isObject(%obj.incapsAchieved))
+    {
+        %obj.incapsAchieved = new SimSet();
+    }
+    if(!isObject(%obj.threatsReceived))
+    {
+        %obj.threatsReceived = new SimSet();
+    }
+
+    %soundType = %this.killerfoundvictimsound;
+    %soundAmount = %this.killerfoundvictimsoundamount;
+    if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 10000)))
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
+function PlayerGenocide::onKillerChase(%this, %obj, %chasing)
+{
+	if(!%chasing && !%obj.isInvisible)
+    {
+        //A victim is nearby but Sky Captain can't see them yet. Say some quips.
+        %soundType = %this.killernearsound;
+        %soundAmount = %this.killernearsoundamount;
+        if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + getRandom(15000, 25000))))
+        {
+            %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+            %obj.lastKillerSoundTime = getSimTime();
+        }
+    }
+}
+
+function PlayerGenocide::onKillerChaseEnd(%this, %obj)
+{
+	//If Sky Captain doesn't get any kills during a chase, play a voice line marking his dismay.
+    if(%obj.incapsAchieved.getCount() == 0 && !%obj.isInvisible)
+    {
+        %soundType = %this.killerlostvictimsound;
+        %soundAmount = %this.killerlostvictimsoundamount;
+        if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + getRandom(5000, 15000))))
+        {
+            %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+            %obj.lastKillerSoundTime = getSimTime();
+        }
+    }
+
+    //Need to clear the list. Deleting it is simple and safe.
+    %obj.incapsAchieved.delete();
+}
+
+function PlayerGenocide::onExitStun(%this, %obj)
+{
+    //"You DARE..."
+	%soundType = %this.killerattackedsound;
+    %soundAmount = %this.killerattackedsoundamount;
+    if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
+function PlayerGenocide::onAllRitualsPlaced(%this, %obj)
+{
+    //"Will NOTHING stop you!?"
+    %soundType = %this.killerdesperatesound;
+    %soundAmount = %this.killerdesperatesoundamount;
+    if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
+function PlayerGenocide::onRoundEnd(%this, %obj, %won)
+{
+    //Plays a taunt if Sky Captain wins, or despair if he loses.
+    %soundType = %won ? %this.killerwinsound : %this.killerlosesound;
+    %soundAmount = %won ? %this.killerwinsoundamount : %this.killerlosesoundamount;
+    if(%soundType !$= "")
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
+function PlayerGenocide::onIncapacitateVictim(%this, %obj, %victim, %killed)
+{
+	//Play a voice-line taunting the victim.
+    %soundType = %this.killertauntsound;
+    %soundAmount = %this.killertauntsoundamount;
+    if(%soundType !$= "") 
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
 function PlayerGenocide::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
 	if(%obj.getState() !$= "Dead")
 	{
-		%obj.playaudio(0,"genocide_pain" @ getRandom(1, 11) @ "_sound");
+		%obj.playaudio(0,"genocide_pain" @ getRandom(1, 6) @ "_sound");
 	}
 }

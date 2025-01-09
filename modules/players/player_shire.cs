@@ -16,10 +16,10 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerChaseLvl2Music = "musicData_Eventide_HexChase";
 
 	killeridlesound = "";
-	killeridlesoundamount = 0;
+	killeridlesoundamount = 1;
 
 	killerchasesound = "";
-	killerchasesoundamount = 0;
+	killerchasesoundamount = 1;
 	
 	killernearsound = "shire_looking";
 	killernearsoundamount = 4;
@@ -31,7 +31,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerfoundvictimsoundamount = 3;
 
     killerlostvictimsound = "shire_lostvictim";
-	killerlostvictimsoundamount = 4;
+	killerlostvictimsoundamount = 2;
 
     killerthreatenedsound = "shire_threatened";
 	killerthreatenedsoundamount = 2;
@@ -40,10 +40,10 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerattackedsoundamount = 2;
 
     killerdesperatesound = "";
-	killerdesperatesoundamount = 0;
+	killerdesperatesoundamount = 1;
 
     killerattackedsound = "";
-	killerattackedsoundamount = 0;
+	killerattackedsoundamount = 1;
 
 	killermeleesound = "shire_melee";
 	killermeleesoundamount = 3;	
