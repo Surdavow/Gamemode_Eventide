@@ -86,7 +86,7 @@ datablock PlayerData(PlayerCaptain : PlayerRenowned)
 	maxSideCrouchSpeed = 5.88;
 
     gazeTickRate = 50;
-    gazeFullyCharged = 5000;
+    gazeFullyCharged = 3000;
 };
 
 //
