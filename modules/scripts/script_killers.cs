@@ -459,6 +459,8 @@ function Armor::onKillerLoop(%this, %obj)
                     {
 						if(isObject(%obj.client))
 						{	
+							cancel(%obj.client.changeChaseMusic);
+							
 							if(%obj.chaseLevel != 2)
 							{
 								%obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, false);
