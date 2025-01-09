@@ -230,6 +230,77 @@ function PlayerGenocide::onIncapacitateVictim(%this, %obj, %victim, %killed)
     }
 }
 
+function Player::GenocideGaze(%this, %obj)
+{
+    if(!isObject(%obj) || %obj.isDisabled())
+    {
+        return;
+    }
+
+    %currentPosition = %obj.getPosition();
+    %maximumDistance = $EnvGuiServer::VisibleDistance;
+    %mask = $TypeMasks::PlayerObjectType;
+
+    initContainerRadiusSearch(%currentPosition, %maximumDistance, %mask);
+    while(%foundPlayer = ContainerSearchNext())
+    {
+        %killerPosition = %obj.getHackPosition();
+        %killerDatablock = %obj.getDataBlock();
+        %victimPosition = %foundPlayer.getHackPosition();
+        %victimDatablock = %foundPlayer.getDataBlock();
+        %obstructions = ($TypeMasks::FxBrickObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::StaticShapeObjectType);
+
+        if(%foundPlayer.isKiller || %victimDatablock.isKiller)
+        {
+            //We found ourselves, skip. Future-proofing in case multiple-killer setups become a thing.
+            continue;
+        }
+        else if(%victimDatablock.isDowned)
+        {
+            //Victim is downed, skip.
+            continue;
+        }
+        else if(isObject(getWord(ContainerRayCast(%victimPosition, %killerPosition, %obstructions), 0)))
+        {
+            //The killer and victim are phyiscally blocked, skip.
+            continue;
+        }
+        else if(%obj.isChasing && %foundPlayer.chaseLevel == 2)
+        {
+            //Nowhere better to put this: if the player has a weapon, have Sky Captain play a voice line acknowledging it.
+            %alreadyThreatenedKiller = false;
+            for(%i = 0; %i < %obj.threatsReceived.getCount(); %i++)
+            {
+                if(%obj.threatsReceived.getObject(%i).getId() == %foundPlayer.getId())
+                {
+                    %alreadyThreatenedKiller = true;
+                    break;
+                }
+            }
+            if(%alreadyThreatenedKiller)
+            {
+                //They already threatened us, skip playing any more voice lines.
+                continue;
+            }
+
+            %victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
+            if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage"))
+            {
+                //"You think that will help you!?"
+                %soundType = %killerDatablock.killerthreatenedsound;
+                %soundAmount = %killerDatablock.killerthreatenedsoundamount;
+                if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+                {
+                    %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+                    %obj.lastKillerSoundTime = getSimTime();
+                    %obj.threatsReceived.add(%foundPlayer); //Ensure Sky Captain does not acknowledge any further weapons. Less annoying.
+                }
+            }
+            continue;
+        }
+	}
+}
+
 function PlayerGenocide::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
