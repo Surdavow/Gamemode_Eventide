@@ -25,7 +25,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killernearsoundamount = 4;
 
     killertauntsound = "shire_kill";
-    killertauntsoundamount = 3;
+    killertauntsoundamount = 2;
 
 	killerfoundvictimsound = "shire_foundvictim";
 	killerfoundvictimsoundamount = 3;
@@ -35,6 +35,9 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 
     killerthreatenedsound = "shire_threatened";
 	killerthreatenedsoundamount = 2;
+
+    killerattackedsound = "captain_attacked";
+	killerattackedsoundamount = 2;
 
     killerdesperatesound = "";
 	killerdesperatesoundamount = 0;
@@ -114,6 +117,88 @@ function DarkBlindPlayerImage::killerGUI(%this,%obj,%client)
 	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
 }
 
+//
+// Voice-line handlers.
+//
+
+function PlayerShire::onKillerChaseStart(%this, %obj, %chasing)
+{
+    //Mark kills for the below end-of-chase voice line.
+    if(!isObject(%obj.incapsAchieved))
+    {
+        %obj.incapsAchieved = new SimSet();
+    }
+    if(!isObject(%obj.threatsReceived))
+    {
+        %obj.threatsReceived = new SimSet();
+    }
+
+    %soundType = %this.killerfoundvictimsound;
+    %soundAmount = %this.killerfoundvictimsoundamount;
+    if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
+function PlayerShire::onKillerChase(%this, %obj, %chasing)
+{
+	if(!%chasing && !%obj.isInvisible)
+    {
+        //A victim is nearby but Sky Captain can't see them yet. Say some quips.
+        %soundType = %this.killernearsound;
+        %soundAmount = %this.killernearsoundamount;
+        if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + getRandom(15000, 25000))))
+        {
+            %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+            %obj.lastKillerSoundTime = getSimTime();
+        }
+    }
+}
+
+function PlayerShire::onKillerChaseEnd(%this, %obj)
+{
+	//If Sky Captain doesn't get any kills during a chase, play a voice line marking his dismay.
+    if(%obj.incapsAchieved.getCount() == 0 && !%obj.isInvisible)
+    {
+        %soundType = %this.killerlostvictimsound;
+        %soundAmount = %this.killerlostvictimsoundamount;
+        if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + getRandom(5000, 15000))))
+        {
+            %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+            %obj.lastKillerSoundTime = getSimTime();
+        }
+    }
+
+    //Need to clear the list. Deleting it is simple and safe.
+    %obj.incapsAchieved.delete();
+}
+
+function PlayerShire::onIncapacitateVictim(%this, %obj, %victim, %killed)
+{
+    parent::onIncapacitateVictim(%this, %obj, %victim, %killed);
+	//Play a voice-line taunting the victim.
+    %soundType = %this.killertauntsound;
+    %soundAmount = %this.killertauntsoundamount;
+    if(%soundType !$= "") 
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
+
+function PlayerShire::onExitStun(%this, %obj)
+{
+    //"You DARE..."
+	%soundType = %this.killerattackedsound;
+    %soundAmount = %this.killerattackedsoundamount;
+    if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+    {
+        %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+        %obj.lastKillerSoundTime = getSimTime();
+    }
+}
 
 function PlayerShire::onTrigger(%this, %obj, %trig, %press) 
 {
