@@ -709,7 +709,7 @@ datablock ShapeBaseImageData(homingRocketLauncherImage)
 	stateScript[3]                  = "onCharge";
 	stateTransitionOnTimeout[3]     = "Fire";
 	//Wait for the warning sound effect to complete before firing. `getWavLength` is a BLPython function.
-	stateTimeoutValue[3]            = (getWavLength(captain_weaponChargingLoud_sound.fileName) / 1000);
+	stateTimeoutValue[3]            = 5.943;//(getWavLength(captain_weaponChargingLoud_sound.fileName) / 1000);
 	stateWaitForTimeout[3]			= true;
 	stateAllowImageChange[3]        = false;
 	stateSequence[3]                = "Ready";
