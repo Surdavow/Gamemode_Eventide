@@ -635,7 +635,6 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	if(isObject(%minigame))
 	{
 		// Notify everyone that the player is downed
-		%minigame.playSound("outofbounds_sound");
 		%minigame.checkDownedSurvivors();
 	}
 
