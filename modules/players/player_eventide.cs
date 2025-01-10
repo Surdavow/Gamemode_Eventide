@@ -308,7 +308,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 								
 								if (!%obj.shoveForce) %obj.shoveForce = 1;
 								%shoveForce = %obj.shoveForce;
-								if(%hit.getDatablock().getName() $= "PuppetMasterPuppet") %shoveforce = 10;
+								if(%hit.getDatablock().getName() $= "PuppetMasterPuppet") %shoveforce = 5;
 
 								%exhausted = (%obj.staminaCount >= 5) ? 2 : 1;
 								%forwardimpulse = (((%obj.survivorclass $= "fighter") ? 950 : 800) / %exhausted) * %shoveForce;
