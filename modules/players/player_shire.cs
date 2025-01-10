@@ -36,7 +36,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
     killerthreatenedsound = "shire_threatened";
 	killerthreatenedsoundamount = 2;
 
-    killerattackedsound = "captain_attacked";
+    killerattackedsound = "shire_attacked";
 	killerattackedsoundamount = 2;
 
     killerdesperatesound = "";
