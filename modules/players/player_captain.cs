@@ -86,7 +86,8 @@ datablock PlayerData(PlayerCaptain : PlayerRenowned)
 	maxSideCrouchSpeed = 5.88;
 
     gazeTickRate = 50;
-    gazeFullyCharged = 3000;
+    gazeMinimumTime = 3000;
+    gazeMaximumTime = 6000;
 };
 
 //
@@ -160,7 +161,6 @@ function PlayerCaptain::onNewDatablock(%this, %obj)
 
     //Remind Sky Captain that he can stay stealthy by crouching, and benefits from doing so.
     %obj.client.schedule(33, "centerprint", "<font:Consolas:18>\n\n\n\n\n\n\n\n\c6Crouch for enhanced stealth capability.\n\c6You are much stronger while going unnoticed.\n\c6Use your jets to access unusual places and vantage points.", 10);
-    //%obj.client.centerprint(, 10);
 }
 
 function PlayerCaptain::onRemove(%this, %obj)
@@ -199,6 +199,7 @@ function PlayerCaptain::killerGUI(%this, %obj, %client)
         }
     }
 
+    %ammoLabelColorCode = "\c6";
     if(%obj.SCMissleCount < 1)
     {
         %ammoDisplayColorCode = "\c0";
@@ -208,6 +209,7 @@ function PlayerCaptain::killerGUI(%this, %obj, %client)
         if(%obj.justIncapped)
         {
             %ammoDisplayColorCode = "\c2";
+            %ammoLabelColorCode = "\c2";
             %obj.justIncapped = false;
         }
         else
@@ -239,7 +241,7 @@ function PlayerCaptain::killerGUI(%this, %obj, %client)
 
 	// Regular icons
 	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ $iconspath @ %leftclickstatus @ %this.leftclickicon @ ">" : "";
-	%ammoCounter = (%obj.SCMissleCount !$= "") ? "<just:right>\c9[ \c6Ammunition: " @ %ammoDisplay @ " \c9]" : "<just:right>\c9[---]";
+	%ammoCounter = (%obj.SCMissleCount !$= "") ? "<just:right>\c9[ " @ %ammoLabelColorCode @ "Ammunition: " @ %ammoDisplay @ " \c9]" : "<just:right>\c9[---]";
 
 	%client.bottomprint("<font:Consolas:24>" @ %leftclicktext @ %trackingStatus @ "<br>" @ %leftclickicon @ %ammoCounter, 1);
 }
@@ -528,9 +530,9 @@ function PlayerCaptain::killerMelee(%this, %obj, %radius)
 			
 			%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));
 
-            if(%hit.timeGazedUpon >= %obj.gazeFullyCharged)
+            if(isObject(%obj.trackingCandidate) && (%obj.trackingCandidate.getId() == %hit.getId()))
             {
-                //The victim is unaware and has been gazed at for over 5 seconds, insta-down/kill.
+                //The victim is unaware and has been gazed at for over the threshold, insta-down/kill.
                 %hit.damage(%obj, %hit.getHackPosition(), %hit.getDataBlock().maxDamage, $DamageType::Default);
             }
             else
@@ -541,7 +543,7 @@ function PlayerCaptain::killerMelee(%this, %obj, %radius)
             }								
 			
 			%obj.setTempSpeed(0.3);	
-			%obj.schedule(2500,setTempSpeed,1);
+			%obj.schedule(2500,setTempSpeed, 1);
 		}			
 	}	
 }
@@ -646,12 +648,9 @@ function PlayerCaptain::clearTrackingTarget(%this, %obj)
         %obj.trackingCandidate = "";
         %this.killerGUI(%obj, %obj.client);
 
-        //Play an error sound effect on Sky Captain to let him know his calibration progress was reset.
-        //Only if the gaze timer is zero, to prevent spam.
-        if(isObject(%obj.client))
-        {
-            %obj.client.playSound("captain_trackingreset_sound");
-        }
+        //Play an error sound effect on Sky Captain to let him and his target know his calibration progress was reset.
+        //Only if there's a tracking candidate tracked, to prevent spam.
+        %obj.playAudio(1, "captain_trackingreset_sound");
     }
 }
 
@@ -665,14 +664,13 @@ function Player::SkyCaptainGaze(%this, %obj)
     %foundTrackingTarget = false;
     %currentPosition = %obj.getPosition();
     %maximumDistance = $EnvGuiServer::VisibleDistance;
-    %mask = $TypeMasks::PlayerObjectType;
 
-    initContainerRadiusSearch(%currentPosition, %maximumDistance, %mask);
+    initContainerRadiusSearch(%currentPosition, %maximumDistance, $TypeMasks::PlayerObjectType);
     while(%foundPlayer = ContainerSearchNext())
     {
-        %killerPosition = %obj.getHackPosition();
+        %killerPosition = %obj.getEyePoint();
         %killerDatablock = %obj.getDataBlock();
-        %victimPosition = %foundPlayer.getHackPosition();
+        %victimPosition = %foundPlayer.getEyePoint();
         %victimDatablock = %foundPlayer.getDataBlock();
         %obstructions = ($TypeMasks::FxBrickObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::StaticShapeObjectType);
 
@@ -728,19 +726,13 @@ function Player::SkyCaptainGaze(%this, %obj)
             continue;
         }
 
-        //These vector shinnanigans are less accurate, but faster to execute than using more raycasts.
-        %maximumFOVDot = 0.99;
-
-        %killerEyeVector = %obj.getEyeVector();
-        %victimEyeVector = %foundPlayer.getEyeVector();
-
         //Is the victim looking at us?
-        %victimSightLine = VectorNormalize(VectorSub(%killerPosition, %victimPosition));
-        %victimEyeDot = VectorDot(%victimEyeVector, %victimSightLine);
+        %victimEyeVector = VectorScale(%foundPlayer.getEyeVector(), %maximumDistance);
+        %victimEyeVectorEnd = VectorAdd(%victimPosition, %victimEyeVector);
+        %victimLookingAt = ContainerRayCast(%victimPosition, %victimEyeVectorEnd, ($TypeMasks::PlayerObjectType | %obstructions), %foundPlayer);
+        %foundObject = getWord(%victimLookingAt, 0);
 
-        //For the dot product, 0 is everything in a 180-degree view in front of the victim, 1 is looking at directly at the killer.
-        //We'll do 0.95 for a bit of fault tolerance.
-        if(%victimEyeDot >= %maximumFOVDot)
+        if(%foundObject $= %obj.getId())
         {
             //The victim is looking at the killer, reset their gaze and disable tracking.
             %killerDatablock.clearTrackingTarget(%obj);
@@ -748,23 +740,35 @@ function Player::SkyCaptainGaze(%this, %obj)
         else
         {
             //If the victim isn't looking at us, are we looking at them?
-
             //First, check if we already have them as a tracking target. Then, these math is pointless.
             if(isObject(%obj.trackingCandidate) && %obj.trackingCandidate.getId() == %foundPlayer.getId())
             {
                 continue;
             }
 
-            %killerSightLine = VectorNormalize(VectorSub(%victimPosition, %killerPosition));
-            %killerEyeDot = VectorDot(%killerEyeVector, %killerSightLine);
+            %killerEyeVector = VectorScale(%obj.getEyeVector(), %maximumDistance);
+            %killerEyeVectorEnd = VectorAdd(%currentPosition, %killerEyeVector);
+            %killerLookingAt = ContainerRayCast(%currentPosition, %killerEyeVectorEnd, ($TypeMasks::PlayerObjectType | %obstructions), %obj);
+            %foundObject = getWord(%killerLookingAt, 0);
 
-            if(%killerEyeDot >= %maximumFOVDot)
+            if(%foundObject $= %foundPlayer.getId())
             {
                 //We're looking at them.
 
                 //Signal to the player via the GUI that they are currently tracking a player.
                 %foundTrackingTarget = true;
 
+                //16 TU or below is the produces the minimum tracking time, and 64 TU or above produces the maximum tracking time.
+                %victimKillerDistance = mClamp(VectorDist(%currentPosition, %victimPosition), 16, 64); //1 TU = 2 studs.
+                %victimLowTrackingDistance = 16;
+                %victimHighTrackingDistance = 64;
+
+                %victimLowTrackingTime = %killerDataBlock.gazeMinimumTime;
+                %victimHighTrackingTime = %killerDataBlock.gazeMaximumTime;
+
+                %victimTrackingScale = (%victimKillerDistance - %victimLowTrackingDistance) / (%victimHighTrackingDistance - %victimLowTrackingDistance);
+                %trackingThreshold = mCeil(%victimLowTrackingTime + ((%victimHighTrackingTime - %victimLowTrackingTime) * %victimTrackingScale));
+                
                 if(%foundPlayer.timeGazedUpon $= "")
                 {
                     %foundPlayer.timeGazedUpon = 50;
@@ -780,7 +784,7 @@ function Player::SkyCaptainGaze(%this, %obj)
                     %obj.client.playSound("captain_trackingbeep_sound");
                 }
 
-                if(%foundPlayer.timeGazedUpon >= %obj.gazeFullyCharged)
+                if(%foundPlayer.timeGazedUpon >= %trackingThreshold)
                 {
                     //We've tracked the victim for long enough, set them as our tracking candidate for homing rockets.
                     %killerDatablock.setTrackingTarget(%obj, %foundPlayer);
