@@ -353,25 +353,35 @@ function GameConnection::Escape(%client)
 	
 	%client.escaped = true;
 
-	// Iterate through each member of the survivor's team
-	for (%i = 0; %i < %client.slyrTeam.numMembers; %i++)	
-	if (isObject(%member = %client.slyrTeam.member[%i]))
+	//Iterate through each member of the survivor's team, checking how many people are still alive and unescaped.
+	%clientTeam = %client.getTeam();
+
+	%teamPlayerAmount = %clientTeam.numMembers;
+	%playersLeftCount = 0;
+	for(%i = 0; %i < %teamPlayerAmount; %i++)
 	{
-		// Assign variables for living and escaped players, although escaped players technically are dead too in the following lines
-		if (isObject(%member.player)) %living++;
-		if (%member.escaped) %escaped++;
+		%currentMember = %member = %clientTeam.member[%i];
+		if(isObject(%currentMember))
+		{
+			if(!%currentMember.escaped && !%currentMember.Dead() && isObject(%currentMember.player))
+			{
+				%playersLeftCount++;
+			}
+		}
 	}
 	
+	//Delete the escaped player.
 	%client.player.delete();
-	%client.camera.setMode("Spectator",%client);
+	%client.camera.setMode("Spectator", %client);
 	%client.setcontrolobject(%client.camera);	
 	%minigame.chatmsgall("<font:Impact:30>\c3" @ %client.name SPC "\c3has escaped!");
 	%client.lives = 0;
 	%client.setdead(1);
 
-	if(%escaped > %living)
+	//End the round, if everyone else is dead or escaped.
+	if(%playersLeftCount <= 0)
 	{
-		%minigame.endRound(%client.slyrTeam);
+		%minigame.endRound(%clientTeam);
 		return;
 	}	
 }
