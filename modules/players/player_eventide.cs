@@ -583,20 +583,21 @@ function EventidePlayer::dropAllTools(%this,%obj)
 function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
 {
 	//Some killers have projectile weapons, and this allows you to call the `onIncapacitateVictim` on them if they use one.
-	%sourceDatablock = %sourceObject.getDataBlock();
-	if(%sourceDatablock.getClassName() $= "ProjectileData")
-	{
-		%sourceDatablock = %sourceObject.sourceObject.getDatablock();
-		%killerSourceObject = %sourceObject.sourceObject;
-	}
-	else
-	{
-		%killerSourceObject = %sourceObject;
-	}
+	if(isObject(%sourceObject))
+	{	
+		%sourceDatablock = %sourceObject.getDataBlock();
+		if(%sourceDatablock.getClassName() $= "ProjectileData")
+		{
+			%sourceDatablock = %sourceObject.sourceObject.getDatablock();
+			%killerSourceObject = %sourceObject.sourceObject;
+		}
+		else
+		{
+			%killerSourceObject = %sourceObject;
+		}
+	}	
 
-	// If the damage received is enough to incapacitate the player, and the player is not already incapacitated,
-	// and the damage is not too much to kill the player instantly, and the player has not been downed yet,
-	// check some conditions to see if they should be
+	// Dont let the player die if they havent been downed yet
 	if (%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && !%obj.wasDowned) //%damage < mFloor(%this.maxDamage/1.33) //This is commented out to prevent homing rockets from being fatal.
     {   
 		// Work in progress billboard for downed players, still not working :(
@@ -617,14 +618,14 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 			%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, false);
 		}
 
-			//Check if the killer is the only one remaining.
-			%minigame = getMinigamefromObject(%obj);
-			if(isObject(%minigame))
-			{
-				// Notify everyone that the player is downed
-				%minigame.playSound("outofbounds_sound");
-				%minigame.checkDownedSurvivors();
-			}
+		//Check if the killer is the only one remaining.
+		%minigame = getMinigamefromObject(%obj);
+		if(isObject(%minigame))
+		{
+			// Notify everyone that the player is downed
+			%minigame.playSound("outofbounds_sound");
+			%minigame.checkDownedSurvivors();
+		}
 
 		// Return here, or else the player will die after this condition is met
         return;
