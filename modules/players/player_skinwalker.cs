@@ -219,7 +219,7 @@ package Eventide_Skinwalker
 		}
 		
     }
-}
+};
 
 if(isPackage("Eventide_Skinwalker")) deactivatePackage("Eventide_Skinwalker");
 activatePackage("Eventide_Skinwalker");
