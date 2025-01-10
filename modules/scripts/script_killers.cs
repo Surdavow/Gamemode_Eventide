@@ -519,6 +519,13 @@ function Armor::onKillerLoop(%this, %obj)
 				%killerChaseExpired = (%obj.TimeSinceChased + %chaseEndGracePeriod) < getSimTime();
 				if(%killerChaseExpired)
 				{
+					//Run the Armor hook for the chase ending on the killer.
+					if(%obj.isChasing)
+					{
+						%this.onKillerChaseEnd(%obj);
+						%obj.isChasing = false;
+					}
+					
 					%this.onKillerChase(%obj, false);
 
 					//Step down the killer's music.
@@ -538,13 +545,6 @@ function Armor::onKillerLoop(%this, %obj)
 							}
 						}
 						%obj.chaseLevel = 1;
-					}
-
-					//Run the Armor hook for the chase ending on the killer.
-					if(%obj.isChasing)
-					{
-						%this.onKillerChaseEnd(%obj);
-						%obj.isChasing = false;
 					}
 				}
             }
