@@ -24,51 +24,6 @@ package Eventide_Killers
 		}
 	}	
 
-	function Player::addItem(%player, %image, %client)
-	{
-		// Check if the player is not a skinwalker, only then can they pick up items
-		if(!%obj.isSkinwalker)
-		{
-			Parent::addItem(%player, %image, %client);		
-		}
-		
-    }
-	function serverCmdLight(%client)
-	{
-		if(!isObject(%client.player)) return;
-
-		// Ensure the player is valid and is the Puppet Master
-	    if (%client.player.getDataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
-	    {
-			if(isObject(%client.player.getMountedImage(2)) && %client.player.getMountedImage(2).getName() $= "sm_stunImage")
-			return;
-
-	        // Populate the temporary puppet list
-	        for (%i = 0; %i < Eventide_MinigameGroup.getCount(); %i++)	        
-			if (isObject(%puppet = Eventide_MinigameGroup.getObject(%i)) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")
-			%puppetList[%puppetCount++] = %puppet;	
-	        	        
-			if (%client.player.puppetIndex <= %puppetCount)
-	        {
-	            %currentPuppet = %puppetList[%client.player.puppetIndex];
-				%client.getControlObject().schedule(1500, setActionThread, sit, 1);
-				%client.setControlObject(%currentPuppet);
-				%client.player.puppetIndex++;
-	        }
-			else
-			{				
-				%client.player.puppetIndex = 1;				
-				%client.getControlObject().schedule(1500, setActionThread, sit, 1);
-				%client.setControlObject(%client.player);
-			}
-
-			return;
-	    }
-		else if(%client.player.getdataBlock().isKiller) return;
-
-		Parent::serverCmdLight(%client);		
-	}
-
 	function MiniGameSO::Reset(%obj, %client)
 	{
 		parent::Reset(%obj, %client);
@@ -77,7 +32,10 @@ package Eventide_Killers
 	
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
 	{		
-		if (%obj.getControllingClient().player.stunned) return; 		
+		if (%obj.getControllingClient().player.stunned)
+		{
+			return;
+		}
 		
 		Parent::onTrigger (%this, %obj, %trigger, %state);
 	}
@@ -86,15 +44,20 @@ package Eventide_Killers
 	{		
 		Parent::onNewDatablock(%this,%obj);
 		
-		if(%this.isEventideModel) 
-		%this.schedule(33,killerCheck,%obj);
+		if(%this.isEventideModel)
+		{
+			%this.schedule(33,killerCheck,%obj);
+		}		
 	}
 
 	function Armor::onDisabled(%this, %obj, %state)
 	{
         Parent::onDisabled(%this, %obj, %state);
 		
-		if (!isObject(%killer = %obj.killer)) return;
+		if (!isObject(%killer = %obj.killer))
+		{
+			return;
+		}
 		
 		%killer.ChokeAmount = 0;
 		%killer.victim = 0;

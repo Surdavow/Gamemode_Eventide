@@ -207,3 +207,19 @@ function PlayerSkinWalker::onKillerHit(%this,%obj,%hit)
 	}
 	return true;
 }
+
+package Eventide_Skinwalker
+{
+	function Player::addItem(%player, %image, %client)
+	{
+		// Check if the player is not a skinwalker, only then can they pick up items
+		if(!%obj.isSkinwalker)
+		{
+			Parent::addItem(%player, %image, %client);
+		}
+		
+    }
+}
+
+if(isPackage("Eventide_Skinwalker")) deactivatePackage("Eventide_Skinwalker");
+activatePackage("Eventide_Skinwalker");

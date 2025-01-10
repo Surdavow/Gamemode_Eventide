@@ -1,15 +1,15 @@
-//Thanks Robbin
-if(ForceRequiredAddOn("Support_CustomCDN") == $Error::AddOn_NotFound) return error("Support_CustomCDN is required for Gamemode_Eventide to work");
-if(ForceRequiredAddOn("Gamemode_Slayer") == $Error::AddOn_NotFound) return error("Gamemode_Slayer is required for Gamemode_Eventide to work");
-if(ForceRequiredAddOn("Event_BrickText") == $Error::AddOn_NotFound) return error("Event_BrickText is required for Gamemode_Eventide to work");
-if(ForceRequiredAddOn("Item_Medical") == $Error::AddOn_NotFound)    return error("Item_Medical is required for Gamemode_Eventide to work");
-if(ForceRequiredAddOn("Brick_Halloween") == $Error::AddOn_NotFound) return error("Brick_Halloween is required for Gamemode_Eventide to work");
-if(ForceRequiredAddOn("Server_EnvironmentZones") == $Error::AddOn_NotFound) return error("Server_EnvironmentZones is required for Gamemode_Eventide to work");
+// List of required add-ons
+%requiredAddOns = "Support_CustomCDN Gamemode_Slayer Event_BrickText Item_Medical Brick_Halloween Server_EnvironmentZones Weapon_Rocket_Launcher Projectile_GravityRocket Weapon_Gun";
 
-//Some things needed for Sky Captain's weapons.
-if(ForceRequiredAddOn("Weapon_Rocket_Launcher") == $Error::AddOn_NotFound) return error("Weapon_Rocket_Launcher is required for Gamemode_Eventide to work");
-if(ForceRequiredAddOn("Projectile_GravityRocket") == $Error::AddOn_NotFound) return error("Projectile_GravityRocket is required for Gamemode_Eventide to work");
-if(ForceRequiredAddOn("Weapon_Gun") == $Error::AddOn_NotFound) return error("Weapon_Gun is required for Gamemode_Eventide to work");
+// Iterate through the array and check each add-on
+for (%i = 0; %i < getWordCount(%requiredAddOns); %i++) 
+{
+    %addOn = getWord(%requiredAddOns,%i);
+    if (ForceRequiredAddOn(%addOn) == $Error::AddOn_NotFound) 
+    {
+        return error(%addOn @ " is required for Gamemode_Eventide to work");
+    }
+}
 
 // Execute essential scripts and preferences first
 exec("./prefs.cs");

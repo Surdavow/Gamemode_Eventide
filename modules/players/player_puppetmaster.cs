@@ -167,3 +167,44 @@ function PlayerPuppetMaster::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%bonecolor);
 	%obj.setHeadUp(0);
 }
+
+package Eventide_PuppetMasterBotToggle
+{
+	function serverCmdLight(%client)
+	{
+		if(!isObject(%client.player)) return;
+
+		// Ensure the player is valid and is the Puppet Master
+	    if (%client.player.getDataBlock().getName() $= "PlayerPuppetMaster" && isObject(Eventide_MinigameGroup))
+	    {
+			if(isObject(%client.player.getMountedImage(2)) && %client.player.getMountedImage(2).getName() $= "sm_stunImage")
+			return;
+
+	        // Populate the temporary puppet list
+	        for (%i = 0; %i < Eventide_MinigameGroup.getCount(); %i++)	        
+			if (isObject(%puppet = Eventide_MinigameGroup.getObject(%i)) && %puppet.getDataBlock().getName() $= "PuppetMasterPuppet")
+			%puppetList[%puppetCount++] = %puppet;	
+	        	        
+			if (%client.player.puppetIndex <= %puppetCount)
+	        {
+	            %currentPuppet = %puppetList[%client.player.puppetIndex];
+				%client.getControlObject().schedule(1500, setActionThread, sit, 1);
+				%client.setControlObject(%currentPuppet);
+				%client.player.puppetIndex++;
+	        }
+			else
+			{				
+				%client.player.puppetIndex = 1;				
+				%client.getControlObject().schedule(1500, setActionThread, sit, 1);
+				%client.setControlObject(%client.player);
+			}
+
+			return;
+	    }
+		else if(%client.player.getdataBlock().isKiller) return;
+
+		Parent::serverCmdLight(%client);		
+	}
+};
+if(isPackage("Eventide_PuppetMasterBotToggle")) deactivatePackage("Eventide_PuppetMasterBotToggle");
+activatePackage("Eventide_PuppetMasterBotToggle");
