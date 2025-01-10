@@ -594,7 +594,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	// If the damage received is enough to incapacitate the player, and the player is not already incapacitated,
 	// and the damage is not too much to kill the player instantly, and the player has not been downed yet,
 	// check some conditions to see if they should be
-	if (%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && !%obj.wasDowned) //%damage < mFloor(%this.maxDamage/1.33)
+	if (%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && !%obj.wasDowned) //%damage < mFloor(%this.maxDamage/1.33) //This is commented out to prevent homing rockets from being fatal.
     {   
 		// Work in progress billboard for downed players, still not working :(
 		%o = MountGroup_Create(OverheadBillboardMount, 1, 5);
@@ -613,14 +613,15 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		{
 			%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, false);
 		}
-		
-		// Minigame conditions
-		if (isObject(%minigame = getMinigamefromObject(%obj))) 
-		{
-			// Notify everyone that the player is downed
-			%minigame.playSound("outofbounds_sound");
-			%minigame.checkDownedSurvivors();
-		}
+
+			//Check if the killer is the only one remaining.
+			%minigame = getMinigamefromObject(%obj);
+			if(isObject(%minigame))
+			{
+				// Notify everyone that the player is downed
+				%minigame.playSound("outofbounds_sound");
+				%minigame.checkDownedSurvivors();
+			}
 
 		// Return here, or else the player will die after this condition is met
         return;
@@ -628,6 +629,15 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 
 	// Continue the damage
     Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
+
+	//Check if the killer is the only one remaining.
+	%minigame = getMinigamefromObject(%obj);
+	if(isObject(%minigame))
+	{
+		// Notify everyone that the player is downed
+		%minigame.playSound("outofbounds_sound");
+		%minigame.checkDownedSurvivors();
+	}
 
 	//Execute the same function, but with the %killed parameter set to true. Not used as of 1/2/2015, but I wanted to future-proof.
 	if(%obj.getState() $= "Dead" && %sourceDatablock.isKiller)
