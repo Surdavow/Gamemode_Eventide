@@ -361,8 +361,8 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
                 %victim.TimeSinceChased = getSimTime();
                 cancel(%victim.client.StopChaseMusic);
                 %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
-                %victim.chaseLevel = 2;
             }
+			%victim.chaseLevel = 2; //Need this outside the music check for holebot testing support.
         }
     }
 	// The victim is no longer being chased, just nearby
@@ -389,8 +389,8 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
                 }
                 cancel(%victim.client.StopChaseMusic);
                 %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
-                %victim.chaseLevel = 1;
             }
+			%victim.chaseLevel = 1; //Need this outside the music check for holebot testing support.
         }
     }
 }
