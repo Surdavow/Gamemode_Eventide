@@ -52,14 +52,21 @@ function PuppetMasterPuppet::onTrigger(%this, %obj, %trig, %press)
 					
 					if(%obj.casttime+350 < getSimTime())
 					{
-						%obj.setEnergyLevel(0);
-						%obj.playthread(3,"rightrecoil");
-						serverPlay3d("puppet_jump_sound", %obj.getEyePoint());
-						%obj.setVelocity(vectorscale(%obj.getEyeVector(),16));
+						%this.leap(%obj);
 					}
 				}
 		default:
 	}
+}
+
+function PuppetMasterPuppet::Leap(%this,%obj)
+{
+	if(!isObject(%obj)) return;
+	
+	%obj.setEnergyLevel(0);
+	%obj.playthread(3,"rightrecoil");
+	serverPlay3d("puppet_jump_sound", %obj.getEyePoint());
+	%obj.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 10"),16));
 }
 
 function PuppetMasterPuppet::onImpact(%this, %obj, %col, %vec, %force)
@@ -189,7 +196,15 @@ function PuppetMasterPuppet::onBotLoop(%this, %obj)
                 %obj.raiseArms = true;
             }
             
-            if(%distance < 5) %obj.playThread(2, "activate2");
+            if(%distance < 5) 
+			{
+				%obj.playThread(2, "activate2");
+
+				if(getRandom(1,5) == 1 && %obj.getEnergyLevel() == %this.maxEnergy)
+				{
+					%this.leap(%obj);
+				}			
+			}
                 
             if(%distance < 2)
             {
@@ -198,7 +213,7 @@ function PuppetMasterPuppet::onBotLoop(%this, %obj)
                 %target.schedule(1000, setTempSpeed, 1);
                 %target.playThread(3, "plant");
                 
-                %obj.playAudio(3, "skullwolf_hit" @ getRandom(1, 3) @ "_sound");
+                %obj.playAudio(3, "melee_tanto" @ getRandom(1, 3) @ "_sound");
                 cancel(%obj.BotLoopSched);
                 %obj.playThread(3, "activate2");
                 %obj.setMoveX(0);
@@ -216,7 +231,7 @@ function PuppetMasterPuppet::onBotLoop(%this, %obj)
         {
             if($Pref::Server::Eventide::killerSoundsEnabled)
             {
-                %obj.playAudio(0, "zombie_chase" @ getRandom(0, 10) @ "_sound");
+                %obj.playAudio(0, "puppet_jumpCharge_sound");
             }
             
             %obj.lastTargetTime = %currentTime + 3500;
@@ -245,7 +260,7 @@ function PuppetMasterPuppet::onBotLoop(%this, %obj)
         
         if($Pref::Server::Eventide::killerSoundsEnabled)
         {
-            %obj.playAudio(0, "zombie_idle" @ getRandom(0, 4) @ "_sound");
+            %obj.playAudio(0, "puppetmasterpuppet_idle1_sound");
         }
         
         switch(getRandom(1, 4))
