@@ -3,6 +3,7 @@ datablock ItemData(RadioItem)
 	category = "Tools";
 	className = "Weapon";
 	shapeFile = "./models/radio.dts";
+	iconName = "./icons/RadioIcon.png";
 	uiName = "Radio";
 	image = RadioImage;
 	mass = 1;
