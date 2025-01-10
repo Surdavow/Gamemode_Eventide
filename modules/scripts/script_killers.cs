@@ -313,16 +313,19 @@ function Armor::killerGUI(%this,%obj,%client)
 // Support function to handle victim's state changes during chase
 function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %victimDistance, %searchDistance, %isActiveChase)
 {
-    if(%isActiveChase)
+    // The victim is being chased, this condition does some actions
+	if(%isActiveChase)
     {
         if(%victimDistance < %searchDistance/2.5)
         {
+			// Play a thread to have them talk, but it makes it look like they're nervous when the killer is near
             %victim.playthread(2, "talk");
             
             if(%victimDistance < %searchDistance/4)
             {
 				%viewNormal = vectorNormalize(vectorSub(%obj.getEyePoint(), %victim.getMuzzlePoint(2)));
                 %dot = vectorDot(%victim.getEyeVector(), %viewNormal);
+
                 // Handle panic sounds when victim sees killer
                 if((%dot > 0.45) && %victim.lastChaseCall < getSimTime())
                 {
@@ -362,6 +365,7 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
             }
         }
     }
+	// The victim is no longer being chased, just nearby
     else
     {
         %chaseEndGracePeriod = 4000;
