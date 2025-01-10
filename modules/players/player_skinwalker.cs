@@ -172,3 +172,38 @@ function PlayerSkinwalker::monsterTransform(%this,%obj,%bool,%count)
         %obj.changeaudio = false;
     }
 }
+
+function PlayerSkinWalker::onKillerHit(%this,%obj,%hit)
+{
+	if(isObject(%obj.victim) || !%hit.getdataBlock().isDowned)
+	{
+		return true;
+	}
+	
+	if(%hit.getDamagePercent() > 0.05)
+	{
+		if(isObject(%hit.client)) 
+		{
+			%obj.stunned = true;
+			%hit.client.setControlObject(%hit.client.camera);
+			%hit.client.camera.setMode("Corpse",%hit);
+		}
+		%obj.victim = %hit;
+		%obj.victimreplicatedclient = %hit.client;																
+		%obj.playthread(1,"eat");
+		%obj.playthread(2,"talk");
+		%obj.playaudio(1,"skinwalker_grab_sound");
+		%obj.mountobject(%hit,6);
+		%hit.schedule(2250,kill);
+		%hit.setarmthread("activate2");
+		%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
+		%hit.schedule(2295,kill);        
+		%hit.schedule(2300,delete);        
+		%obj.schedule(2250,playthread,1,"root");
+		%obj.schedule(2250,playthread,2,"root");
+		%obj.schedule(2250,setField,victim,0);
+		%this.schedule(2250,EventideAppearance,%obj,%obj.client);
+		return false;
+	}
+	return true;
+}

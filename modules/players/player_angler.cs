@@ -205,6 +205,15 @@ function PlayerAngler::onPeggFootstep(%this,%obj)
 	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
 
+function PlayerAngler::onKillerHit(%this,%obj,%hit)
+{		
+	if(isObject(%obj.hookrope))
+	{
+		%obj.hookrope.delete();
+	}
+	return true;
+}
+
 function PlayerAngler::idlesounds(%this,%obj)
 {
 	if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getdataBlock() !$= %this) return;

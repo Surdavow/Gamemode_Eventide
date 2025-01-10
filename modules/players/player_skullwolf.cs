@@ -259,7 +259,12 @@ function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 	%obj.setnodecolor("lshoe",%furcolor);
 }
 
-function PlayerSkullWolf::onDisabled(%this, %obj, %state)
+function PlayerSkullWolf::onKillerHit(%this,%obj,%hit)
 {
-	Parent::onDisabled(%this, %obj, %state);
+	if(%hit.getDamagePercent() > 0.25 && %hit.getdataBlock().isDowned)
+	{
+		%this.eatVictim(%obj,%hit);
+		return false;
+	}
+	return true;
 }

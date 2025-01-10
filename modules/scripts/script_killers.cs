@@ -176,51 +176,7 @@ function Armor::killerMelee(%this,%obj,%radius)
 
 		if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))								
 		{
-			switch$(%this.getName())
-			{
-				case "PlayerSkinWalker":	if(!isObject(%obj.victim) && %hit.getdataBlock().isDowned)
-											{
-												if(%hit.getDamagePercent() > 0.05)
-												{
-													if(isObject(%hit.client)) 
-													{
-														%obj.stunned = true;
-														%hit.client.setControlObject(%hit.client.camera);
-														%hit.client.camera.setMode("Corpse",%hit);
-													}
-													%obj.victim = %hit;
-													%obj.victimreplicatedclient = %hit.client;																
-													%obj.playthread(1,"eat");
-													%obj.playthread(2,"talk");
-													%obj.playaudio(1,"skinwalker_grab_sound");
-													%obj.mountobject(%hit,6);
-													%hit.schedule(2250,kill);
-													%hit.setarmthread("activate2");
-													%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
-													%hit.schedule(2295,kill);        
-													%hit.schedule(2300,delete);        
-													%obj.schedule(2250,playthread,1,"root");
-													%obj.schedule(2250,playthread,2,"root");
-													%obj.schedule(2250,setField,victim,0);
-													%this.schedule(2250,EventideAppearance,%obj,%obj.client);
-													return;
-												}
-												else continue;													
-											}
-
-				case "PlayerSkullwolf":	if(%hit.getDamagePercent() > 0.25 && %hit.getdataBlock().isDowned)
-										{
-											%this.eatVictim(%obj,%hit);
-											return;
-										}
-			}
-				
-			if(isObject(%obj.hookrope))
-			{
-				%obj.hookrope.delete();
-			}
-
-			if(%hit.getdataBlock().isDowned) 
+			if(%this.onKillerHit(%obj,%hit) || %hit.getdataBlock().isDowned) 
 			{
 				continue;
 			}
@@ -245,7 +201,6 @@ function Armor::killerMelee(%this,%obj,%radius)
 				MissionCleanup.add(%effect);
 				%effect.explode();
 			}
-
 			
 			%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
 			%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);					
