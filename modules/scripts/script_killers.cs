@@ -151,8 +151,8 @@ function Armor::killerMelee(%this,%obj,%radius)
 		}
 
 		%typemasks = $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
-		%obscure = containerRayCast(%obj.getEyePoint(),%hit.getPosition(),%typemasks, %obj);
-		%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%obj.getPosition())));				
+		%obscure = containerRayCast(%obj.getEyePoint(),%hit.getHackPosition(),%typemasks, %obj);
+		%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%obj.getHackPosition())));				
 
 		if(isObject(%obscure) && %this.hitobscureprojectile !$= "")
 		{								
