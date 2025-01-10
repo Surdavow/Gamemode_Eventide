@@ -66,7 +66,7 @@ function PuppetMasterPuppet::Leap(%this,%obj)
 	%obj.setEnergyLevel(0);
 	%obj.playthread(3,"rightrecoil");
 	serverPlay3d("puppet_jump_sound", %obj.getEyePoint());
-	%obj.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 2"),16));
+	%obj.setVelocity(vectorscale(vectorAdd(%obj.getEyeVector(),"0 0 0.75"),16));
 }
 
 function PuppetMasterPuppet::onImpact(%this, %obj, %col, %vec, %force)
