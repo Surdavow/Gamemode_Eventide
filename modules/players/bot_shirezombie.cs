@@ -9,6 +9,23 @@ datablock PlayerData(ShireZombieBot : EventidePlayer)
 	maxSideSpeed = 5.1;
 };
 
+function ShireZombieBot::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
+{
+    Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
+}
+
+function ShireZombieBot::onAdd(%this,%obj)
+{
+	Parent::onAdd(%this,%obj);
+	
+    %obj.setMoveSlowdown(0);
+	%this.applyAppearance(%obj,%obj.ghostclient);
+    %this.onBotLoop(%obj);
+    %obj.mountImage("GlowFaceZombieImage",0);
+	%obj.mountImage("ZombieBodyImage",1);    
+	%obj.schedule(33,playAudio,2,"hex_ghostSpawn_sound");
+}
+
 function ShireZombieBot::applyAppearance(%this,%obj)
 {
     Armor::EventideAppearance(%this,%obj,%obj.ghostclient);
@@ -25,23 +42,6 @@ function ShireZombieBot::applyAppearance(%this,%obj)
 	%obj.setNodeColor("ALL",%headColor);
     %obj.setFaceName("hexZombie");
 	%obj.setDecalName("none"); 	
-}
-
-function ShireZombieBot::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType)
-{
-    Parent::Damage(%this,%obj,%sourceObject,%position,%damage,%damageType);
-}
-
-function ShireZombieBot::onAdd(%this,%obj)
-{
-	Parent::onAdd(%this,%obj);
-	
-    %obj.setMoveSlowdown(0);
-	%this.applyAppearance(%obj,%obj.ghostclient);
-    %this.onBotLoop(%obj);
-    %obj.mountImage("GlowFaceZombieImage",0);
-	%obj.mountImage("ZombieBodyImage",1);    
-	%obj.schedule(33,playAudio,2,"hex_ghostSpawn_sound");
 }
 
 function ShireZombieBot::onBotLoop(%this, %obj)
