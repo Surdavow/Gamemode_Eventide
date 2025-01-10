@@ -371,222 +371,6 @@ function Armor::onRoundEnd(%this, %obj, %won)
 	//Hello, World!
 }
 
-// Function that manages the behavior of the killer, handling its state, playing sounds, and scheduling future actions.
-function Armor::onKillerLoop(%this, %obj)
-{
-    // Skip if invalid state
-    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj)))
-	{
-		return;
-	}
-
-    if(%obj.getDataBlock().isKiller)
-    {	
-        %chasingVictims = 0;
-		%searchDistance = 50;
-        initContainerRadiusSearch(%obj.getMuzzlePoint(0), %searchDistance, $TypeMasks::PlayerObjectType);
-
-        // Process nearby players
-        while(%victim = containerSearchNext())
-        {
-			// Skip invalid conditions
-			%victimDatablock = %victim.getDataBlock();
-			if(!isObject(getMinigamefromObject(%victim)) || %victimDatablock.isKiller || %victimDatablock.isDowned || %victim.getState() $= "Dead") 
-			{
-				continue;
-			}
-			
-			%typemasks = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType;
-            %dot = vectorDot(%obj.getEyeVector(), vectorNormalize(vectorSub(%victim.getMuzzlePoint(2), %obj.getEyePoint())));
-            %canSeeVictim = !isObject(containerRayCast(%obj.getEyePoint(), %victim.getMuzzlePoint(2), %typemasks, %obj));
-			%victimDistance = containerSearchCurrDist();
-
-            // If we can see the victim, play some music and perform some actions
-            if (%dot > 0.45 && %canSeeVictim && !%obj.isInvisible)
-            {
-                %chasingVictims++;
-				if(!%obj.isChasing)
-				{
-					%this.onKillerChaseStart(%obj);
-				}
-                %obj.isChasing = true;
-				%obj.TimeSinceChased = getSimTime();
-                %this.onKillerChase(%obj, true);
-				%victimdot = vectorDot(%victim.getEyeVector(), vectorNormalize(vectorSub(%obj.getEyePoint(), %victim.getMuzzlePoint(2))));
-
-				if(%victimDistance < %searchDistance/2.5)
-				{
-					%victim.playthread(2,"talk");
-					
-					if(%victimDistance < %searchDistance/4)
-					{				
-						// Condition for AI players, why not?
-						//Commented out due to causing difficulty testing on singleplayer.
-						// if(%victim.getClassName() $= "AIPlayer" && %victim.isHoleBot)
-						// {
-						// 	%victim.hRunAwayFromPlayer(%obj);
-						// 	%victim.hspazzclick(5,1);
-						// }					
-
-						// If we can see the killer or the victim is close enough, make them panic
-						if((%victimdot > 0.45) && %victim.lastChaseCall < getSimTime())
-						{							
-							
-							%genderSound = (!%victim.client.chest) ? "male" : "female";
-							%genderSoundAmount = (!%victim.client.chest) ? 3 : 5;
-							%sound = %genderSound @ "_shock" @ getRandom(1, %genderSoundAmount) @ "_sound";
-							%victim.playaudio(0,%sound);		
-							%victim.lastChaseCall = getSimTime()+getRandom(1000,5000);
-						}
-					}									
-				}				
-
-                if($Pref::Server::Eventide::chaseMusicEnabled)
-                {
-                    // Update victim's chase state
-                    if (isObject(%victim.client))
-                    {
-                        if(%victim.chaseLevel != 2)
-                        {
-                            %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, true);
-                        }
-                        %victim.TimeSinceChased = getSimTime();
-                        cancel(%victim.client.StopChaseMusic);
-                        %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
-                    }
-					%victim.chaseLevel = 2;
-
-                    // Update killer's chase state
-                    if(%chasingVictims)
-                    {
-						if(isObject(%obj.client))
-						{	
-							if(%obj.chaseLevel != 2)
-							{
-								%obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, false);
-							}
-							cancel(%obj.client.StopChaseMusic);
-							%obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
-						}
-						%obj.chaseLevel = 2;
-                    }
-                }				
-
-                // Update victim's face
-                if(isObject(%victim.faceConfig))
-                {
-					if(%victim.faceConfig.subCategory $= "" && $Eventide_FacePacks[%victim.faceConfig.category, "Scared"] !$= "")
-					{
-						%victim.createFaceConfig($Eventide_FacePacks[%victim.faceConfig.category, "Scared"]);
-					}
-					
-                    if(%victim.faceConfig.isFace("Scared"))
-					{
-						%victim.faceConfig.dupeFaceSlot("Neutral", "Scared");					
-					}					
-                }
-            }		
-            else // If we cannot see the victim, stop music and perform some actions
-            {
-				%chaseEndGracePeriod = 4000; //4 seconds.
-
-				//Update the victim's state.
-				%victimChaseExpired = (%victim.TimeSinceChased + %chaseEndGracePeriod) < getSimTime();
-                if(%victimChaseExpired)
-                {
-                	%victim.playthread(2,"root");
-
-					//Reset the victim's face, if they are scared.
-					if(isObject(%victim.faceConfig) && %victim.faceConfig.face["Neutral"].faceName $= "Scared") 
-					{						
-						%victim.faceConfig.resetFaceSlot("Neutral");					
-					}											
-					
-					if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%victim.client))
-					{
-						if(%victim.chaseLevel != 1)
-                    	{
-                    	    %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
-                    	}
-
-                    	cancel(%victim.client.StopChaseMusic);
-                    	%victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
-					}
-					%victim.chaseLevel = 1;
-                }
-
-				// Update killer's chase state
-				%killerChaseExpired = (%obj.TimeSinceChased + %chaseEndGracePeriod) < getSimTime();
-				if(%killerChaseExpired)
-				{
-					//Run the Armor hook for the chase ending on the killer.
-					if(%obj.isChasing)
-					{
-						%this.onKillerChaseEnd(%obj);
-						%obj.isChasing = false;
-					}
-					
-					%this.onKillerChase(%obj, false);
-
-					//Step down the killer's music.
-					if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%obj.client))
-					{
-						// Update killer's chase state
-						if(!%chasingVictims)
-						{
-							if(isObject(%obj.client))
-							{
-								if(%obj.chaseLevel != 1)
-								{
-									%obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
-								}
-								cancel(%obj.client.StopChaseMusic);
-								%obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
-							}
-						}
-						%obj.chaseLevel = 1;
-					}
-				}
-            }
-        }
-
-		// Handle raising the arms
-		if (%this.killerRaiseArms && %obj.isChasing != %obj.raiseArms) 
-		{    				
-			%obj.playThread(1, %obj.isChasing ? "armReadyBoth" : "root");
-			%obj.raiseArms = %obj.isChasing;
-		}
-
-        // Handle killer sounds
-        if ($Pref::Server::Eventide::killerSoundsEnabled && !%obj.isCrouched() && %obj.lastKillerSoundTime + getRandom(7000, 10000) < getSimTime())
-        {                       
-			if (!%obj.isInvisible) 
-			{
-			    // Determine if chasing or idle sounds should be played
-				%soundType = %obj.isChasing ? %this.killerChaseSound : %this.killerIdleSound;
-                %soundAmount = %obj.isChasing ? %this.killerChaseSoundAmount : %this.killerIdleSoundAmount;
-
-                if(%soundType !$= "") 
-				{
-                	%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
-					%obj.playThread(3, "plant");
-					%obj.lastKillerSoundTime = getSimTime();
-                }
-			}
-        }
-    }
-
-    // Update UI and schedule next loop
-    if (isObject(%obj.client)) 
-	{
-		%this.killerGUI(%obj, %obj.client);
-	}
-
-	// Schedule next loop, preventing duplication
-    cancel(%obj.onKillerLoop);
-    %obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
-}
-
 function Armor::killerGUI(%this,%obj,%client)
 {	
 	if (!isObject(%obj) || !isObject(%client))
@@ -606,6 +390,228 @@ function Armor::killerGUI(%this,%obj,%client)
 	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ $iconspath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
 
 	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
+}
+
+// Support function to handle victim's state changes during chase
+function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %victimDistance, %searchDistance, %isActiveChase)
+{
+    if(%isActiveChase)
+    {
+        if(%victimDistance < %searchDistance/2.5)
+        {
+            %victim.playthread(2, "talk");
+            
+            if(%victimDistance < %searchDistance/4)
+            {
+                %victimdot = vectorDot(%victim.getEyeVector(), vectorNormalize(vectorSub(%obj.getEyePoint(), %victim.getMuzzlePoint(2))));
+                // Handle panic sounds when victim sees killer
+                if((%victimdot > 0.45) && %victim.lastChaseCall < getSimTime())
+                {
+                    %genderSound = (!%victim.client.chest) ? "male" : "female";
+                    %genderSoundAmount = (!%victim.client.chest) ? 3 : 5;
+                    %sound = %genderSound @ "_shock" @ getRandom(1, %genderSoundAmount) @ "_sound";
+                    %victim.playaudio(0, %sound);        
+                    %victim.lastChaseCall = getSimTime() + getRandom(1000, 5000);
+                }
+            }
+            
+            // Update victim's face to scared
+            if(isObject(%victim.faceConfig))
+            {
+                if(%victim.faceConfig.subCategory $= "" && $Eventide_FacePacks[%victim.faceConfig.category, "Scared"] !$= "")
+                {
+                    %victim.createFaceConfig($Eventide_FacePacks[%victim.faceConfig.category, "Scared"]);
+                }
+                
+                if(%victim.faceConfig.isFace("Scared"))
+                {
+                    %victim.faceConfig.dupeFaceSlot("Neutral", "Scared");                    
+                }                    
+            }
+            
+            // Handle victim's chase music
+            if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%victim.client))
+            {
+                if(%victim.chaseLevel != 2)
+                {
+                    %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, true);
+                }
+                %victim.TimeSinceChased = getSimTime();
+                cancel(%victim.client.StopChaseMusic);
+                %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
+                %victim.chaseLevel = 2;
+            }
+        }
+    }
+    else
+    {
+        %chaseEndGracePeriod = 4000;
+        %victimChaseExpired = (%victim.TimeSinceChased + %chaseEndGracePeriod) < getSimTime();
+        
+        if(%victimChaseExpired)
+        {
+            %victim.playthread(2, "root");
+            // Reset victim's face back to neutral when chase ends
+            if(isObject(%victim.faceConfig) && %victim.faceConfig.face["Neutral"].faceName $= "Scared") 
+            {                        
+                %victim.faceConfig.resetFaceSlot("Neutral");                    
+            }
+            
+            // Handle stepping down victim's music
+            if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%victim.client))
+            {
+                if(%victim.chaseLevel != 1)
+                {
+                    %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+                }
+                cancel(%victim.client.StopChaseMusic);
+                %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
+                %victim.chaseLevel = 1;
+            }
+        }
+    }
+}
+
+// Support function to manage killer's chase state
+function Armor::handleKillerChaseState(%this, %obj, %chasingVictims, %isActiveChase)
+{
+    if(%isActiveChase)
+    {
+        if(!%obj.isChasing)
+        {
+            %this.onKillerChaseStart(%obj);
+            %obj.isChasing = true;
+        }
+        %obj.TimeSinceChased = getSimTime();
+        %this.onKillerChase(%obj, true);
+        
+        // Handle killer's chase music
+        if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%obj.client) && %chasingVictims)
+        {    
+            if(%obj.chaseLevel != 2)
+            {
+                %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, false);
+            }
+            cancel(%obj.client.StopChaseMusic);
+            %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+            %obj.chaseLevel = 2;
+        }
+    }
+    else
+    {
+        %chaseEndGracePeriod = 4000;
+        %killerChaseExpired = (%obj.TimeSinceChased + %chaseEndGracePeriod) < getSimTime();
+        
+        if(%killerChaseExpired)
+        {
+            if(%obj.isChasing)
+            {
+                %this.onKillerChaseEnd(%obj);
+                %obj.isChasing = false;
+            }
+            %this.onKillerChase(%obj, false);
+            
+            // Handle stepping down killer's music
+            if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%obj.client) && !%chasingVictims)
+            {
+                if(%obj.chaseLevel != 1)
+                {
+                    %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
+                }
+                cancel(%obj.client.StopChaseMusic);
+                %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+                %obj.chaseLevel = 1;
+            }
+        }
+    }
+}
+
+// Main function refactored to use support functions
+function Armor::killerContainerRadiusSearch(%this, %obj)
+{
+    %chasingVictims = 0;
+    %searchDistance = 50;
+    initContainerRadiusSearch(%obj.getMuzzlePoint(0), %searchDistance, $TypeMasks::PlayerObjectType);
+
+    while(%victim = containerSearchNext())
+    {
+        // Skip invalid conditions
+        %victimDatablock = %victim.getDataBlock();
+        if(!isObject(getMinigamefromObject(%victim)) || %victimDatablock.isKiller || %victimDatablock.isDowned || %victim.getState() $= "Dead") 
+        {
+            continue;
+        }
+        
+        %typemasks = $TypeMasks::FxBrickObjectType | $TypeMasks::VehicleObjectType;
+        %dot = vectorDot(%obj.getEyeVector(), vectorNormalize(vectorSub(%victim.getMuzzlePoint(2), %obj.getEyePoint())));
+        %canSeeVictim = !isObject(containerRayCast(%obj.getEyePoint(), %victim.getMuzzlePoint(2), %typemasks, %obj));
+        %victimDistance = containerSearchCurrDist();
+
+        %isActiveChase = %dot > 0.45 && %canSeeVictim && !%obj.isInvisible;
+        if(%isActiveChase)
+        {
+            %chasingVictims++;
+        }
+
+        // Update states for both killer and victim
+        %this.handleKillerChaseState(%obj, %chasingVictims, %isActiveChase);
+        %this.handleVictimChaseState(%victim, %obj, %canSeeVictim, %victimDistance, %searchDistance, %isActiveChase);
+    }
+}
+
+function Armor::playKillerLoopActions(%this,%obj)
+{	
+	// Handle raising the arms
+	if (%this.killerRaiseArms && %obj.isChasing != %obj.raiseArms) 
+	{    				
+		%obj.playThread(1, %obj.isChasing ? "armReadyBoth" : "root");
+		%obj.raiseArms = %obj.isChasing;
+	}
+	
+	// Handle killer sounds
+	if ($Pref::Server::Eventide::killerSoundsEnabled && !%obj.isCrouched() && %obj.lastKillerSoundTime + getRandom(7000, 10000) < getSimTime())
+	{                       
+		if (!%obj.isInvisible) 
+		{
+			// Determine if chasing or idle sounds should be played
+			%soundType = %obj.isChasing ? %this.killerChaseSound : %this.killerIdleSound;
+			%soundAmount = %obj.isChasing ? %this.killerChaseSoundAmount : %this.killerIdleSoundAmount;
+
+			if(%soundType !$= "") 
+			{
+				%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+				%obj.playThread(3, "plant");
+				%obj.lastKillerSoundTime = getSimTime();
+			}
+		}
+	}
+}
+
+// Function that manages the behavior of the killer, handling its state, playing sounds, and scheduling future actions.
+function Armor::onKillerLoop(%this, %obj)
+{
+    // Skip if invalid state
+    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj)))
+	{
+		return;
+	}
+
+	// Update UI and schedule next loop
+    if (isObject(%obj.client)) 
+	{
+		%this.killerGUI(%obj, %obj.client);
+	}
+
+    if(%obj.getDataBlock().isKiller)
+    {	
+		// Handle killer container search
+		%this.killerContainerRadiusSearch(%obj);
+		%this.playKillerLoopActions(%obj);
+    }
+
+	// Schedule next loop, preventing duplication
+    cancel(%obj.onKillerLoop);
+    %obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
 }
 
 function GameConnection::SetChaseMusic(%client, %songname, %ischasing)
