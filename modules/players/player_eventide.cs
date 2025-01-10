@@ -307,9 +307,12 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 								%hit.playThread(2,"jump");
 								
 								if (!%obj.shoveForce) %obj.shoveForce = 1;
+								%shoveForce = %obj.shoveForce;
+								if(%hit.getDatablock().getName() $= "PuppetMasterPuppet") %shoveforce = 10;
+
 								%exhausted = (%obj.staminaCount >= 5) ? 2 : 1;
-								%forwardimpulse = (((%obj.survivorclass $= "fighter") ? 950 : 800) / %exhausted) * %obj.shoveForce;
-								%zimpulse = (((%obj.survivorclass $= "fighter") ? 325 : 200) / %exhausted) * %obj.shoveForce;
+								%forwardimpulse = (((%obj.survivorclass $= "fighter") ? 950 : 800) / %exhausted) * %shoveForce;
+								%zimpulse = (((%obj.survivorclass $= "fighter") ? 325 : 200) / %exhausted) * %shoveForce;
 								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),%forwardimpulse),"0 0 " @ %zimpulse));
 							}												
 						}

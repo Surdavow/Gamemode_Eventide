@@ -200,7 +200,7 @@ function PuppetMasterPuppet::onBotLoop(%this, %obj)
 			{
 				%obj.playThread(2, "activate2");
 
-				if(getRandom(1,5) == 1 && %obj.getEnergyLevel() == %this.maxEnergy)
+				if(getRandom(1,10) == 1 && %obj.getEnergyLevel() == %this.maxEnergy)
 				{
 					%this.leap(%obj);
 				}			
