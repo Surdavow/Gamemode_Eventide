@@ -321,9 +321,10 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
             
             if(%victimDistance < %searchDistance/4)
             {
-                %victimdot = vectorDot(%victim.getEyeVector(), vectorNormalize(vectorSub(%obj.getEyePoint(), %victim.getMuzzlePoint(2))));
+				%viewNormal = vectorNormalize(vectorSub(%obj.getEyePoint(), %victim.getMuzzlePoint(2)));
+                %dot = vectorDot(%victim.getEyeVector(), %viewNormal);
                 // Handle panic sounds when victim sees killer
-                if((%victimdot > 0.45) && %victim.lastChaseCall < getSimTime())
+                if((%dot > 0.45) && %victim.lastChaseCall < getSimTime())
                 {
                     %genderSound = (!%victim.client.chest) ? "male" : "female";
                     %genderSoundAmount = (!%victim.client.chest) ? 3 : 5;
