@@ -820,7 +820,13 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	if (isObject(%obj.client))
 	{
 		%funcclient = (isObject(%obj.ghostclient)) ? %obj.ghostclient : %obj.client;
-		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);	
+		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+
+		// Clear the tunnel vision effect
+		if(%obj.tunnelvision)
+		{
+			EventidePlayer.TunnelVision(%obj,false);
+		}
 		
 		if (isObject(%minigame = getMinigamefromObject(%obj)))
 		{			
@@ -829,7 +835,10 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			// Varying conditions on how the player was killed, do not return on either condition if the player is already marked for death
 			if (%obj.markedforRenderDeath || %obj.shireZombify)
 			{
-				if (%obj.markedforRenderDeath) %minigame.playSound("render_kill_sound");
+				if (%obj.markedforRenderDeath) 
+				{
+					%minigame.playSound("render_kill_sound");
+				}
 	
 				if (%obj.shireZombify)
 				{
