@@ -148,7 +148,7 @@ function PlayerCaptain::onNewDatablock(%this, %obj)
     %obj.justIncapped = false;
     %obj.incapsAchieved = new SimSet();
     %obj.threatsReceived = new SimSet();
-    %obj.SkyCaptainGaze(%obj);
+    %obj.SkyCaptainGaze();
 
     //Spawn-in voice-line.
     %soundType = %this.killerspawnsound;
@@ -439,7 +439,7 @@ function PlayerCaptain::onIncapacitateVictim(%this, %obj, %victim, %killed)
     //Would make the indicator appear inconsistently.
     %obj.justIncapped = true;
 
-    //Mark the kill on a temporary SimSet. Used for a voice-line mechanic in `onKillerChase`.
+    //Mark the kill on a temporary SimSet. Used for a voice-line mechanic in `onKillerChaseEnd`.
     if(!isObject(%obj.incapsAchieved))
     {
         %obj.incapsAchieved = new SimSet();
@@ -689,7 +689,7 @@ function PlayerCaptain::clearTrackingTarget(%this, %obj)
     }
 }
 
-function Player::SkyCaptainGaze(%this, %obj)
+function Player::SkyCaptainGaze(%obj)
 {
     if(!isObject(%obj) || %obj.isDisabled())
     {
@@ -729,6 +729,13 @@ function Player::SkyCaptainGaze(%this, %obj)
             //Victim is someone we're in a chase with, no stealth here. Skip.
             %killerDatablock.clearTrackingTarget(%obj);
 
+            //The victim does not have any items equipped, don't bother with this.
+            %victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
+            if(!%victimEquippedItem)
+            {
+                continue;
+            }
+
             //Nowhere better to put this: if the player has a weapon, have Sky Captain play a voice line acknowledging it.
             %alreadyThreatenedKiller = false;
             for(%i = 0; %i < %obj.threatsReceived.getCount(); %i++)
@@ -745,7 +752,7 @@ function Player::SkyCaptainGaze(%this, %obj)
                 continue;
             }
 
-            %victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
+            //They have an item equipped and it's a weapon, have Sky Captain react to it.
             if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage"))
             {
                 //"You think that will help you!?"
@@ -842,7 +849,7 @@ function Player::SkyCaptainGaze(%this, %obj)
         %obj.isTracking = false;
     }
 
-    %obj.schedule(%obj.gazeTickRate, SkyCaptainGaze, %obj);
+    %obj.schedule(%obj.gazeTickRate, SkyCaptainGaze);
 }
 
 //
