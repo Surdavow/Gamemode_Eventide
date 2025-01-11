@@ -341,8 +341,33 @@ function PlayerCaptain::onRoundEnd(%this, %obj, %won)
 }
 
 //
-// Stealth and "snowball" mechanics.
+// Stealth, jetting, and "snowball" mechanics.
 //
+
+//Partially corrects the "dive" mechanic of players who jet and crouch simutaneously, which is hardcoded into the engine and cannot be disabled.
+//Torque jank!!!!
+function Player::crouchDiveCorrectionLoop(%obj)
+{
+    if(!%obj.isJetting || !%obj.isCrouching)
+    {
+        return;
+    }
+
+    %tickRate = 33;
+    %currentVelocity = %obj.getVelocity();
+
+    %verticalDeltaPerMillisecond = -0.0183537578583;
+    //%forwardDeltaPerMillisecond = 0.02030721092224121;
+    %verticalDistancePerTick = (%verticalDeltaPerMillisecond * %tickRate);
+
+    %xyReduction = VectorScale(VectorNormalize(%currentVelocity), %obj.getDataBlock().maxForwardCrouchSpeed);
+    %zInverse = mAbs(%verticalDeltaPerMillisecond);
+
+    %newVelocity = getWords(%xyReduction, 0, 1) SPC %zInverse;
+
+    %obj.setVelocity(%newVelocity);
+    %obj.crouchDiveCorrection = %obj.schedule(%tickRate, "crouchDiveCorrectionLoop");
+}
 
 function PlayerCaptain::onTrigger(%this, %obj, %trig, %press)
 {
@@ -353,28 +378,37 @@ function PlayerCaptain::onTrigger(%this, %obj, %trig, %press)
     if(%trig == 3 && %press)
     {
         //"isCrouched" would be ideal here, but it turns it is broken.
+        %obj.isCrouching = true;
         %obj.isInvisible = true;
     }
     else if(%trig == 3 && !%press)
     {
+        %obj.isCrouching = false;
         %obj.isInvisible = false;
     }
 
     //Add jetting sounds for Sky Captain, if he has enough charge.
     if(%trig == 4 && %press && %obj.getEnergyLevel() > %this.minJetEnergy)
     {
+        %obj.isJetting = true;
         %obj.playAudio(3, "jet_loop_sound");
     }
     else if(%trig == 4 && !%press)
     {
+        %obj.isJetting = false;
         %obj.playAudio(3, "jet_end_sound");
+    }
+
+    //Blockland's engine has a built-in feature that causes jetting players to dive downwards if they crouch. This loop solution aims to remedy that.
+    if(%obj.isJetting && %obj.isCrouching && !isEventPending(%obj.crouchDiveCorrection))
+    {
+        %obj.crouchDiveCorrectionLoop();
     }
 	
     //Slight edit to make it so Sky Captain can't melee with an item (homing rocket launcher) out.
 	if(%press && !%trig && %obj.getEnergyLevel() >= 25 && !isObject(%obj.getMountedImage($RightHandSlot)))
 	{
 		%this.killerMelee(%obj, 4);
-		return;
 	}
 }
 
@@ -809,3 +843,35 @@ function Player::SkyCaptainGaze(%this, %obj)
 
     %obj.schedule(%obj.gazeTickRate, SkyCaptainGaze, %obj);
 }
+
+//
+// Old testing functions for determining the velocity produced by diving while jetting.
+//
+
+// function Player::startVelocity(%obj)
+// {
+//     $startVelocity = %obj.getVelocity();
+//     echo("Start Velocity:" SPC $startVelocity);
+// }
+
+
+// function Player::endVelocity(%obj)
+// {
+//     $endVelocity = %obj.getVelocity();
+//     echo("End Velocity:" SPC $endVelocity);
+// }
+
+// function Player::DiveVelocityTest(%obj)
+// {
+//     crouch(0);
+//     jet(0);
+
+//     %obj.setTransform("0 0 50 0 0 0 0");
+//     %obj.setVelocity("0 0 0");
+
+//     jet(1);
+//     %obj.schedule(1000, "startVelocity");
+
+//     scheduleNoQuota(1001, 0, "crouch", 1);
+//     %obj.schedule(2001, "endVelocity");
+// }

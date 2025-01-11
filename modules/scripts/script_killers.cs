@@ -417,8 +417,8 @@ function Armor::handleKillerChaseState(%this, %obj, %chasingVictims, %isActiveCh
             }
             cancel(%obj.client.StopChaseMusic);
             %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
-            %obj.chaseLevel = 2;
         }
+		%obj.chaseLevel = 2;
     }
     else
     {
@@ -443,8 +443,8 @@ function Armor::handleKillerChaseState(%this, %obj, %chasingVictims, %isActiveCh
                 }
                 cancel(%obj.client.StopChaseMusic);
                 %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
-                %obj.chaseLevel = 1;
             }
+			%obj.chaseLevel = 1;
         }
     }
 }
