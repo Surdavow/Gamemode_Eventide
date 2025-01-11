@@ -22,7 +22,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerchasesoundamount = 1;
 	
 	killernearsound = "shire_looking";
-	killernearsoundamount = 4;
+	killernearsoundamount = 9;
 
     killertauntsound = "shire_kill";
     killertauntsoundamount = 2;
@@ -39,12 +39,6 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
     killerattackedsound = "shire_attacked";
 	killerattackedsoundamount = 2;
 
-    killerdesperatesound = "";
-	killerdesperatesoundamount = 1;
-
-    killerattackedsound = "";
-	killerattackedsoundamount = 1;
-
 	killermeleesound = "shire_melee";
 	killermeleesoundamount = 3;	
 	
@@ -60,6 +54,8 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	maxForwardSpeed = 6.55;
 	maxBackwardSpeed = 3.74;
 	maxSideSpeed = 5.61;
+
+	gazeTickRate = 50;
 };
 
 function DarknessProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal)
@@ -146,7 +142,7 @@ function PlayerShire::onKillerChase(%this, %obj, %chasing)
 {
 	if(!%chasing && !%obj.isInvisible)
     {
-        //A victim is nearby but Sky Captain can't see them yet. Say some quips.
+        //A victim is nearby but Shire can't see them yet. Say some quips.
         %soundType = %this.killernearsound;
         %soundAmount = %this.killernearsoundamount;
         if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + getRandom(15000, 25000))))
@@ -178,6 +174,7 @@ function PlayerShire::onKillerChaseEnd(%this, %obj)
 function PlayerShire::onIncapacitateVictim(%this, %obj, %victim, %killed)
 {
     parent::onIncapacitateVictim(%this, %obj, %victim, %killed);
+	
 	//Play a voice-line taunting the victim.
     %soundType = %this.killertauntsound;
     %soundAmount = %this.killertauntsoundamount;
@@ -186,11 +183,31 @@ function PlayerShire::onIncapacitateVictim(%this, %obj, %victim, %killed)
         %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
         %obj.lastKillerSoundTime = getSimTime();
     }
+
+	//Mark the kill on a temporary SimSet. Used for a voice-line mechanic in `onKillerChaseEnd`.
+    if(!isObject(%obj.incapsAchieved))
+    {
+        %obj.incapsAchieved = new SimSet();
+    }
+    if(isObject(%victim.client))
+    {
+        %obj.incapsAchieved.add(%victim.client);
+    }
+    else
+    {
+        //Add in a dummy object for holebot support.
+        %obj.incapsAchieved.add(
+            new ScriptObject() 
+            {
+                player = %victim;
+                name = %victim.getClassName();
+            }
+        );
+    }
 }
 
 function PlayerShire::onExitStun(%this, %obj)
 {
-    //"You DARE..."
 	%soundType = %this.killerattackedsound;
     %soundAmount = %this.killerattackedsoundamount;
     if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
@@ -258,18 +275,9 @@ function PlayerShire::onPeggFootstep(%this,%obj)
 function PlayerShire::onNewDatablock(%this, %obj)
 {
 	//Face system functionality.
-	%obj.createEmptyFaceConfig($Eventide_FacePacks["shire"]);
-	%facePack = %obj.faceConfig.getFacePack();
-	%obj.faceConfig.face["Neutral"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Neutral"));
-	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
-
-	%obj.faceConfig.face["Attack"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Attack"));
+	%obj.createFaceConfig($Eventide_FacePacks["shire"]);
 	%obj.faceConfig.setFaceAttribute("Attack", "length", 500);
-
-	%obj.faceConfig.face["Pain"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Pain"));
 	%obj.faceConfig.setFaceAttribute("Pain", "length", 1000);
-	
-	%obj.faceConfig.face["Blink"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Blink"));
 	%obj.faceConfig.setFaceAttribute("Blink", "length", 100);
 
 	//Everything else.
@@ -278,6 +286,10 @@ function PlayerShire::onNewDatablock(%this, %obj)
 	%obj.setScale("1.15 1.15 1.15");
 	%obj.mountImage("meleeAxeImage",0);
 	%obj.mountImage("newhoodieimage",3,2,addTaggedString("darkpurple"));
+
+	//Start the gaze loop.
+	%obj.gazeTickRate = %this.gazeTickRate;
+	%obj.ShireGaze();
 }
 
 function PlayerShire::EventideAppearance(%this,%obj,%client)
@@ -296,8 +308,6 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 	%hoodieColor = "0.22 0.11 0.3 1";
 	%pantsColor = "0.075 0.075 0.075 1";
 	%skinColor = "1 1 1 1";
-
-	if(isObject(%obj.faceConfig)) %obj.faceConfigShowFaceTimed("Neutral", -1);
 	
 	%obj.setDecalName("robe");
 	%obj.setNodeColor("rarm",%hoodieColor);
@@ -314,23 +324,23 @@ function PlayerShire::EventideAppearance(%this,%obj,%client)
 
 }
 
-function Player::ShireGaze(%this, %obj)
+function Player::ShireGaze(%obj)
 {
     if(!isObject(%obj) || %obj.isDisabled())
     {
         return;
     }
 
+    %foundTrackingTarget = false;
     %currentPosition = %obj.getPosition();
     %maximumDistance = $EnvGuiServer::VisibleDistance;
-    %mask = $TypeMasks::PlayerObjectType;
 
-    initContainerRadiusSearch(%currentPosition, %maximumDistance, %mask);
+    initContainerRadiusSearch(%currentPosition, %maximumDistance, $TypeMasks::PlayerObjectType);
     while(%foundPlayer = ContainerSearchNext())
     {
-        %killerPosition = %obj.getHackPosition();
+        %killerPosition = %obj.getEyePoint();
         %killerDatablock = %obj.getDataBlock();
-        %victimPosition = %foundPlayer.getHackPosition();
+        %victimPosition = %foundPlayer.getEyePoint();
         %victimDatablock = %foundPlayer.getDataBlock();
         %obstructions = ($TypeMasks::FxBrickObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::StaticShapeObjectType);
 
@@ -344,45 +354,57 @@ function Player::ShireGaze(%this, %obj)
             //Victim is downed, skip.
             continue;
         }
-        else if(isObject(getWord(ContainerRayCast(%victimPosition, %killerPosition, %obstructions), 0)))
+        else if(ContainerRayCast(%victimPosition, %killerPosition, %obstructions))
         {
             //The killer and victim are phyiscally blocked, skip.
             continue;
         }
-        else if(%obj.isChasing && %foundPlayer.chaseLevel == 2)
+        else if(!%obj.isChasing || %foundPlayer.chaseLevel != 2)
         {
-            //Nowhere better to put this: if the player has a weapon, have Sky Captain play a voice line acknowledging it.
-            %alreadyThreatenedKiller = false;
-            for(%i = 0; %i < %obj.threatsReceived.getCount(); %i++)
-            {
-                if(%obj.threatsReceived.getObject(%i).getId() == %foundPlayer.getId())
-                {
-                    %alreadyThreatenedKiller = true;
-                    break;
-                }
-            }
-            if(%alreadyThreatenedKiller)
-            {
-                //They already threatened us, skip playing any more voice lines.
-                continue;
-            }
+			//The victim is not being chased, they are irrelevant here. Skip.
+			continue;
+		}
 
-            %victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
-            if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage"))
-            {
-                //"You think that will help you!?"
-                %soundType = %killerDatablock.killerthreatenedsound;
-                %soundAmount = %killerDatablock.killerthreatenedsoundamount;
-                if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
-                {
-                    %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
-                    %obj.lastKillerSoundTime = getSimTime();
-                    %obj.threatsReceived.add(%foundPlayer); //Ensure Sky Captain does not acknowledge any further weapons. Less annoying.
-                }
-            }
-            continue;
-        }
+		//The victim does not have any items equipped, don't bother with this.
+		%victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
+		if(!%victimEquippedItem)
+		{
+			continue;
+		}
+
+		//Nowhere better to put this: if the player has a weapon, have Shire play a voice line acknowledging it.
+		%alreadyThreatenedKiller = false;
+		for(%i = 0; %i < %obj.threatsReceived.getCount(); %i++)
+		{
+			if(%obj.threatsReceived.getObject(%i).getId() == %foundPlayer.getId())
+			{
+				%alreadyThreatenedKiller = true;
+				break;
+			}
+		}
+		if(%alreadyThreatenedKiller)
+		{
+			//They already threatened us, skip playing any more voice lines.
+			continue;
+		}
+
+		//They have an item equipped and it's a weapon, have Shire react to it.
+		if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage"))
+		{
+			%soundType = %killerDatablock.killerthreatenedsound;
+			%soundAmount = %killerDatablock.killerthreatenedsoundamount;
+			if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+			{
+				%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+				%obj.lastKillerSoundTime = getSimTime();
+				%obj.threatsReceived.add(%foundPlayer); //Ensure Shire does not acknowledge any further weapons. Less annoying.
+			}
+		}
+
+		continue;
 	}
+
+	%obj.schedule(%obj.gazeTickRate, ShireGaze);
 }
 
 function PlayerShire::onDamage(%this, %obj, %delta)
