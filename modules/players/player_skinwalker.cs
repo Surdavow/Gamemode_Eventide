@@ -133,10 +133,7 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 					%this.killerMelee(%obj, 4);
 				}				
 
-		case 4: if(%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule))
-				{
-					%this.monsterTransform(%obj, false);
-				}				
+		case 4: %this.Transform(%obj);
 	}
 }
 
@@ -146,31 +143,47 @@ function PlayerSkinwalker::onPeggFootstep(%this,%obj)
 	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
 
-function PlayerSkinwalker::monsterTransform(%this,%obj,%bool,%count)
+function PlayerSkinwalker::Transform(%this,%obj,%bool,%count)
 {
-    if(!isObject(%obj)) return;
+	// Check if the player is dead, has enough energy, or is already transforming before continuing
+    if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getEnergyLevel() < %this.maxEnergy || isEventPending(%obj.Transformschedule)) 
+	{
+		return;
+	}	
 
+	// Check if the player has a victim, if they do, they can't transform
+	if(isObject(%obj.victim))
+	{
+		return;
+	}
+
+	// Transform the player
     if(%count <= 10)
     {
-        if(!%obj.changeaudio) 
+        // To prevent the audio from playing multiple times
+		if(%count == 1)
         {
-            %obj.playaudio(3,"skinwalker_change_sound");
-            %obj.changeaudio = true;
+            %obj.playaudio(3,"skinwalker_change_sound");            
         }
 
         %obj.playthread(0,"plant");
-        %obj.monsterTransformschedule = %this.schedule(100,monsterTransform,%obj,%bool,%count+1);
+        %obj.Transformschedule = %this.schedule(100,Transform,%obj,%bool,%count+1);
     }
     else 
-    {
-        switch(%bool)
-        {
-            case true: %obj.setdatablock("PlayerSkinwalker");
-            case false: %obj.setdatablock("EventidePlayer");
-						if(isObject(%obj.light)) %obj.light.delete();                        
-        }
-		
-        %obj.changeaudio = false;
+    {		
+		if(isObject(%obj.light)) 
+		{
+			%obj.light.delete();
+		}		
+
+		if(%obj.getDataBlock() !$= %this)
+		{
+			%obj.setdatablock("PlayerSkinwalker");
+		}
+		else
+		{
+			%obj.setdatablock("EventidePlayer");
+		}	        
     }
 }
 
@@ -189,6 +202,7 @@ function PlayerSkinWalker::onKillerHit(%this,%obj,%hit)
 			%hit.client.setControlObject(%hit.client.camera);
 			%hit.client.camera.setMode("Corpse",%hit);
 		}
+
 		%obj.victim = %hit;
 		%obj.victimreplicatedclient = %hit.client;																
 		%obj.playthread(1,"eat");
@@ -217,8 +231,7 @@ package Eventide_Skinwalker
 		if(!%obj.isSkinwalker)
 		{
 			Parent::addItem(%player, %image, %client);
-		}
-		
+		}		
     }
 };
 
