@@ -316,6 +316,12 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
     // The victim is being chased, this condition does some actions
 	if(%isActiveChase)
     {
+		// Start the tunnel vision effect
+		if(isObject(%obj.client) && !%obj.tunnelvision)
+		{
+			%this.TunnelVision(%obj,true);
+		}
+
         if(%victimDistance < %searchDistance/2.5)
         {
 			// Play a thread to have them talk, but it makes it look like they're nervous when the killer is near
@@ -383,7 +389,13 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
             // Handle stepping down victim's music
             if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%victim.client))
             {
-                if(%victim.chaseLevel != 1)
+				// Clear the tunnel vision effect
+				if(%obj.tunnelvision)
+				{
+					%this.TunnelVision(%obj,false);
+				}
+				
+				if(%victim.chaseLevel != 1)
                 {
                     %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
                 }
@@ -525,14 +537,14 @@ function Armor::onKillerLoop(%this, %obj)
 		%this.killerGUI(%obj, %obj.client);
 	}
 
-    if(%obj.getDataBlock().isKiller)
-    {	
-		// Handle killer container search
+    // Handle killer container search and idle actions
+	if(%obj.getDataBlock().isKiller)
+    {			
 		%this.killerContainerRadiusSearch(%obj);
 		%this.playKillerLoopActions(%obj);
     }
 
-	// Schedule next loop, preventing duplication
+	// Schedule next loop, prevent double scheduling by cancelling the previous loop schedule
     cancel(%obj.onKillerLoop);
     %obj.onKillerLoop = %this.schedule(500, onKillerLoop, %obj);
 }
@@ -569,11 +581,6 @@ function GameConnection::SetChaseMusic(%client, %songname, %ischasing)
     };
     MissionCleanup.add(%client.EventidemusicEmitter);
 	adjustObjectScopeToAll(%client.EventidemusicEmitter, false, %client);
-		
-	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer" && !%client.player.tunnelvision)
-	{
-		%client.player.getdataBlock().TunnelVision(%client.player,%ischasing);
-	}	
 }
 
 function GameConnection::PlaySkullFrames(%client,%frame)
@@ -610,12 +617,6 @@ function GameConnection::StopChaseMusic(%client)
 	// Handle survivor conditions
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")
 	{
-		// Reset tunnelvision
-		if(%client.player.tunnelvision)
-		{
-			%client.player.getdataBlock().TunnelVision(%client.player,false);
-		}		
-
 		//Face system functionality. Make the victim return to calm facial expressions when they are no longer being chased.
 		if(isObject(%client.player.faceConfig) && %client.player.faceConfig.subCategory $= "Scared")
 		{

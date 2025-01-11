@@ -220,6 +220,73 @@ function EventidePlayer::resetStamina(%this,%obj)
 	%this.tunnelVision(%obj,false);
 }
 
+function EventidePlayer::Shove(%this,%obj)
+{
+	if(!isObject(%obj) || %obj.getState() $= "Dead") return;
+
+	%triggerTime = getSimTime();
+
+	if (%triggerTime - %obj.staminaTime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
+	{
+		%obj.staminaCount = 0;
+		%obj.staminaTime = 0;
+	}
+
+	if (%obj.staminaTime < %triggerTime && %obj.getEnergyLevel() >= %this.maxEnergy/4)//Shoving
+	{
+		%obj.setEnergyLevel(%obj.getEnergyLevel()-20);
+		%obj.staminaCount++;
+		%obj.staminaTime = (%triggerTime+400)+(40*%obj.staminaCount);
+		%soundpitch = getRandom(50,125);
+
+		if (%obj.staminaCount >= 5)
+		{
+			cancel(%obj.resetStamina);
+			%soundpitch = getRandom(50,80);
+			%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+
+			if (%obj.staminaCount == 5)
+			{							
+				%this.tunnelVision(%obj,true);
+				%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
+			}								
+		}
+		
+		%obj.playthread(2,"activate2");
+		$oldTimescale = getTimescale();
+		setTimescale((%soundpitch*0.01) * $oldTimescale);
+		serverPlay3D("melee_swing" @ getRandom(1,2) @ "_sound",%obj.getHackPosition());
+		setTimescale($oldTimescale);
+		
+		%pos = %obj.getEyePoint();
+		%radius = 0.25;
+		%eyeVec = %obj.getEyeVector();
+		%mask = $TypeMasks::PlayerObjectType;
+
+		initContainerRadiusSearch(%pos,%radius,%mask);
+		while (%hit = containerSearchNext())
+		{
+			%obscure = containerRayCast(%obj.getEyePoint(),%hit.getHackPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
+			%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%obj.getHackPosition())));
+
+			if (%hit == %obj || isObject(%obscure) || %dot < 0.5) continue;
+			if (%hit.getState() $= "Dead") continue;
+
+			serverPlay3D("melee_shove_sound",%hit.getHackPosition());
+			%hit.playThread(2,"jump");
+			
+			if (!%obj.shoveForce) %obj.shoveForce = 1;
+			%shoveForce = %obj.shoveForce;
+			if(%hit.getDatablock().getName() $= "PuppetMasterPuppet") %shoveforce = 2.5;
+
+			%exhausted = (%obj.staminaCount >= 5) ? 2 : 1;
+			%forwardimpulse = (((%obj.survivorclass $= "fighter") ? 950 : 800) / %exhausted) * %shoveForce;
+			%zimpulse = (((%obj.survivorclass $= "fighter") ? 325 : 200) / %exhausted) * %shoveForce;
+			%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),%forwardimpulse),"0 0 " @ %zimpulse));
+		}												
+	}
+}
+
 function EventidePlayer::onTrigger(%this, %obj, %trig, %press) 
 {
 	Parent::onTrigger(%this, %obj, %trig, %press);
@@ -248,76 +315,12 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 						%obj.setTempSpeed();
 					}
 
-			case 4: if (%obj.isSkinwalker)
+			case 4: %this.Shove(%obj);
+
+					if (%obj.isSkinwalker)
 					{
-						if (%obj.getEnergyLevel() >= %this.maxEnergy && !isObject(%obj.victim) && !isEventPending(%obj.monsterTransformschedule))
-						PlayerSkinwalker.monsterTransform(%obj,true);
-					}		
-					else
-					{
-						%triggerTime = getSimTime();
-
-						if (%triggerTime - %obj.staminaTime > 3500)//Reset the delay if the player waits long enough, 3.5 seconds
-                    	{
-                        	%obj.staminaCount = 0;
-	                        %obj.staminaTime = 0;
-						}
-
-						if (%obj.staminaTime < %triggerTime && %obj.getEnergyLevel() >= %this.maxEnergy/4)//Shoving
-						{
-							%obj.setEnergyLevel(%obj.getEnergyLevel()-20);
-							%obj.staminaCount++;
-							%obj.staminaTime = (%triggerTime+400)+(40*%obj.staminaCount);
-							%soundpitch = getRandom(50,125);
-
-							if (%obj.staminaCount >= 5)
-							{
-								cancel(%obj.resetStamina);
-								%soundpitch = getRandom(50,80);
-								%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
-
-								if (%obj.staminaCount == 5)
-								{							
-									%this.tunnelVision(%obj,true);
-									%obj.resetStamina = %this.schedule(4000,resetStamina,%obj);
-								}								
-							}
-							
-							%obj.playthread(2,"activate2");
-							$oldTimescale = getTimescale();
-							setTimescale((%soundpitch*0.01) * $oldTimescale);
-							serverPlay3D("melee_swing" @ getRandom(1,2) @ "_sound",%obj.getHackPosition());
-							setTimescale($oldTimescale);
-							
-							%pos = %obj.getEyePoint();
-							%radius = 0.25;
-							%eyeVec = %obj.getEyeVector();
-							%mask = $TypeMasks::PlayerObjectType;
-
-							initContainerRadiusSearch(%pos,%radius,%mask);
-							while (%hit = containerSearchNext())
-							{
-								%obscure = containerRayCast(%obj.getEyePoint(),%hit.getHackPosition(),$TypeMasks::InteriorObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::FxBrickObjectType, %obj);
-								%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%obj.getHackPosition())));
-		
-								if (%hit == %obj || isObject(%obscure) || %dot < 0.5) continue;
-								if (%hit.getState() $= "Dead") continue;
-
-								serverPlay3D("melee_shove_sound",%hit.getHackPosition());
-								%hit.playThread(2,"jump");
-								
-								if (!%obj.shoveForce) %obj.shoveForce = 1;
-								%shoveForce = %obj.shoveForce;
-								if(%hit.getDatablock().getName() $= "PuppetMasterPuppet") %shoveforce = 2.5;
-
-								%exhausted = (%obj.staminaCount >= 5) ? 2 : 1;
-								%forwardimpulse = (((%obj.survivorclass $= "fighter") ? 950 : 800) / %exhausted) * %shoveForce;
-								%zimpulse = (((%obj.survivorclass $= "fighter") ? 325 : 200) / %exhausted) * %shoveForce;
-								%hit.applyimpulse(%hit.getPosition(),VectorAdd(VectorScale(%obj.getEyeVector(),%forwardimpulse),"0 0 " @ %zimpulse));
-							}												
-						}
-					
-					}
+						PlayerSkinwalker.Transform(%obj);
+					}					
 		}
 	}
 	else if (isObject(%obj.isSaving)) %this.reviveDowned(%obj,%obj.isSaving,false);
@@ -820,7 +823,13 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	if (isObject(%obj.client))
 	{
 		%funcclient = (isObject(%obj.ghostclient)) ? %obj.ghostclient : %obj.client;
-		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);	
+		commandToClient(%funcclient, 'SetVignette', $EnvGuiServer::VignetteMultiply, $EnvGuiServer::VignetteColor);
+
+		// Clear the tunnel vision effect
+		if(%obj.tunnelvision)
+		{
+			EventidePlayer.TunnelVision(%obj,false);
+		}
 		
 		if (isObject(%minigame = getMinigamefromObject(%obj)))
 		{			
@@ -829,7 +838,10 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			// Varying conditions on how the player was killed, do not return on either condition if the player is already marked for death
 			if (%obj.markedforRenderDeath || %obj.shireZombify)
 			{
-				if (%obj.markedforRenderDeath) %minigame.playSound("render_kill_sound");
+				if (%obj.markedforRenderDeath) 
+				{
+					%minigame.playSound("render_kill_sound");
+				}
 	
 				if (%obj.shireZombify)
 				{
