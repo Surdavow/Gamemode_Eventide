@@ -315,7 +315,7 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 						%obj.setTempSpeed();
 					}
 
-			case 4: %this.shove(%obj);
+			case 4: %this.Shove(%obj);
 
 					if (%obj.isSkinwalker)
 					{
