@@ -348,7 +348,8 @@ function PlayerCaptain::onRoundEnd(%this, %obj, %won)
 //Torque jank!!!!
 function Player::crouchDiveCorrectionLoop(%obj)
 {
-    if(!%obj.isJetting || !%obj.isCrouching)
+    %playerDatablock = %obj.getDataBlock();
+    if(!%obj.isJetting || !%obj.isCrouching || %obj.getEnergyLevel() < %playerDatablock.minJetEnergy)
     {
         return;
     }
@@ -360,7 +361,7 @@ function Player::crouchDiveCorrectionLoop(%obj)
     //%forwardDeltaPerMillisecond = 0.02030721092224121;
     %verticalDistancePerTick = (%verticalDeltaPerMillisecond * %tickRate);
 
-    %xyReduction = VectorScale(VectorNormalize(%currentVelocity), %obj.getDataBlock().maxForwardCrouchSpeed);
+    %xyReduction = VectorScale(VectorNormalize(%currentVelocity), %playerDatablock.maxForwardCrouchSpeed);
     %zInverse = mAbs(%verticalDeltaPerMillisecond);
 
     %newVelocity = getWords(%xyReduction, 0, 1) SPC %zInverse;
