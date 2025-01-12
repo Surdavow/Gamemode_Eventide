@@ -123,23 +123,6 @@ function PlayerSkullWolf::disappear(%this,%obj,%alpha)
 	%obj.disappearsched = %this.schedule(25, disappear, %obj, %alpha);	
 }
 
-function PlayerSkullWolf::eatVictim(%this,%obj,%victim)
-{
-	if(!isObject(%obj) || !isObject(%victim) || %obj.getState() $= "Dead")
-	return;
-	
-	%victim.mountimage("sm_stunimage",2);
-	%obj.mountobject(%victim,9);
-	%obj.playthread(1,"eat");
-	%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);		
-
-	%obj.schedule(700,spawnExplosion,"goryExplosionProjectile",%obj.getScale());
-	%obj.schedule(700,playthread,3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
-	%obj.playaudio(0,"skullwolf_chase" @ getRandom(1,%this.killerchasesoundamount) @ "_sound");
-	%victim.schedule(695,kill);
-	%victim.schedule(705,delete);
-}
-
 function PlayerSkullWolf::onPeggFootstep(%this,%obj)
 {
 	if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.isSlow)
@@ -263,8 +246,17 @@ function PlayerSkullWolf::onKillerHit(%this,%obj,%hit)
 {
 	if(%hit.getDamagePercent() > 0.25 && %hit.getdataBlock().isDowned)
 	{
-		%this.eatVictim(%obj,%hit);
+		%victim.mountimage("sm_stunimage",2);
+		%obj.mountobject(%victim,9);
+		%obj.playthread(1,"eat");
+		%obj.setEnergyLevel(%obj.getEnergyLevel()+%this.maxEnergy/6);		
+
+		%obj.schedule(700,spawnExplosion,"goryExplosionProjectile",%obj.getScale());
+		%obj.schedule(700,playthread,3,"skullwolf_hit" @ getRandom(1,3) @ "_sound");
+		%obj.playaudio(0,"skullwolf_chase" @ getRandom(1,%this.killerchasesoundamount) @ "_sound");
+		%victim.schedule(695,kill);
+		%victim.schedule(705,delete);
 		return false;
 	}
-	else return true;
+	return true;
 }
