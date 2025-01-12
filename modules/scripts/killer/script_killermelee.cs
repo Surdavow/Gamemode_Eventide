@@ -5,11 +5,74 @@ function Armor::killerMelee(%this,%obj,%radius)
 		return;
 	}
 		
-	%obj.lastMeleeTime = getSimTime();
-	%meleeAnim = (%this.shapeFile $= EventideplayerDts.baseShape) ? getRandom(1,4) : getRandom(1,2);
+	%obj.lastMeleeTime = getSimTime();	
 	%hackPos = %obj.getHackPosition();
 	%obj.setEnergyLevel(%obj.getEnergyLevel()-%this.maxEnergy/6);	
-	%obj.playthread(2,"melee" @ %meleeAnim);							
+								
+	killerMelee_playActions(%this,%obj);
+
+	initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
+	while(%hit = containerSearchNext())
+	{
+		if(!killerMelee_checkHitConditions(%this,%obj,%hit,%radius)) 
+		{
+			continue;
+		}		
+
+		if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))								
+		{
+			if(!%this.onKillerHit(%obj,%hit) || %hit.getdataBlock().isDowned) 
+			{
+				continue;
+			}
+			
+			killerMelee_playHitActions(%this,%obj,%hit);
+		}			
+	}	
+}
+
+function Armor::onKillerHit(%this,%obj,%hit)
+{
+	//Hello world
+}
+
+function killerMelee_checkHitConditions(%this,%obj,%hit,%radius)
+{
+
+	if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius || %hit.stunned) 
+	{
+		return false;
+	}
+
+	%typemasks = $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
+	%obscure = containerRayCast(%obj.getEyePoint(),%hit.getHackPosition(),%typemasks, %obj);
+	%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%hackPos)));				
+
+	if(isObject(%obscure) && %this.hitobscureprojectile !$= "")
+	{								
+		%c = new Projectile()
+		{
+			dataBlock = %this.hitobscureprojectile;
+			initialPosition = posfromraycast(%obscure);
+			sourceObject = %obj;
+			client = %obj.client;
+		};
+		
+		MissionCleanup.add(%c);
+		%c.explode();
+		return false;
+	}
+
+	if(%dot < 0.4)
+	{
+		return false;
+	}
+}
+
+function killerMelee_playActions(%this,%obj)
+{
+	%hackPos = %obj.getHackPosition();
+	%meleeAnim = (%this.shapeFile $= EventideplayerDts.baseShape) ? getRandom(1,4) : getRandom(1,2);	
 
 	if(%this.meleetrailskin !$= "") 
 	{
@@ -25,78 +88,37 @@ function Armor::killerMelee(%this,%obj,%radius)
 	if(%this.killerWeaponSound !$= "") 
 	{
 		serverPlay3D(%this.killerWeaponSound @ getRandom(1,%this.killerWeaponSoundamount) @ "_sound",%hackPos);
-	}	
+	}
 
-	initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
-	while(%hit = containerSearchNext())
-	{
-		if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius || %hit.stunned) 
-		{
-			continue;
-		}
-
-		%typemasks = $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
-		%obscure = containerRayCast(%obj.getEyePoint(),%hit.getHackPosition(),%typemasks, %obj);
-		%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%obj.getHackPosition())));				
-
-		if(isObject(%obscure) && %this.hitobscureprojectile !$= "")
-		{								
-			%c = new Projectile()
-			{
-				dataBlock = %this.hitobscureprojectile;
-				initialPosition = posfromraycast(%obscure);
-				sourceObject = %obj;
-				client = %obj.client;
-			};
-			
-			MissionCleanup.add(%c);
-			%c.explode();
-			return;
-		}
-
-		if(%dot < 0.4)
-		{
-			continue;
-		}
-
-		if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))								
-		{
-			if(%this.onKillerHit(%obj,%hit) || %hit.getdataBlock().isDowned) 
-			{
-				continue;
-			}
-			
-			if(%this.killerMeleehitsound !$= "")
-			{
-				%obj.stopaudio(3);
-				%obj.playaudio(3,%this.killerMeleehitsound @ getRandom(1,%this.killerMeleehitsoundamount) @ "_sound");		
-			}
-
-			if(%this.hitprojectile !$= "")
-			{
-				%effect = new Projectile()
-				{
-					dataBlock = %this.hitprojectile;
-					initialPosition = %hit.getHackPosition();
-					initialVelocity = vectorNormalize(vectorSub(%hit.getHackPosition(), %obj.getEyePoint()));
-					scale = %obj.getScale();
-					sourceObject = %obj;
-				};
-				
-				MissionCleanup.add(%effect);
-				%effect.explode();
-			}
-			
-			%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
-			%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);					
-			
-			%obj.setTempSpeed(0.3);	
-			%obj.schedule(2500,setTempSpeed,1);
-		}			
-	}	
+	%obj.playthread(2,"melee" @ %meleeAnim);
 }
 
-function Armor::onKillerHit(%this,%obj,%hit)
+function killerMelee_playHitActions(%this,%obj,%hit)
 {
-	//Hello world
+	if(%this.killerMeleehitsound !$= "")
+	{
+		%obj.stopaudio(3);
+		%obj.playaudio(3,%this.killerMeleehitsound @ getRandom(1,%this.killerMeleehitsoundamount) @ "_sound");		
+	}
+
+	if(%this.hitprojectile !$= "")
+	{
+		%effect = new Projectile()
+		{
+			dataBlock = %this.hitprojectile;
+			initialPosition = %hit.getHackPosition();
+			initialVelocity = vectorNormalize(vectorSub(%hit.getHackPosition(), %obj.getEyePoint()));
+			scale = %obj.getScale();
+			sourceObject = %obj;
+		};
+		
+		MissionCleanup.add(%effect);
+		%effect.explode();
+	}
+	
+	%hit.setvelocity(vectorscale(VectorNormalize(vectorAdd(%obj.getForwardVector(),"0" SPC "0" SPC "0.15")),15));								
+	%hit.damage(%obj, %hit.getHackPosition(), 50*getWord(%obj.getScale(),2), $DamageType::Default);					
+	
+	%obj.setTempSpeed(0.3);	
+	%obj.schedule(2500,setTempSpeed,1);
 }
