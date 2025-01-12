@@ -2,7 +2,7 @@ package Eventide_LocalChat
 {
     function ServerCmdStartTalking(%client)
 	{
-		// This exposes who is talking, so it would be better to disable it when the minigame starts to keep it anonymous
+		// Prevent players being exposed when talking in local chat
         if ($MinigameLocalChat)
         {
             return;
@@ -20,6 +20,13 @@ package Eventide_LocalChat
 		if (!$MinigameLocalChat)
         {
             return Parent::ServerCmdMessageSent(%client, %message);
+        }
+
+        // PortEvalPlus support
+        %allow = %client.canEval || ($Pref::Server::ChatEval::SuperAdmin && %client.isSuperAdmin && %client.canEval !$= "0");
+		if (%allow && getSubStr(%text, 0, 1) $= "\\")
+        {
+            returnb Parent::serverCmdMessageSent(%client, %message);
         }
 		
         // Process the message then forward it to the main chat system
@@ -243,7 +250,6 @@ function ChatMod_LocalChat(%client, %message)
         {
             continue;
         }
-
 
         // Set up the server title for the prefix, if the player has one
         %color = (%tempclient.customtitlecolor $= "") ? "FFFFFF" : %tempclient.customtitlecolor;

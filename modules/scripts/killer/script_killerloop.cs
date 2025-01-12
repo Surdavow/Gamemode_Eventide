@@ -2,7 +2,7 @@
 function Armor::onKillerLoop(%this, %obj)
 {
     // Skip if invalid state
-    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj)))
+    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj)))
 	{
 		return;
 	}
