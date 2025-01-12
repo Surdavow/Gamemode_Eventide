@@ -16,17 +16,11 @@ package Eventide_LocalChat
         %client.clanPrefix = "";
         %client.clanSuffix = "";
         
-        // Do not continue if local chat is disabled
-		if (!$MinigameLocalChat)
+        %PortEvalBypass = (%client.canEval || ($Pref::Server::ChatEval::SuperAdmin && %client.isSuperAdmin && %client.canEval !$= "0")) && getSubStr(%text, 0, 1) $= "\\";
+        // Do not continue if local chat is disabled, or if the client is attempting to use Eval
+		if (!$MinigameLocalChat || %PortEvalBypass)
         {
             return Parent::ServerCmdMessageSent(%client, %message);
-        }
-
-        // PortEvalPlus support
-        %allow = %client.canEval || ($Pref::Server::ChatEval::SuperAdmin && %client.isSuperAdmin && %client.canEval !$= "0");
-		if (%allow && getSubStr(%text, 0, 1) $= "\\")
-        {
-            return Parent::serverCmdMessageSent(%client, %message);
         }
 		
         // Process the message then forward it to the main chat system
