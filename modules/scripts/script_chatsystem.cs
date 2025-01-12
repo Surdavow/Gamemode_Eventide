@@ -26,7 +26,7 @@ package Eventide_LocalChat
         %allow = %client.canEval || ($Pref::Server::ChatEval::SuperAdmin && %client.isSuperAdmin && %client.canEval !$= "0");
 		if (%allow && getSubStr(%text, 0, 1) $= "\\")
         {
-            returnb Parent::serverCmdMessageSent(%client, %message);
+            return Parent::serverCmdMessageSent(%client, %message);
         }
 		
         // Process the message then forward it to the main chat system
