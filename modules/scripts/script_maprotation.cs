@@ -128,7 +128,7 @@ function Eventide_loadNextMap()
 		%brickownership = 2;
 	}
 	
-	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", %brickownership, 0);
+	scheduleNoQuota(5000, 0, serverDirectSaveFileLoad, %fileName, 3, "", %brickownership, 0);
 
 	// Load the environment zones, if there is one
 	%zonefilename = strreplace(fileName(%fileName), ".bls", "");
