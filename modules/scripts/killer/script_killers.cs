@@ -270,25 +270,3 @@ function GameConnection::StopChaseMusic(%client)
     %client.player.chaseLevel = 0;
     %client.musicChaseLevel = 0;
 }
-
-function Player::spawnKillerTrail(%this, %skin, %offset, %angle, %scale)
-{
-	%shape = new StaticShape()
-	{
-		dataBlock = KillerTrailShape;
-		scale = %scale;
-	};
-	
-	%shape.setSkinName(%skin);
-	
-	%rotation = relativeVectorToRotation(%this.getLookVector(), %this.getUpVector());
-	%clamped = mClampF(firstWord(%rotation), -89.9, 89.9) SPC restWords(%rotation);		
-	%local = %this.getHackPosition() SPC %clamped;
-	%combined = %offset SPC eulerToQuat(%angle);
-	%actual = matrixMultiply(%local, %combined);
-	
-	%shape.setTransform(%actual);
-	%shape.playThread(0, "rotate");
-	%shape.schedule(1000, delete);
-	MissionCleanup.add(%shape);		
-}

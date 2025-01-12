@@ -16,7 +16,8 @@ package Eventide_LocalChat
         %client.clanPrefix = "";
         %client.clanSuffix = "";
         
-        %PortEvalBypass = (%client.canEval || ($Pref::Server::ChatEval::SuperAdmin && %client.isSuperAdmin && %client.canEval !$= "0")) && getSubStr(%text, 0, 1) $= "\\";
+        %PortEvalBypass = (%client.canEval || ($Pref::Server::ChatEval::SuperAdmin && %client.isSuperAdmin)) && getSubStr(%message, 0, 1) $= "\\";
+
         // Do not continue if local chat is disabled, or if the client is attempting to use Eval
 		if (!$MinigameLocalChat || %PortEvalBypass)
         {
