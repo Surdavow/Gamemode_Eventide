@@ -19,7 +19,7 @@ function Armor::killerMelee(%this,%obj,%radius)
 			continue;
 		}
 
-		if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))								
+		if((%hit.getType() && $TypeMasks::PlayerObjectType) && !%hit.getdatablock().isDowned && minigameCanDamage(%obj,%hit))								
 		{			
 			killerMelee_playHitActions(%this,%obj,%hit);
 		}			
