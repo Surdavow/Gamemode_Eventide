@@ -95,10 +95,10 @@ package Eventide_Player
 			}
 		}
 
-        if (isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
+        if (isObject(%obj.client))
 		{
-			%client.EventidemusicEmitter.delete();        
-        	%client.musicChaseLevel = 0;		
+			// Remove the Eventide music emitter if it exists and reset the music level
+			%obj.client.StopChaseMusic();
 		}
     }
 
