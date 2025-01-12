@@ -95,3 +95,8 @@ function Armor::killerMelee(%this,%obj,%radius)
 		}			
 	}	
 }
+
+function Armor::onKillerHit(%this,%obj,%hit)
+{
+	//Hello world
+}

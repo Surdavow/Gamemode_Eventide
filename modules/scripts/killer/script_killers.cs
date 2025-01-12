@@ -160,12 +160,6 @@ function Armor::onKillerChaseEnd(%this, %obj)
 	//Hello, World!
 }
 
-
-function Armor::onKillerHit(%this,%obj,%hit)
-{
-	//Hello world
-}
-
 function Armor::onIncapacitateVictim(%this, %obj, %victim, %killed)
 {
 	//Hello, World!
