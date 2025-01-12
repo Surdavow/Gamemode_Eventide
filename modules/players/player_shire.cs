@@ -174,7 +174,7 @@ function PlayerShire::onKillerChaseEnd(%this, %obj)
 function PlayerShire::onIncapacitateVictim(%this, %obj, %victim, %killed)
 {
     parent::onIncapacitateVictim(%this, %obj, %victim, %killed);
-	
+
 	//Play a voice-line taunting the victim.
     %soundType = %this.killertauntsound;
     %soundAmount = %this.killertauntsoundamount;
@@ -292,6 +292,19 @@ function PlayerShire::onNewDatablock(%this, %obj)
 	%obj.ShireGaze();
 }
 
+function PlayerShire::onRemove(%this, %obj)
+{
+    if(isObject(%obj.incapsAchieved))
+    {
+        %obj.incapsAchieved.delete();
+    }
+    if(isObject(%obj.threatsReceived))
+    {
+        %obj.threatsReceived.delete();
+    }
+    parent::onRemove(%this, %obj);
+}
+
 function PlayerShire::EventideAppearance(%this,%obj,%client)
 {
 	%obj.hideNode("ALL");	
@@ -331,7 +344,6 @@ function Player::ShireGaze(%obj)
         return;
     }
 
-    %foundTrackingTarget = false;
     %currentPosition = %obj.getPosition();
     %maximumDistance = $EnvGuiServer::VisibleDistance;
 
@@ -389,7 +401,7 @@ function Player::ShireGaze(%obj)
 		}
 
 		//They have an item equipped and it's a weapon, have Shire react to it.
-		if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage"))
+		if(%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage")
 		{
 			%soundType = %killerDatablock.killerthreatenedsound;
 			%soundAmount = %killerDatablock.killerthreatenedsoundamount;
