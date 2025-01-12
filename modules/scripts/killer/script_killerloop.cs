@@ -105,9 +105,9 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
             if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%victim.client))
             {
 				// Clear the tunnel vision effect
-				if(%obj.tunnelvision)
+				if(%victim.tunnelvision)
 				{
-					%this.TunnelVision(%obj,false);
+					%this.TunnelVision(%victim,false);
 				}
 				
 				if(%victim.chaseLevel != 1)
