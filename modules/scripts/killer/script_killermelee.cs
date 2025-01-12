@@ -19,10 +19,10 @@ function Armor::killerMelee(%this,%obj,%radius)
 			continue;
 		}
 
-		if((%hit.getType() && $TypeMasks::PlayerObjectType) && !%hit.getdatablock().isDowned && minigameCanDamage(%obj,%hit))								
-		{			
+		if(%obj.getdatablock().onKillerHit(%obj,%hit))
+		{
 			killerMelee_playHitActions(%this,%obj,%hit);
-		}			
+		}		
 	}	
 }
 
@@ -34,7 +34,7 @@ function Armor::onKillerHit(%this,%obj,%hit)
 function killerMelee_checkHitConditions(%this,%obj,%hit,%radius)
 {
 
-	if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius || %hit.stunned) 
+	if(%hit == %obj || %hit == %obj.effectbot || VectorDist(%obj.getPosition(),%hit.getPosition()) > %radius) 
 	{
 		return false;
 	}
@@ -59,7 +59,7 @@ function killerMelee_checkHitConditions(%this,%obj,%hit,%radius)
 		return false;
 	}
 
-	if(%dot < 0.4)
+	if(%dot < 0.4 || !(%hit.getType() & $TypeMasks::PlayerObjectType) || !minigameCanDamage(%obj,%hit))
 	{
 		return false;
 	}
@@ -91,10 +91,11 @@ function killerMelee_playActions(%this,%obj)
 
 function killerMelee_playHitActions(%this,%obj,%hit)
 {
+	if(%hit.getdataBlock().isDowned) return;
+	
 	if(%this.killerMeleehitsound !$= "")
 	{
-		%obj.stopaudio(3);
-		%obj.playaudio(3,%this.killerMeleehitsound @ getRandom(1,%this.killerMeleehitsoundamount) @ "_sound");		
+		serverPlay3D(%this.killerMeleehitsound @ getRandom(1,%this.killerMeleehitsoundamount) @ "_sound",%hit.getHackPosition());
 	}
 
 	if(%this.hitprojectile !$= "")

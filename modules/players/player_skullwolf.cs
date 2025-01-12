@@ -266,5 +266,5 @@ function PlayerSkullWolf::onKillerHit(%this,%obj,%hit)
 		%this.eatVictim(%obj,%hit);
 		return false;
 	}
-	return true;
+	else return true;
 }

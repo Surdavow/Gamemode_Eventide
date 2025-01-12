@@ -48,7 +48,7 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
                 %dot = vectorDot(%victim.getEyeVector(), %viewNormal);
 
                 // Handle panic sounds when victim sees killer
-                if((%dot > 0.45) && %victim.lastChaseCall < getSimTime())
+                if((%dot > 0.45) && %victim.lastChaseCall < getSimTime() && $Pref::Server::Eventide::victimScreamsEnabled)
                 {
                     %genderSound = (!%victim.client.chest) ? "male" : "female";
                     %genderSoundAmount = (!%victim.client.chest) ? 3 : 5;

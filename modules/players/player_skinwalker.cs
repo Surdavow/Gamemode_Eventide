@@ -88,7 +88,15 @@ function PlayerSkinwalker::killerGUI(%this,%obj,%client)
 		%leftclickicon = "<just:left><bitmap:" @ $iconspath @ %leftclickstatus @ %this.leftclickspecialicon @ ">";
 	}
 
-	%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
+	
+	if(%obj.getDataBlock() $= %this)
+	{
+		%client.bottomprint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
+	}
+	else 
+	{
+		%client.bottomprint(%rightclicktext @ "<br>" @ %rightclickicon, 1);
+	}
 }
 
 function PlayerSkinwalker::onNewDatablock(%this,%obj)
@@ -144,12 +152,12 @@ function PlayerSkinwalker::onPeggFootstep(%this,%obj)
 }
 
 function PlayerSkinwalker::Transform(%this,%obj,%bool,%count)
-{
+{	
 	// Check if the player is dead, has enough energy, or is already transforming before continuing
-    if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getEnergyLevel() < %this.maxEnergy || isEventPending(%obj.Transformschedule)) 
+    if(!isObject(%obj) || %obj.getState() $= "Dead" || %obj.getEnergyLevel() != %obj.getDataBlock().maxEnergy || isEventPending(%obj.Transformschedule)) 
 	{
 		return;
-	}	
+	}
 
 	// Check if the player has a victim, if they do, they can't transform
 	if(isObject(%obj.victim))
@@ -189,45 +197,41 @@ function PlayerSkinwalker::Transform(%this,%obj,%bool,%count)
 
 function PlayerSkinWalker::onKillerHit(%this,%obj,%hit)
 {
-	if(isObject(%obj.victim) || !%hit.getdataBlock().isDowned)
+	if(isObject(%obj.victim) || !%hit.getdataBlock().isDowned || %hit.getDamagePercent() < 0.05)
 	{
 		return true;
 	}
 	
-	if(%hit.getDamagePercent() > 0.05)
+	if(isObject(%hit.client)) 
 	{
-		if(isObject(%hit.client)) 
-		{
-			%obj.stunned = true;
-			%hit.client.setControlObject(%hit.client.camera);
-			%hit.client.camera.setMode("Corpse",%hit);
-		}
-
-		%obj.victim = %hit;
-		%obj.victimreplicatedclient = %hit.client;																
-		%obj.playthread(1,"eat");
-		%obj.playthread(2,"talk");
-		%obj.playaudio(1,"skinwalker_grab_sound");
-		%obj.mountobject(%hit,6);
-		%hit.schedule(2250,kill);
-		%hit.setarmthread("activate2");
-		%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
-		%hit.schedule(2295,kill);        
-		%hit.schedule(2300,delete);        
-		%obj.schedule(2250,playthread,1,"root");
-		%obj.schedule(2250,playthread,2,"root");
-		%obj.schedule(2250,setField,victim,0);
-		%this.schedule(2250,EventideAppearance,%obj,%obj.client);
-		return false;
+		%obj.stunned = true;
+		%hit.client.setControlObject(%hit.client.camera);
+		%hit.client.camera.setMode("Corpse",%hit);
 	}
-	return true;
+
+	%obj.victim = %hit;
+	%obj.victimreplicatedclient = %hit.client;																
+	%obj.playthread(1,"eat");
+	%obj.playthread(2,"talk");
+	%obj.playaudio(1,"skinwalker_grab_sound");
+	%obj.mountobject(%hit,6);
+	%hit.schedule(2250,kill);
+	%hit.setarmthread("activate2");
+	%hit.schedule(2250,spawnExplosion,"goryExplosionProjectile",%hit.getScale()); 
+	%hit.schedule(2295,kill);        
+	%hit.schedule(2300,delete);        
+	%obj.schedule(2250,playthread,1,"root");
+	%obj.schedule(2250,playthread,2,"root");
+	%obj.schedule(2250,setField,victim,0);
+	%this.schedule(2250,EventideAppearance,%obj,%obj.client);
+	return false;
 }
 
 package Eventide_Skinwalker
 {
 	function Player::addItem(%player, %image, %client)
 	{
-		// Check if the player is not a skinwalker, only then can they pick up items
+		//Skinwalkers should not be able to pick up items
 		if(!%obj.isSkinwalker)
 		{
 			Parent::addItem(%player, %image, %client);
