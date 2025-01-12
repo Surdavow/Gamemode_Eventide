@@ -120,7 +120,7 @@ function Eventide_loadNextMap()
 	if(isObject(findLocalClient()))
 	{
 		findLocalClient().brickGroup.chaindeleteall();
-		%brickownership = 1;
+		%brickownership = 0;
 	}
 	else 
 	{
