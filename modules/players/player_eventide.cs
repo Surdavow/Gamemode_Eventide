@@ -398,8 +398,15 @@ function EventidePlayer::EventideAppearance(%this,%obj,%client)
 	}
 
 	//Hats
-	if (%tempclient.hat)
+	%hat = $HatMod::save::wornHat[%tempclient.bl_id];
+	if(isHat(%hat))
 	{
+		//Hatmod support.
+		%obj.mountHat(%hat);
+	}
+	else if (%tempclient.hat)
+	{
+		//Put on any default hats they may be wearing.
 		%hatName = $hat[%tempclient.hat];
 		%tempclient.hatString = %hatName;
 		

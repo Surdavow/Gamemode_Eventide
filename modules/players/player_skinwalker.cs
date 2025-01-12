@@ -1,3 +1,7 @@
+//
+// Playertype data.
+//
+
 datablock TSShapeConstructor(SkinwalkerDTS)
 {
     baseShape  = "./models/skinwalker.dts";
@@ -67,6 +71,10 @@ datablock PlayerData(PlayerSkinwalker : PlayerStandardArmor)
 	crouchBoundingBox = "4.5 4.5 3.6";
 };
 
+//
+// GUI.
+//
+
 function PlayerSkinwalker::killerGUI(%this,%obj,%client)
 {	
 	%energylevel = %obj.getEnergyLevel();
@@ -99,6 +107,10 @@ function PlayerSkinwalker::killerGUI(%this,%obj,%client)
 	}
 }
 
+//
+// Appearance and initialization.
+//
+
 function PlayerSkinwalker::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
@@ -128,7 +140,25 @@ function PlayerSkinwalker::EventideAppearance(%this,%obj,%client)
 	%obj.setNodeColor("rhand",%clientappearance.rhandColor);
 	%obj.setNodeColor("rshoe",%clientappearance.rlegColor);
 	%obj.setNodeColor("lshoe",%clientappearance.llegColor);
+
+	//HatMod support. Remove their hat, if they have one.
+	//We need to avoid any calls to applyCharacterPrefs here, or we will cause an infinite loop.
+	%hat = $HatMod::save::wornHat[%clientappearance.bl_id];
+	if(isHat(%hat))
+	{
+		%obj.unmountImage(2);
+	}
 }
+
+function PlayerSkinwalker::onPeggFootstep(%this,%obj)
+{
+	serverplay3d("skinwalker_walking" @ getRandom(1,5) @ "_sound", %obj.getHackPosition());
+	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
+}
+
+//
+// Transformation.
+//
 
 function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press) 
 {		
@@ -143,12 +173,6 @@ function PlayerSkinwalker::onTrigger(%this, %obj, %trig, %press)
 
 		case 4: %this.Transform(%obj);
 	}
-}
-
-function PlayerSkinwalker::onPeggFootstep(%this,%obj)
-{
-	serverplay3d("skinwalker_walking" @ getRandom(1,5) @ "_sound", %obj.getHackPosition());
-	%obj.spawnExplosion("Eventide_footstepShakeProjectile", 0.5 + (getRandom() / 2));
 }
 
 function PlayerSkinwalker::Transform(%this,%obj,%bool,%count)
@@ -195,6 +219,10 @@ function PlayerSkinwalker::Transform(%this,%obj,%bool,%count)
     }
 }
 
+//
+// Melee.
+//
+
 function PlayerSkinWalker::onKillerHit(%this,%obj,%hit)
 {
 	if(isObject(%obj.victim) || !%hit.getdataBlock().isDowned || %hit.getDamagePercent() < 0.05)
@@ -227,6 +255,10 @@ function PlayerSkinWalker::onKillerHit(%this,%obj,%hit)
 	return false;
 }
 
+//
+// Packages.
+//
+
 package Eventide_Skinwalker
 {
 	function Player::addItem(%player, %image, %client)
@@ -239,5 +271,29 @@ package Eventide_Skinwalker
     }
 };
 
-if(isPackage("Eventide_Skinwalker")) deactivatePackage("Eventide_Skinwalker");
+if(isPackage("Eventide_Skinwalker")) 
+{
+	deactivatePackage("Eventide_Skinwalker");
+}
 activatePackage("Eventide_Skinwalker");
+
+//
+// Hatmod package.
+//
+
+package Eventide_Skinwalker_Hatmod
+{
+	function serverCmdHat(%client, %na, %nb, %nc, %nd, %ne)
+	{
+		%player = %client.player;
+		if(isObject(%player) && %player.getDataBlock().isKiller)
+		{
+			return;
+		}
+		parent::serverCmdHat(%client, %na, %nb, %nc, %nd, %ne);
+	}
+};
+if(isFunction(serverCmdHat)) //Is HatMod enabled?
+{
+	activatePackage(Eventide_Skinwalker_Hatmod);
+}
