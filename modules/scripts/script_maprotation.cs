@@ -117,9 +117,9 @@ function Eventide_loadNextMap()
 	}
 
 	// Clear all of the public bricks and load the save file
-	if(isObject(findLocalClient()))
+	if(isObject(BrickGroup_230349))
 	{
-		findLocalClient().brickGroup.chaindeleteall();
+		BrickGroup_230349.chaindeleteall();
 		%brickownership = 0;
 	}
 	else 
