@@ -13,19 +13,14 @@ function Armor::killerMelee(%this,%obj,%radius)
 
 	initContainerRadiusSearch(%obj.getMuzzlePoint(0), %radius, $TypeMasks::PlayerObjectType);		
 	while(%hit = containerSearchNext())
-	{
+	{			
 		if(!killerMelee_checkHitConditions(%this,%obj,%hit,%radius)) 
 		{
 			continue;
-		}		
+		}
 
 		if((%hit.getType() && $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%hit))								
-		{
-			if(!%this.onKillerHit(%obj,%hit) || %hit.getdataBlock().isDowned) 
-			{
-				continue;
-			}
-			
+		{			
 			killerMelee_playHitActions(%this,%obj,%hit);
 		}			
 	}	
@@ -44,6 +39,7 @@ function killerMelee_checkHitConditions(%this,%obj,%hit,%radius)
 		return false;
 	}
 
+	%hackPos = %obj.getHackPosition();
 	%typemasks = $TypeMasks::VehicleObjectType | $TypeMasks::FxBrickObjectType;
 	%obscure = containerRayCast(%obj.getEyePoint(),%hit.getHackPosition(),%typemasks, %obj);
 	%dot = vectorDot(%obj.getEyeVector(),vectorNormalize(vectorSub(%hit.getHackPosition(),%hackPos)));				
