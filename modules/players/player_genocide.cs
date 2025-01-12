@@ -65,11 +65,18 @@ datablock PlayerData(PlayerGenocide : PlayerRenowned)
 	maxBackwardSpeed = 4.2;
 	maxSideSpeed = 6.3;
 	jumpForce = 0;
+
+    gazeTickRate = 50;
 };
 
 function PlayerGenocide::onTrigger(%this, %obj, %trig, %press) 
 {		
-	PlayerCannibal::onTrigger(%this, %obj, %trig, %press);
+	Parent::onTrigger(%this, %obj, %trig, %press);
+		
+	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
+	{
+		%this.killerMelee(%obj,4);
+	}
 }
 
 function PlayerGenocide::onNewDatablock(%this,%obj)
@@ -77,6 +84,22 @@ function PlayerGenocide::onNewDatablock(%this,%obj)
 	Parent::onNewDatablock(%this,%obj);
 	%obj.mountImage("shovelImage",1);
 	%obj.setScale("1 1 1");
+
+    %obj.gazeTickRate = %this.gazeTickRate;
+    %obj.GenocideGaze();
+}
+
+function PlayerGenocide::onRemove(%this, %obj)
+{
+    if(isObject(%obj.incapsAchieved))
+    {
+        %obj.incapsAchieved.delete();
+    }
+    if(isObject(%obj.threatsReceived))
+    {
+        %obj.threatsReceived.delete();
+    }
+    parent::onRemove(%this, %obj);
 }
 
 function PlayerGenocide::EventideAppearance(%this,%obj,%client)
@@ -151,9 +174,9 @@ function PlayerGenocide::onKillerChaseStart(%this, %obj, %chasing)
 
 function PlayerGenocide::onKillerChase(%this, %obj, %chasing)
 {
-	if(!%chasing && !%obj.isInvisible)
+	if(!%chasing)
     {
-        //A victim is nearby but Sky Captain can't see them yet. Say some quips.
+        //A victim is nearby but Postal Dude can't see them yet. Say some quips.
         %soundType = %this.killernearsound;
         %soundAmount = %this.killernearsoundamount;
         if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + getRandom(15000, 25000))))
@@ -166,8 +189,8 @@ function PlayerGenocide::onKillerChase(%this, %obj, %chasing)
 
 function PlayerGenocide::onKillerChaseEnd(%this, %obj)
 {
-	//If Sky Captain doesn't get any kills during a chase, play a voice line marking his dismay.
-    if(%obj.incapsAchieved.getCount() == 0 && !%obj.isInvisible)
+	//If Postal Dude doesn't get any kills during a chase, play a voice line marking his dismay.
+    if(%obj.incapsAchieved.getCount() == 0)
     {
         %soundType = %this.killerlostvictimsound;
         %soundAmount = %this.killerlostvictimsoundamount;
@@ -184,7 +207,6 @@ function PlayerGenocide::onKillerChaseEnd(%this, %obj)
 
 function PlayerGenocide::onExitStun(%this, %obj)
 {
-    //"You DARE..."
 	%soundType = %this.killerattackedsound;
     %soundAmount = %this.killerattackedsoundamount;
     if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
@@ -196,7 +218,6 @@ function PlayerGenocide::onExitStun(%this, %obj)
 
 function PlayerGenocide::onAllRitualsPlaced(%this, %obj)
 {
-    //"Will NOTHING stop you!?"
     %soundType = %this.killerdesperatesound;
     %soundAmount = %this.killerdesperatesoundamount;
     if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
@@ -208,7 +229,12 @@ function PlayerGenocide::onAllRitualsPlaced(%this, %obj)
 
 function PlayerGenocide::onRoundEnd(%this, %obj, %won)
 {
-    //Plays a taunt if Sky Captain wins, or despair if he loses.
+    //Plays a taunt if Postal Dude wins, or despair if he loses.
+    if(%won)
+    {
+        return;
+    }
+
     %soundType = %won ? %this.killerwinsound : %this.killerlosesound;
     %soundAmount = %won ? %this.killerwinsoundamount : %this.killerlosesoundamount;
     if(%soundType !$= "")
@@ -228,9 +254,30 @@ function PlayerGenocide::onIncapacitateVictim(%this, %obj, %victim, %killed)
         %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
         %obj.lastKillerSoundTime = getSimTime();
     }
+
+    //Mark the kill on a temporary SimSet. Used for a voice-line mechanic in `onKillerChaseEnd`.
+    if(!isObject(%obj.incapsAchieved))
+    {
+        %obj.incapsAchieved = new SimSet();
+    }
+    if(isObject(%victim.client))
+    {
+        %obj.incapsAchieved.add(%victim.client);
+    }
+    else
+    {
+        //Add in a dummy object for holebot support.
+        %obj.incapsAchieved.add(
+            new ScriptObject() 
+            {
+                player = %victim;
+                name = %victim.getClassName();
+            }
+        );
+    }
 }
 
-function Player::GenocideGaze(%this, %obj)
+function Player::GenocideGaze(%obj)
 {
     if(!isObject(%obj) || %obj.isDisabled())
     {
@@ -239,14 +286,13 @@ function Player::GenocideGaze(%this, %obj)
 
     %currentPosition = %obj.getPosition();
     %maximumDistance = $EnvGuiServer::VisibleDistance;
-    %mask = $TypeMasks::PlayerObjectType;
 
-    initContainerRadiusSearch(%currentPosition, %maximumDistance, %mask);
+    initContainerRadiusSearch(%currentPosition, %maximumDistance, $TypeMasks::PlayerObjectType);
     while(%foundPlayer = ContainerSearchNext())
     {
-        %killerPosition = %obj.getHackPosition();
+        %killerPosition = %obj.getEyePoint();
         %killerDatablock = %obj.getDataBlock();
-        %victimPosition = %foundPlayer.getHackPosition();
+        %victimPosition = %foundPlayer.getEyePoint();
         %victimDatablock = %foundPlayer.getDataBlock();
         %obstructions = ($TypeMasks::FxBrickObjectType | $TypeMasks::TerrainObjectType | $TypeMasks::StaticShapeObjectType);
 
@@ -260,45 +306,57 @@ function Player::GenocideGaze(%this, %obj)
             //Victim is downed, skip.
             continue;
         }
-        else if(isObject(getWord(ContainerRayCast(%victimPosition, %killerPosition, %obstructions), 0)))
+        else if(ContainerRayCast(%victimPosition, %killerPosition, %obstructions))
         {
             //The killer and victim are phyiscally blocked, skip.
             continue;
         }
-        else if(%obj.isChasing && %foundPlayer.chaseLevel == 2)
+        else if(!%obj.isChasing || %foundPlayer.chaseLevel != 2)
         {
-            //Nowhere better to put this: if the player has a weapon, have Sky Captain play a voice line acknowledging it.
-            %alreadyThreatenedKiller = false;
-            for(%i = 0; %i < %obj.threatsReceived.getCount(); %i++)
-            {
-                if(%obj.threatsReceived.getObject(%i).getId() == %foundPlayer.getId())
-                {
-                    %alreadyThreatenedKiller = true;
-                    break;
-                }
-            }
-            if(%alreadyThreatenedKiller)
-            {
-                //They already threatened us, skip playing any more voice lines.
-                continue;
-            }
+			//The victim is not being chased, they are irrelevant here. Skip.
+			continue;
+		}
 
-            %victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
-            if(isObject(%victimEquippedItem) && (%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage"))
-            {
-                //"You think that will help you!?"
-                %soundType = %killerDatablock.killerthreatenedsound;
-                %soundAmount = %killerDatablock.killerthreatenedsoundamount;
-                if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
-                {
-                    %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
-                    %obj.lastKillerSoundTime = getSimTime();
-                    %obj.threatsReceived.add(%foundPlayer); //Ensure Sky Captain does not acknowledge any further weapons. Less annoying.
-                }
-            }
-            continue;
-        }
+		//The victim does not have any items equipped, don't bother with this.
+		%victimEquippedItem = %foundPlayer.getMountedImage($RightHandSlot);
+		if(!%victimEquippedItem)
+		{
+			continue;
+		}
+
+		//Nowhere better to put this: if the player has a weapon, have Shire play a voice line acknowledging it.
+		%alreadyThreatenedKiller = false;
+		for(%i = 0; %i < %obj.threatsReceived.getCount(); %i++)
+		{
+			if(%obj.threatsReceived.getObject(%i).getId() == %foundPlayer.getId())
+			{
+				%alreadyThreatenedKiller = true;
+				break;
+			}
+		}
+		if(%alreadyThreatenedKiller)
+		{
+			//They already threatened us, skip playing any more voice lines.
+			continue;
+		}
+
+		//They have an item equipped and it's a weapon, have Postal Dude react to it.
+		if(%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage")
+		{
+			%soundType = %killerDatablock.killerthreatenedsound;
+			%soundAmount = %killerDatablock.killerthreatenedsoundamount;
+			if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+			{
+				%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+				%obj.lastKillerSoundTime = getSimTime();
+				%obj.threatsReceived.add(%foundPlayer); //Ensure Postal Dude does not acknowledge any further weapons. Less annoying.
+			}
+		}
+
+		continue;
 	}
+
+    %obj.schedule(%obj.gazeTickRate, GenocideGaze);
 }
 
 function PlayerGenocide::onDamage(%this, %obj, %delta)
