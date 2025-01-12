@@ -152,7 +152,9 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 {
 	// Early return if object is invalid or already disappearing
 	if (!isObject(%obj) || isEventPending(%obj.disappearsched)) 
-	return;
+	{
+		return;
+	}
 
 	// Initial reappearance
 	if (%alpha == 0) 
@@ -177,14 +179,19 @@ function PlayerSkullWolf::reappear(%this,%obj,%alpha)
 		
 		for(%i = 0; %i < %obj.getMountedObjectCount(); %i++)
 		{
-			%mounted = %obj.getMountedObject(%i);
-			if(isObject(%mounted)) %mounted.unhideNode("ALL");
+			if(isObject(%obj.getMountedObject(%i))) 
+			{
+				%obj.getMountedObject(%i).unhideNode("ALL");
+			}
 		}
 
 		// Create light effect if it doesn't exist
 		if(!isObject(%obj.light))
 		{
-			%obj.light = new fxLight("") { dataBlock = %obj.getDataBlock().killerlight; };
+			%obj.light = new fxLight("") 
+			{
+				dataBlock = %obj.getDataBlock().killerlight; 
+			};
 
 			MissionCleanup.add(%obj.light);
 			%obj.light.setTransform(%obj.getTransform());
@@ -202,14 +209,16 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 {
 	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
 
-	if(%bool) switch(%triggerNum)
+	if(%bool)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) 
+		switch(%triggerNum)
+		{
+			case 0: if(%obj.getEnergyLevel() >= 25) 
 				{
 					%this.killerMelee(%obj,4.5);
 				}
 					
-		case 4: if(!%obj.isInvisible)
+			case 4: if(!%obj.isInvisible)
 				{		
 					if(%obj.getEnergyLevel() == %this.maxEnergy && !isEventPending(%obj.disappearsched)) 
 					%this.disappear(%obj,1);
@@ -221,13 +230,17 @@ function PlayerSkullWolf::onTrigger(%this,%obj,%triggerNum,%bool)
 					cancel(%obj.reappearsched);
 					%this.reappear(%obj,0);
 				}
+		}		
 	}	
 
 }
 
 function PlayerSkullWolf::EventideAppearance(%this,%obj,%client)
 {
-	if (!isObject(%obj)) return;
+	if (!isObject(%obj)) 
+	{
+		return;
+	}
 	
 	%furcolor = "0.05 0.05 0.05 1";
 	%obj.startFade(0, 0, true);
