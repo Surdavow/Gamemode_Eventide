@@ -116,11 +116,19 @@ function Eventide_loadNextMap()
 		}
 	}
 
-	// Clear all of the public bricks
-	BrickGroup_888888.chaindeleteall();
-
-	// Load the save file
-	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", 2, 0);
+	// Clear all of the public bricks and load the save file
+	if(isObject(findLocalClient()))
+	{
+		findLocalClient().brickGroup.chaindeleteall();
+		%brickownership = 1;
+	}
+	else 
+	{
+		BrickGroup_888888.chaindeleteall();	
+		%brickownership = 2;
+	}
+	
+	scheduleNoQuota(33, 0, serverDirectSaveFileLoad, %fileName, 3, "", %brickownership, 0);
 
 	// Load the environment zones, if there is one
 	%zonefilename = strreplace(fileName(%fileName), ".bls", "");
