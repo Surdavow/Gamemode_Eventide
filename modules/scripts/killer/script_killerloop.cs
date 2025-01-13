@@ -2,7 +2,7 @@
 function Armor::onKillerLoop(%this, %obj)
 {
     // Skip if invalid state
-    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(%minigame = getMinigamefromObject(%obj)))
+    if (!isObject(%obj) || %obj.getState() $= "Dead" || !isObject(getMinigamefromObject(%obj)))
 	{
 		return;
 	}
@@ -48,7 +48,7 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
                 %dot = vectorDot(%victim.getEyeVector(), %viewNormal);
 
                 // Handle panic sounds when victim sees killer
-                if((%dot > 0.45) && %victim.lastChaseCall < getSimTime())
+                if((%dot > 0.45) && %victim.lastChaseCall < getSimTime() && $Pref::Server::Eventide::victimScreamsEnabled)
                 {
                     %genderSound = (!%victim.client.chest) ? "male" : "female";
                     %genderSoundAmount = (!%victim.client.chest) ? 3 : 5;
@@ -105,9 +105,9 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
             if($Pref::Server::Eventide::chaseMusicEnabled && isObject(%victim.client))
             {
 				// Clear the tunnel vision effect
-				if(%obj.tunnelvision)
+				if(%victim.tunnelvision)
 				{
-					%this.TunnelVision(%obj,false);
+					%this.TunnelVision(%victim,false);
 				}
 				
 				if(%victim.chaseLevel != 1)

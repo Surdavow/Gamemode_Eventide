@@ -10,12 +10,6 @@ datablock PlayerData(EventidePlayer : PlayerStandardArmor)
 	shapeFile = EventideplayerDts.baseShape;
 	uiName = "Eventide Player";
 
-	// To be used for a skinwalker mimick
-	rightclickicon = "color_skinwalker_reveal";
-	leftclickicon = "color_melee";
-	rightclickspecialicon = "";
-	leftclickspecialicon = "color_consume";	
-
 	uniformCompatible = true;
 	isEventideModel = true;
 	showEnergyBar = false;
@@ -58,25 +52,6 @@ datablock PlayerData(EventidePlayerDowned : EventidePlayer)
 	isDowned = true;
 	uiName = "";
 };
-
-function EventidePlayer::killerGUI(%this,%obj,%client)
-{	
-	if (!isobject(%obj) || %obj.getState() $= "Dead" || !isObject(%client) || !%obj.isSkinwalker)
-	{
-		return;
-	}
-
-	// Some dynamic varirables	
-	%rightclickstatus = (%obj.getEnergyLevel() == %this.maxEnergy) ? "hi" : "lo";
-	%leftclicktext = (%this.leftclickicon !$= "") ? "<just:left>\c6Left click" : "";
-	%rightclicktext = (%this.rightclickicon !$= "") ? "<just:right>\c6Right click" : "";
-
-	// Regular icons
-	%leftclickicon = (%this.leftclickicon !$= "") ? "<just:left><bitmap:" @ $iconspath @ "locolor_melee>" : "";
-	%rightclickicon = (%this.rightclickicon !$= "") ? "<just:right><bitmap:" @ $iconspath @ %rightclickstatus @ %This.rightclickicon @ ">" : "";
-
-	%client.bottomPrint(%leftclicktext @ %rightclicktext @ "<br>" @ %leftclickicon @ %rightclickicon, 1);
-}
 
 function EventidePlayer::pulsingScreen(%this,%obj)
 {
@@ -315,12 +290,14 @@ function EventidePlayer::onTrigger(%this, %obj, %trig, %press)
 						%obj.setTempSpeed();
 					}
 
-			case 4: %this.Shove(%obj);
-
-					if (%obj.isSkinwalker)
+			case 4: if (%obj.isSkinwalker)
 					{
-						PlayerSkinwalker.Transform(%obj);
-					}					
+						return PlayerSkinwalker.Transform(%obj);
+					}
+					else
+					{
+						%this.Shove(%obj);
+					}
 		}
 	}
 	else if (isObject(%obj.isSaving)) %this.reviveDowned(%obj,%obj.isSaving,false);
@@ -764,7 +741,7 @@ function EventidePlayerDowned::DownLoop(%this,%obj)
 		%obj.setDamageFlash(%pulse);
 
 		// Scream every 5-10 seconds
-		if (%obj.lastDownCall+getRandom(5000,10000) < getSimTime())
+		if ($Pref::Server::Eventide::victimScreamsEnabled && %obj.lastDownCall+getRandom(5000,10000) < getSimTime())
 		{
 			%obj.lastDownCall = getSimTime();			
 

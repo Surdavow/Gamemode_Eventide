@@ -64,11 +64,7 @@ package Eventide_Minigame
 			%client.escaped = false;
 			
 			// Remove the Eventide music emitter if it exists and reset the music level
-			if (isObject(%client.EventidemusicEmitter))
-			{
-				%client.EventidemusicEmitter.delete();
-				%client.musicChaseLevel = 0;
-			}
+			%client.StopChaseMusic();
 		}
 
 		// Play the round start sound and announce the minigame

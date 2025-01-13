@@ -95,10 +95,10 @@ package Eventide_Player
 			}
 		}
 
-        if (isObject(%client = %obj.client) && isObject(%client.EventidemusicEmitter))
+        if (isObject(%obj.client))
 		{
-			%client.EventidemusicEmitter.delete();        
-        	%client.musicChaseLevel = 0;		
+			// Remove the Eventide music emitter if it exists and reset the music level
+			%obj.client.StopChaseMusic();
 		}
     }
 
@@ -119,47 +119,16 @@ package Eventide_Player
 	{
 		Parent::ActivateStuff(%player);
 		
-		if (isObject(%player) && %player.getState() !$= "Dead" && isFunction(%player.getDataBlock().getName(),onActivate)) 
+		if (%player.getState() !$= "Dead" && isFunction(%player.getDataBlock().getName(),onActivate)) 
 		{
 			%player.getDataBlock().onActivate(%player);
-		}
-		
+		}		
 	}
 };
 
 // In case the package is already activated, deactivate it first before reactivating it
 if (isPackage(Eventide_Player)) deactivatePackage(Eventide_Player);
 activatePackage(Eventide_Player);
-
-function Player::SetSpeedModifier(%obj,%a)
-{
-	%obj.Speed_Modifier = (%obj.Speed_Modifier $= "") ? 1 : %obj.Speed_Modifier;
-
-	if (!%a) 
-	{
-		return;	
-	}
-
-	%prev = %obj.Speed_Modifier;
-	%curr = %obj.Speed_Modifier = %a;
-	%mod = (1 / %prev) * %curr;
-	%obj.setMaxForwardSpeed(%obj.getMaxForwardSpeed() * %mod);
-	%obj.setMaxBackwardSpeed(%obj.getMaxBackwardSpeed() * %mod);
-	%obj.setMaxSideSpeed(%obj.getMaxSideSpeed() * %mod);
-	%obj.setMaxCrouchForwardSpeed(%obj.getMaxCrouchForwardSpeed() * %mod);
-	%obj.setMaxCrouchBackwardSpeed(%obj.getMaxCrouchBackwardSpeed() * %mod);
-	%obj.setMaxCrouchSideSpeed(%obj.getMaxCrouchSideSpeed() * %mod);
-	%obj.setMaxUnderwaterForwardSpeed(%obj.getMaxUnderwaterForwardSpeed() * %mod);
-	%obj.setMaxUnderwaterBackwardSpeed(%obj.getMaxUnderwaterBackwardSpeed() * %mod);
-	%obj.setMaxUnderwaterSideSpeed(%obj.getMaxUnderwaterSideSpeed() * %mod);
-}
-
-function Player::AddMoveSpeedModifier(%obj,%a)
-{
-	%obj.Speed_Modifier = (%obj.Speed_Modifier $= "") ? 1 : %obj.Speed_Modifier;
-
-	%obj.SetSpeedModifier(%obj.Speed_Modifier + %a);
-}
 
 function Player::SetTempSpeed(%obj,%speedMultiplier)
 {
@@ -348,8 +317,14 @@ function Armor::EventideAppearance(%this,%obj,%client)
 registerOutputEvent("GameConnection", "Escape", "", false);
 function GameConnection::Escape(%client)
 {
-	if(!isObject(%minigame = getMinigameFromObject(%client))) return %client.centerprint("This only works in minigames!",1);
-	if(strlwr(%client.slyrTeam.name) !$= "survivors") return %client.centerprint("Only survivors can escape the map!",1);
+	if(!isObject(%minigame = getMinigameFromObject(%client))) 
+	{
+		return %client.centerprint("This only works in minigames!",1);
+	}
+	if(strlwr(%client.slyrTeam.name) !$= "survivors")
+	{
+		return %client.centerprint("Only survivors can escape the map!",1);
+	}
 	
 	%client.escaped = true;
 

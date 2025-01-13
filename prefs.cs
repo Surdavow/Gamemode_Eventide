@@ -5,6 +5,7 @@ if($RTB::Hooks::ServerControl)
 {
 	RTB_registerPref("Enable local chat (minigame only)",	"Eventide","$Pref::Server::ChatMod::lchatEnabled",	"bool","Gamemode_Eventide","1","0","0","");
 	RTB_registerPref("Enable chase music",	"Eventide","$Pref::Server::Eventide::chaseMusicEnabled",	"bool","Gamemode_Eventide","1","0","0","");
+	RTB_registerPref("Enable victim screams",	"Eventide","$Pref::Server::Eventide::victimScreamsEnabled",	"bool","Gamemode_Eventide","1","0","0","");
 	RTB_registerPref("Enable killer sounds",	"Eventide","$Pref::Server::Eventide::killerSoundsEnabled",	"bool","Gamemode_Eventide","1","0","0","");
 	RTB_registerPref("Enabled","Eventide - Map Rotation","$Pref::Server::MapRotation::Enabled","bool","Gamemode_Eventide",false,false,false);
 	RTB_registerPref("Rounds per map","Eventide - Map Rotation","$Pref::Server::MapRotation::minReset","int 1 10","Gamemode_Eventide",5,false,true);	
@@ -23,6 +24,7 @@ if($RTB::Hooks::ServerControl)
 else
 {	
 	if ($Pref::Server::ChatMod::lchatEnabled $= "") $Pref::Server::ChatMod::lchatEnabled = 1;
+	if ($Pref::Server::Eventide::victimScreamsEnabled $= "") $Pref::Server::Eventide::victimScreamsEnabled = 1;
 	if ($Pref::Server::Eventide::chaseMusicEnabled $= "") $Pref::Server::Eventide::chaseMusicEnabled = 1;
 	if ($Pref::Server::Eventide::killerSoundsEnabled $= "") $Pref::Server::Eventide::killerSoundsEnabled = 1;
 	if ($Pref::Server::GazeRange $= "") $Pref::Server::GazeRange = 20;

@@ -43,7 +43,7 @@ if (isFile(%decalfilepath = "./models/decal.ifl"))
     	%prefix = getWord(%decalPrefixes, %i);
     	for (%decalFile = findFirstFile("Add-Ons/Decal_" @ %prefix @ "/*.png"); %decalFile !$= ""; %decalFile = findNextFile("Add-Ons/Decal_" @ %prefix @ "/*.png")) 
 		{
-        	%write.writeLine(%decalFile);
+			if(strstr(strlwr(%decalfile), "/thumbs/") == -1) %write.writeLine(%decalFile);
     	}
 	}
 	

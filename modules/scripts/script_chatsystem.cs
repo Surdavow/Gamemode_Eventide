@@ -2,7 +2,7 @@ package Eventide_LocalChat
 {
     function ServerCmdStartTalking(%client)
 	{
-		// This exposes who is talking, so it would be better to disable it when the minigame starts to keep it anonymous
+		// Prevent players being exposed when talking in local chat
         if ($MinigameLocalChat)
         {
             return;
@@ -10,20 +10,22 @@ package Eventide_LocalChat
 		Parent::ServerCmdStartTalking(%client);
 	}
 
-    function serverCmdMessageSent(%client,%message)
+    function serverCmdMessageSent(%client, %message)
 	{
         // Reset clan prefix and suffix
         %client.clanPrefix = "";
         %client.clanSuffix = "";
         
-        // Do not continue if local chat is disabled
-		if (!$MinigameLocalChat)
+        %PortEvalBypass = (%client.canEval || ($Pref::Server::ChatEval::SuperAdmin && %client.isSuperAdmin)) && getSubStr(%message, 0, 1) $= "\\";
+
+        // Do not continue if local chat is disabled, or if the client is attempting to use Eval
+		if (!$MinigameLocalChat || %PortEvalBypass)
         {
             return Parent::ServerCmdMessageSent(%client, %message);
         }
 		
         // Process the message then forward it to the main chat system
-		%message = ChatMod_processMessage(%client,%message,%client.lastMessageSent);
+		%message = ChatMod_processMessage(%client, %message);
 		if (%message !$= "")
         {
             ChatMod_LocalChat(%client,%message);
@@ -31,7 +33,7 @@ package Eventide_LocalChat
 
         // Update the last message sent and echo the message
 		%client.lastMessageSent = %message;
-		echo(%client.name @ ": " @ getSubStr(%message, 0, strlen(%message)));		
+		echo (%client.getSimpleName (), ": ", %message);	
 	}
 
 	function ServerCmdTeamMessageSent(%client, %message)
@@ -77,53 +79,99 @@ activatePackage(Eventide_LocalChat);
 /// Processes a chat message for a client before it is sent to the server
 /// @param client The client who sent the message
 /// @param message The message to be processed
-/// @param lastMessageSent The last message sent by the client
 /// @return The processed message to be sent to the server
-function ChatMod_processMessage(%client, %message, %lastMessageSent) 
+function ChatMod_processMessage(%client, %text) 
 {    
-    // Trim and clean the message
-    %message = trim(stripMLControlChars(%message));
-    if (%message $= "")
-    {
-        return false;
-    }
+    %trimText = trim (%text);
+	if (%client.lastChatText $= %trimText)
+	{
+		%chatDelta = (getSimTime () - %client.lastChatTime) / getTimeScale ();
+		if (%chatDelta < 15000)
+		{
+			%client.spamMessageCount = $SPAM_MESSAGE_THRESHOLD;
+			messageClient (%client, '', '\c5Do not repeat yourself.');
+		}
+	}
+	%client.lastChatTime = getSimTime ();
+	%client.lastChatText = %trimText;
+	%player = %client.Player;
+	if (isObject (%player))
+	{
+		%player.playThread (3, talk);
+		%player.schedule (strlen (%text) * 50, playThread, 3, root);
+	}
+	%text = chatWhiteListFilter (%text);
+	%text = StripMLControlChars (%text);
+	%text = trim (%text);
+	if (strlen (%text) <= 0)
+	{
+		return;
+	}
+	if ($Pref::Server::MaxChatLen > 0)
+	{
+		if (strlen (%text) >= $Pref::Server::MaxChatLen)
+		{
+			%text = getSubStr (%text, 0, $Pref::Server::MaxChatLen);
+		}
+	}
+	%protocol = "http://";
+	%protocolLen = strlen (%protocol);
+	%urlStart = strpos (%text, %protocol);
+	if (%urlStart == -1)
+	{
+		%protocol = "https://";
+		%protocolLen = strlen (%protocol);
+		%urlStart = strpos (%text, %protocol);
+	}
+	if (%urlStart == -1)
+	{
+		%protocol = "ftp://";
+		%protocolLen = strlen (%protocol);
+		%urlStart = strpos (%text, %protocol);
+	}
+	if (%urlStart != -1)
+	{
+		%urlEnd = strpos (%text, " ", %urlStart + 1);
+		%skipProtocol = 0;
+		if (%protocol $= "http://")
+		{
+			%skipProtocol = 1;
+		}
+		if (%urlEnd == -1)
+		{
+			%fullUrl = getSubStr (%text, %urlStart, strlen (%text) - %urlStart);
+			%url = getSubStr (%text, %urlStart + %protocolLen, (strlen (%text) - %urlStart) - %protocolLen);
+		}
+		else 
+		{
+			%fullUrl = getSubStr (%text, %urlStart, %urlEnd - %urlStart);
+			%url = getSubStr (%text, %urlStart + %protocolLen, (%urlEnd - %urlStart) - %protocolLen);
+		}
+		if (strlen (%url) > 0)
+		{
+			%url = strreplace (%url, "<", "");
+			%url = strreplace (%url, ">", "");
+			if (%skipProtocol)
+			{
+				%newText = strreplace (%text, %fullUrl, "<a:" @ %url @ ">" @ %url @ "</a>\c6");
+			}
+			else 
+			{
+				%newText = strreplace (%text, %fullUrl, "<a:" @ %protocol @ %url @ ">" @ %url @ "</a>\c6");
+			}
+			echo (%newText);
+			%text = %newText;
+		}
+	}
+	if ($Pref::Server::ETardFilter)
+	{
+		if (!chatFilter (%client, %text, $Pref::Server::ETardList, '\c5This is a civilized game.  Please use full words.'))
+		{
+			return "";
+		}
+	}
 
-    // Handle spam or duplicate messages
-    if (%message $= %lastMessageSent && !%client.isAdmin) 
-    {
-        messageClient(%client, '', "Do not spam.");
-        return false;
-    }
-
-    // Process URLs and check for restricted words (etard filter)
-    %wordCount = getWordCount(%message);
-
-    for (%i = 0; %i < %wordCount; %i++) 
-    {
-        %word = getWord(%message, %i);
-
-        // Convert URLs to clickable links
-        if (strstr(%word, "://") != -1) 
-        {
-            %message = setWord(%message, %i, "<a:" @ %word @ ">" @ %word @ "</a>");
-        }
-
-        // Check against the restricted word list
-        if ($Pref::Server::ETardFilter) 
-        {
-            for (%j = 0; %j < getWordCount($Pref::Server::ETardList); %j++) 
-            {
-                // Check if the word matches any of the restricted words
-                if (%word $= getWord($Pref::Server::ETardList, %j)) 
-                {                    
-                    messageClient(%client, '', "This is a civilized game. Please use full words.");
-                    return false;
-                }
-            }
-        }
-    }
-
-    return %message;
+    return %text;
 }
 
 /// Shows a chat message as a shape name above the player's head.
@@ -243,7 +291,6 @@ function ChatMod_LocalChat(%client, %message)
         {
             continue;
         }
-
 
         // Set up the server title for the prefix, if the player has one
         %color = (%tempclient.customtitlecolor $= "") ? "FFFFFF" : %tempclient.customtitlecolor;
