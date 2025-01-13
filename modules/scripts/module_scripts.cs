@@ -12,6 +12,7 @@ exec("./support_minigame.cs");
 exec("./support_statuseffect.cs");
 exec("./support_stringutilities.cs");
 exec("./support_vectorutilities.cs");
+exec("./support_texttransfer.cs");
 exec("./support_billboards.cs");
 exec("./billboard_example.cs");
 exec("./script_chatsystem.cs");
