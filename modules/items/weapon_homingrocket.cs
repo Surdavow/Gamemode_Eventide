@@ -51,19 +51,6 @@ function getClosestIntersectionPoint(%viewingPoint, %lineStartPoint, %lineEndPoi
 // Projectile data.
 //
 
-datablock ParticleData(homingRocketTrailParticle : rocketTrailParticle)
-{
-   colors[0]     = "1 1 1 0.4";
-   colors[1]     = "0.8 0 0 0.5";
-   colors[2]     = "0.20 0.20 0.20 0.3";
-   colors[3]     = "0.0 0.0 0.0 0.0";
-   lifetimeMS = 2000;
-};
-datablock ParticleEmitterData(homingRocketTrailEmitterB : rocketTrailEmitter)
-{
-   particles = "homingRocketTrailParticle";
-};
-
 datablock ExplosionData(homingRocketLauncherExplosion : rocketExplosion)
 {
 	impulseRadius = 6;
@@ -72,139 +59,66 @@ datablock ExplosionData(homingRocketLauncherExplosion : rocketExplosion)
 
 datablock ProjectileData(homingRocketLauncherProjectile)
 {
-   projectileShapeName = "Add-Ons/Projectile_GravityRocket/RocketGravityProjectile.dts";
-   directDamage        = 100;
-   directDamageType = $DamageType::RocketDirect;
-   radiusDamageType = $DamageType::RocketRadius;
-	impactImpulse	   = 1000;
-	verticalImpulse	   = 1000;
-   explosion           = homingRocketLauncherExplosion;
-   particleEmitter     = homingRocketTrailEmitterB;
+	projectileShapeName = "Add-Ons/Projectile_GravityRocket/RocketGravityProjectile.dts";
+	directDamage        = 100;
+	directDamageType 	= $DamageType::RocketDirect;
+	radiusDamageType 	= $DamageType::RocketRadius;
+	impactImpulse	   	= 1000;
+	verticalImpulse	   	= 1000;
+	explosion           = homingRocketLauncherExplosion;
+	particleEmitter     = rocketTrailEmitter;
 
-   brickExplosionRadius = 3;
-   brickExplosionImpact = false;          //destroy a brick if we hit it directly?
-   brickExplosionForce  = 30;             
-   brickExplosionMaxVolume = 30;          //max volume of bricks that we can destroy
-   brickExplosionMaxVolumeFloating = 60;  //max volume of bricks that we can destroy if they aren't connected to the ground (should always be >= brickExplosionMaxVolume)
+	brickExplosionRadius = 3;
+	brickExplosionImpact = false;          //destroy a brick if we hit it directly?
+	brickExplosionForce  = 30;             
+	brickExplosionMaxVolume = 30;          //max volume of bricks that we can destroy
+	brickExplosionMaxVolumeFloating = 60;  //max volume of bricks that we can destroy if they aren't connected to the ground (should always be >= brickExplosionMaxVolume)
 
-   sound = "rocket_fly_sound";
+	sound = "rocket_fly_sound";
 
-   muzzleVelocity      = 30; //Was originally 50.
-   velInheritFactor    = 1.0;
+	muzzleVelocity      = 30; //Was originally 50.
+	velInheritFactor    = 1.0;
 
-   armingDelay         = 00;
-   lifetime            = 4000;
-   fadeDelay           = 3500;
-   bounceElasticity    = 0.5;
-   bounceFriction      = 0.20;
-   isBallistic         = false;
-   gravityMod = 0.0;
+	armingDelay         = 00;
+	lifetime            = 4000;
+	fadeDelay           = 3500;
+	bounceElasticity    = 0.5;
+	bounceFriction      = 0.20;
+	isBallistic         = false;
+	gravityMod = 0.0;
 
-   hasLight    = true;
-   lightRadius = 5.0;
-   lightColor  = "1.0 0.1 0.1";
-   
-   doColorShift = true;
-   colorShiftColor = "0.8 0 0";
+	hasLight    = true;
+	lightRadius = 5.0;
+	lightColor  = "1.0 0.1 0.1";
 
-   bounceLimit = 5;
+	doColorShift = true;
+	colorShiftColor = "0.8 0 0";
 
+	bounceLimit = 5;
 };
 
 //
-// Fizzle-out explosion data.
+// Fizzle-out explosion data, dud rocket.
 //
-
-datablock ParticleData(homingRocketFizzleOutParticle)
-{
-	dragCoefficient = 0.0;
-	gravityCoefficient = 1.0;
-	inheritedVelFactor = 0.15;
-	constantAcceleration = 0.0;
-	lifetimeMS = 5000;
-	lifetimeVarianceMS = 200;
-	textureName = "base/data/particles/cloud";
-	spinSpeed = 10;
-	spinRandomMin = -150;
-	useInvAlpha = true;
-
-	colors[0] = "0.3 0.3 0.3 0.6";
-	sizes[0] = 1;
-	times[0] = 0.0;
-};
-
-datablock ParticleEmitterData(homingRocketFizzleOutExplosionEmitter)
-{
-	lifetimeMS = 2000;
-	ejectionPeriodMS = 50;
-	periodVarianceMS = 25;
-	ejectionVelocity = 1.0;
-	velocityVariance = 1.0;
-	ejectionOffset = 0.2;
-	thetaMin = 0;
-	thetaMax = 180;
-
-	phiReferenceVel  = 0;
-	phiVariance = 360;
-	overrideAdvance = false;
-	useEmitterColors = false;
-	orientParticles = false;
-
-	particles = homingRocketFizzleOutParticle;
-};
 
 datablock ExplosionData(homingRocketFizzleOutExplosion)
 {
 	//explosionShape = "";
 	sound = "";
 	lifeTimeMS = 800;
-	particleEmitter = homingRocketFizzleOutExplosionEmitter;
+	particleEmitter = rocketLauncherSmokeEmitter;
 	particleDensity = 40;
-	particleRadius = 2;
+	particleRadius = 0.5;
 	shakeCamera = false;
-};
-
-datablock ProjectileData(homingRocketFizzleOutProjectile)
-{
-   projectileShapeName = "base/data/shapes/empty.dts";
-   explosion           = homingRocketFizzleOutExplosion;
-   particleEmitter     = "";
-   explodeOnDeath = true;
-
-   brickExplosionRadius = 0;
-   brickExplosionImpact = 0;             //destroy a brick if we hit it directly?
-   brickExplosionForce  = 0;             
-   brickExplosionMaxVolume = 0;          //max volume of bricks that we can destroy
-   brickExplosionMaxVolumeFloating = 0;  //max volume of bricks that we can destroy if they aren't connected to the ground (should always be >= brickExplosionMaxVolume)
-
-   collideWithPlayers = false;
-
-   sound = "";
-
-   muzzleVelocity      = 0;
-   velInheritFactor    = 0.0;
-
-   armingDelay         = 0;
-   lifetime            = 30000;
-   fadeDelay           = 29500;
-
-   bounceElasticity    = 0.5;
-   bounceFriction      = 0.20;
-   isBallistic         = true;
-   gravityMod = 1;
-
-   hasLight    = false;
-
-   uiName = ""; 
 };
 
 datablock ProjectileData(homingRocketLauncherDudProjectile)
 {
-	projectileShapeName = "Add-Ons/Projectile_GravityRocket/RocketGravityProjectile.dts";
-	explosion           = "";
+	projectileShapeName = "./models/DudRocketProjectile.dts";
+	explosion           = homingRocketFizzleOutExplosion;
 	bounceExplosion     = "";
 	particleEmitter     = gunSmokeEmitter;
-	explodeOnDeath = true;
+	explodeOnDeath = false;
 
 	brickExplosionRadius = 0;
 	brickExplosionImpact = 0;             //destroy a brick if we hit it directly?
@@ -217,8 +131,8 @@ datablock ProjectileData(homingRocketLauncherDudProjectile)
 	muzzleVelocity      = 65;
 	velInheritFactor    = 1.0;
 
-	armingDelay         = 10000;
-	lifetime            = 10000;
+	armingDelay         = 15000;
+	lifetime            = 15000;
 	fadeDelay           = 9500;
 	bounceElasticity    = 0.5;
 	bounceFriction      = 0.5;
@@ -324,7 +238,7 @@ function Projectile::homingRocketTick(%this)
 		//Spawn a cloud of smoke.
 		%fizzleOutExplosion = new Projectile()
 		{
-			dataBlock = homingRocketFizzleOutProjectile;
+			dataBlock = homingRocketLauncherDudProjectile;
 			initialPosition = %currentPosition;
 			initialVelocity = "0 0 0";
 			sourceObject = %sourceObject;
@@ -752,7 +666,6 @@ function homingRocketLauncherImage::onReady(%this, %obj, %slot)
 	//Inherit ammo from Player object. Happens after a rocket is fired and when the item is equipped.
     %obj.setImageAmmo(%this.mountPoint, mClamp(%obj.SCMissleCount, 0, 999));
 }
-
 
 function homingRocketLauncherImage::onCharge(%this, %obj, %slot)
 {
