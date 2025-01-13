@@ -27,7 +27,4 @@
 - Pickled for Building
 - BoxxedBread for Ability Icons
 - RobbinsonBlock for Coding & Debugging
-- Darksaber2213
-- Trogtor
-- Monoblaster
-- Conan
+- Trogtor for Modeling
