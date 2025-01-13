@@ -33,19 +33,19 @@ function Player::playDistantSound(%player, %audioProfile)
     // Get the millisecond length of the sound file, then divide it against 360 to make that the time needed to complete a rotation around the player.
     %soundFilePath = expandFilename(%audioEmitter.profile.fileName);
     %soundFileExtension = fileExt(%audioEmitter.profile.fileName);
-    if(%soundFileExtension $= ".wav")
+    if(%soundFileExtension $= ".wav" && isFunction(getWavLength))
     {
         //BLPython module function.
         %soundLength = getWavLength(%soundFilePath);
     }
-    else if(%soundFileExtension $= ".ogg")
+    else if(%soundFileExtension $= ".ogg" && isFunction(getOggLength))
     {
         //BLPython module function.
         %soundLength = getOggLength(%soundFilePath);
     }
     else
     {
-        %soundLength = 7000; //Fallback, just say 7 seconds. Maybe too long, maybe too short.
+        %soundLength = 8000; //Fallback, just say 8 seconds. Maybe too long, maybe too short.
     }
     
     %rotationSpeed = 360 / (%soundLength / 1000);
@@ -76,7 +76,7 @@ function Player::playDistantSound(%player, %audioProfile)
 function Player::_distantSoundTick(%player, %dsdo)
 {
     //If there's no data, we can't do this stuff. If the player is deleted, this function is stopped automatically.
-    if(!isObject(%dsdo) || !isObject(%dsdo.audioEmitter))
+    if(!%dsdo || !%player || !%dsdo.audioEmitter)
     {
         return;
     }
@@ -109,45 +109,50 @@ function Player::_distantSoundTick(%player, %dsdo)
 
 function killerPlayDistantSound(%player, %category, %audioProfile, %cooldownAmount)
 {
-    %killer = getCurrentKiller();
-    if(!isObject(%killer))
+    %killers = getCurrentKillers();
+    for(%i = 0; %i < %killers.getCount(); %i++)
     {
-        //No killer, no use.
-        return;
-    }
+        %killer = %killers.getObject(%i).player;
+        if(!isObject(%killer))
+        {
+            //No killer, no use.
+            return;
+        }
 
-    %minimumDistance = 100; //The loudest sounds in Eventide (AudioDefault3d) reach 100 units. So, anything lower than this is not distant.
-    if(VectorDist(%player.getPosition(), %killer.getPosition()) < %minimumDistance)
-    {
-        //Sound source isn't far enough away.
-        return;
-    }
+        %minimumDistance = 100; //The loudest sounds in Eventide (AudioDefault3d) reach 100 units. So, anything lower than this is not distant.
+        if(VectorDist(%player.getPosition(), %killer.getPosition()) < %minimumDistance)
+        {
+            //Sound source isn't far enough away.
+            return;
+        }
 
-    %cooldown = %killer.distantSoundData[%player.getID(), %category, "cooldown"];
-    if(%cooldown > 0 && getSimTime() < %cooldown)
-    {
-        //The sound is under cooldown, don't play it.
-        return;
-    }
+        %cooldown = %killer.distantSoundData[%player.getID(), %category, "cooldown"];
+        if(%cooldown > 0 && getSimTime() < %cooldown)
+        {
+            //The sound is under cooldown, don't play it.
+            return;
+        }
 
-    //Check if the sound is already playing, and stop it first.
-    %previousDsdo = %killer.distantSoundData[%player.getID(), %category];
-    if(isObject(%previousDsdo))
-    {
-        %previousDsdo.audioEmitter.delete();
-        %previousDsdo.delete();
-    }
+        //Check if the sound is already playing, and stop it first.
+        %previousDsdo = %killer.distantSoundData[%player.getID(), %category];
+        if(isObject(%previousDsdo))
+        {
+            %previousDsdo.audioEmitter.delete();
+            %previousDsdo.delete();
+        }
 
-    //Check if a cooldown amount was provided, and if not, set it to 0.
-    if(%cooldownAmount $= "" || %cooldownAmount < 0)
-    {
-        %cooldownAmount = 0;
-    }
+        //Check if a cooldown amount was provided, and if not, set it to 0.
+        if(%cooldownAmount $= "" || %cooldownAmount < 0)
+        {
+            %cooldownAmount = 0;
+        }
 
-    //Finally, play the sound.
-    %dsdo = %killer.playDistantSound(%audioProfile);
-    %killer.distantSoundData[%player.getID(), %category] = %dsdo;
-    %killer.distantSoundData[%player.getID(), %category, "cooldown"] = (getSimTime() + %dsdo.soundLength + %cooldownAmount); 
+        //Finally, play the sound.
+        %dsdo = %killer.playDistantSound(%audioProfile);
+        %soundLength = (%dsdo.soundLength !$= "" ? %dsdo.soundLength : 8000);
+        %killer.distantSoundData[%player.getID(), %category] = %dsdo;
+        %killer.distantSoundData[%player.getID(), %category, "cooldown"] = (getSimTime() + %soundLength + %cooldownAmount); 
+    }
 }
 
 package Eventide_distantSounds
@@ -159,7 +164,10 @@ package Eventide_distantSounds
     {
         parent::onPeggFootstep(%this, %obj);
 
-        %killer = getCurrentKiller();
+        if(%obj.getDataBlock().isKiller)
+        {
+            return;
+        }
 
         //Decide what sound to play.
         //TODO: This is hardcoded and must be changed every time you add a sound.
@@ -190,10 +198,19 @@ package Eventide_distantSounds
             case "snow":
                 %distantSound = "footsteps_grass" @ getRandom(1, 4) @ "_sound";
             default:
+                return;
         }
 
-        if(%obj != %killer)
+        %killers = getCurrentKillers();
+        for(%i = 0; %i < %killers.getCount(); %i++)
         {
+            %killer = %killers.getObject(%i).player;
+            if(!isObject(%killer))
+            {
+                //No killer, no use.
+                return;
+            }
+
             killerPlayDistantSound(%obj, %obj.surface, %distantSound, 15000);
         }
     }
@@ -205,9 +222,8 @@ package Eventide_distantSounds
     function serverCmdMessageSent(%client, %message)
     {
         parent::serverCmdMessageSent(%client, %message);
-        %killer = getCurrentKiller();
         %player = %client.player;
-        if(isObject(%player) && isObject(%killer) && %player != %killer)
+        if(isObject(%player) && !%player.getDataBlock().isKiller)
         {
             %distantSound = (%client.chest ? "female" : "male") @ "_talk" @ getRandom(1, 8);
             killerPlayDistantSound(%player, "voiceTalking", %distantSound, 5000);
@@ -217,9 +233,8 @@ package Eventide_distantSounds
     function ChatMod_RadioMessage(%client, %message, %isTeamMessage)
     {
         Parent::ChatMod_RadioMessage(%client, %message, %isTeamMessage);
-        %killer = getCurrentKiller();
         %player = %client.player;
-        if(isObject(%player) && isObject(%killer) && %player != %killer)
+        if(isObject(%player) && !%player.getDataBlock().isKiller)
         {
             %distantSound = "radio_talk" @ getRandom(1, 16);
             killerPlayDistantSound(%player, "radioTalking", %distantSound, 5000);
@@ -233,6 +248,10 @@ package Eventide_distantSounds
     function ItemData::onPickup(%this, %obj, %user, %amount)
     {
         parent::onPickup(%this, %obj, %user, %amount);
+        if(%user.getDataBlock().isKiller)
+        {
+            return;
+        }
         if(%obj.canPickup && miniGameCanUse(%user, %obj))
         {
             %freeslot = false;
@@ -260,7 +279,7 @@ package Eventide_distantSounds
     function ZombieMedpackImage::onUse(%this, %obj, %slot)
     {
         parent::onUse(%this, %obj, %slot);
-        if(%obj.getDamageLevel() > 1.0)
+        if(!%obj.getDataBlock().isKiller && %obj.getDamageLevel() > 1.0)
         {
             %distantSound = "bandage" @ getRandom(1, 3);
             killerPlayDistantSound(%obj, "bandaging", %distantSound, 5000);
@@ -270,7 +289,7 @@ package Eventide_distantSounds
     function GauzeImage::onUse(%this, %obj, %slot)
     {
         parent::onUse(%this, %obj, %slot);
-        if(%obj.getDamageLevel() > 1.0)
+        if(!%obj.getDataBlock().isKiller && %obj.getDamageLevel() > 1.0)
         {
             %distantSound = "bandage" @ getRandom(1, 3);
             killerPlayDistantSound(%obj, "bandaging", %distantSound, 5000);

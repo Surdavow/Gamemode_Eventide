@@ -797,11 +797,16 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 	%obj.playThread(1, "Death1"); //TODO: Quick-fix for corpses standing up on death. Need to create a systematic way of using animation threads.
 
 	// Let the killer know that a survivor has been killed
-	if (isObject(%killer = getCurrentKiller().client)) 
+	%killers = getCurrentKillers();
+	for(%i = 0; %i < %killers.getCount(); %i++)
 	{
-		%killer.client.PlaySkullFrames();
-		%killer.client.play2D("elimination_sound");
-	}	
+		%currentKillerClient = %killers.getObject(%i);
+		if(isObject(%currentKillerClient))
+		{
+			%currentKillerClient.PlaySkullFrames();
+			%currentKillerClient.play2D("elimination_sound");
+		}
+	}
 
 	// Only do this if the client exists
 	if (isObject(%obj.client))

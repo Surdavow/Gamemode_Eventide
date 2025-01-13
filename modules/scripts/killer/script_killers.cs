@@ -27,7 +27,6 @@ package Eventide_Killers
 	function MiniGameSO::Reset(%obj, %client)
 	{
 		parent::Reset(%obj, %client);
-		$Eventide_currentKiller = "";
 	}
 	
 	function Observer::onTrigger (%this, %obj, %trigger, %state)
@@ -47,7 +46,24 @@ package Eventide_Killers
 		if(%this.isEventideModel)
 		{
 			%this.schedule(33,killerCheck,%obj);
-		}		
+		}
+
+		%client = %obj.client;
+		if(%this.isKiller && isObject(%client))
+		{
+			addCurrentKiller(%client);
+		}
+	}
+
+	function Armor::onRemove(%this, %obj)
+	{
+		Parent::onRemove(%this, %obj);
+
+		%client = %obj.client;
+		if(%this.isKiller && isObject(%client))
+		{
+			removeCurrentKiller(%client);
+		}
 	}
 
 	function Armor::onDisabled(%this, %obj, %state)
@@ -71,9 +87,36 @@ package Eventide_Killers
 if(isPackage(Eventide_Killers)) deactivatePackage(Eventide_Killers);
 activatePackage(Eventide_Killers);
 
-function getCurrentKiller()
+$Eventide_killers = new SimSet();
+
+function addCurrentKiller(%client)
 {
-	return $Eventide_currentKiller;
+	$Eventide_killers.add(%client);
+}
+function getCurrentKillers()
+{
+	return $Eventide_killers;
+}
+function clearCurrentKillers()
+{
+	$Eventide_killers.delete();
+	$Eventide_killers = new SimSet();
+}
+function removeCurrentKiller(%client)
+{
+	%temporarySimset = new SimSet();
+	
+	for(%i = 0; %i < $Eventide_killers.getCount(); %i++)
+	{
+		%killer = $Eventide_killers.getObject(%i);
+		if(%killer.getId() != %client.getId())
+		{
+			%temporarySimset.add(%killer);
+		}
+	}
+
+	$Eventide_killers.delete();
+	$Eventide_killers = %temporarySimset;
 }
 
 /// This function is called every tick on the killer player
@@ -89,7 +132,8 @@ function Armor::killerCheck(%this,%obj)
 	}
 
 	// Update the appearance, only if the client exists
-	if(isObject(%obj.client)) 
+	%clientExists = isObject(%obj.client);
+	if(%clientExists) 
 	{
 		%this.EventideAppearance(%obj,%obj.client);
 	}
@@ -97,7 +141,7 @@ function Armor::killerCheck(%this,%obj)
 	// Handle the killer's light
 	// The killer's light is only visible to the killer itself
 	// If the killer is invisible, the light is not created
-	if(!%obj.isInvisible)
+	if(!%obj.isInvisible && %clientExists)
 	{
 		// If the light does not exist, create it
 		if(!isObject(%obj.light))
@@ -112,20 +156,7 @@ function Armor::killerCheck(%this,%obj)
 		// Attach the light to the player and set a net flag
 		%obj.light.attachToObject(%obj);
 		%obj.light.setNetFlag(6,true);
-		%obj.light.ScopeToClient(%client);
-
-		// Handle scope to client, only the killer should see the light
-		for(%i = 0; %i < clientgroup.getCount(); %i++)
-		{
-			if(isObject(%client = clientgroup.getObject(%i))) 
-			{
-				if(%obj != %client.player) 
-				{					
-					// Clear the scope to client for clients that are not the killer
-					%obj.light.clearScopeToClient(%client);
-				}
-			}
-		}		
+		adjustObjectScopeToAll(%obj.light, false, %obj.client);	//Object, visible?, exceptions.
 		
 		// If the Eventide Minigame Group does not exist, create it
 		if(!isObject(Eventide_MinigameGroup)) 

@@ -158,11 +158,15 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
 				%minigame.playSound("round_start_sound");
 
-				%killer = getCurrentKiller();
-				if(isObject(%killer))
+				%killers = getCurrentKillers();
+				for(%i = 0; %i < %killers.getCount(); %i++)
 				{
-					%killerDataBlock = %killer.getDataBlock();
-					%killerDatablock.onAllRitualsPlaced(%killer);
+					%currentKiller = %killers.getObject(%i).player;
+					if(isObject(%currentKiller))
+					{
+						%killerDataBlock = %killer.getDataBlock();
+						%killerDatablock.onAllRitualsPlaced(%killer);
+					}
 				}
 			}
 

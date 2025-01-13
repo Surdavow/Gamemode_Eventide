@@ -27,19 +27,24 @@ package Eventide_Minigame
 			%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
 		}
 		
-		%killer = getCurrentKiller();
-		%killerTeam = %killer.getTeam();
-		%killerClient = %killer.client;
-		if(isObject(%killer) && isObject(%killerClient))
+		%killers = getCurrentKillers();
+		for(%i = 0; %i < %killers.getCount(); %i++)
 		{
-			%won = (%winner.getClassName() $= "Slayer_TeamSO" && %winner.getId() == %killerTeam.getId()) || (%winner.getClassName() $= "GameConnection" && %winner.getId() == %killerClient.getId());
-			%killerDataBlock = %killer.getDataBlock();
-			%killerDatablock.onRoundEnd(%killer, %won);
+			%killer = %killers.getObject(%i);
+			%killerTeam = %killer.getTeam();
+			if(isObject(%killer.player) && isObject(%killer))
+			{
+				%won = (%winner.getClassName() $= "Slayer_TeamSO" && %winner.getId() == %killerTeam.getId()) || (%winner.getClassName() $= "GameConnection" && %winner.getId() == %killer.getId());
+				%killerDataBlock = %killer.getDataBlock();
+				%killerDatablock.onRoundEnd(%killer, %won);
+			}
 		}
 	}
 
     function MiniGameSO::Reset(%minigame,%client)
 	{
+		//Need to clear this before everyone spawns when the parent is called.
+		clearCurrentKillers();
 		Parent::Reset(%minigame, %client);
 
 		if (isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
