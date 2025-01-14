@@ -38,8 +38,8 @@ datablock PlayerData(PlayerMastermind : PlayerRenowned)
     killerthreatenedsound = "mastermind_threatened";
 	killerthreatenedsoundamount = 3;
 
-    killerdesperatesound = "mastermind_desperate";
-	killerdesperatesoundamount = 3;
+    killerdesperatesound = "";
+	killerdesperatesoundamount = 1;
 
     killerattackedsound = "mastermind_attacked";
 	killerattackedsoundamount = 4;
@@ -59,8 +59,8 @@ datablock PlayerData(PlayerMastermind : PlayerRenowned)
 	rightclickicon = "color_slowmo";
 
 	rechargeRate = 0.3;
-	maxTools = 1;
-	maxWeapons = 1;
+	maxTools = 0;
+	maxWeapons = 0;
 	maxForwardSpeed = 7.35;
 	maxBackwardSpeed = 4.2;
 	maxSideSpeed = 6.3;
@@ -83,7 +83,7 @@ function PlayerMastermind::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.mountImage("meleeKnifeImage",1);
-	%obj.mountImage("overcoatImage",2);
+	%obj.mountImage("overcoatImage",0);
 	%obj.setScale("1 1 1");
 
     %obj.gazeTickRate = %this.gazeTickRate;
