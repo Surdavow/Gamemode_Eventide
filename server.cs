@@ -22,7 +22,7 @@ for(%i = 0; %i < getWordCount(%requiredAddOns); %i++)
         %fatalError = true;
         %errorMessage = %addOn @ " is required for Gamemode_Eventide to work.";
         $Eventide_loadErrors.add(Eventide_storeError(%errorMessage));
-        error(%errorMessage);
+        return error(%errorMessage);
     }
 }
 
@@ -33,19 +33,19 @@ if(!%hasSelectiveGhosting && !%hasBLPython)
 {
     %errorMessage = "Gamemode_Eventide requires Selective Ghosting and BLPython installed in your modules folder.";
     $Eventide_loadErrors.add(Eventide_storeError(%errorMessage));
-    error(%errorMessage);
+    return error(%errorMessage);
 }
 else if(!%hasSelectiveGhosting)
 {
     %errorMessage = "Gamemode_Eventide requires Selective Ghosting installed in your modules folder.";
     $Eventide_loadErrors.add(Eventide_storeError(%errorMessage));
-    error(%errorMessage);
+    return error(%errorMessage);
 }
 else if(!%hasBLPython)
 {
     %errorMessage = "Gamemode_Eventide requires BLPython installed in your modules folder.";
     $Eventide_loadErrors.add(Eventide_storeError(%errorMessage));
-    error(%errorMessage);
+    return error(%errorMessage);
 }
 %dummyClient.delete();
 
