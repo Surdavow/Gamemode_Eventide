@@ -31,19 +31,19 @@ for(%i = 0; %i < getWordCount(%requiredAddOns); %i++)
 %hasBLPython = isFunction(py_reload_module);
 if(!%hasSelectiveGhosting && !%hasBLPython)
 {
-    %errorMessage = "You don't have Selective Ghosting OR BLPython installed. You fool. Stuff will break!";
+    %errorMessage = "Gamemode_Eventide requires Selective Ghosting and BLPython installed in your modules folder.";
     $Eventide_loadErrors.add(Eventide_storeError(%errorMessage));
     error(%errorMessage);
 }
 else if(!%hasSelectiveGhosting)
 {
-    %errorMessage = "You don't have Selective Ghosting installed. You fool. Stuff will break!";
+    %errorMessage = "Gamemode_Eventide requires Selective Ghosting installed in your modules folder.";
     $Eventide_loadErrors.add(Eventide_storeError(%errorMessage));
     error(%errorMessage);
 }
 else if(!%hasBLPython)
 {
-    %errorMessage = "You don't have BLPython installed. You fool. Stuff will break!";
+    %errorMessage = "Gamemode_Eventide requires BLPython installed in your modules folder.";
     $Eventide_loadErrors.add(Eventide_storeError(%errorMessage));
     error(%errorMessage);
 }
