@@ -22,7 +22,7 @@ datablock PlayerData(PlayerShire : PlayerRenowned)
 	killerchasesoundamount = 1;
 	
 	killernearsound = "shire_looking";
-	killernearsoundamount = 9;
+	killernearsoundamount = 8;
 
     killertauntsound = "shire_kill";
     killertauntsoundamount = 2;
@@ -425,7 +425,7 @@ function PlayerShire::onDamage(%this, %obj, %delta)
 
 	if(%obj.getState() !$= "Dead")
 	{
-		%obj.playaudio(0,"shire_pain" @ getRandom(1,4) @ "_sound");
+		%obj.playaudio(0,"shire_pain" @ getRandom(1,5) @ "_sound");
 		%obj.faceConfigShowFace("Pain");
 	}
 }
