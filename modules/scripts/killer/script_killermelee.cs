@@ -28,7 +28,7 @@ function Armor::killerMelee(%this,%obj,%radius)
 
 function Armor::onKillerHit(%this,%obj,%hit)
 {
-	//Hello world
+	return true;
 }
 
 function killerMelee_checkHitConditions(%this,%obj,%hit,%radius)
@@ -63,6 +63,8 @@ function killerMelee_checkHitConditions(%this,%obj,%hit,%radius)
 	{
 		return false;
 	}
+
+	return true;
 }
 
 function killerMelee_playActions(%this,%obj)
