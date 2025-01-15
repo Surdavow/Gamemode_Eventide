@@ -1,4 +1,3 @@
-# Gamemode_Eventide
 # Dead by Daylight Inspired Gamemode for Blockland
 
 ## Required Add-Ons
@@ -17,9 +16,7 @@
 - **BLPython**: https://notabug.org/Robbin/BLpython3
 
 ### Created by:
-- Muna
-
-### Contributions by:
+- Muna, for creating the gamemode
 - Davow for Coding, Modeling & Debugging
 - IAmTheEgg for Concepts & Art
 - noroblo for Building
