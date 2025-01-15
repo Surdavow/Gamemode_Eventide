@@ -1,15 +1,20 @@
 # Gamemode_Eventide
 # Dead by Daylight Inspired Gamemode for Blockland
 
-### Required Add-Ons:
+## Required Add-Ons
 - Support_CustomCDN  
 - Gamemode_Slayer  
 - Event_BrickText  
 - Item_Medical  
-- Brick_Halloween
-- Server_EnvironmentZones
+- Brick_Halloween  
+- Server_EnvironmentZones  
+- Weapon_Rocket_Launcher  
+- Projectile_GravityRocket  
+- Weapon_Gun  
 
----
+## Required modules (DLL)
+- **Selective Ghosting**: https://gitlab.com/Eagle517/selective-ghosting
+- **BLPython**: https://notabug.org/Robbin/BLpython3
 
 ### Created by:
 - Muna
