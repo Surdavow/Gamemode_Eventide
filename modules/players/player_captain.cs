@@ -85,6 +85,7 @@ datablock PlayerData(PlayerCaptain : PlayerRenowned)
 	maxBackwardCrouchSpeed = 5.88;
 	maxSideCrouchSpeed = 5.88;
 
+    nonStealthDamage = 25;
     gazeTickRate = 50;
     gazeMinimumTime = 3000;
     gazeMaximumTime = 6000;
@@ -357,12 +358,14 @@ function Player::crouchDiveCorrectionLoop(%obj)
     %tickRate = 33;
     %currentVelocity = %obj.getVelocity();
 
-    %verticalDeltaPerMillisecond = -0.0183537578583;
-    //%forwardDeltaPerMillisecond = 0.02030721092224121;
-    %verticalDistancePerTick = (%verticalDeltaPerMillisecond * %tickRate);
+    %verticalDeltaPerMillisecond = -0.0183537578583; //%forwardDeltaPerMillisecond = 0.02030721092224121;
+    %normalVerticalVelocityPerMillisecond = 0.01497669219970703; //%verticalDistancePerTick = (%verticalDeltaPerMillisecond * %tickRate);
+    //This formula only nullifies the dive velocity, and does not give Sky Captain normal upward jetting force.
+    //So, we need to give it a numerical boost to get (roughly) of the normal jetting force back.
+    %boost = 3; 
 
     %xyReduction = VectorScale(VectorNormalize(%currentVelocity), %playerDatablock.maxForwardCrouchSpeed);
-    %zInverse = mAbs(%verticalDeltaPerMillisecond);
+    %zInverse = mAbs(%verticalDeltaPerMillisecond) + (%normalVerticalVelocityPerMillisecond * %tickRate) + %boost;
 
     %newVelocity = getWords(%xyReduction, 0, 1) SPC %zInverse;
 
@@ -573,7 +576,7 @@ function PlayerCaptain::killerMelee(%this, %obj, %radius)
             else
             {
                 //Sky Captain is weaker, he does half the damage of other killers in a straight-up confrontation.
-                %hit.damage(%obj, %hit.getHackPosition(), 25*getWord(%obj.getScale(), 2), $DamageType::Default);	
+                %hit.damage(%obj, %hit.getHackPosition(), %this.nonStealthDamage*getWord(%obj.getScale(), 2), $DamageType::Default);	
                 %hit.timeGazedUpon = 0;
             }								
 			
