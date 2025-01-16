@@ -68,7 +68,10 @@ function PlayerGrabber::onPeggFootstep(%this,%obj)
 
 function PlayerGrabber::checkVictim(%this,%obj)
 {
-	if(!%obj.victim) %obj.playthread(3,"root");
+	if(!%obj.victim) 
+	{
+		%obj.playthread(3,"root");
+	}
 	%obj.setdatablock("PlayerGrabber");
 }
 
@@ -77,35 +80,46 @@ function PlayerGrabber::onTrigger(%this,%obj,%triggerNum,%bool)
 	Parent::onTrigger(%this,%obj,%triggerNum,%bool);
 	
 	if(%bool && %obj.getState() !$= "Dead")
-	switch(%triggerNum)
 	{
-		case 0: if(%obj.getEnergyLevel() >= 25) %this.killerMelee(%obj,4.5);
-						
-		case 4: if(!isObject(%obj.victim))
-				{
-					if(!%obj.isCrouched() && %obj.getEnergyLevel() >= %this.maxEnergy && getWord(%obj.getVelocity(),2) == 0)
+		switch(%triggerNum)
+		{
+			case 0: if(%obj.getEnergyLevel() >= 25)
 					{
-						%obj.setdatablock("PlayerGrabberNoJump");					
-						%obj.setVelocity(vectorscale(%obj.getForwardVector(),27));
-						%obj.playaudio(3,"grabber_lunge_sound");
-						%obj.playthread(3,"armReadyLeft");
-						%this.schedule(500,checkVictim,%obj);
+						%this.killerMelee(%obj,4.5);
 					}
-				}
-				else if(%obj.lastChokeTime < getSimTime() && isObject(%obj.victim))
-				{					
-					if(%obj.ChokeAmount < 4)
+
+			case 4: if(!isObject(%obj.victim))
 					{
-						if(isObject(%obj.victim) && %obj.victim.getState() !$= "Dead") %obj.victim.damage(%obj, %obj.getmuzzlePoint(1), 16, $DamageType::Default);
-
-						%obj.lastChokeTime = getSimTime()+250;	
-						%obj.playthread(0,"plant");
-						%obj.ChokeAmount++;
+						if(!%obj.isCrouched() && %obj.getEnergyLevel() >= %this.maxEnergy && getWord(%obj.getVelocity(),2) == 0)
+						{
+							%obj.setdatablock("PlayerGrabberNoJump");					
+							%obj.setVelocity(vectorscale(%obj.getForwardVector(),27));
+							%obj.playaudio(3,"grabber_lunge_sound");
+							%obj.playthread(3,"armReadyLeft");
+							%this.schedule(500,checkVictim,%obj);
+						}
 					}
-					else %this.releaseVictim(%obj);	
-				}
+					else if(%obj.lastChokeTime < getSimTime() && isObject(%obj.victim))
+					{					
+						if(%obj.ChokeAmount < 4)
+						{
+							if(isObject(%obj.victim) && %obj.victim.getState() !$= "Dead") 
+							{
+								%obj.victim.damage(%obj, %obj.getmuzzlePoint(1), 16, $DamageType::Default);
+							}
 
-		default:
+							%obj.lastChokeTime = getSimTime()+250;	
+							%obj.playthread(0,"plant");
+							%obj.ChokeAmount++;
+						}
+						else
+						{
+							%this.releaseVictim(%obj);
+						}
+					}
+
+			default:
+		}
 	}
 }
 
@@ -116,7 +130,10 @@ function PlayerGrabberNoJump::releaseVictim(%this,%obj)
 
 function PlayerGrabber::releaseVictim(%this,%obj)
 {
-	if(!isObject(%obj) || !isObject(%obj.victim)) return;
+	if(!isObject(%obj) || !isObject(%obj.victim))
+	{
+		return;
+	}
 	
 	%obj.ChokeAmount = 0;
 	%obj.victim.stunned = false;	
@@ -144,7 +161,10 @@ function PlayerGrabber::releaseVictim(%this,%obj)
 
 function PlayerGrabber::setStun(%this,%obj,%bool)
 {
-	if(!isObject(%obj) || !isObject(%client = %obj.client)) return;
+	if(!isObject(%obj) || !isObject(%client = %obj.client))
+	{
+		return;
+	}
 
 	%obj.stunned = %bool;
 
@@ -162,8 +182,7 @@ function PlayerGrabber::setStun(%this,%obj,%bool)
 
 function PlayerGrabber::EventideAppearance(%this,%obj,%client)
 {
-	if(%obj.isSkinwalker && isObject(%obj.victimreplicatedclient)) %funcclient = %obj.victimreplicatedclient;
-    else %funcclient = %client;	
+	%funcclient = (%obj.isSkinwalker && isObject(%obj.victimreplicatedclient)) ? %obj.victimreplicatedclient : %client;
 	
 	%obj.hideNode("ALL");
 	%obj.unHideNode("chest");	
@@ -240,24 +259,29 @@ function PlayerGrabberNoJump::onCollision(%this,%obj,%col,%vec,%speed)
 {
 	Parent::onCollision(%this,%obj,%col,%vec,%speed);
 
-	if(!isObject(%obj.victim) && (%col.getType() & $TypeMasks::PlayerObjectType) && minigameCanDamage(%obj,%col))
+	// Do not continue if any of these conditions are met.
+	if(isObject(%obj.victim) || !(%col.getType() & $TypeMasks::PlayerObjectType) || !minigameCanDamage(%obj,%col) || !%col.getdataBlock().isDowned)
 	{
-		if(%col.getdataBlock().isDowned) return;
-		
-		ServerCmdUnUseTool (%obj.client);
-		%obj.victim = %col;
-		%col.killer = %obj;
-		%col.stunned = true;
-		%obj.mountObject(%col,8);
-		%col.setarmthread("activate2");
-		PlayerGrabber.schedule(4500,"releaseVictim",%obj);
+		return;
+	}
+			
+	if(isObject(%obj.client))
+	{
+		ServerCmdUnUseTool(%obj.client);
+	}
+	
+	%obj.victim = %col;
+	%col.killer = %obj;
+	%col.stunned = true;
+	%obj.mountObject(%col,8);
+	%col.setarmthread("activate2");
+	PlayerGrabber.schedule(4500,"releaseVictim",%obj);
 
-		switch$(%col.getClassName())
-		{
-			case "AIPlayer": %col.stopholeloop();
-			case "Player": 	%col.client.camera.setOrbitMode(%col, %col.getTransform(), 0, 5, 0, 1);
-							%col.client.setControlObject(%col.client.camera);
-		}
+	switch$(%col.getClassName())
+	{
+		case "AIPlayer": %col.stopholeloop();
+		case "Player": 	%col.client.camera.setOrbitMode(%col, %col.getTransform(), 0, 5, 0, 1);
+						%col.client.setControlObject(%col.client.camera);
 	}	
 }
 
