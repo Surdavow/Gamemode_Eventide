@@ -55,10 +55,17 @@ datablock PlayerData(PlayerMastermind : PlayerRenowned)
 	
 	killerlight = "NoFlarePLight";
 	
+	mastermindDash = true;
+	mastermindDashZ = 0;
+	mastermindDashCost = 100;
+	mastermindDashDelay = 500;
+	mastermindDashVel = 40;
+	mastermindDashTime = 250;
+	
 	leftclickicon = "color_melee";
 	rightclickicon = "color_slowmo";
 
-	rechargeRate = 0.3;
+	rechargeRate = 0.32;
 	maxTools = 0;
 	maxWeapons = 0;
 	maxForwardSpeed = 7.35;
@@ -69,13 +76,34 @@ datablock PlayerData(PlayerMastermind : PlayerRenowned)
     gazeTickRate = 50;
 };
 
-function PlayerMastermind::onTrigger(%this, %obj, %trig, %press) 
-{		
+function PlayerMastermind::onImpact(%this,%obj,%hit,%vec,%force)
+{
+	if(%obj.ismastermindDash && (%this.mastermindDashZ || mAbs(getWord(%vec,2)) < %this.minImpactSpeed)) 
+	{
+		return;
+	}
+	
+	Parent::onImpact(%this,%obj,%hit,%vec,%force);
+}
+
+function PlayerMastermind::onTrigger(%this, %obj, %trig, %press)
+{
 	Parent::onTrigger(%this, %obj, %trig, %press);
 		
-	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
+	if(%press)
 	{
-		%this.killerMelee(%obj,4);
+		switch(%trig)
+		{
+			case 0: if(%obj.getEnergyLevel() >= 25)
+					{
+						%this.killerMelee(%obj,4);
+						return;
+					}
+			case 4: if(!isObject(%obj.getObjectMount()))
+					{
+						%obj.mastermindDashStart();
+					}					
+		}
 	}
 }
 
@@ -88,6 +116,202 @@ function PlayerMastermind::onNewDatablock(%this,%obj)
 
     %obj.gazeTickRate = %this.gazeTickRate;
     %obj.MastermindGaze();
+}
+
+datablock ParticleData(mastermind_trailParticle)
+{
+	textureName				= "./models/blockhead";
+	lifetimeMS				= 500;
+	lifetimeVarianceMS		= 0;
+	dragCoefficient			= 0.0;
+	windCoefficient			= 0.0;
+	gravityCoefficient		= 0.0;
+	inheritedVelFactor		= 0.0;
+	constantAcceleration	= 0.0;
+	spinRandomMin			= 0.0;
+	spinRandomMax			= 0.0;
+	colors[0]				= "0 0 0 0.4";
+	colors[1]				= "0 0 0 0.1";
+	colors[2]				= "0 0 0 0";
+	sizes[0]				= 2.6;
+	sizes[1]				= 2.6;
+	sizes[2]				= 2.6;
+	times[0]				= 0;
+	times[1]				= 0.5;
+	times[2]				= 1.0;
+	useInvAlpha				= true;
+};
+datablock ParticleEmitterData(mastermind_trailEmitter)
+{
+	uiName				= "";
+	particles			= "mastermind_trailParticle";
+	ejectionPeriodMS	= 10;
+	periodVarianceMS	= 0;
+	ejectionVelocity	= 0.0;
+	velocityVariance	= 0.0;
+	ejectionOffset		= 0.0;
+	thetaMin			= 0.0;
+	thetaMax			= 0.0;
+	phiReferenceVel		= 0.0;
+	phiVariance			= 0.0;
+};
+datablock ShapeBaseImageData(mastermind_trailImage)
+{
+	shapeFile = "base/data/shapes/empty.dts";
+	emap = false;
+	
+	mountPoint = $BackSlot;
+
+	offset = "0 -0.6 -0.5";
+	eyeOffset = "0 0 -9999";
+	
+	stateName[0] 					= "Idle";
+	stateTransitionOnTimeout[0] 	= "Idle2";
+	stateTimeoutValue[0]	 		= 1000;
+	stateEmitter[0]					= mastermind_trailEmitter;
+	stateEmitterTime[0]				= 1000;
+	stateEmitterNode[0]				= "muzzleNode";	
+	
+	stateName[1] 					= "Idle2";
+	stateTransitionOnTimeout[1] 	= "Idle";
+	stateTimeoutValue[1]	 		= 1000;
+	stateEmitter[1]					= mastermind_trailEmitter;
+	stateEmitterTime[1]				= 1000;
+	stateEmitterNode[1]				= "muzzleNode";	
+};
+function rgbGradient(%step, %c1, %c2)
+{
+	%r1 = getWord(%c1, 0);
+	%g1 = getWord(%c1, 1);
+	%b1 = getWord(%c1, 2);
+
+	%r2 = getWord(%c2, 0);
+	%g2 = getWord(%c2, 1);
+	%b2 = getWord(%c2, 2);
+
+	%r3 = %r1 + %step * (%r2 - %r1);
+	%g3 = %g1 + %step * (%g2 - %g1);
+	%b3 = %b1 + %step * (%b2 - %b1);
+
+	return %r3 SPC %g3 SPC %b3;
+}
+function player::mastermindDashStart(%pl)
+{
+	%db = %pl.getDatablock();
+	if(!%pl.ismastermindDash)
+	{
+		if((%time = getSimTime()-%pl.lastmastermindDash) > %db.mastermindDashDelay)
+		{
+			if((%energy = %pl.getEnergyLevel()) >= (%cost = %db.mastermindDashCost))
+			{
+				if(isObject(%cl = %pl.client))
+				{
+					%pl.setDamageFlash(0.1);
+					%pl.mastermindFov = %cl.getControlCameraFov();
+				}
+				cancel(%pl.mastermindFizzleSched);
+				%pl.lastmastermindDash = getSimTime();
+				%pl.mastermindDashSound = %pl.mastermindCancelDash = %pl.mastermindHasWastedEnergy = false;
+				%vec = vectorScale((%db.mastermindDashZ ? %pl.getEyeVector() : %pl.getForwardVector()),%db.mastermindDashVel);
+				%pl.ismastermindDash = 1;
+				%pl.mastermindDash(%vec,0);
+				%pl.setEnergyLevel(%pl.mastermindEnergy = (%energy-%cost-((%db.rechargeRate*32)*(0.00065*%db.mastermindDashDelay))));
+				%pl.playaudio(3,"mastermind_teleport_sound");
+				%pl.playaudio(2,"mastermind_melee1");
+				%pl.mountImage(mastermind_trailImage,3);
+				%pl.playThread(0,plant);
+			}
+			else if(getSimTime()-%pl.lastmastermindDash > 260) %error = 1;
+		}
+		else %error = 2;
+	}
+	else %error = 0;
+	if(%error)
+	{
+		if(getSimTime()-%pl.lastmastermindInvalid > 400)
+		{
+			%pl.lastmastermindInvalid = getSimTime();
+			%time = (getSimTime()-%pl.lastmastermindDash);
+			if(%error == 2)
+			{
+				if(!%pl.mastermindHasWastedEnergy && %time > %db.mastermindDashDelay-(%db.mastermindDashDelay*0.8))
+				{
+					%pl.setEnergyLevel(%pl.mastermindEnergy = (%pl.getEnergyLevel()-(%db.mastermindDashCost*0.5)));
+					%pl.mastermindHasWastedEnergy = 1;
+				}
+			}
+			else if(%error == 1)
+			{
+				%pl.mastermindFizzleSched = %pl.schedule(100,unMountImage,3);
+				%pl.playThread(0,plant);
+				%pl.playThread(3,undo);
+				if(isObject(%cl = %pl.client)) %pl.playaudio(3,"mastermind_invalid_sound");
+			}
+		}
+	}
+}
+function player::mastermindDash(%pl,%vec,%tick)
+{
+	%db = %pl.getDatablock();
+	%forward = vectorScale((%db.mastermindDashZ ? %pl.getEyeVector() : %pl.getForwardVector()),0.8);
+	%pos = vectorAdd(%pl.getPosition(),"0 0 0.2");
+	%hit = containerRayCast(%pos,vectorAdd(%pos,%forward),$TypeMasks::FxBrickObjectType | $TypeMasks::StaticObjectType | $TypeMasks::PlayerObjectType | $TypeMasks::VehicleObjectType,%pl);
+	if(%hit || %pl.getState() $= "Dead")
+		%pl.mastermindCancelDash = 1;
+	%vel = %pl.getVelocity();
+	%x = getWord(%vel,0);
+	%y = getWord(%vel,1);
+	%z = getWord(%vel,2);
+	if(%pl.mastermindCancelDash && %tick > 0) %pl.unMountImage(3);
+	
+	%time = getSimTime()-%pl.lastmastermindDash;
+	if(!%pl.mastermindDashSound && (%time > (%max = %db.mastermindDashTime)-100 || %pl.mastermindCancelDash && %tick > 4))
+	{
+		//%pl.schedule(1,playAudio,2,mastermind_airRush @ getRandom(1,2) @ Sound);
+		//%pl.mastermindDashSound = 1;
+	}
+	if(%time > %max || (%pl.mastermindCancelDash && %tick > 4))
+	{		
+		if(isObject(%cl = %pl.client))
+		{
+			%cl.setControlCameraFov(%pl.mastermindFov);
+			commandToClient(%cl,'setVignette',$EnvGuiServer::VignetteMultiply,$EnvGuiServer::VignetteColor);
+		}
+		%pl.playThread(0,jump);
+		%pl.unMountImage(3);
+		%pl.setTempSpeed(0.375);
+		%pl.setEnergyLevel(20);
+		%pl.schedule(1500,setTempSpeed,1);
+		%pl.ismastermindDash = 0;
+		%pl.setVelocity(%x/4 SPC %y/4 SPC (%db.mastermindDashZ ? %z/4 : %z));
+		return;
+	}
+	else
+	{
+		if(isObject(%cl = %pl.client))
+		{
+			%cl.setControlCameraFov(%pl.mastermindFov-((%prcnt = ((1+mCos($PI*(%time/%max)))/2))*(%pl.mastermindFov/5)));
+			%alpha = mClampF(%prcnt*0.6,0,1);
+			%vigAlpha = mClampF(getWord($EnvGuiServer::VignetteColor,3),0,1);
+			%fAlpha = mClampF(%alpha,(%cont ? mClampF(%vigAlpha,0,0.2) : %vigAlpha),1);
+			commandToClient(%cl,'setVignette',$EnvGuiServer::VignetteMultiply,rgbGradient(1-%alpha,"0.4 0 0",$EnvGuiServer::VignetteColor) SPC %fAlpha);
+		}
+	}
+	%pl.setEnergyLevel(%pl.mastermindEnergy);
+	if(!%pl.mastermindCancelDash) %pl.setVelocity(vectorAdd(%x/5 SPC %y/5 SPC (%db.mastermindDashZ ? %z/5 : %z),%vec));
+	%pl.mastermindDashSched = %pl.schedule(32,mastermindDash,%vec,%tick++);
+}
+
+function Playermastermind::onDisabled(%this,%obj)
+{
+	Parent::onDisabled(%this,%obj);
+
+	if(%obj.ismastermindDash && isObject(%client = %obj.client))
+	{
+		%client.setControlCameraFov(%obj.mastermindFov);
+		commandToClient(%client,'setVignette',$EnvGuiServer::VignetteMultiply,$EnvGuiServer::VignetteColor);
+	}
+		
 }
 
 function PlayerMastermind::onRemove(%this, %obj)
@@ -246,6 +470,7 @@ function PlayerMastermind::onIncapacitateVictim(%this, %obj, %victim, %killed)
     %soundAmount = %this.killertauntsoundamount;
     if(%soundType !$= "") 
     {
+		%obj.setEnergyLevel(100);
         %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
         %obj.lastKillerSoundTime = getSimTime();
     }
