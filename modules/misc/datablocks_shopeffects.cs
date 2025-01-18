@@ -1,6 +1,3 @@
-//No longer using these.
-return;
-
 datablock ParticleData(ConfettiParticle1)
 {
 	dragCoefficient		= 0;
