@@ -9,6 +9,5 @@ exec("./datablocks_projectile_lightning.cs");
 exec("./datablocks_render.cs");
 exec("./datablocks_renowned.cs");
 exec("./datablocks_shire.cs");
-exec("./datablocks_shopeffects.cs");
 exec("./datablocks_stun.cs");
 exec("./datablocks_trail.cs");
