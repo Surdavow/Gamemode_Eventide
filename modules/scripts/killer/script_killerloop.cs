@@ -80,8 +80,8 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
                     %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, true);
                 }
                 %victim.TimeSinceChased = getSimTime();
-                cancel(%victim.client.StopChaseMusic);
-                %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
+                cancel(%victim.client.StopChase);
+                %victim.client.StopChase = %victim.client.schedule(6000, StopChase);
             }
 			%victim.chaseLevel = 2; //Need this outside the music check for holebot testing support.
         }
@@ -114,8 +114,8 @@ function Armor::handleVictimChaseState(%this, %victim, %obj, %canSeeKiller, %vic
                 {
                     %victim.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
                 }
-                cancel(%victim.client.StopChaseMusic);
-                %victim.client.StopChaseMusic = %victim.client.schedule(6000, StopChaseMusic);
+                cancel(%victim.client.StopChase);
+                %victim.client.StopChase = %victim.client.schedule(6000, StopChase);
             }
 			%victim.chaseLevel = 1; //Need this outside the music check for holebot testing support.
         }
@@ -142,8 +142,8 @@ function Armor::handleKillerChaseState(%this, %obj, %chasingVictims, %isActiveCh
             {
                 %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl2Music, false);
             }
-            cancel(%obj.client.StopChaseMusic);
-            %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+            cancel(%obj.client.StopChase);
+            %obj.client.StopChase = %obj.client.schedule(6000, StopChase);
         }
 		%obj.chaseLevel = 2;
     }
@@ -168,8 +168,8 @@ function Armor::handleKillerChaseState(%this, %obj, %chasingVictims, %isActiveCh
                 {
                     %obj.client.SetChaseMusic(%obj.getDataBlock().killerChaseLvl1Music, false);
                 }
-                cancel(%obj.client.StopChaseMusic);
-                %obj.client.StopChaseMusic = %obj.client.schedule(6000, StopChaseMusic);
+                cancel(%obj.client.StopChase);
+                %obj.client.StopChase = %obj.client.schedule(6000, StopChase);
             }
 			%obj.chaseLevel = 1;
         }

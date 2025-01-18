@@ -108,7 +108,14 @@ function EventidePlayer::assignClass(%this,%obj,%class)
 function EventidePlayer::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
-	
+
+	//Play ambiant music.
+	%client = %obj.client;
+	if(isObject(%client))
+	{
+		%client.playAmbiance();
+	}
+
 	%obj.schedule(33,setEnergyLevel,0);
 	%obj.setScale("1 1 1");
 }

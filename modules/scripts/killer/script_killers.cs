@@ -269,7 +269,14 @@ function GameConnection::PlaySkullFrames(%client,%frame)
 	%client.SkullFrameSched = %client.schedule(60, PlaySkullFrames, %frame++);
 }
 
-function GameConnection::StopChaseMusic(%client)
+function GameConnection::playAmbiance(%client)
+{
+	talk("Playing ambiance...");
+	%ambientMusicDatablock = "musicData_ambiance" @ getRandom(1, 3);
+	%client.SetChaseMusic(%ambientMusicDatablock, false);
+}
+
+function GameConnection::StopChase(%client)
 {
     if(!isObject(%client))
 	{
@@ -280,6 +287,9 @@ function GameConnection::StopChaseMusic(%client)
 	{
 		%client.EventidemusicEmitter.delete();
 	}
+
+	//Play ambiant music track.
+	%client.playAmbiance();
 
 	// Handle survivor conditions
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")

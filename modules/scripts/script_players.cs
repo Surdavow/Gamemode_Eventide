@@ -98,7 +98,7 @@ package Eventide_Player
         if (isObject(%obj.client))
 		{
 			// Remove the Eventide music emitter if it exists and reset the music level
-			%obj.client.StopChaseMusic();
+			%obj.client.StopChase();
 		}
     }
 
