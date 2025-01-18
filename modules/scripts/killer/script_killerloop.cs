@@ -180,7 +180,7 @@ function Armor::handleKillerChaseState(%this, %obj, %chasingVictims, %isActiveCh
 function Armor::killerContainerRadiusSearch(%this, %obj)
 {
     %chasingVictims = 0;
-    %searchDistance = 50;
+    %searchDistance = 40; //80 studs, should be a decent balance for both small and large maps.
     initContainerRadiusSearch(%obj.getMuzzlePoint(0), %searchDistance, $TypeMasks::PlayerObjectType);
 
     while(%victim = containerSearchNext())
