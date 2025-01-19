@@ -218,8 +218,9 @@ function Armor::onRoundEnd(%this, %obj, %won)
 
 function GameConnection::SetChaseMusic(%client, %songname, %ischasing)
 {
-    if(!isObject(%client) || !isObject(%songname)) 
+    if(!isObject(%client) || !isObject(%songname) || (isObject($EventideRitualBrick) && $EventideRitualBrick.ritualsPlaced >= 10))
 	{
+		//The `Eventide_MinigameRitualGroup` check prevents chase or ambient music from playing when all rituals have been completed.
 		return;    
 	}
     
