@@ -9,9 +9,10 @@
 new ScriptGroup(Slayer_GameModeTemplateSG)
 {
     // Game mode settings
-    className = "SlayerEventide";
+    className = "Slayer_Eventide";
     uiName = "Eventide";
     useTeams = true;
+    isEventide = true;
     // disable_teamCreation = true;
 
     // Team settings
@@ -34,6 +35,7 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
     default_enableWand = false;
 
     default_bKills_enable = false;
+    default_clearStats = false;
 
     default_startEquip0 = 0;
     default_startEquip1 = 0;
@@ -50,6 +52,8 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
     locked_teams_lock = true;
     locked_teams_shuffleTeams = false;
 
+    //Custom field to store players who have yet to play Hunter.
+    hunterQueue = new SimSet(Eventide_HunterQueue);
 
     // Teams
     new ScriptObject()
@@ -59,11 +63,12 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
         disable_edit = false;
 
         default_syncLoadout = true;
+        default_uniform = 0;
 
         // Locked team settings
         locked_name = "Survivors";
         locked_lives = 1;
-        locked_color = 0;
+        locked_color = Slayer_Support::getClosestPaintColor("1 1 1 1"); //White.
         locked_sort = false;
         locked_lock = true;
     };
@@ -75,13 +80,70 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
         disable_edit = false;
 
         default_syncLoadout = true;
+        default_uniform = 0;
         default_playerDatablock = NameToID("PlayerNoJet");
 
         // Locked team settings
         locked_name = "Hunters";
         locked_lives = 1;
-        locked_color = 1;
+        locked_color = Slayer_Support::getClosestPaintColor("0 0 0 1"); //Black.
         locked_sort = false;
         locked_lock = true;
     };
 };
+
+function Slayer_Eventide::onMinigameReset(%this, %client)
+{
+    %minigame = %this.minigame;
+    %survivorTeam = %mini.teams.getTeamFromName("Survivors");
+	%hunterTeam = %mini.teams.getTeamFromName("Hunters");
+
+    if(!isObject(%this.hunterQueue))
+    {
+        %this.hunterQueue = new SimSet(Eventide_HunterQueue);
+    }
+
+    %queuedPlayers = %this.hunterQueue.getCount();
+    %numberOfMinigameMembers = %this.numMembers["GameConnection"];
+
+    //First, decide who will be the Hunter, based on who hasn't already played the hunter.
+    %selectedHunter = "";
+    if(%queuedPlayers == 0)
+    {
+        //The queue is empty. Fill it up with everyone, then pick a random person to play hunter.
+        %selectedHunter = %this.member["GameConnection", getRandom(0, (%numberOfMinigameMembers - 1))];
+        for(%i = 0; %i < %numberOfMinigameMembers; %i++)
+        {
+            %client = %this.member["GameConnection", %i];
+            if(%client.getID() != %selectedHunter.getID())
+            {
+                %this.hunterQueue.add(%client);
+            }
+        }
+    }
+    else
+    {
+        //Some people still haven't played Hunter, decide which one gets to go next.
+        %selectedHunter = %this.hunterQueue.getObject(getRandom(0, (%this.hunterQueue.getCount() - 1)))
+        %this.hunterQueue.remove(%selectedHunter);
+    }
+
+    //Now, assign everyone a new team - Hunter if they got chosen, Survivor if not.
+    %oldNotify = %mini.teams_notifyMemberChanges;
+	%mini.teams_notifyMemberChanges = false; //Prevent chat message spam as people get assigned to their new team.
+
+    for(%i = 0; %i < %numberOfMinigameMembers; %i++)
+    {
+        %client = %this.member["GameConnection", %i];
+        if(%client.getID() == %selectedHunter.getID())
+        {
+            %hunterTeam.addMember(%client, "", true);
+        }
+        else
+        {
+            %survivorTeam.addMember(%client, "", true);
+        }
+    }
+
+	%mini.teams_notifyMemberChanges = %oldNotify;
+}
