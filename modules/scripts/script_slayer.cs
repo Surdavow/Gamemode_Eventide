@@ -190,8 +190,35 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
         %mini.bottomprintall("<font:impact:25>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
     }
 
-    //Play the minigame start sound.
+    //Play a decorative chime to let people know a new round has started.
     %mini.playSound("round_start_sound");
+}
+
+function Slayer_Eventide::onRoundEnd(%this, %winner, %nameList)
+{
+    //Disable local chat at the end of the round, let everyone banter at the end.
+    if($MinigameLocalChat)
+    {
+        $MinigameLocalChat = false;
+        %mini.bottomprintall("<font:impact:20>\c3Local chat disabled.",4);
+    }
+    
+    //If the killers won, call an event on them saying they did. If not, call an event for that as well.
+    %killers = getCurrentKillers();
+    for(%i = 0; %i < %killers.getCount(); %i++)
+    {
+        %killer = %killers.getObject(%i);
+        %killerTeam = %killer.getTeam();
+        if(isObject(%killer.player) && isObject(%killer))
+        {
+            %won = (%winner.getClassName() $= "Slayer_TeamSO" && %winner.getId() == %killerTeam.getId()) || (%winner.getClassName() $= "GameConnection" && %winner.getId() == %killer.getId());
+            %killerDataBlock = %killer.getDataBlock();
+            %killerDatablock.onRoundEnd(%killer, %won);
+        }
+    }
+
+    //Play a chime to let people know the round has ended.
+    %mini.playSound("round_end_sound");
 }
 
 //The minigame is ending, do some cleanup.
