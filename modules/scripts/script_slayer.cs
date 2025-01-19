@@ -92,11 +92,27 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
     };
 };
 
-function Slayer_Eventide::onMinigameReset(%this, %client)
+function Slayer_Eventide::onMinigameReset(%this, %callingClient)
 {
-    %minigame = %this.minigame;
+    %mini = %this.minigame;
     %survivorTeam = %mini.teams.getTeamFromName("Survivors");
 	%hunterTeam = %mini.teams.getTeamFromName("Hunters");
+
+    if(isObject(Eventide_MinigameGroup)) 
+    {
+        Eventide_MinigameGroup.delete();
+    }
+
+    //Reset the ritual circle.
+    if(isObject($EventideRitualBrick)) 
+    {
+        $EventideRitualBrick.ritualsPlaced = 0;
+        $EventideRitualBrick.gemcount = 0;
+        $EventideRitualBrick.candlecount = 0;
+    }
+
+    //Sprinkle items around the map.
+    %mini.randomizeEventideItems(true);
 
     if(!isObject(%this.hunterQueue))
     {
@@ -106,7 +122,7 @@ function Slayer_Eventide::onMinigameReset(%this, %client)
     %queuedPlayers = %this.hunterQueue.getCount();
     %numberOfMinigameMembers = %this.numMembers["GameConnection"];
 
-    //First, decide who will be the Hunter, based on who hasn't already played the hunter.
+    //Decide who will be the Hunter, based on who hasn't already played the hunter.
     %selectedHunter = "";
     if(%queuedPlayers == 0)
     {
@@ -119,19 +135,30 @@ function Slayer_Eventide::onMinigameReset(%this, %client)
             {
                 %this.hunterQueue.add(%client);
             }
+
+            //Since we're already here, mark each person as unescaped and stop their chase music initally.
+            %client.escaped = false;
+            %client.StopChase();
         }
     }
     else
     {
         //Some people still haven't played Hunter, decide which one gets to go next.
-        %selectedHunter = %this.hunterQueue.getObject(getRandom(0, (%this.hunterQueue.getCount() - 1)))
+        %selectedHunter = %this.hunterQueue.getObject(getRandom(0, (%this.hunterQueue.getCount() - 1)));
         %this.hunterQueue.remove(%selectedHunter);
+
+        //Mark everyone as unescaped and stop their chase music initially.
+        for(%i = 0; %i < %numberOfMinigameMembers; %i++)
+        {
+            %client = %this.member["GameConnection", %i];
+            %client.escaped = false;
+            %client.StopChase();
+        }
     }
 
     //Now, assign everyone a new team - Hunter if they got chosen, Survivor if not.
     %oldNotify = %mini.teams_notifyMemberChanges;
 	%mini.teams_notifyMemberChanges = false; //Prevent chat message spam as people get assigned to their new team.
-
     for(%i = 0; %i < %numberOfMinigameMembers; %i++)
     {
         %client = %this.member["GameConnection", %i];
@@ -144,6 +171,25 @@ function Slayer_Eventide::onMinigameReset(%this, %client)
             %survivorTeam.addMember(%client, "", true);
         }
     }
-
 	%mini.teams_notifyMemberChanges = %oldNotify;
+
+    //Assign the new survivors a class.
+    for(%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
+    {
+        %mini.survivorClass[getWord($Eventide_SurvivorClasses, %i)] = 0;
+    }
+
+    //Inform everyone that local chat is enabled.
+    if($Pref::Server::ChatMod::lchatEnabled)
+    {
+        %mini.bottomprintall("<font:impact:25>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
+    }
+
+    //Play the minigame start sound.
+    %mini.playSound("round_start_sound");
+}
+
+function Slayer_Eventide::preMinigameReset(%this, %callingClient)
+{
+    clearCurrentKillers();
 }
