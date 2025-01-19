@@ -11,7 +11,7 @@ function GameConnection::getRemainingTeamMembers(%client)
 	%playersLeftCount = 0;
 	for(%i = 0; %i < %teamPlayerAmount; %i++)
 	{
-		%currentMember = %member = %clientTeam.member[%i];
+		%currentMember = %clientTeam.member[%i];
 		if(isObject(%currentMember))
 		{
 			if(!%currentMember.escaped && !%currentMember.Dead() && isObject(%currentMember.player))
@@ -347,7 +347,7 @@ function GameConnection::Escape(%client)
 	{
 		return %client.centerprint("This only works in minigames!",1);
 	}
-	if(strlwr(%client.slyrTeam.name) !$= "survivors")
+	else if(strlwr(%client.getTeam().name) !$= "survivors")
 	{
 		return %client.centerprint("Only survivors can escape the map!",1);
 	}
