@@ -778,6 +778,11 @@ function EventidePlayer::onDisabled(%this,%obj)
 	EventidePlayerDowned::onDisabled(%this,%obj); // Call the downed handler
 }
 
+function EventidePlayer::onRemove(%this, %obj)
+{
+	EventidePlayerDowned::onRemove(%this, %obj);
+}
+
 // Handler method for survivor death
 // 1. Removes mounted images and plays a death animation.
 // 2. Notifies the killer with a sound and visual effect (if applicable).
@@ -858,4 +863,14 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 			}
 		}
 	}	
+}
+
+//Called whenever a survivor dies or escapes. Fires an event if the survivor is the last one standing.
+function EventidePlayerDowned::onRemove(%this, %obj)
+{
+	%minigame = getMinigameFromObject(%obj);
+	if(isObject(%minigame) && isObject(%obj.client) && %obj.client.getRemainingTeamMembers() == 1)
+	{
+		%minigame.onLastSurvivor();
+	}
 }
