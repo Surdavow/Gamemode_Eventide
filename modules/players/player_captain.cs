@@ -322,7 +322,7 @@ function PlayerCaptain::onAllRitualsPlaced(%this, %obj)
     //"Will NOTHING stop you!?"
     %soundType = %this.killerdesperatesound;
     %soundAmount = %this.killerdesperatesoundamount;
-    if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
+    if(%soundType !$= "")// && (getSimTime() > (%obj.lastKillerSoundTime + 5000)))
     {
         %obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
         %obj.lastKillerSoundTime = getSimTime();

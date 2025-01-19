@@ -218,8 +218,9 @@ function Armor::onRoundEnd(%this, %obj, %won)
 
 function GameConnection::SetChaseMusic(%client, %songname, %ischasing)
 {
-    if(!isObject(%client) || !isObject(%songname)) 
+    if(!isObject(%client) || !isObject(%songname) || (isObject($EventideRitualBrick) && $EventideRitualBrick.ritualsPlaced >= 10))
 	{
+		//The `Eventide_MinigameRitualGroup` check prevents chase or ambient music from playing when all rituals have been completed.
 		return;    
 	}
     
@@ -262,14 +263,20 @@ function GameConnection::PlaySkullFrames(%client,%frame)
 		%frame = 1;
 	}
 
-	%client.centerprint("<br><br><bitmap:Add-ons/Server_SkullFrames/SkullFrame" @ %frame @ ">",0.2);
+	%client.centerprint("<br><br><bitmap:Add-ons/Gamemode_Eventide/modules/misc/icons/skullFrames/SkullFrame" @ %frame @ ">",0.2);
 
 	// Schedule next frame, preventing duplication
 	cancel(%client.SkullFrameSched);
 	%client.SkullFrameSched = %client.schedule(60, PlaySkullFrames, %frame++);
 }
 
-function GameConnection::StopChaseMusic(%client)
+function GameConnection::playAmbiance(%client)
+{
+	%ambientMusicDatablock = "musicData_ambiance" @ getRandom(1, 3);
+	%client.SetChaseMusic(%ambientMusicDatablock, false);
+}
+
+function GameConnection::StopChase(%client)
 {
     if(!isObject(%client))
 	{
@@ -280,6 +287,9 @@ function GameConnection::StopChaseMusic(%client)
 	{
 		%client.EventidemusicEmitter.delete();
 	}
+
+	//Play ambiant music track.
+	%client.playAmbiance();
 
 	// Handle survivor conditions
 	if(isObject(%client.player) && %client.player.getdataBlock().getName() $= "EventidePlayer")

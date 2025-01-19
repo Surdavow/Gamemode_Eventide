@@ -2,8 +2,6 @@ datablock PlayerData(PlayerKnight : PlayerRenowned)
 {
 	uiName = "Knight Player";
 	
-	killerSpawnMessage = "An armored figure quests for blood.";
-	
 	killerChaseLvl1Music = "musicData_Eventide_SorrowfulNear";
 	killerChaseLvl2Music = "musicData_Eventide_SorrowfulChase";
 

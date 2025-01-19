@@ -208,10 +208,8 @@ function PuppetMasterPuppet::onBotLoop(%this, %obj)
                 
             if(%distance < 2)
             {
-                %target.damage(%obj, %target.getWorldBoxCenter(), 30, $DamageType::Default);
-                %target.setTempSpeed(0.5);
-                %target.schedule(1000, setTempSpeed, 1);
-                %target.playThread(3, "plant");
+                // Use ontrigger for killer melee
+		%this.onTrigger(%obj,0,1);
                 
                 %obj.playAudio(3, "melee_tanto" @ getRandom(1, 3) @ "_sound");
                 cancel(%obj.BotLoopSched);

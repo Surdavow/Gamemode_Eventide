@@ -12,7 +12,7 @@ exec("./player_empty.cs");
 exec("./player_genocide.cs");
 exec("./player_grabber.cs");
 exec("./player_huntress.cs");
-exec("./player_knight.cs");
+//exec("./player_knight.cs");
 exec("./player_lurker.cs");
 exec("./player_lurkerinvis.cs");
 exec("./player_nightmare.cs");

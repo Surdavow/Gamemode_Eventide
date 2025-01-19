@@ -158,14 +158,24 @@ function brickEventideRitual::ritualCheck(%this,%obj)
 				%minigame.centerprintall("<font:Impact:40>\c3All rituals are complete!",3);
 				%minigame.playSound("round_start_sound");
 
-				%killers = getCurrentKillers();
-				for(%i = 0; %i < %killers.getCount(); %i++)
+				//For each client on the server, disable their chase music. Call an extra function on killers.
+				for(%i = 0; %i < ClientGroup.getCount(); %i++)
 				{
-					%currentKiller = %killers.getObject(%i).player;
-					if(isObject(%currentKiller))
+					%client = ClientGroup.getObject(%i);
+					//Disable chase and ambient music.
+					if(isObject(%client.EventidemusicEmitter))
 					{
-						%killerDataBlock = %killer.getDataBlock();
-						%killerDatablock.onAllRitualsPlaced(%killer);
+						%client.EventidemusicEmitter.delete();
+					}
+
+					//Killer functionality.
+					if(isObject(%client.player))
+					{
+						%playerDatablock = %client.player.getDatablock();
+						if(%playerDatablock.isKiller)
+						{
+							%playerDatablock.onAllRitualsPlaced(%client.player);
+						}
 					}
 				}
 			}
