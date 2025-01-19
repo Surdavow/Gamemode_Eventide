@@ -92,6 +92,11 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
     };
 };
 
+function Slayer_Eventide::preMinigameReset(%this, %callingClient)
+{
+    clearCurrentKillers();
+}
+
 function Slayer_Eventide::onMinigameReset(%this, %callingClient)
 {
     %mini = %this.minigame;
@@ -189,7 +194,32 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
     %mini.playSound("round_start_sound");
 }
 
-function Slayer_Eventide::preMinigameReset(%this, %callingClient)
+//The minigame is ending, do some cleanup.
+function Slayer_Eventide::onGameModeEnd(%this)
 {
-    clearCurrentKillers();
+    %mini = %this.minigame;
+
+    //Disable local chat.
+    if($MinigameLocalChat)
+    {
+        $MinigameLocalChat = false;
+        %mini.bottomprintall("<font:impact:30>\c3Local chat disabled",4);
+    }
+
+    for(%i = 0; %i < %mini.numMembers; %i++)
+    {
+        %client = %mini.member[%i];
+        if(isObject(%client) && isObject(%client.EventidemusicEmitter)) 
+        {
+            %client.EventidemusicEmitter.delete();
+        }
+        %client.escaped = false;
+    }
+
+    if(isObject(Eventide_MinigameGroup))
+    {
+        Eventide_MinigameGroup.delete();
+    }
+
+    %mini.randomizeEventideItems(false);
 }
