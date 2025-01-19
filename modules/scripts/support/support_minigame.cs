@@ -12,40 +12,6 @@ function serverCmdResetMG(%client)
 	serverCmdResetMinigame(%client);
 }
 
-package Eventide_Minigame
-{
-	function Slayer_MiniGameSO::endRound(%minigame, %winner, %resetTime)
-	{
-		Parent::endRound(%minigame, %winner, %resetTime);
-
-		%minigame.playSound("round_end_sound");
-
-		// Disable local chat at the end of the round, let everyone banter at the end
-		if ($MinigameLocalChat)
-		{
-			$MinigameLocalChat = false;
-			%minigame.bottomprintall("<font:impact:20>\c3Local chat disabled",4);
-		}
-		
-		%killers = getCurrentKillers();
-		for(%i = 0; %i < %killers.getCount(); %i++)
-		{
-			%killer = %killers.getObject(%i);
-			%killerTeam = %killer.getTeam();
-			if(isObject(%killer.player) && isObject(%killer))
-			{
-				%won = (%winner.getClassName() $= "Slayer_TeamSO" && %winner.getId() == %killerTeam.getId()) || (%winner.getClassName() $= "GameConnection" && %winner.getId() == %killer.getId());
-				%killerDataBlock = %killer.getDataBlock();
-				%killerDatablock.onRoundEnd(%killer, %won);
-			}
-		}
-	}
-};
-
-// In case the package is already activated, deactivate it first before reactivating it
-if (isPackage(Eventide_Minigame)) deactivatePackage(Eventide_Minigame);
-activatePackage(Eventide_Minigame);
-
 function MiniGameSO::checkDownedSurvivors(%minigame)
 {
 	// This will only work team based Slayer minigames, this will check if all survivors are incapacitated and end the round if they are
