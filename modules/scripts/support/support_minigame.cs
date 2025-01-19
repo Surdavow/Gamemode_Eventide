@@ -41,52 +41,6 @@ package Eventide_Minigame
 		}
 	}
 
-    function MiniGameSO::Reset(%minigame,%client)
-	{
-		//Need to clear this before everyone spawns when the parent is called.
-		clearCurrentKillers();
-		Parent::Reset(%minigame, %client);
-
-		if (isObject(Eventide_MinigameGroup)) Eventide_MinigameGroup.delete();
-		
-		if (isObject($EventideRitualBrick)) 
-		{
-			$EventideRitualBrick.ritualsPlaced = 0;
-			$EventideRitualBrick.gemcount = 0;
-			$EventideRitualBrick.candlecount = 0;
-		}
-
-		%minigame.escapedCount = 0;
-    	%minigame.livingCount = 0; 
-
-		for (%i = 0; %i < getWordCount($Eventide_SurvivorClasses); %i++)
-		%minigame.survivorClass[getWord($Eventide_SurvivorClasses,%i)] = 0;
-		
-		// Loop through all minigame members to perform some actions
-		for (%i=0;%i<%minigame.numMembers;%i++) if (isObject(%client = %minigame.member[%i])) 
-		{
-			// Reset the escape flag
-			%client.escaped = false;
-			
-			// Remove the Eventide music emitter if it exists and reset the music level
-			%client.StopChase();
-		}
-
-		// Play the round start sound and announce the minigame
-		if (strlwr(%minigame.title) $= "eventide") 
-		{
-			%minigame.schedule(33,assignSurvivorClasses);
-			%minigame.randomizeEventideItems(true);						
-			%minigame.playSound("round_start_sound");						
-			$MinigameLocalChat = $Pref::Server::ChatMod::lchatEnabled;
-
-			if ($MinigameLocalChat)
-			{
-				%minigame.bottomprintall("<font:impact:25>\c3Local chat is enabled, find a radio to broadcast to other survivors!",4);
-			}
-		}
-    }
-
     function MinigameSO::endGame(%minigame,%client)
     {
         Parent::endGame(%minigame,%client);
@@ -167,6 +121,7 @@ function MiniGameSO::playSound(%minigame,%datablock)
 }
 
 $Eventide_SurvivorClasses = "mender runner hoarder fighter tinkerer";
+
 function MiniGameSO::assignSurvivorClasses(%minigame)
 {	
 	// Return if there are no teams
@@ -210,35 +165,3 @@ function MiniGameSO::assignSurvivorClasses(%minigame)
 	// Delete the temporary simset
 	%memberSet.delete();
 }
-
-//
-// `onLastSurvivor` event.
-//
-
-//Call the `onLastSurvivor` event on any brick that has it.
-function MinigameSO::onLastSurvivor(%minigame)
-{
-	for(%i = 0; %i < mainBrickGroup.getCount(); %i++)
-	{
-		%brickGroup = mainBrickGroup.getObject(%i);
-		%brickCount = %brickGroup.getCount();
-		for(%j = 0; %j < %brickCount; %j++)
-		{
-			%checkObj = %brickGroup.getObject(%j);
-			if(%checkObj.numEvents > 0)
-			{
-				%checkObj.onLastSurvivor();
-			}
-		}
-	}
-}
-
-function fxDTSBrick::onLastSurvivor(%obj)
-{
-	$InputTarget_["Self"] = %obj;
-	$InputTarget_["Player"] = 0;
-	$InputTarget_["Client"] = 0;
-	$InputTarget_["MiniGame"] = getMiniGameFromObject(%obj);
-	%obj.processInputEvent("onLastSurvivor");
-}
-registerInputEvent("fxDTSBrick", "onLastSurvivor", "Self fxDTSBrick" TAB "MiniGame MiniGame", 1);
