@@ -40,30 +40,6 @@ package Eventide_Minigame
 			}
 		}
 	}
-
-    function MinigameSO::endGame(%minigame,%client)
-    {
-        Parent::endGame(%minigame,%client);
-
-		//Disable local chat
-		if ($MinigameLocalChat)
-		{
-			$MinigameLocalChat = false;
-			%minigame.bottomprintall("<font:impact:30>\c3Local chat disabled",4);
-		}
-
-        for (%i=0;%i<%minigame.numMembers;%i++)
-        if (isObject(%client = %minigame.member[%i]) && isObject(%client.EventidemusicEmitter)) 
-		{
-			%client.EventidemusicEmitter.delete();
-			%client.escaped = false;
-		}
-
-		if (isObject(Eventide_MinigameGroup)) 
-		Eventide_MinigameGroup.delete();
-
-		%minigame.randomizeEventideItems(false);
-    }
 };
 
 // In case the package is already activated, deactivate it first before reactivating it
