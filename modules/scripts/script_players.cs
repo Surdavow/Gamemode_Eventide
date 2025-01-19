@@ -1,3 +1,29 @@
+function GameConnection::getRemainingTeamMembers(%client)
+{
+	//Iterate through each member of the survivor's team, checking how many people are still alive and unescaped.
+	%clientTeam = %client.getTeam();
+	if(!isObject(%clientTeam))
+	{
+		return 0;
+	}
+
+	%teamPlayerAmount = %clientTeam.numMembers;
+	%playersLeftCount = 0;
+	for(%i = 0; %i < %teamPlayerAmount; %i++)
+	{
+		%currentMember = %member = %clientTeam.member[%i];
+		if(isObject(%currentMember))
+		{
+			if(!%currentMember.escaped && !%currentMember.Dead() && isObject(%currentMember.player))
+			{
+				%playersLeftCount++;
+			}
+		}
+	}
+
+	return %playersLeftCount;
+}
+
 package Eventide_Player
 {
 	function Player::Unmount(%obj)
@@ -104,7 +130,7 @@ package Eventide_Player
 
 	function Armor::onRemove(%this,%obj)
 	{
-		Parent::onRemove(%this,%obj);
+		Parent::onRemove(%this, %obj);
 
 		for (%i = 0; %i < %obj.getMountedObjectCount(); %i++)
 		{
@@ -327,23 +353,6 @@ function GameConnection::Escape(%client)
 	}
 	
 	%client.escaped = true;
-
-	//Iterate through each member of the survivor's team, checking how many people are still alive and unescaped.
-	%clientTeam = %client.getTeam();
-
-	%teamPlayerAmount = %clientTeam.numMembers;
-	%playersLeftCount = 0;
-	for(%i = 0; %i < %teamPlayerAmount; %i++)
-	{
-		%currentMember = %member = %clientTeam.member[%i];
-		if(isObject(%currentMember))
-		{
-			if(!%currentMember.escaped && !%currentMember.Dead() && isObject(%currentMember.player))
-			{
-				%playersLeftCount++;
-			}
-		}
-	}
 	
 	//Delete the escaped player.
 	%client.player.delete();
@@ -354,7 +363,7 @@ function GameConnection::Escape(%client)
 	%client.setdead(1);
 
 	//End the round, if everyone else is dead or escaped.
-	if(%playersLeftCount <= 0)
+	if(%client.getRemainingTeamMembers() <= 0)
 	{
 		%minigame.endRound(%clientTeam);
 		return;

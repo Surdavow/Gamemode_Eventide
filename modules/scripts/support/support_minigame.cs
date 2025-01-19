@@ -167,7 +167,6 @@ function MiniGameSO::playSound(%minigame,%datablock)
 }
 
 $Eventide_SurvivorClasses = "mender runner hoarder fighter tinkerer";
-
 function MiniGameSO::assignSurvivorClasses(%minigame)
 {	
 	// Return if there are no teams
@@ -211,3 +210,35 @@ function MiniGameSO::assignSurvivorClasses(%minigame)
 	// Delete the temporary simset
 	%memberSet.delete();
 }
+
+//
+// `onLastSurvivor` event.
+//
+
+//Call the `onLastSurvivor` event on any brick that has it.
+function MinigameSO::onLastSurvivor(%minigame)
+{
+	for(%i = 0; %i < mainBrickGroup.getCount(); %i++)
+	{
+		%brickGroup = mainBrickGroup.getObject(%i);
+		%brickCount = %brickGroup.getCount();
+		for(%j = 0; %j < %brickCount; %j++)
+		{
+			%checkObj = %brickGroup.getObject(%j);
+			if(%checkObj.numEvents > 0)
+			{
+				%checkObj.onLastSurvivor();
+			}
+		}
+	}
+}
+
+function fxDTSBrick::onLastSurvivor(%obj)
+{
+	$InputTarget_["Self"] = %obj;
+	$InputTarget_["Player"] = 0;
+	$InputTarget_["Client"] = 0;
+	$InputTarget_["MiniGame"] = getMiniGameFromObject(%obj);
+	%obj.processInputEvent("onLastSurvivor");
+}
+registerInputEvent("fxDTSBrick", "onLastSurvivor", "Self fxDTSBrick" TAB "MiniGame MiniGame", 1);
