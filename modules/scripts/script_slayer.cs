@@ -52,9 +52,6 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
     locked_teams_lock = true;
     locked_teams_shuffleTeams = false;
 
-    //Custom field to store players who have yet to play Hunter.
-    hunterQueue = new SimSet(Eventide_HunterQueue);
-
     // Teams
     new ScriptObject()
     {
@@ -91,19 +88,22 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
         locked_lock = true;
     };
 };
+//Custom field to store players who have yet to play Hunter.
+$Eventide_HunterQueue = new SimSet(Eventide_HunterQueue);
 
 function Slayer_Eventide::onMinigameReset(%this, %client)
 {
-    %minigame = %this.minigame;
+    %mini = %this.minigame;
     %survivorTeam = %mini.teams.getTeamFromName("Survivors");
 	%hunterTeam = %mini.teams.getTeamFromName("Hunters");
 
-    if(!isObject(%this.hunterQueue))
+    if(isObject($Eventide_HunterQueue))
     {
-        %this.hunterQueue = new SimSet(Eventide_HunterQueue);
+        $Eventide_HunterQueue.delete();
     }
+    $Eventide_HunterQueue = new SimSet(Eventide_HunterQueue);
 
-    %queuedPlayers = %this.hunterQueue.getCount();
+    %queuedPlayers = $Eventide_HunterQueue.getCount();
     %numberOfMinigameMembers = %this.numMembers["GameConnection"];
 
     //First, decide who will be the Hunter, based on who hasn't already played the hunter.
@@ -117,15 +117,15 @@ function Slayer_Eventide::onMinigameReset(%this, %client)
             %client = %this.member["GameConnection", %i];
             if(%client.getID() != %selectedHunter.getID())
             {
-                %this.hunterQueue.add(%client);
+                $Eventide_HunterQueue.add(%client);
             }
         }
     }
     else
     {
         //Some people still haven't played Hunter, decide which one gets to go next.
-        %selectedHunter = %this.hunterQueue.getObject(getRandom(0, (%this.hunterQueue.getCount() - 1)))
-        %this.hunterQueue.remove(%selectedHunter);
+        %selectedHunter = $Eventide_HunterQueue.getObject(getRandom(0, ($Eventide_HunterQueue.getCount() - 1)));
+        $Eventide_HunterQueue.remove(%selectedHunter);
     }
 
     //Now, assign everyone a new team - Hunter if they got chosen, Survivor if not.
