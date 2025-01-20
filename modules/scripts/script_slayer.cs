@@ -6,7 +6,7 @@
 // Slayer gamemode template.
 //
 
-new ScriptGroup(Slayer_GameModeTemplateSG)
+$Eventide_SlayerTemplateObject = new ScriptGroup(Slayer_GameModeTemplateSG)
 {
     // Game mode settings
     className = "Slayer_Eventide";
@@ -52,9 +52,6 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
     locked_teams_lock = true;
     locked_teams_shuffleTeams = false;
 
-    //Custom field to store players who have yet to play Hunter.
-    hunterQueue = new SimSet(Eventide_HunterQueue);
-
     // Teams
     new ScriptObject()
     {
@@ -91,6 +88,8 @@ new ScriptGroup(Slayer_GameModeTemplateSG)
         locked_lock = true;
     };
 };
+//Store players who have yet to play Hunter.
+$Eventide_HunterQueue = new SimSet(Eventide_HunterQueue);
 
 function Slayer_Eventide::preMinigameReset(%this, %callingClient)
 {
@@ -119,12 +118,12 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
     //Sprinkle items around the map.
     %mini.randomizeEventideItems(true);
 
-    if(!isObject(%this.hunterQueue))
+    if(!isObject($Eventide_HunterQueue))
     {
-        %this.hunterQueue = new SimSet(Eventide_HunterQueue);
+        $Eventide_HunterQueue = new SimSet(Eventide_HunterQueue);
     }
 
-    %queuedPlayers = %this.hunterQueue.getCount();
+    %queuedPlayers = $Eventide_HunterQueue.getCount();
     %numberOfMinigameMembers = %this.numMembers["GameConnection"];
 
     //Decide who will be the Hunter, based on who hasn't already played the hunter.
@@ -138,7 +137,7 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
             %client = %this.member["GameConnection", %i];
             if(%client.getID() != %selectedHunter.getID())
             {
-                %this.hunterQueue.add(%client);
+                $Eventide_HunterQueue.add(%client);
             }
 
             //Since we're already here, mark each person as unescaped and stop their chase music initally.
@@ -149,8 +148,8 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
     else
     {
         //Some people still haven't played Hunter, decide which one gets to go next.
-        %selectedHunter = %this.hunterQueue.getObject(getRandom(0, (%this.hunterQueue.getCount() - 1)));
-        %this.hunterQueue.remove(%selectedHunter);
+        %selectedHunter = $Eventide_HunterQueue.getObject(getRandom(0, ($Eventide_HunterQueue.getCount() - 1)));
+        $Eventide_HunterQueue.remove(%selectedHunter);
 
         //Mark everyone as unescaped and stop their chase music initially.
         for(%i = 0; %i < %numberOfMinigameMembers; %i++)
