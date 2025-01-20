@@ -125,17 +125,17 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
     $Eventide_HunterQueue = new SimSet(Eventide_HunterQueue);
 
     %queuedPlayers = $Eventide_HunterQueue.getCount();
-    %numberOfMinigameMembers = %this.numMembers["GameConnection"];
+    %numberOfMinigameMembers = %mini.numMembers["GameConnection"];
 
     //Decide who will be the Hunter, based on who hasn't already played the hunter.
     %selectedHunter = "";
     if(%queuedPlayers == 0)
     {
         //The queue is empty. Fill it up with everyone, then pick a random person to play hunter.
-        %selectedHunter = %this.member["GameConnection", getRandom(0, (%numberOfMinigameMembers - 1))];
+        %selectedHunter = %mini.member["GameConnection", getRandom(0, (%numberOfMinigameMembers - 1))];
         for(%i = 0; %i < %numberOfMinigameMembers; %i++)
         {
-            %client = %this.member["GameConnection", %i];
+            %client = %mini.member["GameConnection", %i];
             if(%client.getID() != %selectedHunter.getID())
             {
                 $Eventide_HunterQueue.add(%client);
@@ -155,7 +155,7 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
         //Mark everyone as unescaped and stop their chase music initially.
         for(%i = 0; %i < %numberOfMinigameMembers; %i++)
         {
-            %client = %this.member["GameConnection", %i];
+            %client = %mini.member["GameConnection", %i];
             %client.escaped = false;
             %client.StopChase();
         }
@@ -166,7 +166,7 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
 	%mini.teams_notifyMemberChanges = false; //Prevent chat message spam as people get assigned to their new team.
     for(%i = 0; %i < %numberOfMinigameMembers; %i++)
     {
-        %client = %this.member["GameConnection", %i];
+        %client = %mini.member["GameConnection", %i];
         if(%client.getID() == %selectedHunter.getID())
         {
             %hunterTeam.addMember(%client, "", true);
