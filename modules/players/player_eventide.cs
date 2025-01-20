@@ -873,4 +873,5 @@ function EventidePlayerDowned::onRemove(%this, %obj)
 	{
 		%minigame.onLastSurvivor();
 	}
+	parent::onRemove(%this, %obj);
 }

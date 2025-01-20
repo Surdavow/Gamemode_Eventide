@@ -67,6 +67,8 @@ $Eventide_SlayerTemplateObject = new ScriptGroup(Slayer_GameModeTemplateSG)
         locked_name = "Survivors";
         locked_lives = 1;
         locked_color = Slayer_Support::getClosestPaintColor("1 1 1 1"); //White.
+        locked_sort = false;
+        locked_lock = true;
     };
 
     new ScriptObject()
