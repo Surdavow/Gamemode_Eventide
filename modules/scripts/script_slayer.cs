@@ -36,6 +36,7 @@ $Eventide_SlayerTemplateObject = new ScriptGroup(Slayer_GameModeTemplateSG)
 
     default_bKills_enable = false;
     default_clearStats = false;
+    default_timeBetweenRounds = 10;
 
     default_startEquip0 = 0;
     default_startEquip1 = 0;
@@ -48,7 +49,6 @@ $Eventide_SlayerTemplateObject = new ScriptGroup(Slayer_GameModeTemplateSG)
 
     //Teams need to be shuffled manually.
     //I'm planning to make a queueing system where everyone get's to play the killer consistently.
-    locked_teams_autoSort = false;
     locked_teams_lock = true;
     locked_teams_shuffleTeams = false;
 
@@ -61,13 +61,12 @@ $Eventide_SlayerTemplateObject = new ScriptGroup(Slayer_GameModeTemplateSG)
 
         default_syncLoadout = true;
         default_uniform = 0;
+        default_maxPlayers = -1;
 
         // Locked team settings
         locked_name = "Survivors";
         locked_lives = 1;
         locked_color = Slayer_Support::getClosestPaintColor("1 1 1 1"); //White.
-        locked_sort = false;
-        locked_lock = true;
     };
 
     new ScriptObject()
@@ -79,13 +78,12 @@ $Eventide_SlayerTemplateObject = new ScriptGroup(Slayer_GameModeTemplateSG)
         default_syncLoadout = true;
         default_uniform = 0;
         default_playerDatablock = NameToID("PlayerNoJet");
+        default_maxPlayers = 1;
 
         // Locked team settings
         locked_name = "Hunters";
         locked_lives = 1;
         locked_color = Slayer_Support::getClosestPaintColor("0 0 0 1"); //Black.
-        locked_sort = false;
-        locked_lock = true;
     };
 };
 //Store players who have yet to play Hunter.
@@ -118,10 +116,11 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
     //Sprinkle items around the map.
     %mini.randomizeEventideItems(true);
 
-    if(!isObject($Eventide_HunterQueue))
+    if(isObject($Eventide_HunterQueue))
     {
-        $Eventide_HunterQueue = new SimSet(Eventide_HunterQueue);
+        $Eventide_HunterQueue.delete();
     }
+    $Eventide_HunterQueue = new SimSet(Eventide_HunterQueue);
 
     %queuedPlayers = $Eventide_HunterQueue.getCount();
     %numberOfMinigameMembers = %this.numMembers["GameConnection"];
@@ -182,6 +181,7 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
     {
         %mini.survivorClass[getWord($Eventide_SurvivorClasses, %i)] = 0;
     }
+    %mini.assignSurvivorClasses();
 
     //Inform everyone that local chat is enabled.
     if($Pref::Server::ChatMod::lchatEnabled)
@@ -195,6 +195,8 @@ function Slayer_Eventide::onMinigameReset(%this, %callingClient)
 
 function Slayer_Eventide::onRoundEnd(%this, %winner, %nameList)
 {
+    %mini = %this.minigame;
+
     //Disable local chat at the end of the round, let everyone banter at the end.
     if($MinigameLocalChat)
     {
