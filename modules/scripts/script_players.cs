@@ -343,11 +343,12 @@ function Armor::EventideAppearance(%this,%obj,%client)
 registerOutputEvent("GameConnection", "Escape", "", false);
 function GameConnection::Escape(%client)
 {
+	%clientTeam = %client.getTeam();
 	if(!isObject(%minigame = getMinigameFromObject(%client))) 
 	{
 		return %client.centerprint("This only works in minigames!",1);
 	}
-	else if(strlwr(%client.getTeam().name) !$= "survivors")
+	else if(strlwr(%clientTeam.name) !$= "survivors")
 	{
 		return %client.centerprint("Only survivors can escape the map!",1);
 	}
