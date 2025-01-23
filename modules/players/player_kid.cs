@@ -276,11 +276,11 @@ function Player::createTrap(%obj, %pos)
 	%obj.kidTrap = new StaticShape()
 	{
 		datablock = PlayerKidTrap;
-		position = %pos;
 		killer = %obj;
 		timePlaced = getSimTime();
 		tickRate = PlayerKidTrap.tickRate;
 	};
+	%obj.kidTrap.setTransform(%pos);
 
 	%obj.kidTrap.trapEmitter = new ParticleEmitterNode()
 	{
