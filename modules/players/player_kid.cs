@@ -162,7 +162,7 @@ datablock StaticShapeData(PlayerKidTrap)
 
 function PlayerKidTrap::tick(%this, %obj)
 {
-	%killer = %obj.killers;
+	%killer = %obj.killer;
 	talk("Obj:" SPC %obj.getClassName());
 	talk("Killer:" SPC %killer);
 	//Debug message.
