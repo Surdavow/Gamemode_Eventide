@@ -214,7 +214,7 @@ function PlayerKidTrap::tick(%this, %obj)
         }
 
 		//The found player is a valid target, activate the trap.
-		%obj.position = %obj.getPosition();
+		%killer.position = %obj.getPosition();
 		%killer.teleportEffect();
 		%obj.delete();
 		return;
