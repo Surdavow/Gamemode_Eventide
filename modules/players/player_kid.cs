@@ -260,7 +260,7 @@ function PlayerKidTrap::onAdd(%this, %obj)
 
 function PlayerKidTrap::onRemove(%this, %obj)
 {
-	
+	%obj.trapEmitter.delete();
 }
 
 function Player::createTrap(%obj, %pos)
@@ -278,7 +278,13 @@ function Player::createTrap(%obj, %pos)
 		timePlaced = getSimTime();
 		tickRate = PlayerKidTrap.tickRate;
 	};
-	%obj.kidTrap.killer = %obj;
+
+	%obj.trapEmitter = new ParticleEmitterNode()
+	{
+		datablock = GenericEmitterNode;
+		emitter = PlayerBubbleEmitter;
+	}
+	%obj.trapEmitter.setTransform(%obj.kidTrap.getTransform());
 }
 
 //
