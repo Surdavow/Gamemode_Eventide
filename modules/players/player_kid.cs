@@ -156,7 +156,7 @@ function PlayerKid::EventideAppearance(%this,%obj,%client)
 
 datablock StaticShapeData(PlayerKidTrap)
 {
-	shapeFile = "Add-Ons/Gamemode_Eventide/modules/items/models/emptyWeapon.dts";
+	shapeFile = "base/data/shapes/empty.dts";
 	tickRate = 100;
 };
 
