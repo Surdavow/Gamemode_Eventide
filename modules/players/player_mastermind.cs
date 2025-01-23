@@ -111,7 +111,7 @@ function PlayerMastermind::onNewDatablock(%this,%obj)
 {
 	Parent::onNewDatablock(%this,%obj);
 	%obj.mountImage("meleeKnifeImage",1);
-	%obj.mountImage("overcoatImage",0);
+	%obj.mountImage("overcoatMountedImage",2);
 	%obj.setScale("1 1 1");
 
     %obj.gazeTickRate = %this.gazeTickRate;
