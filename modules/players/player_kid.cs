@@ -163,10 +163,6 @@ datablock StaticShapeData(PlayerKidTrap)
 function PlayerKidTrap::tick(%this, %obj)
 {
 	%killer = %obj.killer;
-	talk("Obj:" SPC %obj.getClassName());
-	talk("Killer:" SPC %killer);
-	//Debug message.
-	ClientGroup.getObject(0).centerPrint(isObject(%killer) SPC isObject(%obj) SPC %killer.isTeleportReady SPC getRandom(11, 99), 1);
 
 	if(!isObject(%obj))
 	{
@@ -188,7 +184,7 @@ function PlayerKidTrap::tick(%this, %obj)
 			%obj.ticksSinceGlitchText = 0;
 			%obj.setShapeName("");
 		}
-		%this.tick(%obj.tickRate, %obj);
+		%this.schedule(%obj.tickRate, "tick", %obj);
 		return;
 	}
 
@@ -221,7 +217,6 @@ function PlayerKidTrap::tick(%this, %obj)
 		%obj.position = %obj.getPosition();
 		%killer.teleportEffect();
 		%obj.delete();
-		talk("Trap tripped!");
 		return;
 	}
 
@@ -247,7 +242,7 @@ function PlayerKidTrap::tick(%this, %obj)
 		%obj.ticksSinceGlitchText++;
 	}
 
-	%this.tick(%obj.tickRate, %obj);
+	%this.schedule(%obj.tickRate, "tick", %obj);
 }
 
 function PlayerKidTrap::onAdd(%this, %obj)
@@ -284,8 +279,6 @@ function Player::createTrap(%obj, %pos)
 		tickRate = PlayerKidTrap.tickRate;
 	};
 	%obj.kidTrap.killer = %obj;
-
-	talk("Creating trap!" SPC %obj.kidTrap);
 }
 
 //
