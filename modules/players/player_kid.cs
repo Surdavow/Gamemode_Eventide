@@ -221,26 +221,26 @@ function PlayerKidTrap::tick(%this, %obj)
 	}
 
 	//No player was found, so let's update the glitch text.
-	// %glitchChange = getRandom(1, 10);
-	// if(%glitchChange == 1 || %obj.ticksSinceGlitchText > 9)
-	// {
-	// 	%glitchString = "";
-	// 	for(%i = 0; %i < 8; %i++)
-	// 	{
-	// 		%glitchString = %glitchString @ getRandom(0, 1);
-	// 	}
-	// 	%obj.currentGlitchText = %glitchString;
-	// 	%obj.ticksSinceGlitchText = 0;
-	// 	%obj.setShapeName(%glitchString);
-	// }
-	// else
-	// {
-	// 	if(%obj.currentGlitchText !$= "")
-	// 	{
-	// 		%obj.setShapeName("");
-	// 	}
-	// 	%obj.ticksSinceGlitchText++;
-	// }
+	%glitchChange = getRandom(1, 10);
+	if(%glitchChange == 1 || %obj.ticksSinceGlitchText > 9)
+	{
+		%glitchString = "";
+		for(%i = 0; %i < 8; %i++)
+		{
+			%glitchString = %glitchString @ getRandom(0, 1);
+		}
+		%obj.currentGlitchText = %glitchString;
+		%obj.ticksSinceGlitchText = 0;
+		%obj.setShapeName(%glitchString);
+	}
+	else
+	{
+		if(%obj.currentGlitchText !$= "")
+		{
+			%obj.setShapeName("");
+		}
+		%obj.ticksSinceGlitchText++;
+	}
 
 	%this.schedule(%obj.tickRate, "tick", %obj);
 }
