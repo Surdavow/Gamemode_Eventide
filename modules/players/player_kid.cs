@@ -255,7 +255,7 @@ function PlayerKidTrap::onAdd(%this, %obj)
 	%obj.setShapeNameColor("1 1 1 1");
 
 
-	%this.tick(%obj.tickRate, %obj);
+	%this.schedule(%obj.tickRate, "tick", %obj);
 }
 
 function PlayerKidTrap::onRemove(%this, %obj)
