@@ -48,7 +48,7 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
     killerlosesound = "kid_lose";
     killerlosesoundamount = 3;
 	
-	killerlight = "NoFlarePLight";
+	killerlight = "NoFlareBLight";
 
 	rightclickicon = "color_dash";
 	leftclickicon = "color_melee";	
@@ -64,15 +64,85 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
 	gazeTickRate = 50;
 };
 
+//
+// Trap projectile, special ability.
+//
+
+datablock ShapeBaseImageData(PlayerKidTrapPrepareImage)
+{
+	shapeFile = "Add-Ons/Gamemode_Eventide/modules/items/models/emptyWeapon.dts";
+	emap = true;
+
+	mountPoint = $LeftHandSlot;
+	offset = "0 0 0";
+	eyeOffset = 0;
+	rotation = eulerToMatrix( "0 0 0" );
+	armReady = true;
+
+	class = "ItemData";
+
+	stateName[0] = "Activate";
+	stateTimeoutValue[0] = 0.15;
+	stateTransitionOnTimeout[0]       = "Ready";
+	stateEmitter[0] = radioWaveTrailEmitter;
+	stateEmitterTime[0] = 600;
+
+	stateName[1] = "Ready";
+	stateAllowImageChange[1] = true;
+	stateSequence[1] = "Ready";
+};
+
+datablock ProjectileData(PlayerKidTrapProjectile : radioWaveProjectile)
+{
+	gravityMod = 1.0;
+};
+function PlayerKidTrapProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal, %velocity)
+{
+	parent::onCollision(%this, %obj, %col, %fade, %pos, %normal, %velocity);
+	talk("Trap position:" SPC %pos);
+}
+
 function PlayerKid::onTrigger(%this, %obj, %trig, %press) 
 {		
 	Parent::onTrigger(%this, %obj, %trig, %press);
-		
-	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
+
+	if(%press)
 	{
-		%this.killerMelee(%obj, 4.5);
-		%obj.faceConfigShowFace("Attack");
-		return;
+		if(!%trig && %obj.getEnergyLevel() >= 25 && !%obj.isPreparingTrap)
+		{
+			//Melee attack.
+			%this.killerMelee(%obj, 4.5);
+			%obj.faceConfigShowFace("Attack");
+		}
+		else if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
+		{
+			//Arm a lightning bolt in the killer's left hand. When space is unpressed, it will be thrown to lay a trap.
+			%obj.isPreparingTrap = true;
+			%obj.playThread(1, armReadyLeft);
+			%obj.mountImage("PlayerKidTrapPrepareImage", $LeftHandSlot);
+		}
+	}
+	else
+	{
+		if(%trig == 4 && %obj.isPreparingTrap)
+		{
+			%obj.isPreparingTrap = false;
+			%obj.setEnergyLevel(0);
+			if(isObject(%obj.getMountedImage($LeftHandSlot)))
+			{
+				%obj.unmountImage($LeftHandSlot);
+			}
+			%obj.playThread(1, root);
+
+			//Throw a projectile from the killer's left hand. When it hits something, a trap will be placed there.
+			new Projectile()
+			{
+				dataBlock = PlayerKidTrapProjectile;
+				initialPosition = %obj.getMuzzlePoint($LeftHandSlot);
+				initialVelocity = VectorScale(%obj.getMuzzleVector($LeftHandSlot), PlayerKidTrapProjectile.muzzleVelocity);
+				sourceObject = %obj;
+			};
+		}
 	}
 }
 
