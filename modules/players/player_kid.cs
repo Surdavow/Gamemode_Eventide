@@ -4,7 +4,7 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
 	
 	hitprojectile = KillerRoughHitProjectile;
 	hitobscureprojectile = "";
-	meleetrailskin = "base";
+	meleetrailskin = "ragged";
 
 	killerChaseLvl1Music = "musicData_Eventide_KidNear";
 	killerChaseLvl2Music = "musicData_Eventide_KidChase";
@@ -19,25 +19,34 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
 	killermeleesoundamount = 1;
 	
 	killernearsound = "kid_looking";
-	killernearsoundamount = 3;
+	killernearsoundamount = 7;
 
     killertauntsound = "kid_kill";
-    killertauntsoundamount = 4;
+    killertauntsoundamount = 5;
 
 	killerfoundvictimsound = "kid_foundvictim";
-	killerfoundvictimsoundamount = 4;
+	killerfoundvictimsoundamount = 8;
 
     killerlostvictimsound = "kid_lostvictim";
-	killerlostvictimsoundamount = 2;
+	killerlostvictimsoundamount = 5;
 
     killerattackedsound = "kid_attacked";
-	killerattackedsoundamount = 3;
+	killerattackedsoundamount = 4;
+
+	killerpainsound = "kid_pain";
+	killerpainsoundamount = 6;
 	
 	killerweaponsound = "grabber_weapon";
 	killerweaponsoundamount = 5;	
 
 	killermeleehitsound = "melee_tanto";
 	killermeleehitsoundamount = 3;
+
+	killerwinsound = "kid_win";
+    killerwinsoundamount = 2;
+
+    killerlosesound = "kid_lose";
+    killerlosesoundamount = 3;
 	
 	killerlight = "NoFlarePLight";
 
@@ -61,7 +70,7 @@ function PlayerKid::onTrigger(%this, %obj, %trig, %press)
 		
 	if(%press && !%trig && %obj.getEnergyLevel() >= 25)
 	{
-		%this.killerMelee(%obj,4.5);
+		%this.killerMelee(%obj, 4.5);
 		%obj.faceConfigShowFace("Attack");
 		return;
 	}
@@ -74,10 +83,11 @@ function PlayerKid::onNewDatablock(%this,%obj)
 	%obj.faceConfig.setFaceAttribute("Attack", "length", 500);
 	%obj.faceConfig.setFaceAttribute("Pain", "length", 1000);
 	%obj.faceConfig.setFaceAttribute("Blink", "length", 100);
+
 	//Everything else.
-	Parent::onNewDatablock(%this,%obj);
+	Parent::onNewDatablock(%this, %obj);
 	%obj.setScale("1 1 1");
-	%obj.mountImage("defaultswordImage",0);
+	%obj.mountImage("kidsHammerImage", $RightHandSlot);
 	%obj.gazeTickRate = %this.gazeTickRate;
 	%obj.KidGaze();
 }
@@ -168,11 +178,11 @@ function PlayerKid::onKillerChaseStart(%this, %obj, %chasing)
     }
 }
 
-function PlayerGKid::onKillerChase(%this, %obj, %chasing)
+function PlayerKid::onKillerChase(%this, %obj, %chasing)
 {
 	if(!%chasing)
     {
-        //A victim is nearby but Postal Dude can't see them yet. Say some quips.
+        //A victim is nearby but the Kid can't see them yet. Say some quips.
         %soundType = %this.killernearsound;
         %soundAmount = %this.killernearsoundamount;
         if(%soundType !$= "" && (getSimTime() > (%obj.lastKillerSoundTime + getRandom(15000, 25000))))
@@ -308,7 +318,7 @@ function Player::KidGaze(%obj)
 			continue;
 		}
 
-		//They have an item equipped and it's a weapon, have Postal Dude react to it.
+		//They have an item equipped and it's a weapon, have the Kid react to it.
 		if(%victimEquippedItem.isWeapon || %victimEquippedItem.className $= "WeaponImage")
 		{
 			%soundType = %killerDatablock.killerthreatenedsound;
@@ -317,7 +327,7 @@ function Player::KidGaze(%obj)
 			{
 				%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
 				%obj.lastKillerSoundTime = getSimTime();
-				%obj.threatsReceived.add(%foundPlayer); //Ensure Postal Dude does not acknowledge any further weapons. Less annoying.
+				%obj.threatsReceived.add(%foundPlayer); //Ensure the Kid does not acknowledge any further weapons. Less annoying.
 			}
 		}
 
@@ -331,6 +341,28 @@ function PlayerKid::onDamage(%this, %obj, %delta)
 {
 	Parent::onDamage(%this, %obj, %delta);
 
-	if(%obj.getState() !$= "Dead") %obj.playaudio(0,"kid_pain1_sound");
-	%obj.faceConfigShowFace("Pain");
+	if(%obj.getState() !$= "Dead") 
+	{
+		%obj.faceConfigShowFace("Pain");
+		%soundType = %this.killerpainsound;
+		%soundAmount = %this.killerpainsoundamount;
+		if(%soundType !$= "")
+		{
+			%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+			%obj.lastKillerSoundTime = getSimTime();
+		}
+	}
+}
+
+function PlayerKid::onDisabled(%this, %obj)
+{
+	parent::onDisabled(%this, %obj);
+	
+	%soundType = %this.killerlosesound;
+	%soundAmount = %this.killerlosesoundamount;
+	if(%soundType !$= "")
+	{
+		%obj.playAudio(0, %soundType @ getRandom(1, %soundAmount) @ "_sound");
+		%obj.lastKillerSoundTime = getSimTime();
+	}
 }

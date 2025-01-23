@@ -74,6 +74,47 @@ datablock ShapeBaseImageData(meleeTantoImage)
 	stateSequence[8]	= "clickDown";
 };
 
+datablock ParticleData(kidsHammerParticle)
+{
+	dragCoefficient      = 0;
+	gravityCoefficient   = -1;
+	inheritedVelFactor   = 0;
+	constantAcceleration = -2.0;
+	spinRandomMin        = -300;
+	spinRandomMax        = 300;
+	lifetimeMS           = 1000;
+	lifetimeVarianceMS   = 250;
+	textureName          = "./models/ban.png";
+	colors[0]            = "1 0 0 0";
+	colors[1]            = "1 1 1 1";
+	colors[2]            = "1 0 0 0.5";
+	colors[3]            = "1 0 0 0";
+	sizes[0]             = 0.1;
+	sizes[1]             = 1.5;
+	sizes[2]             = 0.7;
+	sizes[3]             = 0.2;
+	times[0]             = 0;
+	times[1]             = 0.4;
+	times[2]             = 0.8;
+	times[3]             = 1;
+};
+datablock ParticleEmitterData(kidsHammerParticleEmitter)
+{
+	ejectionPeriodMS = 200;
+	periodVarianceMS = 100;
+	ejectionVelocity = 5;
+	velocityVariance = 0;
+	ejectionOffset   = 0.4;
+	thetaMin         = 5;
+	thetaMax         = 25;
+	phiReferenceVel  = 0;
+	phiVariance      = 360;
+	overrideAdvance  = false;
+	particles        = "kidsHammerParticle";
+
+	uiName = "Kid's Hammer Emitter";
+};
+
 datablock ShapeBaseImageData(meleeMacheteImage : meleeTantoImage)
 {
    shapeFile = "./models/machete.dts";
@@ -119,6 +160,23 @@ datablock ShapeBaseImageData(blackKnifeImage : meleeTantoImage)
 {
    shapeFile = "./models/BlackKnife.dts";
    mountPoint = 1;
+};
+
+datablock ShapeBaseImageData(kidsHammerImage : meleeTantoImage)
+{
+	shapeFile = "base/data/shapes/hammer.dts";
+	doColorShift = true;
+	colorShiftColor = "1 0 0 1";
+	mountPoint = $RightHandSlot;
+
+	stateEmitter[0] = kidsHammerParticleEmitter;
+	stateEmitter[1] = kidsHammerParticleEmitter;
+	stateEmitter[2] = kidsHammerParticleEmitter;
+	stateEmitter[4] = kidsHammerParticleEmitter;
+	stateEmitter[5] = kidsHammerParticleEmitter;
+	stateEmitter[6] = kidsHammerParticleEmitter;
+	stateEmitter[7] = kidsHammerParticleEmitter;
+	stateEmitter[8] = kidsHammerParticleEmitter;
 };
 
 datablock ShapeBaseImageData(ZweihanderImage : meleeTantoImage)
