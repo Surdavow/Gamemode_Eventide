@@ -260,7 +260,10 @@ function PlayerKidTrap::onAdd(%this, %obj)
 
 function PlayerKidTrap::onRemove(%this, %obj)
 {
-	%obj.trapEmitter.delete();
+	if(isObject(%obj.trapEmitter))
+	{
+		%obj.trapEmitter.delete();
+	}
 }
 
 function Player::createTrap(%obj, %pos)
@@ -283,7 +286,7 @@ function Player::createTrap(%obj, %pos)
 	{
 		datablock = GenericEmitterNode;
 		emitter = PlayerBubbleEmitter;
-	}
+	};
 	%obj.trapEmitter.setTransform(%obj.kidTrap.getTransform());
 }
 
