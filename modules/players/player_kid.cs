@@ -282,12 +282,12 @@ function Player::createTrap(%obj, %pos)
 		tickRate = PlayerKidTrap.tickRate;
 	};
 
-	%obj.trapEmitter = new ParticleEmitterNode()
+	%obj.kidTrap.trapEmitter = new ParticleEmitterNode()
 	{
 		datablock = GenericEmitterNode;
 		emitter = PlayerBubbleEmitter;
 	};
-	%obj.trapEmitter.setTransform(%obj.kidTrap.getTransform());
+	%obj.kidTrap.trapEmitter.setTransform(%obj.kidTrap.getTransform());
 }
 
 //
