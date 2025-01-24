@@ -178,12 +178,6 @@ function PlayerKidTrap::tick(%this, %obj)
 	else if(!%killer.isTeleportReady)
 	{
 		//If the Kid is not ready to teleport, don't bother checking if he can.
-		if(%obj.currentGlitchText !$= "")
-		{
-			%obj.currentGlitchText = "";
-			%obj.ticksSinceGlitchText = 0;
-			%obj.setShapeName("");
-		}
 		%this.schedule(%obj.tickRate, "tick", %obj);
 		return;
 	}
@@ -220,41 +214,11 @@ function PlayerKidTrap::tick(%this, %obj)
 		return;
 	}
 
-	//No player was found, so let's update the glitch text.
-	%glitchChange = getRandom(1, 10);
-	if(%glitchChange == 1 || %obj.ticksSinceGlitchText > 9)
-	{
-		%glitchString = "";
-		for(%i = 0; %i < 8; %i++)
-		{
-			%glitchString = %glitchString @ getRandom(0, 1);
-		}
-		%obj.currentGlitchText = %glitchString;
-		%obj.ticksSinceGlitchText = 0;
-		%obj.setShapeName(%glitchString);
-	}
-	else
-	{
-		if(%obj.currentGlitchText !$= "")
-		{
-			%obj.setShapeName("");
-		}
-		%obj.ticksSinceGlitchText++;
-	}
-
 	%this.schedule(%obj.tickRate, "tick", %obj);
 }
 
 function PlayerKidTrap::onAdd(%this, %obj)
 {
-	%obj.currentGlitchText = "01100001";
-	%obj.ticksSinceGlitchText = 0;
-
-	%obj.setShapeName(%obj.currentGlitchText);
-	%obj.setShapeNameDistance(999); //Visible from 6 studs away.
-	%obj.setShapeNameColor("1 1 1 1");
-
-
 	%this.schedule(%obj.tickRate, "tick", %obj);
 }
 
