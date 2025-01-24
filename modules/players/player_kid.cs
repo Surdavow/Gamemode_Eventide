@@ -207,13 +207,13 @@ function PlayerKidTrap::tick(%this, %obj)
             continue;
         }
 
+		//Play an audio que.
+		serverPlay3D("kid_power" @ getRandom(3, 5) @ "_sound", %obj.getPosition());
+
 		//The found player is a valid target, activate the trap.
 		%killer.setTransform(%obj.getPosition());
 		%killer.teleportEffect();
 		%obj.delete();
-
-		//Play an audio que.
-		serverPlay3D("kid_power" @ getRandom(3, 5) @ "_sound", %obj.getPosition());
 
 		return;
 	}
