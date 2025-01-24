@@ -274,7 +274,7 @@ datablock ShapeBaseImageData(PlayerKidTrapPrepareImage)
 	stateName[0] = "Activate";
 	stateTimeoutValue[0] = 0.15;
 	stateTransitionOnTimeout[0]       = "Ready";
-	stateEmitter[0] = radioWaveTrailEmitter;
+	stateEmitter[0] = KidBinaryEmitter0;
 	stateEmitterTime[0] = 600;
 
 	stateName[1] = "Ready";
@@ -285,6 +285,8 @@ datablock ShapeBaseImageData(PlayerKidTrapPrepareImage)
 datablock ProjectileData(PlayerKidTrapProjectile : radioWaveProjectile)
 {
 	gravityMod = 1.0;
+	particles = "KidBinaryParticle0";
+	useEmitterColors = true;
 };
 function PlayerKidTrapProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal, %velocity)
 {
