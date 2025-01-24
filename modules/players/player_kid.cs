@@ -511,6 +511,7 @@ function PlayerKid::onIncapacitateVictim(%this, %obj, %victim, %killed)
     }
 
 	%victimClient = %victim.client;
+	talk(%victim.getClassName());
 	if(%killed && isObject(%obj.client) && isObject(%victimClient))
 	{
 		%victim.delete();
