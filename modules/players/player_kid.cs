@@ -40,10 +40,10 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
 	killerpainsound = "kid_pain";
 	killerpainsoundamount = 6;
 	
-	killerweaponsound = "grabber_weapon";
+	killerweaponsound = "shire_weapon";
 	killerweaponsoundamount = 5;	
 
-	killermeleehitsound = "melee_tanto";
+	killermeleehitsound = "banhammer";
 	killermeleehitsoundamount = 3;
 
 	killerwinsound = "kid_win";
