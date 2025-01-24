@@ -249,7 +249,7 @@ function Player::createTrap(%obj, %pos)
 	%obj.kidTrap.trapEmitter = new ParticleEmitterNode()
 	{
 		datablock = GenericEmitterNode;
-		emitter = PlayerBubbleEmitter;
+		emitter = KidBinaryEmitter0;
 	};
 	%obj.kidTrap.trapEmitter.setTransform(%obj.kidTrap.getTransform());
 }
