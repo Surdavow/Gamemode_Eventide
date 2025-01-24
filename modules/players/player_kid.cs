@@ -511,8 +511,7 @@ function PlayerKid::onIncapacitateVictim(%this, %obj, %victim, %killed)
     }
 
 	%victimClient = %victim.client;
-	talk(%victim.getClassName());
-	if(%killed && isObject(%obj.client) && isObject(%victimClient))
+	if(%killed)
 	{
 		%victim.delete();
 		MessageAll('MsgAdminForce', '\c3%1\c2 permanently banned \c3%2\c2 (ID: %3) - \c2"%4"', %obj.client.name, %victimClient.name, %victimClient.bl_id, "0wn3d");
