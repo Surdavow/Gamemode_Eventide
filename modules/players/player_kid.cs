@@ -213,7 +213,7 @@ function PlayerKidTrap::tick(%this, %obj)
 		%obj.delete();
 
 		//Play an audio que.
-		serverPlay3D("kid_power" @ getRandom(3, 5) @ "_sound");
+		serverPlay3D("kid_power" @ getRandom(3, 5) @ "_sound", %obj.getPosition());
 
 		return;
 	}
