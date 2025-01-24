@@ -211,6 +211,10 @@ function PlayerKidTrap::tick(%this, %obj)
 		%killer.setTransform(%obj.getPosition());
 		%killer.teleportEffect();
 		%obj.delete();
+
+		//Play an audio que.
+		serverPlay3D("kid_power" @ getRandom(3, 5) @ "_sound");
+
 		return;
 	}
 
