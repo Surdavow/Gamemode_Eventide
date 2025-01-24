@@ -314,7 +314,6 @@ datablock ProjectileData(PlayerKidTrapProjectile)
 	bounceElasticity    = 0.99;
 	bounceFriction      = 0.00;
 	isBallistic         = true;
-	gravityMod          = 0.0;
 
 	useEmitterColors = true;
 	hasLight    = true;
