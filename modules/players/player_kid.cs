@@ -52,7 +52,7 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
     killerlosesound = "kid_lose";
     killerlosesoundamount = 3;
 	
-	killerlight = "NoFlareBLight";
+	killerlight = "NoFlareGLight";
 
 	rightclickicon = "color_dash";
 	leftclickicon = "color_melee";	
@@ -302,7 +302,7 @@ datablock ProjectileData(PlayerKidTrapProjectile)
 
 	collideWithPlayers = false;
 
-	sound = radioWaveTravelSound;
+	sound = "kid_trapfly_sound";
 
 	muzzleVelocity      = 65;
 	velInheritFactor    = 1.0;
@@ -318,7 +318,7 @@ datablock ProjectileData(PlayerKidTrapProjectile)
 	useEmitterColors = true;
 	hasLight    = true;
 	lightRadius = 1.0;
-	lightColor  = "1.0 1.0 0.5";
+	lightColor  = "0 1 0.5";
 
 	uiName = "Kid's Binary Wave"; 
 };

@@ -64,7 +64,7 @@ datablock ShapeBaseImageData (KidBinaryImage0)
 	stateEmitterTime[0]        = 5000;
 	stateEmitterTime[0]        = 5;
 	stateTransitionOnTimeout[0]= "Wait";
-    stateSound[0]               = "renowned_Possessed2_sound";
+    stateSound[0]               = "kid_powerready_sound";
 };
 datablock ParticleData (KidBinaryParticle1)
 {
