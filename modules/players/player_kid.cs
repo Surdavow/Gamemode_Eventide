@@ -527,6 +527,7 @@ function PlayerKid::onIncapacitateVictim(%this, %obj, %victim, %killed)
 		}
 		
 		%victim.delete();
+	}
 }
 
 function PlayerKid::onDamage(%this, %obj, %delta)
