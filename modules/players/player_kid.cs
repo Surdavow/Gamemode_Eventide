@@ -384,7 +384,7 @@ function PlayerKid::onTrigger(%this, %obj, %trig, %press)
 			%obj.playThread(1, root);
 
 			//Throw a projectile from the killer's left hand. When it hits something, a trap will be placed there.
-			%obj.playAudio(1, "kid_powerthrown_sound");
+			%obj.playAudio(1, "kid_trapthrow_sound");
 			new Projectile()
 			{
 				dataBlock = PlayerKidTrapProjectile;
