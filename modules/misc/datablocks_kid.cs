@@ -30,8 +30,8 @@ datablock ParticleEmitterData (KidBinaryEmitter0)
 	phiReferenceVel = 0;
 	phiVariance = 360;
 	overrideAdvance = 0;
-	particles = KidBinaryParticle0;
-	uiName = "Kid Binary";
+	particles = "EmitterDataA EmitterDataB";
+	uiName = "Kid Binary 0";
 };
 datablock ShapeBaseImageData (KidBinaryImage0)
 {
@@ -99,7 +99,7 @@ datablock ParticleEmitterData (KidBinaryEmitter1)
 	phiVariance = 360;
 	overrideAdvance = 0;
 	particles = KidBinaryParticle1;
-	uiName = "Kid Binary";
+	uiName = "Kid Binary 1";
 };
 datablock ShapeBaseImageData (KidBinaryImage1)
 {
