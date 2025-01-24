@@ -208,7 +208,7 @@ function PlayerKidTrap::tick(%this, %obj)
         }
 
 		//Play an audio que.
-		serverPlay3D("kid_power" @ getRandom(3, 5) @ "_sound", %obj.getPosition());
+		serverPlay3D("kid_power" @ getRandom(1, 3) @ "_sound", %obj.getPosition());
 
 		//The found player is a valid target, activate the trap.
 		%killer.setTransform(%obj.getPosition());
@@ -223,6 +223,7 @@ function PlayerKidTrap::tick(%this, %obj)
 
 function PlayerKidTrap::onAdd(%this, %obj)
 {
+	serverPlay3D("kid_trapspawn" @ getRandom(1, 3) @ "_sound", %obj.getPosition());
 	%this.schedule(%obj.tickRate, "tick", %obj);
 }
 
@@ -286,12 +287,43 @@ datablock ShapeBaseImageData(PlayerKidTrapPrepareImage)
 	stateSequence[1] = "Ready";
 };
 
-datablock ProjectileData(PlayerKidTrapProjectile : radioWaveProjectile)
+datablock ProjectileData(PlayerKidTrapProjectile)
 {
+	projectileShapeName = "base/data/shapes/empty.dts";
+	particleEmitter = KidBinaryEmitter0;
+	explosion = KidBinaryExplosion;
+	explodeOnDeath = true;
+
+	brickExplosionRadius = 0;
+	brickExplosionImpact = 0;             //destroy a brick if we hit it directly?
+	brickExplosionForce  = 0;             
+	brickExplosionMaxVolume = 0;          //max volume of bricks that we can destroy
+	brickExplosionMaxVolumeFloating = 0;  //max volume of bricks that we can destroy if they aren't connected to the ground (should always be >= brickExplosionMaxVolume)
+
+	collideWithPlayers = false;
+
+	sound = radioWaveTravelSound;
+
+	muzzleVelocity      = 65;
+	velInheritFactor    = 1.0;
 	gravityMod = 1.0;
-	particles = "KidBinaryParticle0";
+
+	armingDelay         = 0;
+	lifetime            = 30000;
+	fadeDelay           = 29500;
+	bounceElasticity    = 0.99;
+	bounceFriction      = 0.00;
+	isBallistic         = true;
+	gravityMod          = 0.0;
+
 	useEmitterColors = true;
+	hasLight    = true;
+	lightRadius = 1.0;
+	lightColor  = "1.0 1.0 0.5";
+
+	uiName = "Kid's Binary Wave"; 
 };
+
 function PlayerKidTrapProjectile::onCollision(%this, %obj, %col, %fade, %pos, %normal, %velocity)
 {
 	parent::onCollision(%this, %obj, %col, %fade, %pos, %normal, %velocity);
@@ -317,10 +349,11 @@ function PlayerKid::onTrigger(%this, %obj, %trig, %press)
 		}
 		else if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
 		{
-			//Arm a lightning bolt in the killer's left hand. When space is unpressed, it will be thrown to lay a trap.
+			//Arm a glitch wave in the killer's left hand. When space is unpressed, it will be thrown to lay a trap.
 			%obj.isPreparingTrap = true;
 			%obj.playThread(1, armReadyLeft);
 			%obj.mountImage("PlayerKidTrapPrepareImage", $LeftHandSlot);
+			%obj.playAudio(1, "kid_powerready_sound");
 		}
 		else if(%trig == 2 && isObject(%obj.client))
 		{
@@ -351,6 +384,7 @@ function PlayerKid::onTrigger(%this, %obj, %trig, %press)
 			%obj.playThread(1, root);
 
 			//Throw a projectile from the killer's left hand. When it hits something, a trap will be placed there.
+			%obj.playAudio(1, "kid_powerthrown_sound");
 			new Projectile()
 			{
 				dataBlock = PlayerKidTrapProjectile;

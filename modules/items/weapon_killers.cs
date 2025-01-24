@@ -169,15 +169,6 @@ datablock ShapeBaseImageData(kidsHammerImage : meleeTantoImage)
 	colorShiftColor = "1 0 0 1";
 	mountPoint = $RightHandSlot;
 
-	emap = true;
-
-	offset = "0 0 0";
-	eyeOffset = 0;
-	rotation = eulerToMatrix( "0 0 0" );
-	armReady = true;
-
-	class = "ItemData";
-
 	stateName[0] = "Activate";
 	stateTimeoutValue[0] = 0.15;
 	stateTransitionOnTimeout[0]       = "Ready";

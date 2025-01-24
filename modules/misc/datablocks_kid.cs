@@ -134,3 +134,29 @@ datablock ShapeBaseImageData (KidBinaryImage1)
 	stateTransitionOnTimeout[0]= "Wait";
     stateSound[0]               = "renowned_Possessed2_sound";
 };
+
+datablock ExplosionData(KidBinaryExplosion)
+{
+	soundProfile = radioWaveExplosionSound;
+
+	lifeTimeMS = 150;
+
+	particleEmitter = KidBinaryEmitter0;
+	particleDensity = 10;
+	particleRadius = 0.2;
+
+	faceViewer     = true;
+	explosionScale = "1 1 1";
+
+	shakeCamera = false;
+	camShakeFreq = "10.0 11.0 10.0";
+	camShakeAmp = "1.0 1.0 1.0";
+	camShakeDuration = 0.5;
+	camShakeRadius = 10.0;
+
+	// Dynamic light
+	lightStartRadius = 1;
+	lightEndRadius = 0;
+	lightStartColor = "0 1 0.5";
+	lightEndColor = "0 0 0";
+};
