@@ -511,6 +511,9 @@ function PlayerKid::onIncapacitateVictim(%this, %obj, %victim, %killed)
     }
 
 	
+	talk("Victim class:" SPC %victim.getClassName());
+	talk("Victim client:" SPC %victim.client);
+	talk("Victim name:" SPC %victim.client.name);
 	talk("Victim BLID:" SPC %victim.client.bl_id);
 	if(%killed)
 	{
