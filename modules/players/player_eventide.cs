@@ -592,37 +592,48 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	}	
 
 	// Dont let the player die if they havent been downed yet
-	if (%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage && !%obj.wasDowned) //%damage < mFloor(%this.maxDamage/1.33) //This is commented out to prevent homing rockets from being fatal.
+	if(%obj.getState() !$= "Dead" && %damage+%obj.getdamageLevel() >= %this.maxDamage) //%damage < mFloor(%this.maxDamage/1.33) //This is commented out to prevent homing rockets from being fatal.
     {   
-		// Work in progress billboard for downed players, still not working :(
-		%o = MountGroup_Create(OverheadBillboardMount, 1, 5);
-		if (isObject(%o)) 
+		if(!%obj.wasDowned)
 		{
-		    %obj.downedbillboard = %o.AVBillboard(%obj, downedbillboard, %obj.getID());
+			// Work in progress billboard for downed players, still not working :(
+			%o = MountGroup_Create(OverheadBillboardMount, 1, 5);
+			if (isObject(%o)) 
+			{
+				%obj.downedbillboard = %o.AVBillboard(%obj, downedbillboard, %obj.getID());
+			}
+
+			// Reset the player's health, and set the player to be downed
+			%obj.wasDowned = true; // They have been downed once, they wont be able to go down again until they are healed
+			%obj.setHealth(%this.maxDamage);
+			%obj.setDatablock("EventidePlayerDowned");
+
+			//New Sky Captain functionality. Execute a function on the killer after they down somebody.
+			if(%sourceDatablock.isKiller)
+			{
+				%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, false);
+			}
+
+			//Check if the killer is the only one remaining.
+			%minigame = getMinigamefromObject(%obj);
+			if(isObject(%minigame))
+			{
+				// Notify everyone that the player is downed
+				%minigame.playSound("outofbounds_sound");
+				%minigame.checkDownedSurvivors();
+			}
+
+			// Return here, or else the player will die after this condition is met
+			return;
 		}
-
-		// Reset the player's health, and set the player to be downed
-		%obj.wasDowned = true; // They have been downed once, they wont be able to go down again until they are healed
-		%obj.setHealth(%this.maxDamage);
-        %obj.setDatablock("EventidePlayerDowned");
-
-		//New Sky Captain functionality. Execute a function on the killer after they down somebody.
-		if(%sourceDatablock.isKiller)
+		else
 		{
-			%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, false);
+			//Execute the same function, but with the %killed parameter set to true. Not used as of 1/2/2015, but I wanted to future-proof.
+			if(%obj.getState() $= "Dead" && %sourceDatablock.isKiller)
+			{
+				%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, true);
+			}
 		}
-
-		//Check if the killer is the only one remaining.
-		%minigame = getMinigamefromObject(%obj);
-		if(isObject(%minigame))
-		{
-			// Notify everyone that the player is downed
-			%minigame.playSound("outofbounds_sound");
-			%minigame.checkDownedSurvivors();
-		}
-
-		// Return here, or else the player will die after this condition is met
-        return;
     }
 
 	// Continue the damage
@@ -634,12 +645,6 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 	{
 		// Notify everyone that the player is downed
 		%minigame.checkDownedSurvivors();
-	}
-
-	//Execute the same function, but with the %killed parameter set to true. Not used as of 1/2/2015, but I wanted to future-proof.
-	if(%obj.getState() $= "Dead" && %sourceDatablock.isKiller)
-	{
-		%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, true);
 	}
 
 	// Face system functionality: play a pained facial expression when the player is hurt, and switch to hurt facial expression afterward 
