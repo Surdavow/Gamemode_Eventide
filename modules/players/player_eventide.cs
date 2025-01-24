@@ -629,7 +629,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		else
 		{
 			//Execute the same function, but with the %killed parameter set to true. Not used as of 1/2/2015, but I wanted to future-proof.
-			if(%obj.getState() $= "Dead" && %sourceDatablock.isKiller)
+			if(%sourceDatablock.isKiller)
 			{
 				%sourceDatablock.onIncapacitateVictim(%killerSourceObject, %obj, true);
 			}
