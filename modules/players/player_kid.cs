@@ -510,17 +510,23 @@ function PlayerKid::onIncapacitateVictim(%this, %obj, %victim, %killed)
         );
     }
 
-	%victimClient = %victim.client;
+	
+	talk("Victim BLID:" SPC %victim.client.bl_id);
 	if(%killed)
 	{
-		%victim.delete();
+		%victimClient = %victim.client;
+
 		//Fake ban message.
 		MessageAll('MsgAdminForce', '\c3%1\c2 permanently banned \c3%2\c2 (ID: %3) - \c2"%4"', %obj.client.name, %victimClient.name, %victimClient.getBLID(), "0wn3d");
+		
+		//Fake ban sound.
 		for(%i = 0; %i < ClientGroup.getCount(); %i++)
 		{
 			%client = ClientGroup.getObject(%i);
 			%client.playSound("kid_powerready_sound");
 		}
+		
+		%victim.delete();
 }
 
 function PlayerKid::onDamage(%this, %obj, %delta)
