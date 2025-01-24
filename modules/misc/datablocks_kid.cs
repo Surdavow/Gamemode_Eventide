@@ -132,7 +132,7 @@ datablock ShapeBaseImageData (KidBinaryImage1)
 	stateEmitterTime[0]        = 5000;
 	stateEmitterTime[0]        = 5;
 	stateTransitionOnTimeout[0]= "Wait";
-    stateSound[0]               = "renowned_Possessed2_sound";
+    stateSound[0]               = "kid_trapReady_sound";
 };
 
 datablock ExplosionData(KidBinaryExplosion)
