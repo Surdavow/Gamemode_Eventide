@@ -169,14 +169,24 @@ datablock ShapeBaseImageData(kidsHammerImage : meleeTantoImage)
 	colorShiftColor = "1 0 0 1";
 	mountPoint = $RightHandSlot;
 
+	emap = true;
+
+	offset = "0 0 0";
+	eyeOffset = 0;
+	rotation = eulerToMatrix( "0 0 0" );
+	armReady = true;
+
+	class = "ItemData";
+
+	stateName[0] = "Activate";
+	stateTimeoutValue[0] = 0.15;
+	stateTransitionOnTimeout[0]       = "Ready";
 	stateEmitter[0] = kidsHammerParticleEmitter;
-	stateEmitter[1] = kidsHammerParticleEmitter;
-	stateEmitter[2] = kidsHammerParticleEmitter;
-	stateEmitter[4] = kidsHammerParticleEmitter;
-	stateEmitter[5] = kidsHammerParticleEmitter;
-	stateEmitter[6] = kidsHammerParticleEmitter;
-	stateEmitter[7] = kidsHammerParticleEmitter;
-	stateEmitter[8] = kidsHammerParticleEmitter;
+	stateEmitterTime[0] = 600;
+
+	stateName[1] = "Ready";
+	stateAllowImageChange[1] = true;
+	stateSequence[1] = "Ready";
 };
 
 datablock ShapeBaseImageData(ZweihanderImage : meleeTantoImage)
