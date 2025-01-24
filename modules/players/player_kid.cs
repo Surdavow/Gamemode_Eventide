@@ -353,21 +353,6 @@ function PlayerKid::onTrigger(%this, %obj, %trig, %press)
 			%obj.mountImage("PlayerKidTrapPrepareImage", $LeftHandSlot);
 			%obj.playAudio(1, "kid_powerready_sound");
 		}
-		else if(%trig == 2 && isObject(%obj.client))
-		{
-			%obj.isTeleportReady = !%obj.isTeleportReady; //Toggle the variable.
-			%this.killerGUI(%obj, %obj.client); //Update the GUI immediately.
-			
-			//Display a message to the Kid, telling him if his trap is on or off.
-			if(%obj.isTeleportReady)
-			{
-				%obj.client.centerPrint("\c6Your trap is set to \c2ON\c6.", 5);
-			}
-			else
-			{
-				%obj.client.centerPrint("\c6Your trap is set to \c0OFF\c6.", 5);
-			}
-		}
 	}
 	else
 	{
@@ -394,6 +379,35 @@ function PlayerKid::onTrigger(%this, %obj, %trig, %press)
 		}
 	}
 }
+
+package Eventide_Kid
+{
+	function serverCmdLight(%client)
+    {
+		%player = %client.player;
+		%playerDatablock = %player.getDataBlock();
+        if(isObject(%player) && %playerDatablock.getName() $= "PlayerKid")
+		{
+			%player.isTeleportReady = !%player.isTeleportReady; //Toggle the variable.
+			%playerDatablock.killerGUI(%player, %client); //Update the GUI immediately.
+			
+			//Display a message to the Kid, telling him if his trap is on or off.
+			if(%player.isTeleportReady)
+			{
+				%client.centerPrint("\c6Your trap is set to \c2ON\c6.", 5);
+			}
+			else
+			{
+				%client.centerPrint("\c6Your trap is set to \c0OFF\c6.", 5);
+			}
+		}
+    }
+};
+if(isPackage(Eventide_Kid))
+{
+	deactivatePackage(Eventide_kid);
+}
+activatePackage(Eventide_Kid);
 
 //
 // Voice-line handlers.
