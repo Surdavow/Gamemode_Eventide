@@ -91,7 +91,6 @@ function PlayerKid::onNewDatablock(%this,%obj)
 	%obj.createFaceConfig($Eventide_FacePacks["kid"]);
 	%obj.faceConfig.setFaceAttribute("Attack", "length", 500);
 	%obj.faceConfig.setFaceAttribute("Pain", "length", 1000);
-	%obj.faceConfig.setFaceAttribute("Blink", "length", 100);
 
 	//Everything else.
 	Parent::onNewDatablock(%this, %obj);
@@ -223,7 +222,6 @@ function PlayerKidTrap::tick(%this, %obj)
 
 function PlayerKidTrap::onAdd(%this, %obj)
 {
-	serverPlay3D("kid_trapspawn" @ getRandom(1, 3) @ "_sound", %obj.getPosition());
 	%this.schedule(%obj.tickRate, "tick", %obj);
 }
 
@@ -257,6 +255,7 @@ function Player::createTrap(%obj, %pos)
 		emitter = KidBinaryEmitter0;
 	};
 	%obj.kidTrap.trapEmitter.setTransform(%obj.kidTrap.getTransform());
+	serverPlay3D("kid_trapspawn" @ getRandom(1, 3) @ "_sound", %obj.kidTrap.getPosition());
 }
 
 //
