@@ -54,7 +54,7 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
 	
 	killerlight = "NoFlareGLight";
 
-	rightclickicon = "color_dash";
+	rightclickicon = "color_warp";
 	leftclickicon = "color_melee";	
 
 	rechargeRate = 0.3;
