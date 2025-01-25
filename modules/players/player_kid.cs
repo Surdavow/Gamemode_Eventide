@@ -66,6 +66,7 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
 	jumpForce = 0;
 	
 	gazeTickRate = 50;
+	maxTraps = 3;
 };
 
 function PlayerKid::onRemove(%this, %obj)
@@ -77,6 +78,10 @@ function PlayerKid::onRemove(%this, %obj)
     if(isObject(%obj.threatsReceived))
     {
         %obj.threatsReceived.delete();
+    }
+	if(isObject(%obj.kidTrapGroup))
+    {
+        %obj.kidTrapGroup.delete();
     }
     parent::onRemove(%this, %obj);
 }
@@ -235,27 +240,29 @@ function PlayerKidTrap::onRemove(%this, %obj)
 
 function Player::createTrap(%obj, %pos)
 {
-	if(isObject(%obj.kidTrap))
-	{
-		%obj.kidTrap.delete();
-	}
-
-	%obj.kidTrap = new StaticShape()
+	%trap = new StaticShape()
 	{
 		datablock = PlayerKidTrap;
 		killer = %obj;
 		timePlaced = getSimTime();
 		tickRate = PlayerKidTrap.tickRate;
 	};
-	%obj.kidTrap.setTransform(%pos);
+	%trap.setTransform(%pos);
 
-	%obj.kidTrap.trapEmitter = new ParticleEmitterNode()
+	%trap.trapEmitter = new ParticleEmitterNode()
 	{
 		datablock = TenthEmitterNode;
 		emitter = KidBinaryEmitter0;
 	};
-	%obj.kidTrap.trapEmitter.setTransform(%obj.kidTrap.getTransform());
-	serverPlay3D("kid_trapspawn" @ getRandom(1, 3) @ "_sound", %obj.kidTrap.getPosition());
+	%trap.trapEmitter.setTransform(%trap.getTransform());
+
+	if(!isObject(%obj.kidTrapGroup))
+	{
+		%obj.kidTrapGroup = new ScriptGroup();
+	}
+	%obj.kidTrapGroup.add(%trap);
+
+	serverPlay3D("kid_trapspawn" @ getRandom(1, 3) @ "_sound", %trap.getPosition());
 }
 
 //
@@ -347,11 +354,27 @@ function PlayerKid::onTrigger(%this, %obj, %trig, %press)
 		}
 		else if(%trig == 4 && %obj.getEnergyLevel() == %this.maxEnergy)
 		{
-			//Arm a glitch wave in the killer's left hand. When space is unpressed, it will be thrown to lay a trap.
-			%obj.isPreparingTrap = true;
-			%obj.playThread(1, armReadyLeft);
-			%obj.mountImage("PlayerKidTrapPrepareImage", $LeftHandSlot);
-			%obj.playAudio(1, "kid_powerready_sound");
+			if(!isObject(%obj.kidTrapGroup))
+			{
+				%obj.kidTrapGroup = new ScriptGroup();
+			}
+
+			if(%obj.kidTrapGroup.getCount() == %this.maxTraps)
+			{
+				%client = %obj.client;
+				if(isObject(%client))
+				{
+					%client.centerPrint("\c6You cannot set more than" SPC %this.maxTraps SPC "traps.", 5);
+				}
+			}
+			else
+			{
+				//Arm a glitch wave in the killer's left hand. When space is unpressed, it will be thrown to lay a trap.
+				%obj.isPreparingTrap = true;
+				%obj.playThread(1, armReadyLeft);
+				%obj.mountImage("PlayerKidTrapPrepareImage", $LeftHandSlot);
+				%obj.playAudio(1, "kid_powerready_sound");
+			}
 		}
 	}
 	else
@@ -392,13 +415,35 @@ package Eventide_Kid
 			%playerDatablock.killerGUI(%player, %client); //Update the GUI immediately.
 			
 			//Display a message to the Kid, telling him if his trap is on or off.
-			if(%player.isTeleportReady)
+			if(isObject(%player.kidTrapGroup))
 			{
-				%client.centerPrint("\c6Your trap is set to \c2ON\c6.", 5);
-			}
-			else
-			{
-				%client.centerPrint("\c6Your trap is set to \c0OFF\c6.", 5);
+				%trapCount = %player.kidTrapGroup.getCount();
+				if(%player.isTeleportReady)
+				{
+					%client.playSound("kid_trapson_sound"); //Play a killer-only audio que that the traps are on.
+					switch(%trapCount)
+					{
+						case 0:
+							%client.centerPrint("\c6Your traps will be set to \c2ON\c6.", 5);
+						case 1:
+							%client.centerPrint("\c6Your trap is set to \c2ON\c6.", 5);
+						default:
+							%client.centerPrint("\c6Your traps are set to \c2ON\c6.", 5);
+					}
+				}
+				else
+				{
+					%client.playSound("kid_trapsoff_sound"); //Play a killer-only audio que that the traps are off.
+					switch(%trapCount)
+					{
+						case 0:
+							%client.centerPrint("\c6Your traps will be set to \c0OFF\c6.", 5);
+						case 1:
+							%client.centerPrint("\c6Your trap is set to \c0OFF\c6.", 5);
+						default:
+							%client.centerPrint("\c6Your traps are set to \c0OFF\c6.", 5);
+					}
+				}
 			}
 		}
     }
