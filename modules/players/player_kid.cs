@@ -514,15 +514,18 @@ function PlayerKid::onIncapacitateVictim(%this, %obj, %victim, %killed)
 	if(%killed && isObject(%obj.client) && isObject(%victim.client))
 	{
 		%victimClient = %victim.client;
+ 
+		%possibleBanMessages = "get a job\nepoic fail\nbased ban\nfuck eventide\nlol\nfukkin die\nanotha chungusite\nlmao\nbannd O_O\nsup bruh\n71.215.225.225\ndis you? ABUR2-566X-6HMR-WEFA\nyou are banned from posting and sending personal messages on this forum.";
+		%choosenBanMessage = getRecord(%possibleBanMessages, getRandom(0, (getRecordCount(%possibleBanMessages) - 1))); //Get a random ban message from the string above.
 
 		//Fake ban message.
-		MessageAll('MsgAdminForce', '\c3%1\c2 permanently banned \c3%2\c2 (ID: %3) - \c2"%4"', %obj.client.name, %victimClient.name, %victimClient.getBLID(), "0wn3d");
+		MessageAll('MsgAdminForce', '\c3%1\c2 permanently banned \c3%2\c2 (ID: %3) - \c2"%4"', %obj.client.name, %victimClient.name, %victimClient.getBLID(), %choosenBanMessage);
 		
 		//Fake ban sound.
 		for(%i = 0; %i < ClientGroup.getCount(); %i++)
 		{
 			%client = ClientGroup.getObject(%i);
-			%client.playSound("kid_powerready_sound");
+			%client.playSound("kid_powerready_sound");//AdminSound); //Default sound datablock.
 		}
 		
 		%victim.delete();
