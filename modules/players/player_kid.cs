@@ -262,41 +262,23 @@ function Player::createTrap(%obj, %pos)
 	}
 	%obj.kidTrapGroup.add(%trap);
 
-	serverPlay3D("kid_trapspawn" @ getRandom(1, 3) @ "_sound", %trap.getPosition());
+	serverPlay3D("kid_trapspawn" @ getRandom(1, 3) @ "_sound", %trap.getPosition()); //Play a sound where the trap is created...
+
+	%client = %obj.client;
+	if(isObject(%client))
+	{
+		%client.playSound("kid_trapcue_sound"); //Play a killer-only audio cue letting him know the trap landed.
+	}
 }
 
 //
-// Special ability, throwing a lightning bolt.
+// Special ability, throwing a glitch wave.
 //
-
-datablock ShapeBaseImageData(PlayerKidTrapPrepareImage)
-{
-	shapeFile = "Add-Ons/Gamemode_Eventide/modules/items/models/emptyWeapon.dts";
-	emap = true;
-
-	mountPoint = $LeftHandSlot;
-	offset = "0 0 0";
-	eyeOffset = 0;
-	rotation = eulerToMatrix( "0 0 0" );
-	armReady = true;
-
-	class = "ItemData";
-
-	stateName[0] = "Activate";
-	stateTimeoutValue[0] = 0.15;
-	stateTransitionOnTimeout[0]       = "Ready";
-	stateEmitter[0] = KidBinaryEmitter0;
-	stateEmitterTime[0] = 600;
-
-	stateName[1] = "Ready";
-	stateAllowImageChange[1] = true;
-	stateSequence[1] = "Ready";
-};
 
 datablock ProjectileData(PlayerKidTrapProjectile)
 {
 	projectileShapeName = "base/data/shapes/empty.dts";
-	particleEmitter = KidBinaryEmitter0;
+	particleEmitter = KidHeldBinaryEmitter0;
 	explosion = KidBinaryExplosion;
 	explodeOnDeath = true;
 
@@ -372,7 +354,7 @@ function PlayerKid::onTrigger(%this, %obj, %trig, %press)
 				//Arm a glitch wave in the killer's left hand. When space is unpressed, it will be thrown to lay a trap.
 				%obj.isPreparingTrap = true;
 				%obj.playThread(1, armReadyLeft);
-				%obj.mountImage("PlayerKidTrapPrepareImage", $LeftHandSlot);
+				%obj.mountImage(KidBinaryImage0, KidBinaryImage0.mountPoint);
 				%obj.playAudio(1, "kid_powerready_sound");
 			}
 		}
