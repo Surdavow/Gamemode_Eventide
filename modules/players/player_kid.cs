@@ -428,6 +428,10 @@ package Eventide_Kid
 				}
 			}
 		}
+		else
+		{
+			parent::serverCmdLight(%client);
+		}
     }
 };
 if(isPackage(Eventide_Kid))
