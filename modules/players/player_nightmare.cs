@@ -41,6 +41,12 @@ datablock PlayerData(PlayerNightmare : PlayerRenowned)
 
 function PlayerNightmare::onNewDatablock(%this,%obj)
 {
+	//Face system functionality.
+	%obj.createEmptyFaceConfig($Eventide_FacePacks["nightmare"]);
+	%facePack = %obj.faceConfig.getFacePack();
+	%obj.faceConfig.face["Neutral"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Neutral"));
+	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
+	
 	Parent::onNewDatablock(%this,%obj);
 	%obj.mountImage("ChainsawImage",0);
 	%obj.setScale("1 1 1");
@@ -82,7 +88,10 @@ function PlayerNightmare::EventideAppearance(%this,%obj,%client)
 	%pantsColor = "0 0 0 1";
 	%skinColor = "0 0 0 1";
 
-	%obj.setFaceName("memeGrinMan");
+	if(isObject(%obj.faceConfig))
+	{
+		%obj.faceConfigShowFaceTimed("Neutral", -1);
+	}
 	%obj.setDecalName("chef");
 	%obj.setNodeColor("rarm",%hoodieColor);
 	%obj.setNodeColor("larm",%hoodieColor);

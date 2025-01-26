@@ -90,7 +90,6 @@ function PlayerCannibal::EventideAppearance(%this,%obj,%client)
 	%pantsColor = "0.05 0.05 0.05 1";
 	%skinColor = "0.83 0.73 0.66 1";
 
-	%obj.setFaceName("Cannibal");
 	%obj.setDecalName("jgtuxedo");
 	%obj.setNodeColor("rarm",%hoodieColor);
 	%obj.setNodeColor("larm",%hoodieColor);

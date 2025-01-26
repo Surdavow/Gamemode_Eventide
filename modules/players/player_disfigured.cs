@@ -121,6 +121,12 @@ function PlayerDisfigured::onPeggFootstep(%this,%obj)
 
 function PlayerDisfigured::onNewDatablock(%this,%obj)
 {
+	//Face system functionality.
+	%obj.createEmptyFaceConfig($Eventide_FacePacks["disfigured"]);
+	%facePack = %obj.faceConfig.getFacePack();
+	%obj.faceConfig.face["Neutral"] = %facePack.getFaceData(compileFaceDataName(%facePack, "Neutral"));
+	%obj.faceConfig.setFaceAttribute("Neutral", "length", -1);
+	
 	Parent::onNewDatablock(%this,%obj);
 	%obj.setScale("1.1 1.1 1.1");
 	%obj.mountImage("Disfigured_BleedImage",0);
@@ -145,7 +151,6 @@ function PlayerDisfigured::EventideAppearance(%this,%obj,%client)
 	{
 		%obj.faceConfigShowFaceTimed("Neutral", -1);
 	}
-	%obj.setDecalName("disfigureddecal");
 	%obj.setNodeColor("rarm",%skinColor);
 	%obj.setNodeColor("larmslim",%bloodColor);
 	%obj.setNodeColor("femchest",%dressColor);
