@@ -99,7 +99,7 @@ function MountGroup::AVBillboard(%o,%player,%light,%tag)
 	{
 		if(%group.getObject(%i).player.getDataBlock().Hunter) //skip if hunter
 		{
-			continue
+			continue;
 		}
 		%avGroup = %group.getObject(%i).AVBillboardGroup;
 		// Appending the object id to the tag so future clears only effect their own group

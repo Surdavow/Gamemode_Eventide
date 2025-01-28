@@ -597,7 +597,7 @@ function EventidePlayer::Damage(%this,%obj,%sourceObject,%position,%damage,%dama
 		if(!%obj.wasDowned)
 		{
 			// Work in progress billboard for downed players, still not working :(
-			$Eventide::BillboardMounts.AVBillboard(%obj,"downedAVBillboard",%obj.getID() @ "Downed")
+			$Eventide::BillboardMounts.AVBillboard(%obj,"downedAVBillboard",%obj.getID() @ "Downed");
 
 			// Reset the player's health, and set the player to be downed
 			%obj.wasDowned = true; // They have been downed once, they wont be able to go down again until they are healed
@@ -869,7 +869,7 @@ function EventidePlayerDowned::onDisabled(%this,%obj)
 //Called whenever a survivor dies or escapes. Fires an event if the survivor is the last one standing.
 function EventidePlayerDowned::onRemove(%this, %obj)
 {
-	$Eventide::BillboardMounts.clearAVBillboards(%obj,%obj.getID() @ "Downed")
+	$Eventide::BillboardMounts.clearAVBillboards(%obj,%obj.getID() @ "Downed");
 	%minigame = getMinigameFromObject(%obj);
 	if(isObject(%minigame) && isObject(%obj.client) && %obj.client.getRemainingTeamMembers() == 1)
 	{
