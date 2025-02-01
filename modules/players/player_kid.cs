@@ -66,7 +66,7 @@ datablock PlayerData(PlayerKid : PlayerRenowned)
 	jumpForce = 0;
 	
 	gazeTickRate = 50;
-	maxTraps = 3;
+	maxTraps = 5;
 };
 
 function PlayerKid::onRemove(%this, %obj)
