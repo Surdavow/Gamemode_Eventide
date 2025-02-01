@@ -1,5 +1,5 @@
 //a number specifying how many always visible billboards are loaded per client
-$Example::ClientAVBillboardCount = 24;
+$Example::ClientAVBillboardCount = 12;
 // Example always visible billboard light
 datablock fxLightData(downedAVBillboard : DefaultAVBillboard)
 {
@@ -97,8 +97,11 @@ function MountGroup::AVBillboard(%o,%player,%light,%tag)
 	%mount = %player.getMountedObject(%o.slot);
 	for(%i = 0; %i < %count; %i++)
 	{
+		if(%group.getObject(%i).player.getDataBlock().Hunter) //skip if hunter
+		{
+			continue;
+		}
 		%avGroup = %group.getObject(%i).AVBillboardGroup;
-		
 		// Appending the object id to the tag so future clears only effect their own group
 		%bb = BillboardMount_AddAVBillboard(%mount, %avGroup, %light, %o @ "_" @ %tag);
 	}
@@ -160,3 +163,5 @@ package MountGroup_Billboards
 	}
 };
 activatePackage(MountGroup_Billboards);
+
+$Eventide::BillboardMounts = MountGroup_Create(OverheadBillboardMount, 12, 5);
